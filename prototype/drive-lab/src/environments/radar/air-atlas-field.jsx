@@ -1,4 +1,4 @@
-import { useContextualControls } from "../../contextual-controls.jsx";
+import { ContextualRail, useContextualControls } from "../../contextual-controls.jsx";
 import {radarViewportQuery,radarMinimumZoom} from './radar-viewport.js';
 import {createRadarLens,radarLensOffset} from './radar-lens.js';
 import {createLoadRecovery} from '../../load-recovery.js';
@@ -307,6 +307,7 @@ export default function AirAtlasField({position,gpsState,theme,reducedMotion,onR
       </div>:null}
     </div>
     {!canStart?<div className="atlas-waiting"><strong>AIR ATLAS</strong><span>{locationPresentation.message}</span>{locationPresentation.action?<button onClick={onRetryLocation}>{locationPresentation.action}</button>:null}</div>:!flightView?<>
+      <ContextualRail className="air-atlas-head">
       <div {...contextual} className="air-atlas-toolbar" aria-label="Air Atlas map controls">
         <button onClick={()=>{setShowList(v=>!v);setSelectedId(null);}} aria-expanded={showList} aria-controls="air-atlas-list">{activePlanes.length} AIRCRAFT</button>
         <button aria-label="Show place labels" aria-pressed={labels} onClick={()=>setLabels(v=>!v)}>LABELS {labels?'ON':'OFF'}</button>
@@ -319,8 +320,9 @@ export default function AirAtlasField({position,gpsState,theme,reducedMotion,onR
           <button aria-label="Zoom out" onClick={()=>map?.zoomOut()}><RadarIcon kind="minus"/></button>
         </div>
       </div>
-      <div className="air-atlas-status" role="status">{mapError?<button className="air-atlas-map-retry" onClick={()=>setMapRetry(v=>v+1)}>RETRY MAP</button>:null}{locationPresentation.message||(!northUp&&!headingFresh?'Waiting for driving direction · north up':navigator.onLine===false?'Offline · positions held':status==='loading'?'Finding aircraft…':status==='retrying'?'Feed unavailable · retrying':areaPending?'Updating visible area…':`ADSB.lol · visible area${coverage?' · '+Math.round(coverage.radiusNm*1.852)+' km radius':''} · feed ${feedAt===null?'pending':Math.max(0,Math.floor((clock-feedAt)/1000))+'s ago'}${truncated?' · result limit reached':''}`)}</div>
+      <div className="air-atlas-status" role="status"><span className="air-atlas-status-copy">{mapError?<button className="air-atlas-map-retry" onClick={()=>setMapRetry(v=>v+1)}>RETRY MAP</button>:null}{locationPresentation.message||(!northUp&&!headingFresh?'Waiting for driving direction · north up':navigator.onLine===false?'Offline · positions held':status==='loading'?'Finding aircraft…':status==='retrying'?'Feed unavailable · retrying':areaPending?'Updating visible area…':`ADSB.lol · visible area${coverage?' · '+Math.round(coverage.radiusNm*1.852)+' km radius':''} · feed ${feedAt===null?'pending':Math.max(0,Math.floor((clock-feedAt)/1000))+'s ago'}${truncated?' · result limit reached':''}`)}</span></div>
       {showList?<div id="air-atlas-list" className="air-atlas-list" aria-label="Nearby aircraft">{activePlanes.length?activePlanes.map(p=><button key={p.id} onClick={()=>{setSelectedId(p.id);setShowList(false);}}>{p.callsign||p.registration||p.id}<span>{p.typeCode||'Unknown'} · {(p.distanceMetres/1000).toFixed(0)} km</span></button>):<p>No recent aircraft in range.</p>}</div>:null}
+      </ContextualRail>
     </>:null}
     {(selected || showList) && !flightView ? <button className="air-atlas-dismiss" aria-label="Close radar details" onPointerDown={event => event.stopPropagation()} onClick={event => { event.stopPropagation(); setSelectedId(null); setShowList(false); }}/> : null}
     {selected&&!flightView?<div className={`air-atlas-detail${expanded?' is-expanded':''}`} aria-label="Selected aircraft detail" onKeyDown={event => { if(event.key === "Escape") { event.stopPropagation(); setSelectedId(null); } }}>

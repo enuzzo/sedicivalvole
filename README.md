@@ -598,6 +598,15 @@ on capable devices plus explicit phone pairing, with clearer ICE/QR failures.
 Intro and diagnostics expose a scoped app-cache reset. See the
 [implementation and acceptance record](docs/ROAD-REFINEMENT-2026-09-19.md).
 
+### Stable running controls
+
+Logo and speed now remain adjacent at the left across all running visuals.
+Drivey, Prtcl, Gradient, Atlas, Radar, Fly With and Engine share a reserved
+contextual lane at the right, with complete groups wrapping on narrow screens.
+Waking global controls hides and disables contextual actions; the first touch
+on the persistent identity cells only wakes the bar. The logo is larger while
+the bar retains its existing height. [Visual QA and acceptance boundaries](docs/qa/2026-09-19-ui-harmony/README.md).
+
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
 

@@ -22,8 +22,8 @@ const wake=async()=>{await page.mouse.click(650,250);await page.waitForTimeout(2
 await wake();console.log('mute',await page.locator('.stop-button').getAttribute('aria-label'));await page.getByRole('button',{name:'Mute music',exact:true}).click();console.log('muted');
 assert.equal(await page.getByRole('button',{name:'Unmute music',exact:true}).count(),1);
 await wake();await page.locator('.mode-selector').getByRole('button',{name:/Engine/i}).click();await page.waitForTimeout(1600);
-assert.equal(await page.getByRole('button',{name:'Mute Engine',exact:true}).count(),1);assert.equal(await page.locator('.source-readout').count(),0);
-await page.screenshot({path:out+'/engine.png'});ok('Music mute does not mute Engine; speed is integrated once');
+assert.equal(await page.getByRole('button',{name:'Mute Engine',exact:true}).count(),1);assert.equal(await page.locator('.source-readout').count(),1);
+await page.screenshot({path:out+'/engine.png'});ok('Music mute does not mute Engine; stable rail speed remains available');
 await wake();await page.getByRole('button',{name:'Mute Engine',exact:true}).click();await wake();
 await page.locator('.mode-selector').getByRole('button',{name:/Music/i}).click();assert.equal(await page.getByRole('button',{name:'Unmute music',exact:true}).count(),1);
 await page.locator('.mode-selector').getByRole('button',{name:/Engine/i}).click();assert.equal(await page.getByRole('button',{name:'Unmute Engine',exact:true}).count(),1);ok('Repeated switches preserve independent explicit mute states');
@@ -32,7 +32,7 @@ async function visual(name){await wake();await page.locator('.environment-contro
 await visual('Atlas');await page.waitForTimeout(2500);
 assert.equal(await page.locator('.atlas-camera-controls').getAttribute('inert'),null);
 let rect=await page.locator('.atlas-camera-controls').boundingBox();assert.ok(rect.y<20,JSON.stringify(rect));
-assert.equal(await page.locator('.topbar-mark').evaluate(n=>getComputedStyle(n).visibility),'hidden');
+assert.equal(await page.locator('.topbar-mark').evaluate(n=>getComputedStyle(n).visibility),'visible');
 await page.screenshot({path:out+'/atlas-resting.png'});
 await page.getByRole('button',{name:'Zoom in',exact:true}).click();assert.ok((await page.locator('main.app').getAttribute('class')).includes('controls-resting'));ok('Atlas controls use the free top bar and do not wake chrome');
 await wake();assert.equal(await page.locator('.atlas-camera-controls').getAttribute('inert'),'');await page.screenshot({path:out+'/atlas-awake.png'});

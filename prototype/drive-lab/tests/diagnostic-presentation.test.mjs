@@ -44,7 +44,7 @@ test("the top bar exposes the selected REPORT control with the pinned Tabler ico
   assert.match(styles, /Tesla Balanced Rail[\s\S]*?\.discover-button,[\s\S]*?\.report-button \{ grid-template-rows: 24px; gap: 0; \}/);
   assert.match(styles, /\.appearance-icon,[\s\S]*?\.report-button img \{ width: 24px; height: 24px;/);
   assert.match(styles, /Tesla Balanced Rail[\s\S]*?\.topbar \{[\s\S]*?grid-template-columns: 64px 168px 104px repeat\(5, minmax\(64px, 1fr\)\)/);
-  assert.match(styles, /Tesla Balanced Rail[\s\S]*?\.topbar-mark img \{ width: 44px; height: 44px; \}/);
+  assert.match(read("contextual-rail.css"), /\.topbar-mark img \{ width: 52px; height: 52px; \}/);
   assert.equal(icon.length, 618);
   assert.equal(createHash("sha256").update(icon).digest("hex"), "d58847492f890b8beedc7eff543860219e0f382e46d2c2695107d64ae434b9ba");
   assert.match(license, /Copyright \(c\) 2020-2026 Paweł Kuna/);

@@ -1,0 +1,2585 @@
+[
+  {
+    "name": "final-phone-awake-light",
+    "appearance": "light",
+    "items": [
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Open session report",
+        "left": 12,
+        "right": 68,
+        "top": 0,
+        "width": 56,
+        "x": 12,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 68,
+        "right": 156,
+        "top": 0,
+        "width": 88,
+        "x": 68,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "ENGINE",
+        "left": 157,
+        "right": 212,
+        "top": 0,
+        "width": 55,
+        "x": 157,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "MUSIC",
+        "left": 212,
+        "right": 267,
+        "top": 0,
+        "width": 55,
+        "x": 212,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Network CONNECTED. Open 15 minute connection detail.",
+        "left": 268,
+        "right": 363.328125,
+        "top": 0,
+        "width": 95.328125,
+        "x": 268,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Appearance LIGHT. Effective light. Tap to change.",
+        "left": 363.328125,
+        "right": 458.6640625,
+        "top": 0,
+        "width": 95.3359375,
+        "x": 363.328125,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "GPS LIVE, accuracy \u00b110 m",
+        "left": 458.6640625,
+        "right": 554,
+        "top": 0,
+        "width": 95.3359375,
+        "x": 458.6640625,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Connect phone motion sensors",
+        "left": 554,
+        "right": 649.328125,
+        "top": 0,
+        "width": 95.328125,
+        "x": 554,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Open Discover passenger index",
+        "left": 649.328125,
+        "right": 744.6640625,
+        "top": 0,
+        "width": 95.3359375,
+        "x": 649.328125,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Open session report",
+        "left": 744.6640625,
+        "right": 840,
+        "top": 0,
+        "width": 95.3359375,
+        "x": 744.6640625,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "phone": "landscape",
+    "scrollTop": 0,
+    "state": "app phase-running controls-awake has-now-playing",
+    "undersized": [],
+    "viewport": [
+      852,
+      393
+    ]
+  },
+  {
+    "name": "final-atlas-phone-light",
+    "appearance": "light",
+    "items": [
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Follow",
+        "left": 336.7578125,
+        "right": 398.5078125,
+        "top": 10,
+        "width": 61.75,
+        "x": 336.7578125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Area",
+        "left": 400.5078125,
+        "right": 456.5078125,
+        "top": 10,
+        "width": 56,
+        "x": 400.5078125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Trip",
+        "left": 458.5078125,
+        "right": 514.5078125,
+        "top": 10,
+        "width": 56,
+        "x": 458.5078125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Zoom in",
+        "left": 528.5078125,
+        "right": 576.5078125,
+        "top": 10,
+        "width": 48,
+        "x": 528.5078125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Reset map view",
+        "left": 578.5078125,
+        "right": 637.46875,
+        "top": 10,
+        "width": 58.9609375,
+        "x": 578.5078125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Zoom out",
+        "left": 639.46875,
+        "right": 687.46875,
+        "top": 10,
+        "width": 48,
+        "x": 639.46875,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Lock map north up",
+        "left": 689.46875,
+        "right": 786,
+        "top": 10,
+        "width": 96.53125,
+        "x": 689.46875,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Map colors: standard cartographic. Switch to product palette.",
+        "left": 788,
+        "right": 836,
+        "top": 10,
+        "width": 48,
+        "x": 788,
+        "y": 10
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Open session report",
+        "left": 12,
+        "right": 68,
+        "top": 0,
+        "width": 56,
+        "x": 12,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 68,
+        "right": 156,
+        "top": 0,
+        "width": 88,
+        "x": 68,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "phone": "landscape",
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting",
+    "undersized": [],
+    "viewport": [
+      852,
+      393
+    ]
+  },
+  {
+    "name": "final-atlas-phone-narrow",
+    "appearance": "light",
+    "items": [
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Follow",
+        "left": 473.25,
+        "right": 535,
+        "top": 10,
+        "width": 61.75,
+        "x": 473.25,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Area",
+        "left": 537,
+        "right": 593,
+        "top": 10,
+        "width": 56,
+        "x": 537,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Trip",
+        "left": 595,
+        "right": 651,
+        "top": 10,
+        "width": 56,
+        "x": 595,
+        "y": 10
+      },
+      {
+        "bottom": 120,
+        "height": 48,
+        "label": "Zoom in",
+        "left": 343.5078125,
+        "right": 391.5078125,
+        "top": 72,
+        "width": 48,
+        "x": 343.5078125,
+        "y": 72
+      },
+      {
+        "bottom": 120,
+        "height": 48,
+        "label": "Reset map view",
+        "left": 393.5078125,
+        "right": 452.46875,
+        "top": 72,
+        "width": 58.9609375,
+        "x": 393.5078125,
+        "y": 72
+      },
+      {
+        "bottom": 120,
+        "height": 48,
+        "label": "Zoom out",
+        "left": 454.46875,
+        "right": 502.46875,
+        "top": 72,
+        "width": 48,
+        "x": 454.46875,
+        "y": 72
+      },
+      {
+        "bottom": 120,
+        "height": 48,
+        "label": "Lock map north up",
+        "left": 504.46875,
+        "right": 601,
+        "top": 72,
+        "width": 96.53125,
+        "x": 504.46875,
+        "y": 72
+      },
+      {
+        "bottom": 120,
+        "height": 48,
+        "label": "Map colors: standard cartographic. Switch to product palette.",
+        "left": 603,
+        "right": 651,
+        "top": 72,
+        "width": 48,
+        "x": 603,
+        "y": 72
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Open session report",
+        "left": 12,
+        "right": 68,
+        "top": 0,
+        "width": 56,
+        "x": 12,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 68,
+        "right": 156,
+        "top": 0,
+        "width": 88,
+        "x": 68,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "phone": "landscape",
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting",
+    "undersized": [],
+    "viewport": [
+      667,
+      375
+    ]
+  },
+  {
+    "name": "final-atlas-phone-narrow-dark",
+    "appearance": "dark",
+    "items": [
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Follow",
+        "left": 473.25,
+        "right": 535,
+        "top": 10,
+        "width": 61.75,
+        "x": 473.25,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Area",
+        "left": 537,
+        "right": 593,
+        "top": 10,
+        "width": 56,
+        "x": 537,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Trip",
+        "left": 595,
+        "right": 651,
+        "top": 10,
+        "width": 56,
+        "x": 595,
+        "y": 10
+      },
+      {
+        "bottom": 120,
+        "height": 48,
+        "label": "Zoom in",
+        "left": 343.5078125,
+        "right": 391.5078125,
+        "top": 72,
+        "width": 48,
+        "x": 343.5078125,
+        "y": 72
+      },
+      {
+        "bottom": 120,
+        "height": 48,
+        "label": "Reset map view",
+        "left": 393.5078125,
+        "right": 452.46875,
+        "top": 72,
+        "width": 58.9609375,
+        "x": 393.5078125,
+        "y": 72
+      },
+      {
+        "bottom": 120,
+        "height": 48,
+        "label": "Zoom out",
+        "left": 454.46875,
+        "right": 502.46875,
+        "top": 72,
+        "width": 48,
+        "x": 454.46875,
+        "y": 72
+      },
+      {
+        "bottom": 120,
+        "height": 48,
+        "label": "Lock map north up",
+        "left": 504.46875,
+        "right": 601,
+        "top": 72,
+        "width": 96.53125,
+        "x": 504.46875,
+        "y": 72
+      },
+      {
+        "bottom": 120,
+        "height": 48,
+        "label": "Map colors: standard cartographic. Switch to product palette.",
+        "left": 603,
+        "right": 651,
+        "top": 72,
+        "width": 48,
+        "x": 603,
+        "y": 72
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Open session report",
+        "left": 12,
+        "right": 68,
+        "top": 0,
+        "width": 56,
+        "x": 12,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 68,
+        "right": 156,
+        "top": 0,
+        "width": 88,
+        "x": 68,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "phone": "landscape",
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting",
+    "undersized": [],
+    "viewport": [
+      667,
+      375
+    ]
+  },
+  {
+    "name": "final-radar-phone-narrow-dark",
+    "appearance": "dark",
+    "items": [
+      {
+        "bottom": 54,
+        "height": 48,
+        "label": "2 AIRCRAFT",
+        "left": 452.890625,
+        "right": 549.8046875,
+        "top": 6,
+        "width": 96.9140625,
+        "x": 452.890625,
+        "y": 6
+      },
+      {
+        "bottom": 54,
+        "height": 48,
+        "label": "Show place labels",
+        "left": 555.8046875,
+        "right": 655,
+        "top": 6,
+        "width": 99.1953125,
+        "x": 555.8046875,
+        "y": 6
+      },
+      {
+        "bottom": 108,
+        "height": 48,
+        "label": "Refresh aircraft",
+        "left": 347,
+        "right": 395,
+        "top": 60,
+        "width": 48,
+        "x": 347,
+        "y": 60
+      },
+      {
+        "bottom": 108,
+        "height": 48,
+        "label": "Use natural map colors",
+        "left": 399,
+        "right": 447,
+        "top": 60,
+        "width": 48,
+        "x": 399,
+        "y": 60
+      },
+      {
+        "bottom": 108,
+        "height": 48,
+        "label": "Follow driving direction",
+        "left": 451,
+        "right": 499,
+        "top": 60,
+        "width": 48,
+        "x": 451,
+        "y": 60
+      },
+      {
+        "bottom": 108,
+        "height": 48,
+        "label": "Zoom in",
+        "left": 503,
+        "right": 551,
+        "top": 60,
+        "width": 48,
+        "x": 503,
+        "y": 60
+      },
+      {
+        "bottom": 108,
+        "height": 48,
+        "label": "Reset radar view",
+        "left": 555,
+        "right": 603,
+        "top": 60,
+        "width": 48,
+        "x": 555,
+        "y": 60
+      },
+      {
+        "bottom": 108,
+        "height": 48,
+        "label": "Zoom out",
+        "left": 607,
+        "right": 655,
+        "top": 60,
+        "width": 48,
+        "x": 607,
+        "y": 60
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Open session report",
+        "left": 12,
+        "right": 68,
+        "top": 0,
+        "width": 56,
+        "x": 12,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 68,
+        "right": 156,
+        "top": 0,
+        "width": 88,
+        "x": 68,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "phone": "landscape",
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting",
+    "undersized": [],
+    "viewport": [
+      667,
+      375
+    ]
+  },
+  {
+    "name": "final-radar-detail-phone-narrow",
+    "appearance": "dark",
+    "items": [
+      {
+        "bottom": 54,
+        "height": 48,
+        "label": "2 AIRCRAFT",
+        "left": 452.890625,
+        "right": 549.8046875,
+        "top": 6,
+        "width": 96.9140625,
+        "x": 452.890625,
+        "y": 6
+      },
+      {
+        "bottom": 54,
+        "height": 48,
+        "label": "Show place labels",
+        "left": 555.8046875,
+        "right": 655,
+        "top": 6,
+        "width": 99.1953125,
+        "x": 555.8046875,
+        "y": 6
+      },
+      {
+        "bottom": 108,
+        "height": 48,
+        "label": "Refresh aircraft",
+        "left": 347,
+        "right": 395,
+        "top": 60,
+        "width": 48,
+        "x": 347,
+        "y": 60
+      },
+      {
+        "bottom": 108,
+        "height": 48,
+        "label": "Use natural map colors",
+        "left": 399,
+        "right": 447,
+        "top": 60,
+        "width": 48,
+        "x": 399,
+        "y": 60
+      },
+      {
+        "bottom": 108,
+        "height": 48,
+        "label": "Follow driving direction",
+        "left": 451,
+        "right": 499,
+        "top": 60,
+        "width": 48,
+        "x": 451,
+        "y": 60
+      },
+      {
+        "bottom": 108,
+        "height": 48,
+        "label": "Zoom in",
+        "left": 503,
+        "right": 551,
+        "top": 60,
+        "width": 48,
+        "x": 503,
+        "y": 60
+      },
+      {
+        "bottom": 108,
+        "height": 48,
+        "label": "Reset radar view",
+        "left": 555,
+        "right": 603,
+        "top": 60,
+        "width": 48,
+        "x": 555,
+        "y": 60
+      },
+      {
+        "bottom": 108,
+        "height": 48,
+        "label": "Zoom out",
+        "left": 607,
+        "right": 655,
+        "top": 60,
+        "width": 48,
+        "x": 607,
+        "y": 60
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Open session report",
+        "left": 12,
+        "right": 68,
+        "top": 0,
+        "width": 56,
+        "x": 12,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 68,
+        "right": 156,
+        "top": 0,
+        "width": 88,
+        "x": 68,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "phone": "landscape",
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting",
+    "undersized": [],
+    "viewport": [
+      667,
+      375
+    ]
+  },
+  {
+    "name": "final-engine-tesla-dark",
+    "appearance": "dark",
+    "items": [
+      {
+        "bottom": 54,
+        "height": 48,
+        "label": "Mono",
+        "left": 520.5625,
+        "right": 591.265625,
+        "top": 6,
+        "width": 70.703125,
+        "x": 520.5625,
+        "y": 6
+      },
+      {
+        "bottom": 54,
+        "height": 48,
+        "label": "Rosso",
+        "left": 597.265625,
+        "right": 671.078125,
+        "top": 6,
+        "width": 73.8125,
+        "x": 597.265625,
+        "y": 6
+      },
+      {
+        "bottom": 54,
+        "height": 48,
+        "label": "Touring",
+        "left": 677.078125,
+        "right": 761,
+        "top": 6,
+        "width": 83.921875,
+        "x": 677.078125,
+        "y": 6
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open session report",
+        "left": 0,
+        "right": 64,
+        "top": 0,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 64,
+        "right": 160,
+        "top": 0,
+        "width": 96,
+        "x": 64,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting",
+    "undersized": [],
+    "viewport": [
+      773,
+      601
+    ]
+  },
+  {
+    "name": "final-prtcl-tesla-dark",
+    "appearance": "dark",
+    "items": [
+      {
+        "bottom": 58.5,
+        "height": 52.5,
+        "label": "PRTCL type Fractal Frequency. Next Axiom",
+        "left": 649,
+        "right": 761,
+        "top": 6,
+        "width": 112,
+        "x": 649,
+        "y": 6
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open session report",
+        "left": 0,
+        "right": 64,
+        "top": 0,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 64,
+        "right": 160,
+        "top": 0,
+        "width": 96,
+        "x": 64,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting has-now-playing",
+    "undersized": [],
+    "viewport": [
+      773,
+      601
+    ]
+  },
+  {
+    "name": "final-gradient-mist-tesla-dark",
+    "appearance": "dark",
+    "items": [
+      {
+        "bottom": 58.5,
+        "height": 52.5,
+        "label": "Gradient variant Japanese Mist. Next Acid Orchard",
+        "left": 649,
+        "right": 761,
+        "top": 6,
+        "width": 112,
+        "x": 649,
+        "y": 6
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open session report",
+        "left": 0,
+        "right": 64,
+        "top": 0,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 64,
+        "right": 160,
+        "top": 0,
+        "width": 96,
+        "x": 64,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting has-now-playing",
+    "undersized": [],
+    "viewport": [
+      773,
+      601
+    ]
+  },
+  {
+    "name": "final-gradient-orchard-tesla-dark",
+    "appearance": "dark",
+    "items": [
+      {
+        "bottom": 58.5,
+        "height": 52.5,
+        "label": "Gradient variant Acid Orchard. Next Chromatic Silk",
+        "left": 649,
+        "right": 761,
+        "top": 6,
+        "width": 112,
+        "x": 649,
+        "y": 6
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open session report",
+        "left": 0,
+        "right": 64,
+        "top": 0,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 64,
+        "right": 160,
+        "top": 0,
+        "width": 96,
+        "x": 64,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting has-now-playing",
+    "undersized": [],
+    "viewport": [
+      773,
+      601
+    ]
+  },
+  {
+    "name": "final-gradient-silk-tesla-light",
+    "appearance": "light",
+    "items": [
+      {
+        "bottom": 58.5,
+        "height": 52.5,
+        "label": "Gradient variant Chromatic Silk. Next Japanese Mist",
+        "left": 649,
+        "right": 761,
+        "top": 6,
+        "width": 112,
+        "x": 649,
+        "y": 6
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open session report",
+        "left": 0,
+        "right": 64,
+        "top": 0,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 64,
+        "right": 160,
+        "top": 0,
+        "width": 96,
+        "x": 64,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting has-now-playing",
+    "undersized": [],
+    "viewport": [
+      773,
+      601
+    ]
+  },
+  {
+    "name": "final-prtcl-tesla-light",
+    "appearance": "light",
+    "items": [
+      {
+        "bottom": 58.5,
+        "height": 52.5,
+        "label": "PRTCL type Fractal Frequency. Next Axiom",
+        "left": 649,
+        "right": 761,
+        "top": 6,
+        "width": 112,
+        "x": 649,
+        "y": 6
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open session report",
+        "left": 0,
+        "right": 64,
+        "top": 0,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 64,
+        "right": 160,
+        "top": 0,
+        "width": 96,
+        "x": 64,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting has-now-playing",
+    "undersized": [],
+    "viewport": [
+      773,
+      601
+    ]
+  },
+  {
+    "name": "final-drivey-tesla-light",
+    "appearance": "light",
+    "items": [
+      {
+        "bottom": 58.5,
+        "height": 52.5,
+        "label": "DRIVEY render NORMAL. Next WIRE",
+        "left": 649,
+        "right": 761,
+        "top": 6,
+        "width": 112,
+        "x": 649,
+        "y": 6
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open session report",
+        "left": 0,
+        "right": 64,
+        "top": 0,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 64,
+        "right": 160,
+        "top": 0,
+        "width": 96,
+        "x": 64,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting has-now-playing",
+    "undersized": [],
+    "viewport": [
+      773,
+      601
+    ]
+  },
+  {
+    "name": "final-drivey-tesla-dark-wire",
+    "appearance": "dark",
+    "items": [
+      {
+        "bottom": 58.5,
+        "height": 52.5,
+        "label": "DRIVEY render WIRE. Next NORMAL",
+        "left": 649,
+        "right": 761,
+        "top": 6,
+        "width": 112,
+        "x": 649,
+        "y": 6
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open session report",
+        "left": 0,
+        "right": 64,
+        "top": 0,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 64,
+        "right": 160,
+        "top": 0,
+        "width": 96,
+        "x": 64,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting has-now-playing",
+    "undersized": [],
+    "viewport": [
+      773,
+      601
+    ]
+  },
+  {
+    "name": "final-atlas-tablet-dark",
+    "appearance": "dark",
+    "items": [
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Follow",
+        "left": 252.7578125,
+        "right": 314.5078125,
+        "top": 10,
+        "width": 61.75,
+        "x": 252.7578125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Area",
+        "left": 316.5078125,
+        "right": 372.5078125,
+        "top": 10,
+        "width": 56,
+        "x": 316.5078125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Trip",
+        "left": 374.5078125,
+        "right": 430.5078125,
+        "top": 10,
+        "width": 56,
+        "x": 374.5078125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Zoom in",
+        "left": 444.5078125,
+        "right": 492.5078125,
+        "top": 10,
+        "width": 48,
+        "x": 444.5078125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Reset map view",
+        "left": 494.5078125,
+        "right": 553.46875,
+        "top": 10,
+        "width": 58.9609375,
+        "x": 494.5078125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Zoom out",
+        "left": 555.46875,
+        "right": 603.46875,
+        "top": 10,
+        "width": 48,
+        "x": 555.46875,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Lock map north up",
+        "left": 605.46875,
+        "right": 702,
+        "top": 10,
+        "width": 96.53125,
+        "x": 605.46875,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Map colors: standard cartographic. Switch to product palette.",
+        "left": 704,
+        "right": 752,
+        "top": 10,
+        "width": 48,
+        "x": 704,
+        "y": 10
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open session report",
+        "left": 0,
+        "right": 64,
+        "top": 0,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 64,
+        "right": 160,
+        "top": 0,
+        "width": 96,
+        "x": 64,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting",
+    "undersized": [],
+    "viewport": [
+      768,
+      1024
+    ]
+  },
+  {
+    "name": "final-tablet-awake-dark",
+    "appearance": "dark",
+    "items": [
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open session report",
+        "left": 0,
+        "right": 64,
+        "top": 0,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 64,
+        "right": 160,
+        "top": 0,
+        "width": 96,
+        "x": 64,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "ENGINE",
+        "left": 161,
+        "right": 232,
+        "top": 0,
+        "width": 71,
+        "x": 161,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "MUSIC",
+        "left": 232,
+        "right": 303,
+        "top": 0,
+        "width": 71,
+        "x": 232,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Network CONNECTED. Open 15 minute connection detail.",
+        "left": 304,
+        "right": 381.328125,
+        "top": 0,
+        "width": 77.328125,
+        "x": 304,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Appearance DARK. Effective dark. Tap to change.",
+        "left": 381.328125,
+        "right": 458.6640625,
+        "top": 0,
+        "width": 77.3359375,
+        "x": 381.328125,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "GPS LIVE, accuracy \u00b110 m",
+        "left": 458.6640625,
+        "right": 536,
+        "top": 0,
+        "width": 77.3359375,
+        "x": 458.6640625,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Connect phone motion sensors",
+        "left": 536,
+        "right": 613.328125,
+        "top": 0,
+        "width": 77.328125,
+        "x": 536,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open Discover passenger index",
+        "left": 613.328125,
+        "right": 690.6640625,
+        "top": 0,
+        "width": 77.3359375,
+        "x": 613.328125,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open session report",
+        "left": 690.6640625,
+        "right": 768,
+        "top": 0,
+        "width": 77.3359375,
+        "x": 690.6640625,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "scrollTop": 0,
+    "state": "app phase-running controls-awake",
+    "undersized": [],
+    "viewport": [
+      768,
+      1024
+    ]
+  },
+  {
+    "name": "final-fx-tablet-dark",
+    "appearance": "dark",
+    "items": [
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open session report",
+        "left": 0,
+        "right": 64,
+        "top": 0,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 64,
+        "right": 160,
+        "top": 0,
+        "width": 96,
+        "x": 64,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "ENGINE",
+        "left": 161,
+        "right": 232,
+        "top": 0,
+        "width": 71,
+        "x": 161,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "MUSIC",
+        "left": 232,
+        "right": 303,
+        "top": 0,
+        "width": 71,
+        "x": 232,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Network CONNECTED. Open 15 minute connection detail.",
+        "left": 304,
+        "right": 381.328125,
+        "top": 0,
+        "width": 77.328125,
+        "x": 304,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Appearance DARK. Effective dark. Tap to change.",
+        "left": 381.328125,
+        "right": 458.6640625,
+        "top": 0,
+        "width": 77.3359375,
+        "x": 381.328125,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "GPS LIVE, accuracy \u00b110 m",
+        "left": 458.6640625,
+        "right": 536,
+        "top": 0,
+        "width": 77.3359375,
+        "x": 458.6640625,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Connect phone motion sensors",
+        "left": 536,
+        "right": 613.328125,
+        "top": 0,
+        "width": 77.328125,
+        "x": 536,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open Discover passenger index",
+        "left": 613.328125,
+        "right": 690.6640625,
+        "top": 0,
+        "width": 77.3359375,
+        "x": 613.328125,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open session report",
+        "left": 690.6640625,
+        "right": 768,
+        "top": 0,
+        "width": 77.3359375,
+        "x": 690.6640625,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "scrollTop": 0,
+    "state": "app phase-running controls-awake",
+    "undersized": [],
+    "viewport": [
+      768,
+      1024
+    ]
+  },
+  {
+    "name": "final-atlas-desktop-dark",
+    "appearance": "dark",
+    "items": [
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Follow",
+        "left": 924.7578125,
+        "right": 986.5078125,
+        "top": 10,
+        "width": 61.75,
+        "x": 924.7578125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Area",
+        "left": 988.5078125,
+        "right": 1044.5078125,
+        "top": 10,
+        "width": 56,
+        "x": 988.5078125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Trip",
+        "left": 1046.5078125,
+        "right": 1102.5078125,
+        "top": 10,
+        "width": 56,
+        "x": 1046.5078125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Zoom in",
+        "left": 1116.5078125,
+        "right": 1164.5078125,
+        "top": 10,
+        "width": 48,
+        "x": 1116.5078125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Reset map view",
+        "left": 1166.5078125,
+        "right": 1225.46875,
+        "top": 10,
+        "width": 58.9609375,
+        "x": 1166.5078125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Zoom out",
+        "left": 1227.46875,
+        "right": 1275.46875,
+        "top": 10,
+        "width": 48,
+        "x": 1227.46875,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Lock map north up",
+        "left": 1277.46875,
+        "right": 1374,
+        "top": 10,
+        "width": 96.53125,
+        "x": 1277.46875,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Map colors: standard cartographic. Switch to product palette.",
+        "left": 1376,
+        "right": 1424,
+        "top": 10,
+        "width": 48,
+        "x": 1376,
+        "y": 10
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open session report",
+        "left": 0,
+        "right": 64,
+        "top": 0,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 64,
+        "right": 160,
+        "top": 0,
+        "width": 96,
+        "x": 64,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting",
+    "undersized": [],
+    "viewport": [
+      1440,
+      900
+    ]
+  },
+  {
+    "name": "final-atlas-desktop-light",
+    "appearance": "light",
+    "items": [
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Follow",
+        "left": 924.7578125,
+        "right": 986.5078125,
+        "top": 10,
+        "width": 61.75,
+        "x": 924.7578125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Area",
+        "left": 988.5078125,
+        "right": 1044.5078125,
+        "top": 10,
+        "width": 56,
+        "x": 988.5078125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Trip",
+        "left": 1046.5078125,
+        "right": 1102.5078125,
+        "top": 10,
+        "width": 56,
+        "x": 1046.5078125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Zoom in",
+        "left": 1116.5078125,
+        "right": 1164.5078125,
+        "top": 10,
+        "width": 48,
+        "x": 1116.5078125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Reset map view",
+        "left": 1166.5078125,
+        "right": 1225.46875,
+        "top": 10,
+        "width": 58.9609375,
+        "x": 1166.5078125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Zoom out",
+        "left": 1227.46875,
+        "right": 1275.46875,
+        "top": 10,
+        "width": 48,
+        "x": 1227.46875,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Lock map north up",
+        "left": 1277.46875,
+        "right": 1374,
+        "top": 10,
+        "width": 96.53125,
+        "x": 1277.46875,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Map colors: standard cartographic. Switch to product palette.",
+        "left": 1376,
+        "right": 1424,
+        "top": 10,
+        "width": 48,
+        "x": 1376,
+        "y": 10
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open session report",
+        "left": 0,
+        "right": 64,
+        "top": 0,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 64,
+        "right": 160,
+        "top": 0,
+        "width": 96,
+        "x": 64,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting",
+    "undersized": [],
+    "viewport": [
+      1440,
+      900
+    ]
+  },
+  {
+    "name": "final-engine-phone-narrow-light",
+    "appearance": "light",
+    "items": [
+      {
+        "bottom": 62,
+        "height": 56,
+        "label": "Mono",
+        "left": 462.5625,
+        "right": 517.265625,
+        "top": 6,
+        "width": 54.703125,
+        "x": 462.5625,
+        "y": 6
+      },
+      {
+        "bottom": 62,
+        "height": 56,
+        "label": "Rosso",
+        "left": 523.265625,
+        "right": 581.078125,
+        "top": 6,
+        "width": 57.8125,
+        "x": 523.265625,
+        "y": 6
+      },
+      {
+        "bottom": 62,
+        "height": 56,
+        "label": "Touring",
+        "left": 587.078125,
+        "right": 655,
+        "top": 6,
+        "width": 67.921875,
+        "x": 587.078125,
+        "y": 6
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Open session report",
+        "left": 12,
+        "right": 68,
+        "top": 0,
+        "width": 56,
+        "x": 12,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 68,
+        "right": 156,
+        "top": 0,
+        "width": 88,
+        "x": 68,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "phone": "landscape",
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting",
+    "undersized": [],
+    "viewport": [
+      667,
+      375
+    ]
+  },
+  {
+    "name": "final-engine-phone-awake-light",
+    "appearance": "light",
+    "items": [
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Open session report",
+        "left": 12,
+        "right": 68,
+        "top": 0,
+        "width": 56,
+        "x": 12,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 68,
+        "right": 156,
+        "top": 0,
+        "width": 88,
+        "x": 68,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "ENGINE",
+        "left": 157,
+        "right": 212,
+        "top": 0,
+        "width": 55,
+        "x": 157,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "MUSIC",
+        "left": 212,
+        "right": 267,
+        "top": 0,
+        "width": 55,
+        "x": 212,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Network CONNECTED. Open 15 minute connection detail.",
+        "left": 268,
+        "right": 332.5,
+        "top": 0,
+        "width": 64.5,
+        "x": 268,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Appearance LIGHT. Effective light. Tap to change.",
+        "left": 332.5,
+        "right": 397,
+        "top": 0,
+        "width": 64.5,
+        "x": 332.5,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "GPS LIVE, accuracy \u00b110 m",
+        "left": 397,
+        "right": 461.5,
+        "top": 0,
+        "width": 64.5,
+        "x": 397,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Connect phone motion sensors",
+        "left": 461.5,
+        "right": 526,
+        "top": 0,
+        "width": 64.5,
+        "x": 461.5,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Open Discover passenger index",
+        "left": 526,
+        "right": 590.5,
+        "top": 0,
+        "width": 64.5,
+        "x": 526,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Open session report",
+        "left": 590.5,
+        "right": 655,
+        "top": 0,
+        "width": 64.5,
+        "x": 590.5,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "phone": "landscape",
+    "scrollTop": 0,
+    "state": "app phase-running controls-awake",
+    "undersized": [],
+    "viewport": [
+      667,
+      375
+    ]
+  },
+  {
+    "name": "final-engine-phone-narrow-dark",
+    "appearance": "dark",
+    "items": [
+      {
+        "bottom": 62,
+        "height": 56,
+        "label": "Mono",
+        "left": 462.5625,
+        "right": 517.265625,
+        "top": 6,
+        "width": 54.703125,
+        "x": 462.5625,
+        "y": 6
+      },
+      {
+        "bottom": 62,
+        "height": 56,
+        "label": "Rosso",
+        "left": 523.265625,
+        "right": 581.078125,
+        "top": 6,
+        "width": 57.8125,
+        "x": 523.265625,
+        "y": 6
+      },
+      {
+        "bottom": 62,
+        "height": 56,
+        "label": "Touring",
+        "left": 587.078125,
+        "right": 655,
+        "top": 6,
+        "width": 67.921875,
+        "x": 587.078125,
+        "y": 6
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Open session report",
+        "left": 12,
+        "right": 68,
+        "top": 0,
+        "width": 56,
+        "x": 12,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 68,
+        "right": 156,
+        "top": 0,
+        "width": 88,
+        "x": 68,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "phone": "landscape",
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting",
+    "undersized": [],
+    "viewport": [
+      667,
+      375
+    ]
+  },
+  {
+    "name": "final-flywith-phone-narrow-dark",
+    "appearance": "dark",
+    "items": [
+      {
+        "bottom": 54,
+        "height": 48,
+        "label": "\u2190 RADAR",
+        "left": 278.734375,
+        "right": 370.375,
+        "top": 6,
+        "width": 91.640625,
+        "x": 278.734375,
+        "y": 6
+      },
+      {
+        "bottom": 54,
+        "height": 48,
+        "label": "Use natural terrain colors",
+        "left": 376.375,
+        "right": 468.890625,
+        "top": 6,
+        "width": 92.515625,
+        "x": 376.375,
+        "y": 6
+      },
+      {
+        "bottom": 54,
+        "height": 48,
+        "label": "Zoom in flight view",
+        "left": 474.890625,
+        "right": 522.890625,
+        "top": 6,
+        "width": 48,
+        "x": 474.890625,
+        "y": 6
+      },
+      {
+        "bottom": 54,
+        "height": 48,
+        "label": "Reset flight view",
+        "left": 528.890625,
+        "right": 601,
+        "top": 6,
+        "width": 72.109375,
+        "x": 528.890625,
+        "y": 6
+      },
+      {
+        "bottom": 54,
+        "height": 48,
+        "label": "Zoom out flight view",
+        "left": 607,
+        "right": 655,
+        "top": 6,
+        "width": 48,
+        "x": 607,
+        "y": 6
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Open session report",
+        "left": 12,
+        "right": 68,
+        "top": 0,
+        "width": 56,
+        "x": 12,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 68,
+        "right": 156,
+        "top": 0,
+        "width": 88,
+        "x": 68,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "phone": "landscape",
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting",
+    "undersized": [],
+    "viewport": [
+      667,
+      375
+    ]
+  },
+  {
+    "name": "final-flywith-phone-awake",
+    "appearance": "dark",
+    "items": [
+      {
+        "bottom": 112,
+        "height": 48,
+        "label": "\u2190 RADAR",
+        "left": 327.359375,
+        "right": 419,
+        "top": 64,
+        "width": 91.640625,
+        "x": 327.359375,
+        "y": 64
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Open session report",
+        "left": 12,
+        "right": 68,
+        "top": 0,
+        "width": 56,
+        "x": 12,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 68,
+        "right": 156,
+        "top": 0,
+        "width": 88,
+        "x": 68,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "ENGINE",
+        "left": 157,
+        "right": 212,
+        "top": 0,
+        "width": 55,
+        "x": 157,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "MUSIC",
+        "left": 212,
+        "right": 267,
+        "top": 0,
+        "width": 55,
+        "x": 212,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Network CONNECTED. Open 15 minute connection detail.",
+        "left": 268,
+        "right": 332.5,
+        "top": 0,
+        "width": 64.5,
+        "x": 268,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Appearance DARK. Effective dark. Tap to change.",
+        "left": 332.5,
+        "right": 397,
+        "top": 0,
+        "width": 64.5,
+        "x": 332.5,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "GPS LIVE, accuracy \u00b110 m",
+        "left": 397,
+        "right": 461.5,
+        "top": 0,
+        "width": 64.5,
+        "x": 397,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Connect phone motion sensors",
+        "left": 461.5,
+        "right": 526,
+        "top": 0,
+        "width": 64.5,
+        "x": 461.5,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Open Discover passenger index",
+        "left": 526,
+        "right": 590.5,
+        "top": 0,
+        "width": 64.5,
+        "x": 526,
+        "y": 0
+      },
+      {
+        "bottom": 56,
+        "height": 56,
+        "label": "Open session report",
+        "left": 590.5,
+        "right": 655,
+        "top": 0,
+        "width": 64.5,
+        "x": 590.5,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "phone": "landscape",
+    "scrollTop": 0,
+    "state": "app phase-running controls-awake",
+    "undersized": [],
+    "viewport": [
+      667,
+      375
+    ]
+  },
+  {
+    "name": "final-vertigo-moving-reduced-tesla",
+    "appearance": "dark",
+    "items": [
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open session report",
+        "left": 0,
+        "right": 64,
+        "top": 0,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 64,
+        "right": 160,
+        "top": 0,
+        "width": 96,
+        "x": 64,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting has-now-playing",
+    "undersized": [],
+    "viewport": [
+      773,
+      601
+    ]
+  },
+  {
+    "name": "final-drivey-moving-reduced-tesla",
+    "appearance": "dark",
+    "items": [
+      {
+        "bottom": 58.5,
+        "height": 52.5,
+        "label": "DRIVEY render WIRE. Next NORMAL",
+        "left": 649,
+        "right": 761,
+        "top": 6,
+        "width": 112,
+        "x": 649,
+        "y": 6
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open session report",
+        "left": 0,
+        "right": 64,
+        "top": 0,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 64,
+        "right": 160,
+        "top": 0,
+        "width": 96,
+        "x": 64,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting has-now-playing",
+    "undersized": [],
+    "viewport": [
+      773,
+      601
+    ]
+  },
+  {
+    "name": "final-atlas-moving-reduced-tesla",
+    "appearance": "dark",
+    "items": [
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Follow",
+        "left": 257.7578125,
+        "right": 319.5078125,
+        "top": 10,
+        "width": 61.75,
+        "x": 257.7578125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Area",
+        "left": 321.5078125,
+        "right": 377.5078125,
+        "top": 10,
+        "width": 56,
+        "x": 321.5078125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Trip",
+        "left": 379.5078125,
+        "right": 435.5078125,
+        "top": 10,
+        "width": 56,
+        "x": 379.5078125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Zoom in",
+        "left": 449.5078125,
+        "right": 497.5078125,
+        "top": 10,
+        "width": 48,
+        "x": 449.5078125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Reset map view",
+        "left": 499.5078125,
+        "right": 558.46875,
+        "top": 10,
+        "width": 58.9609375,
+        "x": 499.5078125,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Zoom out",
+        "left": 560.46875,
+        "right": 608.46875,
+        "top": 10,
+        "width": 48,
+        "x": 560.46875,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Lock map north up",
+        "left": 610.46875,
+        "right": 707,
+        "top": 10,
+        "width": 96.53125,
+        "x": 610.46875,
+        "y": 10
+      },
+      {
+        "bottom": 58,
+        "height": 48,
+        "label": "Map colors: standard cartographic. Switch to product palette.",
+        "left": 709,
+        "right": 757,
+        "top": 10,
+        "width": 48,
+        "x": 709,
+        "y": 10
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open session report",
+        "left": 0,
+        "right": 64,
+        "top": 0,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 64,
+        "right": 160,
+        "top": 0,
+        "width": 96,
+        "x": 64,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting",
+    "undersized": [],
+    "viewport": [
+      773,
+      601
+    ]
+  },
+  {
+    "name": "final-aperture-moving-tesla",
+    "appearance": "dark",
+    "items": [
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open session report",
+        "left": 0,
+        "right": 64,
+        "top": 0,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 64,
+        "right": 160,
+        "top": 0,
+        "width": 96,
+        "x": 64,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting has-now-playing",
+    "undersized": [],
+    "viewport": [
+      773,
+      601
+    ]
+  },
+  {
+    "name": "final-meridian-moving-tesla",
+    "appearance": "dark",
+    "items": [
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Open session report",
+        "left": 0,
+        "right": 64,
+        "top": 0,
+        "width": 64,
+        "x": 0,
+        "y": 0
+      },
+      {
+        "bottom": 64,
+        "height": 64,
+        "label": "Speed source GPS. Tap to switch",
+        "left": 64,
+        "right": 160,
+        "top": 0,
+        "width": 96,
+        "x": 64,
+        "y": 0
+      }
+    ],
+    "overflow": [],
+    "overlaps": [],
+    "scrollTop": 0,
+    "state": "app phase-running controls-resting has-now-playing",
+    "undersized": [],
+    "viewport": [
+      773,
+      601
+    ]
+  },
+  {
+    "name": "final-stats-tesla",
+    "appearance": "dark",
+    "items": [],
+    "overflow": [],
+    "overlaps": [],
+    "scrollTop": 0,
+    "state": "app phase-running controls-awake modal-open",
+    "undersized": [],
+    "viewport": [
+      773,
+      601
+    ]
+  }
+]

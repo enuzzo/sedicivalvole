@@ -1,4 +1,4 @@
-import { useContextualControls } from "../contextual-controls.jsx";
+import { ContextualRail, useContextualControls } from "../contextual-controls.jsx";
 import { useEffect, useRef } from "react";
 import { ENGINE_CATALOGUE } from "./catalogue.js";
 import "./telemetry-field.css";
@@ -25,6 +25,9 @@ export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease,
   const rpmPosition = Math.max(0, Math.min(1, rpm / 9000));
   const voice = ENGINE_CATALOGUE.find(item => item.id === profileId)?.label ?? profileId;
   return <section ref={fieldRef} className="engine-telemetry" data-revving={Boolean(state.revving)} aria-label="Engine Telemetry">
+    <ContextualRail className="engine-contextual-rail"><div {...contextual} onPointerDown={event => event.stopPropagation()} className="engine-profiles" aria-label="Engine profile">
+      {ENGINE_CATALOGUE.map(({ id, label, description }) => <button key={id} type="button" title={description} aria-pressed={profileId === id} onClick={() => onProfile(id)}>{label}</button>)}
+    </div></ContextualRail>
     <header><span className="engine-voice-title">{voice} <small>ENGINE / TELEMETRY</small></span><span>{state.status === "ready" ? `${(state.source || "sample").toUpperCase()} ENGINE` : state.status?.toUpperCase()}</span></header>
     <div className="engine-tach-labels" aria-hidden="true">{Array.from({ length: 10 }, (_, i) => <span key={i}>{i}</span>)}</div>
     <div className="engine-tach" role="meter" aria-label="Virtual engine RPM" aria-valuenow={rpm} aria-valuemin={0} aria-valuemax={9000}>
@@ -51,9 +54,7 @@ export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease,
       <div><small>DRIVE RESPONSE <b>{Math.round((state.drive ?? 0) * 100)}%</b></small><svg viewBox="0 0 300 52" aria-label="Drive response history"><polyline points={trace("drive")} /></svg></div>
       <div><small>DECELERATION <b>{Math.round((state.deceleration ?? 0) * 100)}%</b></small><svg viewBox="0 0 300 52" aria-label="Deceleration history"><polyline points={trace("decel")} /></svg></div>
     </div>
-    <div className="engine-bottom"><div {...contextual} onPointerDown={event => event.stopPropagation()} className="engine-profiles" aria-label="Engine profile">
-      {ENGINE_CATALOGUE.map(({ id, label, description }) => <button key={id} type="button" title={description} aria-pressed={profileId === id} onClick={() => onProfile(id)}>{label}</button>)}
-    </div><span>{state.motion === "fresh" ? "LIVE MOTION" : state.motion === "degraded" ? "SIGNAL AGING" : "AWAITING MOTION"}</span></div>
+    <div className="engine-bottom"><span>{state.motion === "fresh" ? "LIVE MOTION" : state.motion === "degraded" ? "SIGNAL AGING" : "AWAITING MOTION"}</span></div>
     {Math.round(speed) === 0 ? ["left", "right"].map(side => <button key={side} className={`engine-rev is-${side}`} type="button" aria-label={`TAMARRO ${side}`} disabled={!state.canRev}
       onPointerDown={event => event.stopPropagation()} aria-pressed={Boolean(state.revving)}
       onClick={() => state.revving ? onRelease?.() : onRev?.()}><strong><span className="engine-rev-emoji" aria-hidden="true">🤘</span>TAMARRO</strong><small>{state.canRev ? state.revving ? "SHOW-OFF · STOP" : "SHOW-OFF" : state.enabled === false ? "AUDIO PAUSED" : "PREPARING AUDIO"}</small></button>) : null}

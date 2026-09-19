@@ -2751,12 +2751,24 @@ export function App() {
   }, [phase, restControls]);
 
   const handleControlActivation = useCallback((event) => {
+    // The persistent identity cells are also wake targets. Consume the first
+    // pointer click before either activation or the post-action rest is queued.
+    if (event.target.closest?.(".topbar")) {
+      const wasHidden = controlsHiddenAtPointerDownRef.current;
+      controlsHiddenAtPointerDownRef.current = false;
+      if (event.detail > 0 && wasHidden && !controlsPinnedRef.current) {
+        event.preventDefault();
+        event.stopPropagation();
+        wakeControls();
+        return;
+      }
+    }
     if (diagnosticsActiveRef.current) {
       const detail = diagnosticControlDetail(event.target, event);
       if (detail) logDiagnosticEvent("ui.control.activated", detail);
     }
     queueExperienceFocus(event.target);
-  }, [logDiagnosticEvent, queueExperienceFocus]);
+  }, [logDiagnosticEvent, queueExperienceFocus, wakeControls]);
 
   const handleControlChange = useCallback((event) => {
     if (!diagnosticsActiveRef.current) return;
@@ -5318,8 +5330,14 @@ export function App() {
               aria-hidden="true"
             />
           </button>
+          <button className={`source-readout${musicMode === "soundtrack" ? " is-soundtrack" : ""}`} type="button" onClick={toggleSource} aria-label={`Speed source ${source}. Tap to switch`}>
+          <div className="readout-group">
+            <strong>{experienceMode === "engine" && source === "GPS" && !["fresh", "degraded"].includes(geaps.snapshot.motion) ? "—" : Math.round(speed)}</strong>
+            <span className="readout-unit">km/h</span>
+          </div>
+          <div className={`effect-badge${experienceMode === "flux" && activeEffect ? " is-active" : ""}`} aria-hidden={experienceMode !== "flux" || !activeEffect}>{experienceMode === "flux" ? activeEffect || "UNDERWATER" : ""}</div>
+          </button>
           <ModeSelector mode={experienceMode} onChange={chooseExperienceMode} />
-          <span className="speed-spacer" aria-hidden="true" />
           <NetworkControl
             notice={networkNotice}
             history={networkQualityHistoryRef.current}
@@ -5379,15 +5397,6 @@ export function App() {
           onDemo={runAtlasDemo}
         />
 
-        {experienceMode !== "engine" && <button className={`source-readout${musicMode === "soundtrack" ? " is-soundtrack" : ""}`} type="button" onClick={toggleSource} aria-label={`Speed source ${source}. Tap to switch`}>
-          <div className="readout-group">
-            <strong>{Math.round(speed)}</strong>
-            <span className="readout-unit">km/h</span>
-          </div>
-          <div className={`effect-badge${experienceMode === "flux" && activeEffect ? " is-active" : ""}`} aria-hidden={experienceMode !== "flux" || !activeEffect}>{experienceMode === "flux" ? activeEffect || "UNDERWATER" : ""}</div>
-        </button>
-
-        }
         {controlNotice ? (
           <div className="control-status-notice" role="status" aria-live="polite" aria-atomic="true">
             {controlNotice}

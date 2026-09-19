@@ -1,4 +1,4 @@
-import { useContextualControls } from "../../contextual-controls.jsx";
+import { ContextualRail, useContextualControls } from "../../contextual-controls.jsx";
 import {useEffect,useMemo,useRef,useState} from 'react';
 import {atlasMapPixelRatio} from '../atlas/atlas-model.js';
 import {radarFlightAvailability,radarCameraHeight,FLIGHT_CAMERA_PITCH,radarFlightFov,createFlightTerrainStyle} from './radar-flight-model.js';
@@ -103,7 +103,7 @@ export default function RadarFlightView({gl,plane,readSample,palette,reducedMoti
   useEffect(()=>{const close=event=>{if(event.key==='Escape'){event.preventDefault();onClose();}};window.addEventListener('keydown',close);return()=>window.removeEventListener('keydown',close);},[onClose]);
   return <>
     <div className={`flight-terrain${state.ready?' is-ready':''}`} ref={host} aria-label="Reconstructed aircraft terrain view" />
-    <div className="flight-view-toolbar">
+    <ContextualRail className="flight-contextual-rail"><div className="flight-view-toolbar">
       <button onClick={onClose}>← RADAR</button>
       <button {...contextual} aria-label="Use natural terrain colors" aria-pressed={natural} onClick={()=>setNatural(v=>!v)}>{natural?'NATURAL':'PALETTE'}</button>
       <div {...contextual} className="flight-zoom-controls" aria-label="Flight camera zoom">
@@ -113,6 +113,7 @@ export default function RadarFlightView({gl,plane,readSample,palette,reducedMoti
       </div>
       {state.message.includes('unavailable')?<button onClick={()=>setRetry(v=>v+1)}>RETRY TERRAIN</button>:null}
     </div>
+    </ContextualRail>
     <div className="flight-view-state" role="status"><strong>{state.message}</strong><span>Terrain ×1.25 · reconstructed view</span><span>{state.reference??'Altitude'} · approximate camera height{state.adjusted?' · clearance adjusted':''}</span></div>
   </>;
 }

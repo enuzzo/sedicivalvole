@@ -26,3 +26,5 @@ html:has(.design-system), body:has(.design-system) {overflow:auto;height:auto;mi
 .design-system footer {font-size:13px;color:var(--ui-subtle);padding:24px 0;}
 .ds-map-stage {margin:20px 0;}
 .design-system .ds-map-stage .atlas-camera-controls {position:static;width:max-content;max-width:100%;}
+
+.ds-stage .contextual-rail { position:static; display:block; }

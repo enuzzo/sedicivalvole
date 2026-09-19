@@ -459,16 +459,17 @@ test("Now Playing shares the footer lifecycle with stable Media Session actions 
   assert.match(styles, /\.drawer-panel\.is-dragging/);
 });
 
-test("compact viewports preserve the 16 mark and Balanced Rail hierarchy", () => {
+test("identity and speed share a stable grid before the contextual action lane", () => {
   const app = read("App.jsx");
-  const styles = read("styles.css");
-
-  assert.doesNotMatch(app, /className="active-mode-marker"/);
-  assert.match(styles, /Tesla Balanced Rail[\s\S]*?grid-template-columns: 64px 168px 104px repeat\(5, minmax\(64px, 1fr\)\)/);
-  assert.match(styles, /@media \(max-width: 900px\) \{[\s\S]*?\.topbar \{ grid-template-columns: 56px 144px 96px repeat\(5, minmax\(0, 1fr\)\); \}[\s\S]*?\.topbar-mark \{ display: grid; \}/);
-  assert.match(styles, /@media \(max-width: 650px\) \{[\s\S]*?grid-template-columns: 52px 116px minmax\(96px, 1fr\) 72px 52px/);
-  assert.match(styles, /\.app\.controls-resting \.topbar > :not\(\.topbar-mark\) \{[\s\S]*?visibility: hidden/);
-  assert.match(styles, /\.app\.controls-resting \.topbar-mark \{[\s\S]*?background: var\(--ui-surface-strong\)/);
+  const rail = read("contextual-rail.css");
+  const header = app.slice(app.indexOf('<header className={`topbar'), app.indexOf('<GpsHelpPopover', app.indexOf('<header className={`topbar')));
+  assert.ok(header.indexOf('className="topbar-mark"') < header.indexOf('className={`source-readout'));
+  assert.ok(header.indexOf('className={`source-readout') < header.indexOf('<ModeSelector'));
+  assert.doesNotMatch(header, /speed-spacer/);
+  assert.match(rail, /grid-template-columns: var\(--rail-brand\) var\(--rail-speed\) var\(--rail-mode\)/);
+  assert.match(rail, /left: calc\(var\(--rail-left, 0px\) \+ var\(--rail-identity, 160px\) \+ var\(--rail-gap, 8px\)\)/);
+  assert.match(rail, /controls-resting \.topbar > :is\(\.topbar-mark, \.source-readout\) \{\s*visibility: visible/);
+  assert.doesNotMatch(read("styles.css"), /:has\(\.atlas-framing[^\n]+\.topbar-mark/);
 });
 
 test("the source module stays compact and network detail moves behind one status icon", () => {

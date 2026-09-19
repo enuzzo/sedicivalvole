@@ -135,3 +135,17 @@ Canonical-browser fixture paths pass with no page exceptions; see
 mail and sensor readings are not simulated into a device acceptance claim.
 A controlled canonical reload also retains the final release identity and renders
 the Intro cache-reset action successfully.
+
+## Owner correction — stable identity and shared contextual lane
+
+The owner rejected the stationary-map logo retraction described above. It is
+historical evidence of the previous implementation, not the current contract.
+The UI harmony follow-up keeps logo and speed adjacent at the left in every
+running visual and both chrome states; it reserves a shared lane at the right
+for contextual controls, allowing whole groups to wrap. The logo is larger
+without increasing the global bar height. Modal drawers retain their existing
+focus boundary. Audio, sensors, QR and cache recovery remain unchanged.
+
+See the [current design contract](DESIGN-SYSTEM.md#stable-identity-and-contextual-action-lane--september-19)
+and [rendered QA evidence](qa/2026-09-19-ui-harmony/README.md). This correction
+supersedes the earlier logo workaround and its geometry acceptance claim.

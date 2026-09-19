@@ -5,6 +5,7 @@ import { App } from "./App.jsx";
 import "./styles.css";
 import "./phone-cockpit.css";
 import "./motion/motion.css";
+import "./contextual-rail.css";
 
 const phoneCompanion = new URLSearchParams(window.location.search).get("motion") === "phone";
 const Surface = phoneCompanion ? React.lazy(() => import("./motion/phone.jsx").then((module) => ({ default: module.MotionPhone }))) : App;

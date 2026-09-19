@@ -28,7 +28,9 @@ The September 12 owner correction puts map appearance in the same camera row as
 zoom/reset/orientation, using the existing palette icon inside a 48 px target.
 Retain an accessible current/next name, selected state and keyboard/pointer parity.
 Remove the separate MAP COLOR plaque. Align camera and framing rows when width
-permits; below 620 px stack the groups without shrinking controls. The actual
+permits. The September 19 stable identity lane supersedes the fixed 620 px
+threshold: wrap whole groups according to the remaining width at the right of
+logo and speed, without shrinking controls or hiding the logo. The actual
 camera component is shared with the [interface reference](../DESIGN-SYSTEM.md).
 
 Recover Atlas after network/location restoration; nearby OSM places are independent of map zoom, with Maps/Wikipedia links where supported and truthful Wikipedia/OpenStreetMap provider labels. Keep camera travel/rotation smooth, shortest heading/dateline path, north lock, zoom in/out/reset and bounded frame-time work. Numbered POI discs are `32 px` inside unchanged `48 px` targets. Reset restores speed-follow zoom without silently changing orientation preference. Use [road UI implementation](../ROAD-UI-REFINEMENT-2026-09-09.md#implemented) for camera/marker ownership and [source-specific recovery](../ATLAS-STATS-REFINEMENT-2026-09-08.md#recovery-and-nearby-sources) for request limits. Desktop render timing cannot prove sustained Tesla 60 FPS.

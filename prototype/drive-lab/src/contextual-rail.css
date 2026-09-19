@@ -1,0 +1,199 @@
+/* Running layout contract: one fixed identity lane and one reflowing action lane.
+   This file follows the legacy surface styles so every field shares these metrics. */
+.app {
+  --rail-brand: 64px;
+  --rail-speed: 96px;
+  --rail-mode: 144px;
+  --rail-left: var(--phone-left, 0px);
+  --rail-right: max(12px, var(--phone-right, 0px));
+  --rail-top: var(--phone-top, 0px);
+  --rail-identity: calc(var(--rail-brand) + var(--rail-speed));
+  --rail-gap: 8px;
+}
+.app[data-phone-layout="landscape"] {
+  --rail-brand: 56px;
+  --rail-speed: 88px;
+  --rail-mode: 112px;
+}
+.app.phase-running .topbar {
+  grid-template-columns: var(--rail-brand) var(--rail-speed) var(--rail-mode) repeat(6, minmax(48px, 1fr));
+  grid-template-rows: var(--chrome-size);
+  padding: var(--rail-top) var(--phone-right, 0px) 0 var(--rail-left);
+  min-height: calc(var(--chrome-size) + var(--rail-top));
+}
+.app.phase-running .topbar-mark {
+  display: grid;
+  grid-column: 1;
+  grid-row: 1;
+  padding: 4px;
+  border-radius: 0;
+}
+.app.phase-running .topbar-mark img { width: 52px; height: 52px; }
+.app.phase-running .topbar .source-readout {
+  position: relative;
+  inset: auto;
+  grid-column: 2;
+  grid-row: 1;
+  width: auto;
+  min-width: 0;
+  height: var(--chrome-size);
+  min-height: var(--chrome-size);
+  padding: 3px 6px;
+  margin: 0;
+  transform: none;
+  border-radius: 0;
+}
+.app.phase-running .topbar .mode-selector { grid-column: 3; grid-row: 1; }
+.app.phase-running .topbar .mode-selector button { min-width: 48px; flex: 1; padding-inline: 4px; letter-spacing: .03em; }
+.app.phase-running .topbar .network-control { display: block; grid-column: 4; grid-row: 1; }
+.app.phase-running .topbar .appearance-control { grid-column: 5; grid-row: 1; }
+.app.phase-running .topbar .gps-state { display: grid; grid-column: 6; grid-row: 1; }
+.app.phase-running .topbar .motion-button { grid-column: 7; grid-row: 1; }
+.app.phase-running .topbar .discover-button { display: grid; grid-column: 8; grid-row: 1; }
+.app.phase-running .topbar .report-button { grid-column: 9; grid-row: 1; }
+.app.phase-running.controls-resting .topbar {
+  visibility: visible;
+  transform: none;
+  background: transparent;
+}
+.app.phase-running.controls-resting .topbar > :is(.topbar-mark, .source-readout) {
+  visibility: visible;
+  opacity: 1;
+  pointer-events: auto;
+  background: var(--ui-surface-strong);
+  border-bottom: 1px solid var(--ui-line-soft);
+}
+.app.phase-running.controls-resting .topbar-mark { border-right: 0; }
+.app.phase-running.controls-resting .topbar .source-readout { border-radius: 0 0 6px 0; }
+.app.phase-running.modal-open .experience .topbar { visibility: hidden; opacity: 0; pointer-events: none; }
+.app.phase-running.modal-open .topbar > :is(.topbar-mark, .source-readout) { visibility: hidden; pointer-events: none; }
+
+/* Surface-owned actions use intrinsic groups inside the same reserved lane.
+   Wrapping is based on their real content width; no control can enter identity. */
+.contextual-rail {
+  position: absolute;
+  z-index: 6;
+  top: calc(var(--rail-top, 0px) + 6px);
+  left: calc(var(--rail-left, 0px) + var(--rail-identity, 160px) + var(--rail-gap, 8px));
+  right: var(--rail-right, 12px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 6px;
+  pointer-events: none;
+}
+.contextual-rail > * { min-width: 0; max-width: 100%; }
+.contextual-rail button { pointer-events: auto; }
+.app.phase-running .contextual-rail :is(.visual-cycle-control, .atlas-framing, .atlas-camera-controls, .air-atlas-toolbar, .flight-view-toolbar, .engine-profiles) {
+  position: static;
+  inset: auto;
+  margin: 0;
+  transform: none;
+  width: auto;
+  max-width: 100%;
+}
+.app.phase-running .contextual-rail .visual-cycle-control { padding: 0; }
+.app.phase-running .contextual-rail :is(.atlas-framing, .atlas-camera-controls) { flex: 0 0 auto; }
+.app.phase-running .contextual-rail .atlas-framing button { min-width: 56px; min-height: 48px; padding: 8px; }
+.app.phase-running .contextual-rail .atlas-camera-controls button { min-height: 48px; }
+.app.phase-running .contextual-rail [data-contextual-controls][inert] {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: none;
+}
+.app.phase-running.modal-open .contextual-rail { visibility: hidden; pointer-events: none; }
+.app.phase-running.modal-open .contextual-rail button { pointer-events: none; }
+
+/* Radar uses the same semantic surface and 48 px target, with a separate
+   observation line. Its list flows below these rows rather than over them. */
+.app.phase-running .air-atlas-head { gap: 6px; }
+.app.phase-running .contextual-rail .air-atlas-toolbar { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.app.phase-running .contextual-rail .air-atlas-controls { width: auto; flex-wrap: wrap; margin: 0; gap: 4px; }
+.app.phase-running .contextual-rail .air-atlas-toolbar > button { max-width: none; }
+.app.phase-running .contextual-rail .air-atlas-refresh { width: 48px; padding: 0; }
+.app.phase-running .contextual-rail .air-atlas-refresh span { display: none; }
+.app.phase-running .contextual-rail :is(.air-atlas-toolbar, .flight-view-toolbar) button {
+  min-width: 48px;
+  height: 48px;
+  color: var(--ui-text);
+  background: var(--ui-surface-strong);
+  border-color: var(--ui-line);
+  font-size: var(--type-action);
+}
+.app.phase-running .contextual-rail .air-atlas-status {
+  position: static;
+  flex-basis: 100%;
+  max-width: 100%;
+  width: fit-content;
+  text-align: right;
+  background: transparent;
+  padding: 0;
+}
+.app.phase-running .air-atlas-status-copy { display: inline-block; padding: 3px 7px; background: var(--radar-panel); border-radius: 3px; }
+.app.phase-running.controls-awake .air-atlas-head { top: calc(var(--rail-top) + var(--chrome-size) + 8px); }
+.app.phase-running.controls-awake .air-atlas-head .air-atlas-toolbar { display: none; }
+.app.phase-running .contextual-rail .air-atlas-list {
+  top: calc(100% + 6px);
+  left: auto;
+  right: 0;
+  max-height: calc(100dvh - 240px);
+  pointer-events: auto;
+}
+.app.phase-running .contextual-rail .flight-view-toolbar { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.app.phase-running .contextual-rail .flight-zoom-controls { margin: 0; }
+.app.phase-running.controls-awake .flight-contextual-rail { top: calc(var(--rail-top) + var(--chrome-size) + 8px); }
+.app.phase-running.controls-awake .flight-contextual-rail [inert] { display: none; }
+.app.phase-running .flight-view-state { top: calc(var(--rail-top) + var(--chrome-size) + 64px); }
+.app.phase-running .contextual-rail .engine-profiles { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.app.phase-running .contextual-rail .engine-profiles button { font-size: var(--type-action); background: var(--ui-surface-strong); }
+.app.phase-running .contextual-rail .engine-profiles button[aria-pressed="true"] { background: var(--ui-selected-surface); color: var(--ui-selected-text); }
+.app.phase-running .engine-bottom { min-height: 0; justify-content: flex-end; }
+.app.phase-running .engine-telemetry { padding-top: calc(var(--rail-top) + var(--chrome-size) + 20px); }
+@media (max-width: 700px) {
+  .app { --rail-brand: 56px; --rail-speed: 88px; --rail-mode: 112px; }
+  .app.phase-running .topbar-mark img { width: 48px; height: 48px; }
+  .app.phase-running .atlas-contextual-rail { row-gap: 6px; }
+  .app.phase-running .engine-telemetry { padding-top: calc(var(--rail-top) + 120px); }
+}
+@media (max-width: 590px) {
+  .app { --rail-mode: 96px; }
+  .app.phase-running .topbar .mode-selector button { font-size: 13px; letter-spacing: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .contextual-rail [data-contextual-controls] { transition: none; }
+}
+.app.phase-running .topbar :is(.gps-state, .motion-button, .discover-button, .report-button) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--chrome-size);
+  min-height: var(--chrome-size);
+}
+/* Retracted bars must not create a programmatically scrollable app viewport.
+   Drawers and telemetry keep their own explicit scrolling containers. */
+.app.phase-running { overflow: clip; }
+
+.app.phase-running[data-phone-layout="landscape"] .topbar-mark img { width: 48px; height: 48px; }
+.app.phase-running .is-flight-view .radar-map-shell { bottom: calc(var(--radar-bottom) + 44px); }
+.app.phase-running.controls-awake .flight-contextual-rail { right: calc(var(--rail-right) + 246px); }
+@media (max-height: 450px) {
+  .app.phase-running.controls-awake .flight-contextual-rail { right: calc(var(--rail-right) + 236px); }
+  .app.phase-running.controls-awake .is-flight-view .air-atlas-map { height: 64px; }
+}
+/* Short Engine windows keep the instrument below the identity lane in both
+   chrome states. The crest and tiny speed accent fit their own measured boxes. */
+.app.phase-running[data-phone-layout="landscape"] .engine-telemetry {
+  padding-top: calc(var(--rail-top) + 64px);
+  padding-bottom: calc(var(--phone-bottom) + 76px);
+  gap: 4px;
+}
+.app.phase-running[data-phone-layout="landscape"] .engine-telemetry:has(.engine-rev) { padding-bottom: calc(var(--phone-bottom) + 100px); }
+.app.phase-running[data-phone-layout="landscape"] .engine-tach { height: 28px; }
+.app.phase-running[data-phone-layout="landscape"] .engine-rpm-wave { height: 26px; }
+.app.phase-running[data-phone-layout="landscape"] .engine-speed-metric svg { height: 6px; padding-top: 2px; margin-top: 0; }
+.app.phase-running[data-phone-layout="landscape"] .engine-graphs svg { height: 14px; }
+.app.phase-running[data-phone-layout="landscape"].controls-resting .engine-rev { bottom: calc(var(--phone-bottom) + 8px); }
+
+.app.phase-running[data-phone-layout="landscape"] .engine-primary .engine-speed-metric { gap: 2px; }

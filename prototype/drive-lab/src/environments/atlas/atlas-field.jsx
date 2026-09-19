@@ -1,4 +1,4 @@
-import { useContextualControls } from "../../contextual-controls.jsx";
+import { ContextualRail, useContextualControls } from "../../contextual-controls.jsx";
 import { AtlasCameraControls } from "./atlas-camera-controls.jsx";
 import AtlasPlaces from "./atlas-places.jsx";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -505,6 +505,7 @@ export default function AtlasField({
     >
       <div className="atlas-map" ref={hostRef} />
 
+      <ContextualRail className="atlas-contextual-rail">
       <nav {...contextual} onPointerDown={event => event.stopPropagation()} className="atlas-framing" aria-label="Map framing">{["follow", "area", "trip"].map(mode => <button key={mode} aria-pressed={framing === mode} onClick={() => {
         framingRef.current = mode; setFraming(mode);
         if (manualRef.current) manualRef.current.lastInteractionAt = null;
@@ -536,6 +537,7 @@ export default function AtlasField({
           if (framingRef.current !== "follow") mapRef.current?.easeTo({ bearing: next ? 0 : effectivePosition.heading ?? 0, duration: reducedMotion ? 0 : 300 });
         }}
       />
+      </ContextualRail>
       <AtlasPlaces demo={demo} map={mapObject} position={effectivePosition} onReadMore={onReadPlace} />
       <div
         className={`atlas-navigation-plaque${roadName ? "" : " is-roadless"}`}

@@ -49,15 +49,15 @@ current and next values in its accessible name.
 
 ## Contextual visual controls
 
-VIEW / RENDER (Drivey), TYPE (Prtcl) and VARIANT (Gradient) share these rules:
+RENDER (Drivey), TYPE (Prtcl) and VARIANT (Gradient) share these rules:
 
 - 112 px cells; 6 px rail gap; minimum 48 px touch height;
 - 6 px vertical / 10 px horizontal padding; 1 px border; 6 px corners;
 - label and value share the left edge, 11 px inside the outer border;
 - 15 px functional label and 13 px current value, using the shared font weights;
 - LIGHT/DARK semantic foreground, surface, hover, focus and pressed roles;
-- deliberate input wakes chrome; all these controls retract together at rest
-  or beneath a modal and become non-interactive when hidden;
+- contextual actions appear when global chrome rests; awake chrome or a modal
+  hides and inerts them. A deliberate field input wakes the global chrome;
 - no menu caret for a direct cycle; whole-cell click/keyboard activation.
 
 The rendered specimens measure **112 × 53 px** with the current font and line
@@ -78,7 +78,7 @@ mandatory sources to make a screenshot look cleaner.
 | Vertigo | No local cycle | Shared Visual library and chrome |
 | Meridian | No local cycle | Shared Visual library and chrome |
 | Atlas | Map/navigation/place controls | Map geometry, truthful location/readouts, shared semantic type |
-| Drivey | VIEW and RENDER | Shared visual control module |
+| Drivey | RENDER | Shared visual control module |
 | Prtcl | TYPE | Shared visual control module |
 | Discover | Search, language, article/navigation | Passenger modal; labels remain subordinate to content |
 | Gradient | VARIANT: Mist, Orchard, Silk | Shared visual control module; one catalogue family |
@@ -158,3 +158,42 @@ Check compact 773 × 601, short desktop and phone landscape, both appearances,
 all affected palettes, selected/hover/focus states, retraction and modal behavior.
 Distinguish action labels from passive telemetry; verify names, focus and actual
 outcomes as well as screenshots. Record exceptions beside their surface contract.
+
+## Stable identity and contextual action lane — September 19
+
+The owner explicitly delegated this refinement. The earlier map-only rule hiding
+its logo is rejected and superseded. Identity may never be removed to conceal a
+collision. This also supersedes the old moving speed-only rail.
+
+- `App.jsx` places the logo, speed and mode selector in actual adjacent grid cells.
+  The bar remains 64 px high, or 56 px for the phone shell. The larger transparent
+  piston mark uses 52 px artwork (48 px compact); it is never stretched.
+- `contextual-rail.css` owns shared identity widths, safe-area insets and the gap
+  to the right-hand action lane. `ContextualRail` is the common container for
+  visual cycles, Atlas, radar, Fly With and Engine profiles. No renderer guesses
+  the logo or speed coordinates independently.
+- Groups align to the right and wrap by intrinsic content width, retaining 48 px
+  targets, 6 px corners, the semantic type ladder and LIGHT/DARK surfaces. Atlas
+  keeps framing separate from its camera group. Radar keeps observation text and
+  its open aircraft list below its actions. No list or readout overlays a button.
+- Awake global chrome hides and inerts contextual actions. The essential RADAR
+  return and terrain recovery remain reachable below the awake header. Resting
+  chrome gives that lane back to the complete flight toolbar. Real modals suppress
+  both identity and field actions through the existing modal boundary.
+- Engine keeps its approved RPM / speed / gear instrument. Its navbar also keeps
+  the same compact speed reference as all other modes; both use the same speed
+  and source, and show a dash for unknown GPS evidence. Profiles use the common
+  upper action lane; stationary TAMARRO retains its existing separate role.
+- The running app clips its overflow without becoming a scroll container. This
+  prevents focus/scroll anchoring from shifting the entire field when controls
+  retract; drawers retain their own explicit scroll containers.
+
+The 48 px project target exceeds the 44 px size described in
+[W3C target-size guidance](https://www.w3.org/WAI/WCAG22/Understanding/target-size-enhanced.html).
+Visible, unobscured keyboard focus follows the concern described in
+[W3C focus guidance](https://www.w3.org/WAI/WCAG22/Understanding/focus-not-obscured-minimum.html).
+These references inform the checks; this is not a WCAG conformance claim.
+
+Current screenshots and geometric evidence belong to
+[the September 19 harmony audit](qa/2026-09-19-ui-harmony/README.md).
+Historical September 12 screenshots above describe that earlier revision.

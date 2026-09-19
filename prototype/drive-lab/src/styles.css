@@ -4364,7 +4364,6 @@ html { font-size: var(--font-size-floor); }
 .rail-icon[data-icon="navigation"] svg { width: 29px; height: 29px; }
 .app.controls-resting .topbar { opacity: 1; visibility: visible; transform: none; border-color: transparent; background: transparent; pointer-events: none; }
 .app.controls-resting .topbar > :not(.topbar-mark) { visibility: hidden; opacity: 0; pointer-events: none; }
-.app[data-moving="true"].controls-resting .topbar-mark { visibility: hidden; pointer-events: none; }
 .app.modal-open .experience .topbar { visibility: hidden; opacity: 0; pointer-events: none; }
 
 /* One animation owner for footer and transport; no independent floating player. */
@@ -4872,9 +4871,5 @@ html { font-size: var(--font-size-floor); }
 .local-motion-trace .trace-plot { height:100%; aspect-ratio:auto; }
 
 .app.controls-resting .flight-view-toolbar { top:8px; }
-.app.controls-resting .flight-view-toolbar > button:nth-child(2) { margin-right:112px; }
 
 .intro-cache-reset[data-state="error"] small, .intro-cache-reset[data-state="unavailable"] small { display:block; padding:6px; background:var(--ui-surface); color:var(--ui-text); }
-
-/* Map controls reuse the first rail cell even at standstill; speed stays visible. */
-.app.controls-resting:has(.atlas-framing, .air-atlas-toolbar, .flight-view-toolbar) .topbar-mark { visibility:hidden; pointer-events:none; }
