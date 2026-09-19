@@ -1,0 +1,80 @@
+{
+  "release": "20260919-1003.fb6f880",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 1445,
+      "sha256": "6a495dbb5f308f0b5dd51c5be079d5fe683fbb158dc8bd1f714161d1c43584e3",
+      "cacheControl": "no-store, no-cache, must-revalidate, max-age=0",
+      "cache": null
+    },
+    {
+      "path": "/?verify=20260919-1003.fb6f880",
+      "status": 200,
+      "bytes": 1445,
+      "sha256": "6a495dbb5f308f0b5dd51c5be079d5fe683fbb158dc8bd1f714161d1c43584e3",
+      "cacheControl": "no-store, no-cache, must-revalidate, max-age=0",
+      "cache": null
+    },
+    {
+      "path": "/?motion=phone",
+      "status": 200,
+      "bytes": 1445,
+      "sha256": "6a495dbb5f308f0b5dd51c5be079d5fe683fbb158dc8bd1f714161d1c43584e3",
+      "cacheControl": "no-store, no-cache, must-revalidate, max-age=0",
+      "cache": null
+    },
+    {
+      "path": "/assets/index-BL7CvOV_.css",
+      "status": 200,
+      "bytes": 265199,
+      "sha256": "4336b61c6cca3d6fd7a7ac6d5bbfef3ac22039dc3ad95622ea0b2ac9b9c75f96"
+    },
+    {
+      "path": "/assets/index-gP2mU0V7.js",
+      "status": 200,
+      "bytes": 885549,
+      "sha256": "f45b8f3fc4078b5ae41b1f59ee4279da463c6ce6d31bc81a34a7f7585cd07377"
+    },
+    {
+      "path": "/assets/phone-DCmOXHxd.js",
+      "status": 200,
+      "bytes": 28572,
+      "sha256": "b4105fbc28b65a44ae14ab2578b73a70156517d91544276feb8701d4178218cb"
+    },
+    {
+      "path": "/assets/release-20260919-1003.fb6f880.json",
+      "status": 200,
+      "bytes": 116455,
+      "sha256": "7368016759190cc4323672f9a46879072f3df2c2a7c4243e6d46fb1c45898b52"
+    },
+    {
+      "path": "/brand/pistons-v1/mark-512.png",
+      "status": 200,
+      "bytes": 187585,
+      "sha256": "cd97af2f0cc3b638a85dae498262a3ca693f0a1df8fc2ed7eeb443bb22288f86"
+    },
+    {
+      "path": "/fonts/orbitron-latin-variable.woff2",
+      "status": 200,
+      "bytes": 11800,
+      "sha256": "c25a9f9da5d9f3db1bf2a01474722dc9b377675b7bbab6d0dfda6902794fd1ed"
+    },
+    {
+      "path": "/fonts/space-grotesk-variable.ttf",
+      "status": 200,
+      "bytes": 136676,
+      "sha256": "acad6de1fc93436f5c0f1f4137751ef04f1aea3063e7036535970ffcfbd79f72"
+    },
+    {
+      "path": "/",
+      "phase": "after-assets",
+      "status": 200,
+      "bytes": 1445,
+      "sha256": "6a495dbb5f308f0b5dd51c5be079d5fe683fbb158dc8bd1f714161d1c43584e3",
+      "cacheControl": "no-store, no-cache, must-revalidate, max-age=0",
+      "cache": null
+    }
+  ]
+}

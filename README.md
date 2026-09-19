@@ -71,6 +71,8 @@ The top-bar phone icon automatically prepares QR pairing and opens a guided thre
 provides live XYZ acceleration/gyro and an opaque TRACE cube with a three-second
 trail and phone orientation indicator. One-tap ZERO / recalibrate sits below the
 graph and captures after half a second of steady readings, within eight seconds.
+Sensor enablement, ZERO, RECENTER VIEW and STOP fit the initial compact phone
+viewport; detailed axis readings and disclosures continue below the instrument.
 Before ZERO, local activity magnitudes show that sensors are responding. It supports arbitrary stable mounting. Its portrait-first instrument uses the piston/Orbitron identity,
 the paired display’s palette and LIGHT/DARK appearance, plus an illustrated 45° holder guide, with a responsive
 landscape layout. Bounded connection/sensor summaries join REPORT; the phone can

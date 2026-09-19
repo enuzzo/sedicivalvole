@@ -5252,3 +5252,27 @@ Four bare/cache-busted root identities and 11 HTTPS asset size/SHA-256 checks
 pass for the final release, with HTTP 200 and no-store/no-cache. The preceding
 0148 functional release was also fully completed. Physical iPhone settling-ZERO,
 Tesla transport, wake retention and endurance remain separate acceptance items.
+
+
+## Companion first-screen refinement — 2026-09-19 10:13
+
+Canonical **20260919-1003.fb6f880**, VERSION **0.0.0**, is published and verified.
+Source `fb6f880` is pushed. Sensor enablement, ZERO, RECENTER VIEW and STOP fit the
+initial compact phone viewport; detailed readings continue below. Explicit local
+recovery restores ZERO guidance without claiming a reconnected display. TRACE
+skips unchanged React renders; physical sensor/transport acceptance remains open.
+
+Final regression **973/973**, affected checks **67/67**, production **828 hashes**
+and credits **189** pass. Preserve-existing FTP uploaded **39 files / 6,430,157
+bytes**, reused **825** static files and **29** full-hash-verified recordings,
+retained **2** prior assets and returned `ROOT_UPLOAD_ONLY`. **11 HTTPS checks**
+verify bare/cache-busted/phone roots and current assets; canonical browser reload
+confirms identity and visible controls with no warning/error. No synthetic mail.
+
+Host repair: keep the ignored `prototype/drive-lab/node_modules` symlink to the
+lockfile-keyed host cache. Dropbox twice restored stale package bytes; source and
+all built hashes remained intact. Do not recreate a shared dependency directory
+on this host. See [quality evidence](qa/2026-09-19-companion-polish.md) for cache,
+backup, measurements and limitations. Next start: physical iPhone Safari toolbar,
+permission, holder ZERO and display-confirmation check. No unrelated backlog work
+was started. Local QA servers and browser tabs have been closed.
