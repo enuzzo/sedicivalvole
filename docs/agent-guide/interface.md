@@ -4,11 +4,11 @@ Read only the sections affected by the task. These are maintained agent contract
 
 ## Design decisions
 
-Before constructing a new visual direction, present exactly three directions and wait for the owner's selection. A selected direction or an explicit delegation for a named change resolves that gate only for that scope. Bug fixes and refinements within an already selected design do not restart selection. The current selections are Modular Aperture, refined Balanced Rail, Launch Cockpit with the September 10 compact Intro corrections, Engine Telemetry, the ATLAS/Stats remix, Travel Report, Air Atlas A and its A+C flight view, and the subtle spherical radar lens A. Night Glass's first curated composition and Launch Cockpit had explicit scoped design delegation; that is not blanket future delegation.
+Before implementing a new visual direction, present exactly two carefully developed Image Gen directions and wait for the owner's selection. The September 20 owner instruction supersedes the former three-direction rule project-wide. Ground both directions in actual product captures and the established design system; vary meaningful layout or interaction choices rather than merely recoloring the same screen. A selected direction or an explicit delegation for a named change resolves that gate only for that scope. Bug fixes and refinements within an already selected design do not restart selection. The current selections are Modular Aperture, refined Balanced Rail, Launch Cockpit with the September 10 compact Intro corrections, Engine Telemetry, the ATLAS/Stats remix, Travel Report, Air Atlas A and its A+C flight view, and the subtle spherical radar lens A. Night Glass's first curated composition and Launch Cockpit had explicit scoped design delegation; that is not blanket future delegation.
 
 For substantial visual work whose reference is unclear or no longer fits the goal, clarify the source using the installed Product Design entry point and relevant context workflow. The old `get-context` skill name is not present in this environment's catalog; do not invent its availability. A requested audit uses screenshot evidence and the available audit workflow. The September 4 ban on the frontend builder belonged to that refinement; Launch Cockpit explicitly superseded it for its redesign. Match tools to the actual current task and installed skills.
 
-When implementing a selected generated mock, preserve its layout, anatomy, density, spacing, colors, typography, visible content and hierarchy, subject to explicit owner amendments. Use actual current browser captures for product evidence, at the agreed viewport; remove obsolete current-product captures. Keep private reference images outside Git. Oversized generated Intro concepts are rejected and must not become product artwork.
+When implementing a selected generated mock, reproduce its layout, anatomy, density, spacing, colors, typography, visible content and hierarchy as faithfully as possible, subject to explicit owner amendments. The established design system takes precedence over generated artistic deviations: retain its tokens, typography, geometry, accessibility and shared components. Correct misleading states or unsupported browser promises instead of reproducing them. Record necessary departures beside the selected reference, compare actual rendered screens with that reference at the agreed viewport and correct avoidable drift before handoff. Use actual current browser captures for product evidence; remove obsolete current-product captures. Keep private reference images outside Git. Oversized generated Intro concepts are rejected and must not become product artwork.
 
 The September 18 owner selected **XYZ Cross** for the phone motion companion:
 central TARE with live XYZ/gyro, a top-bar phone icon and compact QR/three-SVG
@@ -42,6 +42,14 @@ below. Compact phone steps retain their labels and completion states; their SVG
 illustrations remain on the display guide. Short plots omit crowded numerical
 ticks, retaining axis labels, and never invent a trace. Avoid scrolling an
 already-visible ZERO when sensors become live.
+
+The September 20 phone onboarding request supersedes the initial-viewport cube and
+all-at-once control hierarchy for the companion's next selected implementation.
+The requested sequence is local sensors, pairing, placement, ZERO, explicit
+screen-awake activation, then live readings. Clear interruption and restart guidance
+must appear on both paired surfaces. The new two-direction selection is pending;
+this records an approved behavior brief, not a shipped redesign. See
+[onboarding brief](../design/phone-onboarding-2026-09-20/README.md).
 
 ## Shared geometry and palette
 
