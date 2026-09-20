@@ -1,13 +1,23 @@
 # Current Project State
 
-## Phone stability — September 20 (implementation under verification)
+## Phone stability — September 20 (published; physical retry open)
 
-The physical owner reports retained setup and connection but repeated fresh/delayed
-telemetry and resizing on both surfaces. The live receiver tab confirms build
-20260920-2044.7ba2b1c; a fresh controlled canonical run reaches only 96/120 mutual
-fresh observations. Automatic encrypted direct upgrade, retained action guidance
-and explicitly historical one-second display averages are under verification.
-No new publication or physical acceptance is claimed yet. See the
+Canonical build **20260920-2153.3936555**, source **3936555**, is published. The
+admitted encrypted HTTPS pairing automatically upgrades to native direct WebRTC
+when reachable and retains HTTPS fallback. Accepted setup instructions survive
+packet gaps; explicit one-second display averages, rounded values and reserved
+geometry keep the phone/drawer calm. Current motion input still requires samples
+within 250 ms and reciprocal receipts; display history never drives effects.
+
+All 1,061 native tests, 65 final focused checks, 21 compiled automatic-path and
+16 forced-HTTPS checkpoints pass. Final local continuity is 119/120 mutual and
+1,158/1,160 at the requested 20 Hz observation cadence; visible numbers/setup stay
+present in all 1,160 observations. Seventeen canonical HTTPS identity/hash/cache/API
+checks and six public compiled-browser checks pass. The public native direct path
+reaches **120/120** mutually fresh observations and recovers automatically after
+thirty seconds offline with the same pairing and ZERO. Hardware remains synthetic
+in those tests. The owner confirms the real devices share Wi-Fi; physical iPhone /
+Safari / Tesla acceptance and the post-publication retry remain open. See the
 [causes, architecture and evidence](PHONE-STABILITY-2026-09-20.md).
 
 ## Phone network recovery — September 20 (published; physical retry open)

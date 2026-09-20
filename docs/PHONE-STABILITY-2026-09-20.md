@@ -97,19 +97,92 @@ unchanged. No sample history, SDP, addresses or pairing secrets enter diagnostic
 
 ## Verification and acceptance
 
-The full native regression gate passes **1,061/1,061**. The final focused
-companion/display checks pass **65/65**. The compiled automatic-path run records
-**120/120** mutually fresh half-second observations and **1,219/1,219** fresh,
-confirmed receiver observations at 20 Hz. Sixteen checkpoints pass through
-one-way failure, HTTPS slowdown, exact live expiry versus historical display,
-unchanged panel height, thirty-second offline recovery with the same QR/ZERO,
-and drawer teardown/reopening. No page exceptions occur. A later appearance-menu
-interaction in that first harness run needed the normal chrome wake gesture;
-final responsive QA and publication remain pending, not silently counted as passed.
-Evidence: `/private/tmp/sv-phone-stability-auto/evidence.json`,
-`/private/tmp/sv-phone-stability-full.log` and
-`/private/tmp/sv-phone-stability-focused-final.log`.
+Source checkpoint **3936555** is committed and pushed. Production build
+**20260920-2153.3936555** verifies **834** exact static hashes. The full native
+regression gate passes **1,061/1,061**, final focused companion/display checks
+**65/65**, dependency credits **189**, and public hygiene **1,612** text files.
+
+The complete final compiled automatic-path run passes **21 checkpoints**:
+**119/120** mutually fresh half-second observations and **1,158/1,160** fresh,
+confirmed, numeric, completed receiver observations at the requested 20 Hz cadence
+(62.87 seconds including browser scheduling). All high-rate observations use the
+actual native direct path. Both exceed the unchanged 95% continuity gate. Numbers and completed setup remain
+visible in all **1,160/1,160** high-rate observations, including the two brief
+losses of strict current-input validity; connection stays connected/direct.
+It covers pre-ZERO instruction retention, an added 450 ms HTTPS delay, unilateral
+RTC loss and automatic HTTPS/direct recovery with the same pairing and ZERO,
+changing values/signs, bounded root metadata, wake denial/reacquisition, strict
+250 ms current-input expiry versus one-second historical-display expiry, invariant
+panel height, thirty-second offline recovery, GPS notices, drawer teardown,
+LIGHT/DARK compact Tesla and phone layouts, reduced motion, sensor invalidation,
+STOP and a new QR. The separately forced HTTPS path passes **16 checkpoints**;
+this is functional fallback evidence, not a sustained canonical HTTPS latency pass.
+
+Both final runs have **zero page exceptions**. Expected console resource failures
+are retained: automatic path has 33 rate-limit 429s, two teardown 410s and eleven
+unavailable-fixture 503s; forced HTTPS has 41 rate-limit 429s, two teardown 410s,
+eight fixture 503s and one induced offline error. No synthetic diagnostic mail is
+sent. Sensor input, permission, screen-wake and GPS evidence are browser fixtures;
+App, session, cipher, protocol, PHP and native WebRTC are real.
+
+Evidence:
+
+- `/private/tmp/sv-phone-stability-final-complete/evidence.json`
+- `/private/tmp/sv-phone-stability-https-browser/evidence.json`
+- `/private/tmp/sv-phone-stability-full.log`
+- `/private/tmp/sv-phone-stability-focused-final.log`
+- `/private/tmp/sv-phone-stability-release-build.log`
+
+The earlier partial automatic run recorded 120/120 and 1,219/1,219, then stopped
+at the appearance-menu gesture. Those numbers remain historical, not the final
+release result (`/private/tmp/sv-phone-stability-auto/evidence.json`). The final
+harness performs the normal chrome-wake gesture and waits independently for both
+averaged numeric rows and instantaneous phone freshness.
 
 The owner confirms that the physical Mac/iPhone are on the same Wi-Fi. That makes
 a host-only route plausible, but no direct Safari/Tesla connection has yet been
-observed. Publication and physical acceptance are not yet claimed.
+observed. Canonical publication and physical acceptance are separate gates.
+
+## Canonical publication and final evidence
+
+Canonical **20260920-2153.3936555**, source **3936555**, is published at
+https://sedicivalvole.app/. The official read-only preflight passes with
+`remote_writes=NONE`. Preserve-existing publication passes: **38 files /
+6,525,888 bytes** uploaded, **832** unchanged static files and **29** recordings
+fully verified/reused, two previous entry assets retained, thirteen root entries,
+`ROOT_UPLOAD_ONLY` and no legacy deletion.
+
+All **17** canonical HTTPS checks pass: bare root, cache-busted root and explicit
+no-cache reload are byte-identical to the local build; current entry/phone/motion
+assets, release manifest, worker, illustrations and icons match their local bytes;
+pairing method/origin bounds return the expected 405/400/403. Root HTML is 1,445
+bytes, SHA-256 `27832a31b761bd6af3fd42fa68f449c5061304da75fb2d60fd3f6a022001e76d`,
+with no-store/no-cache and `x-proxy-cache: MISS`. An initial manifest request with
+the default Python user agent returned 403; repeating the exact URL with a browser
+user agent returns the correct 200 bytes. Final checks use browser-compatible
+headers; no server policy was changed.
+
+The actual public compiled App/phone and canonical PHP pass **six browser
+checkpoints**, with no asset substitution: changing acceleration and signed
+rotation, native direct selection, sixty-second continuity, thirty seconds with
+both browser networks offline, and automatic recovery with the same admission
+and ZERO generation **1 → 1**, without gestures. Continuity is **120/120** mutually
+fresh observations against the unchanged **114/120** target, all using actual
+native WebRTC. There are zero page exceptions and no synthetic diagnostic sends.
+Screenshots verify the final public receiver and phone. Sensors/permission/wake
+are still simulated; this is not physical Safari/Tesla acceptance, nor proof of
+sustained direct connectivity across different networks.
+
+Evidence:
+
+- `/private/tmp/sv-phone-stability-preflight.log`
+- `/private/tmp/sv-phone-stability-publish.log`
+- `/private/tmp/sv-phone-stability-canonical-verify.json`
+- `/private/tmp/sv-phone-stability-canonical-browser/evidence.json`
+
+Physical retry: reload both pages on this build, start a new QR, complete ZERO and
+explicit screen wake, inspect Connection details for `LOCAL · WEBRTC` versus
+`HTTPS · ENCRYPTED`, then observe one minute stationary and two deliberate movements.
+Record the device/browser, selected transport, stable geometry and any remaining
+freshness interruptions. The owner's already-open old-build session was not
+reloaded or stopped by this task. Physical acceptance remains open.

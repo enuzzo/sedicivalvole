@@ -1,5 +1,34 @@
 # Deployment
 
+## Phone direct transport and stable presentation — 2026-09-20
+
+Canonical **20260920-2153.3936555**, source **3936555**, is published at
+https://sedicivalvole.app/. Encrypted automatic direct upgrade retains HTTPS
+fallback and the original pairing lease; accepted guidance and explicitly
+historical display averages avoid packet-driven layout and numeric churn.
+Current-input freshness and reciprocal confirmation remain strict.
+
+- Local gates: 1,061 native tests, 65 final focused checks, 189 dependency
+  credits, public hygiene across 1,612 text files and 834 exact production hashes.
+  Final compiled automatic-path QA passes 21 checkpoints, forced HTTPS 16.
+  Native direct continuity is 119/120 mutual and 1,158/1,160 high-rate observations;
+  numbers and completed setup remain visible in all 1,160 observations.
+- Official read-only preflight and preserve-existing publication pass: 38 files /
+  6,525,888 bytes uploaded, 832 static files and 29 recordings fully verified/reused,
+  two prior assets retained, ROOT_UPLOAD_ONLY and no legacy deletion.
+- Seventeen canonical HTTPS identity/hash/cache/API checks pass, including bare,
+  cache-busted and explicit no-cache root. HTML is 1,445 bytes, SHA-256
+  `27832a31b761bd6af3fd42fa68f449c5061304da75fb2d60fd3f6a022001e76d`.
+  Final requests use browser-compatible headers after a default Python user-agent
+  manifest probe was rejected; the exact URL returns the correct browser bytes.
+- Six public compiled-browser/real-PHP checkpoints pass with native WebRTC:
+  **120/120** mutually fresh observations, changing signed values and thirty-second
+  offline recovery with the same pairing and ZERO, without gestures. Zero page
+  exceptions and no synthetic diagnostic mail. Inputs/permissions/wake are fixtures;
+  physical iPhone/Safari/Tesla and wider-network continuity remain open.
+
+[Detailed final evidence](PHONE-STABILITY-2026-09-20.md#canonical-publication-and-final-evidence).
+
 ## Phone integration and network recovery — 2026-09-20
 
 Canonical build **20260920-2044.7ba2b1c**, source **7ba2b1c**, is published at

@@ -280,6 +280,7 @@ try {
   await phone.waitForFunction(() => document.querySelector('.motion-live-row strong')?.textContent.includes('+0.5'));
   // This is the prior coverage gap: App's real onChange used to strip values.
   await receiver.waitForFunction(() => document.querySelector('.motion-live-row strong')?.textContent.includes('+0.5'), null, { timeout: 5000 });
+  await receiver.waitForFunction(() => document.querySelectorAll('.motion-live-row strong')[1]?.textContent.includes('+12'));
   assert.match(await receiver.locator('.motion-live-row').nth(1).innerText(), /\+12.*°\/s/s);
   await receiver.screenshot({ path: join(output, 'receiver-readings.png') });
   await phone.screenshot({ path: join(output, 'phone-readings.png') });
