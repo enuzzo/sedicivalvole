@@ -34,7 +34,8 @@ Private emails and attachments remain outside the repository.
 - Separate transport CONNECTED from fresh sensor evidence. HTTPS pipelines up to eight
   matching requests, retaining the 250 ms receiver-clock upper bound and strict replay,
   generation and receipt checks. HTTP exchanges remain serial; pacing includes their
-  duration with a 22 ms post-response floor respecting the server arrival limit. No new provider, server transport or plaintext sensor storage is introduced.
+  duration; a 22 ms post-response backoff applies only after HTTP 429, retaining the rejected
+  response. Eight consecutive refusals stop the session. No new provider, server transport or plaintext sensor storage is introduced.
 - Preserve GPS fallback when motion is late, missing, uncalibrated, or mount-invalid.
   Direct WebRTC and old wire envelopes remain compatible.
 
@@ -78,3 +79,26 @@ Final committed build identity and canonical publication are the next gate.
 Physical iPhone permissions, mounted acceleration/gyro signs, actual mobile-network
 continuity, cabin response, and the first real automatic mailbox receipt remain separate
 acceptance checks. Synthetic verification must never send mail to the real destination.
+
+## Canonical verification and pacing follow-up
+
+The first correction was published as `20260920-1521.cb0255f`: 38 files / 6,503,773 bytes,
+825 static files and 29 full-hash recordings reused, one previous entry asset retained,
+ROOT_UPLOAD_ONLY. Official preflight/postflight pass with no writes; ten HTTPS identity,
+asset, bare/cache-busted/reload and API checks pass. A first preflight timed out without
+writes; unreadable old Dropbox build output was preserved under ignored `output/` and the
+fresh build was copied and fully hash-verified. No source/dependency symlink was replaced.
+
+Browser probes during the concurrent FTP integrity download had interrupted usable motion,
+including 20/30 and 5/30 LIVE observations. Those continuity checks did not pass. With native
+browser networking and no concurrent FTP transfer, both peers reached mutual readiness and
+30/30 LIVE observations passed: 50 samples, latest 155.9 ms / maximum 193.7 ms RTT, no rejected
+samples or signaling errors, Engine source phone-motion, then delayed-data GPS fallback.
+Network load is a contributing-condition inference, not proof of every physical failure.
+
+A controlled 50 ms HTTP latency regression also exposed an avoidable fixed-delay cost in
+this first correction. The follow-up removes the unconditional 22 ms wait and uses bounded
+HTTP 429 backoff instead, preserving the pending reply after rejection. Both the 50 ms
+continuity case and three consecutive rate refusals failed before this follow-up and pass
+afterward. Server limits, encrypted envelopes and 250 ms freshness remain unchanged. Final
+follow-up production/browser checks and publication are pending.

@@ -25,7 +25,7 @@ test('pipelined HTTPS polls accept matching earlier replies without admitting ex
 });
 
 test('HTTPS remains connected before ZERO and supplies sustained fresh motion across realistic request latency', async () => {
- const cipher=await createMotionCipher(createRelayKey(webcrypto),webcrypto),slots={};let calibrated=false,delay=35;
+ const cipher=await createMotionCipher(createRelayKey(webcrypto),webcrypto),slots={};let calibrated=false,delay=50;
  const exchange=role=>async packet=>{
   await sleep(delay/2);if(packet)slots[role]={sequence:(slots[role]?.sequence??0)+1,packet};
   const reply={...(slots[role==='phone'?'receiver':'phone']??{})};await sleep(delay/2);return reply;
@@ -86,4 +86,30 @@ test('HTTPS QR works without WebRTC; encryption key never enters any API request
  try {await session.start(null,'https');assert.equal(latest.state,'pairing');assert.equal(latest.transport,'https');
   const secret=latest.qrUrl.split('.').at(-1);assert.match(secret,/^[a-f0-9]{64}$/);assert.ok(!JSON.stringify(calls).includes(secret));assert.ok(!JSON.stringify(session.report()).includes(secret));
  }finally{session.dispose();}
+});
+
+
+test('HTTPS rate backpressure retries without losing the pending reply or prematurely closing', async () => {
+ const cipher=await createMotionCipher(createRelayKey(webcrypto),webcrypto);
+ let calls=0;const events=[],replies=[];
+ const poll=await cipher.seal(JSON.stringify({v:'sv-motion-1',kind:'poll',request:0}),'receiver');
+ const peer=createMotionRelay({role:'phone',cipher,getPhone:phone,onEvent:type=>events.push(type),exchange:async packet=>{
+  calls++;
+  if(calls===1)return {sequence:1,packet:poll};
+  if(packet)replies.push(await cipher.open(packet,'phone'));
+  if(calls<=4)throw Object.assign(new Error('slow_down'),{status:429});
+  return {};
+ }});
+ try {
+  await sleep(300);
+  assert.equal(peer.summary().state,'connected');assert.equal(peer.summary().relayBackoffs,3);
+  assert.ok(replies.length>=4);assert.equal(new Set(replies.slice(0,4)).size,1,'a rejected exchange retains its pending response');
+  assert.deepEqual(events,['channel-open']);
+ }finally{peer.close();}
+ const blocked=createMotionRelay({role:'phone',cipher,exchange:async()=>{throw Object.assign(new Error('slow_down'),{status:429});}});
+ try {
+  for(let i=0;i<60&&blocked.summary().state!=='closed';i++)await sleep(20);
+  assert.equal(blocked.summary().state,'closed','persistent rate refusal stops instead of retrying forever');
+  assert.equal(blocked.summary().relayBackoffs,8);
+ }finally{blocked.close();}
 });

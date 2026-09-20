@@ -29,22 +29,22 @@ export function createMotionRelay({ role, cipher, exchange, now = () => performa
   // The bounded protocol window accepts only matching, fresh, monotonic replies.
   const protocol = createMotionProtocol({ role, now, getPhone, getPresentation, onSummary, maxPending: 8 });
   let closed = false, timer = null, opened = false, lastSequence = 0, outgoing = null, failures = 0;
-  let lastReceipt = null;
+  let lastReceipt = null, relayBackoffs = 0, consecutiveBackoffs = 0;
   const started = now();
   const opposite = role === 'receiver' ? 'phone' : 'receiver';
   async function tick() {
     if (closed) return;
     if (now() - started >= 3600000) { close('expired'); return; }
     const cycleStarted = now();
-    let exchanged = false;
+    let exchanged = false, backoff = 0;
     try {
       if (role === 'receiver') outgoing = protocol.poll() ?? outgoing;
       const packet = outgoing ? await cipher.seal(outgoing, role) : null;
       if (closed) return;
-      outgoing = null;
       const result = await exchange(packet);
       if (closed) return;
-      failures = 0;
+      outgoing = null;
+      failures = 0; consecutiveBackoffs = 0;
       if (Number.isSafeInteger(result.sequence) && result.sequence > lastSequence && typeof result.packet === 'string') {
         const text = await cipher.open(result.packet, opposite);
         if (closed) return;
@@ -57,12 +57,19 @@ export function createMotionRelay({ role, cipher, exchange, now = () => performa
       if (opened && now() - lastReceipt > 5000) { close('error'); return; }
     } catch (error) {
       if (closed) return;
-      failures += 1;
-      if ([403, 410].includes(error?.status) || failures >= 3) { close('error'); return; }
+      if (error?.status === 429) {
+        // Arrival jitter can cross PHP's 20 ms floor despite serial requests. Retry
+        // the retained response after that floor, with a finite consecutive bound.
+        relayBackoffs += 1; consecutiveBackoffs += 1; backoff = 22;
+        if (consecutiveBackoffs >= 8) { close('error'); return; }
+      } else {
+        failures += 1;
+        if ([403, 410].includes(error?.status) || failures >= 3) { close('error'); return; }
+      }
     }
-    // Include HTTP time in pacing, but leave a small post-response floor: request-start
-    // spacing alone cannot respect PHP's 20 ms arrival limit when network delay varies.
-    if (!closed) timer = setTimeout(tick, Math.max(22, (exchanged ? 24 : 40) - (now() - cycleStarted)));
+    // HTTP time already paces slow networks. Add a post-response floor only when
+    // the server explicitly requests backpressure, rather than ageing every sample.
+    if (!closed) timer = setTimeout(tick, Math.max(backoff, (exchanged ? 24 : 40) - (now() - cycleStarted)));
   }
   function close(reason = 'closed') {
     if (closed) return;
@@ -73,6 +80,6 @@ export function createMotionRelay({ role, cipher, exchange, now = () => performa
   timer = setTimeout(tick, 0);
   return { close, sample: () => closed ? null : protocol.sample(), presentation: () => closed ? null : protocol.presentation(),
     summary: () => ({ ...protocol.summary(), role, transport: 'https', rtc: false,
-      transportAgeMs: lastReceipt === null ? null : Math.max(0, now() - lastReceipt),
+      relayBackoffs, transportAgeMs: lastReceipt === null ? null : Math.max(0, now() - lastReceipt),
       state: closed ? 'closed' : !opened ? 'connecting' : 'connected' }) };
 }

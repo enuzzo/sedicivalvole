@@ -2,7 +2,7 @@
 export const MOTION_STATES = ["idle", "preparing", "pairing", "connecting", "connected", "stale", "closed", "expired", "unavailable", "error", "suspended"];
 export const SENSOR_STATES = ["idle", "requesting", "granted", "denied", "unavailable", "waiting", "live", "incomplete", "stale", "suspended", "error", "stopped"];
 const numericKeys = ["iceCandidates", "received", "sent", "rejected", "expiredRequests", "backpressureDrops", "sendErrors", "rttMs", "rttMaxMs", "ageUpperMs", "cadenceHz", "jitterMs", "tareCount", "reconnects", "motionEvents", "orientationEvents", "missingAxes", "visibilityStops", "accelerationPeak", "angularRatePeak", "signalingStatus", "signalingRequests", "signalingErrors", "connectMs", "wakeRequests", "wakeReleases", "wakeFailures", "traceFps", "tracePoints", "traceRange", "traceContextLosses"];
-numericKeys.push("latencyDrops", "transportAgeMs");
+numericKeys.push("latencyDrops", "relayBackoffs", "transportAgeMs");
 const booleanKeys = ["dataFresh", "mountSelected", "iceComplete", "accelerometer", "gyroscope", "orientation", "orientationEstimated", "tared", "secureContext", "rtc", "wakeLock", "supportsUiContext", "receiverConfirmed", "referenceReceived"];
 const eventTypes = new Set(["connection", "ice", "start", "offer-ready", "phone-joined", "channel-open", "permission", "tare", "retare-required", "stale", "recovered", "stop", "hidden", "expired", "error", "wake", "trace"]);
 export function safeMotionSummary(value = {}) {

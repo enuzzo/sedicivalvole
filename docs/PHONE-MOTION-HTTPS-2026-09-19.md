@@ -43,7 +43,9 @@ Serial HTTP exchanges now carry a bounded window of up to eight pending protocol
 instead of waiting for each full multi-hop reply before asking for another sample. Each reply
 must still match its own receiver-clock request, arrive within the 250 ms upper bound and
 advance the accepted sample sequence. The wire envelope and PHP relay are unchanged.
-A 22 ms post-response floor also respects the server arrival limit despite request jitter.
+A 22 ms post-response backoff applies only after HTTP 429; the pending response is retained.
+Eight consecutive rate refusals stop the session. Successful exchanges include HTTP time
+in pacing, avoiding an unnecessary pause on already slow networks.
 Connection state remains open while sample freshness may expire; the receiver explains
 CONNECTED versus WAITING / DELAYED data, without treating latency as a new QR requirement.
 This fixes reproduced pre-ZERO status oscillation and moderate-latency cadence; sufficiently
