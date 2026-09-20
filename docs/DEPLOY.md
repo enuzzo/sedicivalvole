@@ -1,5 +1,31 @@
 # Deployment
 
+## Phone integration and network recovery — 2026-09-20
+
+Canonical build **20260920-2044.7ba2b1c**, source **7ba2b1c**, is published at
+https://sedicivalvole.app/. Receiver numbers and accepted setup progress are
+restored; admitted pairings survive network outages within the original one-hour
+lease, with automatic fresh recovery, truthful GPS fallback and visible notices.
+The 250 ms sample deadline and actual sensor/lifecycle invalidation remain strict.
+
+- Local gates: 1,053 native tests, final 58 companion checks, 189 dependency
+  credits, public hygiene across 1,608 text files and 834 exact production hashes.
+  The exact release passes sixteen compiled-browser checkpoints, including a
+  thirty-second outage and recovery with the same pairing/ZERO without gestures.
+- Official preserve-existing publication: 38 files / 6,519,439 bytes uploaded,
+  832 static files and 29 recordings fully verified/reused, two previous assets
+  retained, ROOT_UPLOAD_ONLY and no legacy deletion.
+- Seventeen canonical HTTPS checks pass: bare/cache-busted/reloaded HTML identity,
+  referenced asset bytes, no-store/no-cache and expected API method/origin bounds.
+  Root SHA-256: `ac2a64f95a6aa3be80a742867ab964c608957af1cbf20cf223e5ee4d8154fbc4`.
+- Four canonical compiled-browser/real-PHP checks pass, including both browser
+  networks absent for thirty seconds and automatic recovery with retained ZERO.
+  No page exceptions or synthetic mail. A separate continuity trial reaches
+  110/120 mutual fresh observations, below the unchanged 114/120 target; sustained
+  reception and physical iPhone/Tesla acceptance remain open.
+
+[Detailed release evidence and limitations](PHONE-NETWORK-RECOVERY-2026-09-20.md#canonical-publication-and-final-evidence).
+
 ## Verified session cache and update release — 2026-09-09 10:12 Europe/Rome
 
 Canonical build **20260909-1001**, source **00e8e18**, VERSION **0.0.0**.

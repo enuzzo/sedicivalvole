@@ -107,6 +107,17 @@ build, package, canonical identity and visible-number delivery. External evidenc
 `/private/tmp/sv-phone-canonical-candidate/evidence.json` and
 `/private/tmp/sv-phone-canonical-timing/evidence.json`.
 
+## Publication with network recovery
+
+The integration repair is published in canonical **20260920-2044.7ba2b1c**, source
+**7ba2b1c**, together with the later [network recovery contract and evidence](PHONE-NETWORK-RECOVERY-2026-09-20.md#canonical-publication-and-final-evidence).
+The exact public build passes seventeen HTTPS checks and four real-PHP/browser
+checks, including fresh values returning after thirty seconds offline with the
+same pairing and ZERO. No page exceptions or synthetic diagnostic sends occur.
+The latest separate continuity observation reaches 110/120 mutual fresh samples,
+below the unchanged 114/120 target. The earlier trials above remain historical
+evidence; neither publication nor browser recovery closes physical acceptance.
+
 ## Physical retry after publication
 
 1. Reload both devices; confirm the same published build and create a new QR.

@@ -1,6 +1,6 @@
 # Current Project State
 
-## Phone network recovery — September 20 (candidate verified; publication pending)
+## Phone network recovery — September 20 (published; physical retry open)
 
 The owner explicitly requires continuity of an admitted phone pairing through
 mountain-road network gaps. HTTPS now preserves that pairing within the original
@@ -12,10 +12,14 @@ limit, actual sensor-gap invalidation, hidden-page/STOP teardown and terminal
 capability expiry remain strict. Browser QA passes sixteen checkpoints including
 both contexts offline for over thirty seconds and recovery without QR/ZERO/gestures.
 All 1,053 native tests, dependency credits and public hygiene pass.
-See [network contract and evidence](PHONE-NETWORK-RECOVERY-2026-09-20.md). Publication
-identity follows; implementation checkpoint `4e1f16b` is committed and pushed. Earlier canonical continuity and physical limits remain open.
+Canonical build **20260920-2044.7ba2b1c**, source **7ba2b1c**, is published and passes
+17 HTTPS identity/hash/cache/API checks. The actual public compiled pages and PHP
+also recover after thirty seconds offline with the same pairing and ZERO, without
+gestures. The separate sixty-second continuity observation reaches 110/120 mutual
+fresh readings, below the unchanged 114/120 target; physical iPhone/Tesla acceptance
+and sustained freshness remain open. See [network contract and release evidence](PHONE-NETWORK-RECOVERY-2026-09-20.md).
 
-## Phone integration repair — September 20 (candidate verified; publication pending)
+## Phone integration repair — September 20 (published; physical retry open)
 
 The real compiled App regression reproduces the owner's missing receiver numbers
 before the fix and passes after it. A focused drawer boundary now reads actual
@@ -30,16 +34,19 @@ delivers changing numbers but reaches only 97/120 simultaneous fresh observation
 the unchanged 95% continuity target is not met. A slower follow-up also cannot
 sustain readiness. This is an explicit transport/physical acceptance limit, not a
 green reliability claim. See [repair and physical retry](PHONE-INTEGRATION-REPAIR-2026-09-20.md).
-Publication identity follows; earlier owner feedback is preserved below.
+Included in canonical **20260920-2044.7ba2b1c** with the network recovery above.
+The earlier 97/120 trial remains historical evidence; the latest observation is
+110/120 and still below target. Earlier owner feedback is preserved below.
 
-## Phone integration owner trial — September 20 (repair open)
+## Phone integration owner trial — September 20 (historical report; repairs above)
 
 After publication `20260920-1847.e82f181`, the owner reports that ZERO completes,
 the phone remains awake during the trial and local acceleration/rotation respond.
 Receiver onboarding checks still flicker, and its live values remain absent even
 while the UI says Fresh / Fresh motion received. Inspection confirms that App's
 receiver snapshot deliberately strips `values` before passing it to the drawer.
-This is not yet fixed; transport continuity and noise sensitivity also need work.
+At that checkpoint this was not yet fixed; the repairs and remaining transport
+and physical-noise acceptance are recorded above.
 Previous fixture and compiled gesture tests did not exercise changing readings
 through this real App path. The owner requested a fresh task with higher effort;
 see the [focused integration handoff](PHONE-INTEGRATION-HANDOFF-2026-09-20.md).

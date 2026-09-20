@@ -79,8 +79,8 @@ the running outage notice remains visible when the driving controls rest and the
 phone retains completed setup and wake while values are withheld. One initial
 browser failure exposed opposite retry phases missing the integer-second mailbox
 expiry; the corrected 500 ms idle cadence and a deterministic regression cover it.
-The test teardown now also closes idle HTTP connections explicitly. Publication
-identity follows the clean committed release build.
+The test teardown now also closes idle HTTP connections explicitly. The final
+committed release and canonical verification are recorded below.
 
 The earlier canonical 97/120 mutual-fresh observations still fail the unchanged
 95 percent continuity target. Keeping a pairing through outages does not make
@@ -90,7 +90,66 @@ passenger, and perform setup/recalibration while parked.
 
 
 Local release gates pass: 1,053/1,053 native tests across all eleven script groups,
-189 exact dependency credits and a clean public-hygiene scan of 1,607 text files.
+189 exact dependency credits and a clean public-hygiene scan of 1,608 text files.
 The initial full run caught the existing static UI selector contract; it was
 preserved in product markup, without weakening the test, and the complete rerun
 passes. No dependency, third-party bytes or environment file was changed.
+
+## Canonical publication and final evidence
+
+Published at **https://sedicivalvole.app/**: build **20260920-2044.7ba2b1c**, source
+**7ba2b1cf026801d381cd8bce779333918f21aa41**. The final notice guard waits until phone
+data actually expires before announcing GPS recovery, even if an HTTP exchange
+is already retrying. Its 58 companion checks pass after the full 1,053-test run.
+The final production package verifies 834 exact static hashes and VERSION/HTML
+identity; all 17 changed implementation/test/deploy files match the verification
+mirror byte for byte.
+
+The exact release passes all sixteen local compiled-browser checkpoints with no
+page exceptions. Both networks remain absent for thirty seconds; recorded server
+exchanges contain a 31,921 ms gap, followed by fresh reciprocal values with the
+same pairing and ZERO and no gestures. Running recovery notices also distinguish
+fresh GPS from missing GPS and remain visible when controls rest. In two seconds,
+the focused panel records 36 sample updates and root motion metadata two updates;
+the whole App also renders for other owners. This is not a GPU/endurance result.
+
+Official `--publish --preserve-existing` completes all identity and upload gates:
+38 files / 6,519,439 bytes uploaded, 832 static files and all 29 recordings verified
+and reused, two previous assets retained for cache overlap, ROOT_UPLOAD_ONLY and
+no legacy deletion. The reviewed motion endpoint SHA-256 is
+`555241ae1144dee05eead227fe7445bc22ebe5f0d9686c0701c26b7235b04a3a`.
+
+All seventeen independent HTTPS checks pass. Bare root, cache-busted root and
+controlled no-cache reload return HTTP 200 and match the 1,445-byte local HTML at
+SHA-256 `ac2a64f95a6aa3be80a742867ab964c608957af1cbf20cf223e5ee4d8154fbc4`.
+Their Cache-Control is `no-store, no-cache, must-revalidate, max-age=0`;
+`x-proxy-cache` is absent, so no proxy HIT/MISS claim is made. Current entry,
+phone, release and illustrated/icon assets match local bytes. Motion API GET,
+invalid same-origin POST and foreign-origin POST return the expected 405/400/403.
+
+The actual public compiled pages, with no asset overrides, pass four browser
+checks through native networking and the real canonical PHP: changing encrypted
+samples reach both surfaces, receiver values/rotation sign change, both pages
+retain pairing through thirty seconds offline, and fresh mutual readings recover
+with the same pairing and ZERO without gestures. Only platform sensor, permission
+and wake inputs are synthetic. There are no page exceptions or diagnostic sends.
+
+The separate sixty-second observation records receiver values fresh in 112/120
+samples, phone freshness in 110/120 and mutual freshness in **110/120 (91.7%)**.
+The unchanged 95% target requires 114/120 and **is not met**. Completed exchange
+durations are receiver median 34 ms / p95 46 ms / maximum 1,081 ms and phone median
+33 ms / p95 46 ms / maximum 1,317 ms. These include browser scheduling and do not
+isolate the provider, network or host as a sole cause. A recovered screenshot may
+already show a subsequent Delayed interval; the timed assertions establish
+recovery, not uninterrupted reception. Physical iPhone/Tesla and sustained
+continuity acceptance remain open.
+
+Local evidence (not bundled into the public product):
+
+- `/private/tmp/sv-phone-recovery-full-final.log`
+- `/private/tmp/sv-phone-recovery-notice-test.log`
+- `/private/tmp/sv-phone-recovery-release-build.log`
+- `/private/tmp/sv-phone-recovery-publish-browser/evidence.json`
+- `/private/tmp/sv-phone-recovery-publish.log`
+- `/private/tmp/sv-phone-recovery-canonical-verify.json`
+- `/private/tmp/sv-phone-recovery-canonical-browser/evidence.json`
