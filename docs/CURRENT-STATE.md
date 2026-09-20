@@ -1,5 +1,39 @@
 # Current Project State
 
+## Any-pose ZERO and console illustration — September 20 (published; physical retry open)
+
+The owner reported iPhone ZERO stuck at “Adjust the holder” and the display
+jumping backward, then explicitly required arbitrary stable phone placement.
+The wizard incorrectly required vehicle-axis calibration after successful pose
+ZERO. Setup now separates placement, pose ZERO, explicit wake and mutual receipt;
+flat, upright, inclined, portrait, landscape and inverted poses are accepted.
+Optional aligned car motion is default-off in sensor details. Relative motion is
+labeled as magnitude/vertical rotation; GPS remains the vehicle-response fallback
+when alignment is unknown. Gravity polarity is resolved against orientation for
+vertical rotation and the optional declared car frame. Receiver gaps preserve only
+the pending step index, while clearing stale success marks and values.
+
+The new original transparent console-tray PNG is the placement/ZERO default on
+both surfaces. The clamp PNG is retained; owner-supplied photos are not shipped.
+See the [calibration contract](PHONE-ROAD-INPUT-2026-09-19.md) and
+[asset prompt/provenance](design/phone-onboarding-2026-09-20/CONSOLE-PROMPT.md).
+
+Canonical **20260920-1847.e82f181** is published. Verification covers 1,040 unique
+regression/package tests: the native run passed 1,030/1,031 before a missing
+document in the temporary QA copy; the eight repository documentation checks
+and nine Sites checks then passed. Final affected tests pass 80/80; twelve
+pose/polarity combinations exercise the real sensor owner, ZERO settling, wake
+and protocol receipts. Thirty browser checkpoints cover 320 x 568, 390 x 760,
+760 x 390 and 773 x 601 in LIGHT/DARK; six compiled-App checks pass.
+Production integrity verifies 834 exact hashes. Official preserve-existing FTP
+uploads 39 files / 7,401,146 bytes, verifies/reuses 831 static files and 29
+recordings, retains one prior asset and reports ROOT_UPLOAD_ONLY. Seventeen
+canonical HTTPS checks and four public-browser checks pass with no page errors.
+No synthetic mail was sent. A new QR after reloading both devices is the next
+physical test; sustained network continuity, wake retention and real iPhone/Tesla
+acceptance remain open. The observed UI regression is reproduced; actual document
+reloads on the owner's device have not been established from telemetry.
+
 ## Active onboarding ring — September 20 (published)
 
 Canonical **20260920-1819.01de9ed** adds a gentle 2.4-second repeating accent ring
