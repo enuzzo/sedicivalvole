@@ -1,5 +1,21 @@
 # Current Project State
 
+## Active onboarding ring — September 20 (published)
+
+Canonical **20260920-1819.01de9ed** adds a gentle 2.4-second repeating accent ring
+around only the active, incomplete setup number, shared by the phone and receiver
+drawer. Completed checks remain still; reduced motion preserves a static ring.
+The owner explicitly requested this refinement to the existing selected design.
+Progress evidence, readiness and transport behavior are unchanged.
+
+Validation passes: 61 focused regression checks, 40 synthetic Chromium checkpoints
+at 390 x 760, 320 x 568 and 773 x 601 in LIGHT/DARK, four compiled-browser checks,
+833 exact production hashes, credits and public hygiene. Official preserve-existing
+publication uploads 38 files / 6,514,347 bytes, verifies/reuses 831 static files and
+29 recordings, retains two prior assets and reports ROOT_UPLOAD_ONLY. Sixteen
+canonical HTTPS checks and four public-browser ring/reduced-motion checks pass.
+Physical iPhone/Tesla acceptance remains separate; no diagnostic mail was sent.
+
 ## Smartphone design refinement — September 20 (published; owner/physical acceptance open)
 
 The selected phone wizard and receiver layout have been repaired after owner review:
