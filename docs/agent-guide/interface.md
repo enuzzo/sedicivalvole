@@ -151,7 +151,7 @@ desktop Intro heading grows to 64 px; running chrome retains its fixed height.
 
 ## Mounted phone response — September 19
 
-The existing phone cell shows LIVE only for effective mounted road input, otherwise GPS/DEMO, at unchanged navbar dimensions. The existing panels explain connection/calibration/fallback. Phone adds explicit portrait-holder selection beside ZERO; TRACE stays available for other poses. See [the implementation contract](../PHONE-ROAD-INPUT-2026-09-19.md).
+The September 20 owner refinement supersedes the LIVE/GPS/DEMO subtitle: the phone cell is icon-only within the existing shared 32 px frame / 28 px glyph / 2 px stroke. Use a satellite for GPS fallback, a checked phone for paired-but-not-active input and a phone with a gyroscope for effective sensor response. Pairing, recovery and Demo have distinct inner symbols. Connection alone never claims effective road input; the immediately visible drawer subtitle names the actual source. The existing panels explain connection/calibration/fallback. Phone adds explicit portrait-holder selection beside ZERO; TRACE stays available for other poses. See [the implementation contract](../PHONE-ROAD-INPUT-2026-09-19.md).
 
 ## Any-pose companion and console artwork — September 20
 

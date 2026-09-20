@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mountedBasis, mountedReading, createRoadResponse, usableRoadSample, roadSourceLabel } from '../src/motion/road-input.js';
+import { mountedBasis, mountedReading, createRoadResponse, usableRoadSample, roadSourceLabel, roadNavbarStatus } from '../src/motion/road-input.js';
 import { orientationMatrix, applyRotation } from '../src/motion/reference.js';
 import { createMotionProtocol } from '../src/motion/channel.js';
 import { estimateEngineDemand } from '../src/engine/powertrain.js';
@@ -68,6 +68,48 @@ test('source UI never treats connected or Demo as usable road sensors',()=>{
  assert.match(roadSourceLabel({source:'Demo',active:true,sample:sample()}),/phone excluded/);
  assert.match(roadSourceLabel({source:'GPS',active:true,link:{state:'connected'}}),/unavailable/);
  assert.equal(roadSourceLabel({source:'GPS',active:true,sample:sample()}),'Phone motion + GPS speed');
+});
+
+test('navbar preserves the pairing fact independently of GPS and optional road calibration', () => {
+ const options = { source:'GPS', active:true, gpsFresh:false, link:{state:'connected'}, sensor:{sensorState:'live',mountSelected:false} };
+ const paired = roadNavbarStatus(options);
+ assert.equal(paired.state,'paired'); assert.equal(paired.connected,true); assert.equal(paired.source,'gps-motion');
+ assert.match(paired.label,/car motion off/);
+ const enabled = roadNavbarStatus({...options,sensor:{mountSelected:true}});
+ assert.equal(enabled.state,'paired'); assert.match(enabled.label,/waiting for fresh speed/);
+ const demo = roadNavbarStatus({...options,source:'Demo',sample:sample()});
+ assert.equal(demo.state,'demo'); assert.equal(demo.connected,true); assert.equal(demo.source,'demo-motion');
+ assert.match(demo.label,/Phone paired.*phone excluded/);
+});
+
+test('navbar active sensor state requires actual current road input and drops on expiry or lost GPS', () => {
+ const options = { source:'GPS',active:true,gpsFresh:true,sample:sample(),link:{state:'connected'},sensor:{mountSelected:true} };
+ const live = roadNavbarStatus(options);
+ assert.equal(live.state,'active'); assert.equal(live.source,'phone-motion'); assert.equal(live.connected,true);
+ assert.equal(roadNavbarStatus({...options,link:{state:'connected',networkState:'retrying'}}).source,'phone-motion',
+  'an HTTP retry cannot hide input the unchanged consumer still uses');
+ for (const changed of [{sample:sample(2,251)},{sample:null},{gpsFresh:false},{active:false}]) {
+  const next = roadNavbarStatus({...options,...changed});
+  assert.equal(next.state,'paired'); assert.equal(next.source,'gps-motion'); assert.equal(next.connected,true);
+ }
+ const local = roadNavbarStatus({...options,local:true,link:{}});
+ assert.equal(local.state,'active'); assert.equal(local.connected,false,'local sensing cannot claim a paired phone');
+ const waiting = roadNavbarStatus({...options,local:true,link:{},sample:null,gpsFresh:false,sensor:{sensorState:'live'}});
+ assert.equal(waiting.state,'local'); assert.match(waiting.summary,/waiting for GPS/);
+});
+
+test('navbar recovery and terminal states cannot retain a healthy phone check', () => {
+ const options = {source:'GPS',active:true,gpsFresh:false,sample:sample(),sensor:{mountSelected:true}};
+ for (const networkState of ['offline','retrying']) {
+  const status = roadNavbarStatus({...options,link:{state:'connected',networkState}});
+  assert.equal(status.state,'retrying'); assert.equal(status.connected,false); assert.equal(status.source,'gps-motion');
+  assert.match(status.label,/Waiting for fresh GPS speed/);
+ }
+ for (const state of ['closed','expired','suspended','error']) {
+  const status = roadNavbarStatus({...options,sample:null,link:{state}});
+  assert.equal(status.state,'gps'); assert.equal(status.connected,false);
+ }
+ assert.equal(roadNavbarStatus({...options,sample:null,link:{state:'pairing'}}).state,'pairing');
 });
 
 test('declared aligned mounts accept upright and landscape inclines with W3C or Core Motion gravity',()=>{

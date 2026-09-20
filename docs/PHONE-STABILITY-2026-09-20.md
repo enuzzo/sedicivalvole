@@ -186,3 +186,21 @@ explicit screen wake, inspect Connection details for `LOCAL · WEBRTC` versus
 Record the device/browser, selected transport, stable geometry and any remaining
 freshness interruptions. The owner's already-open old-build session was not
 reloaded or stopped by this task. Physical acceptance remains open.
+
+## Owner desk acceptance and navbar follow-up
+
+After loading build 20260920-2153.3936555, the owner reports the real Mac/iPhone
+pairing is stable, clean and sustained during the desk trial. Read-only inspection
+of the existing receiver confirms Setup complete, Fresh, Screen awake and
+`LOCAL · WEBRTC`, with approximately 6 ms displayed round trip. Device/iOS/Safari
+versions were not supplied. This is physical desk evidence; the Tesla drive is
+planned for the next morning and remains open.
+
+The same screen explicitly reports `Car motion: GPS · not enabled` and waits for
+fresh GPS speed. Stable pairing/pose ZERO therefore does not prove Engine/Flux
+road-sensor use. Those consumers require the separate aligned-car declaration,
+valid new ZERO and current GPS/sensor evidence. The owner requests an unmistakable
+navbar indicator, then explicitly rejects text below the icon: preserve shared
+rail geometry/strokes, use state-specific glyphs inside the phone/satellite
+silhouette and expose the effective source immediately on opening the drawer.
+This scoped refinement is under verification; it changes no consumer gate.

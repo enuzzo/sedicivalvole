@@ -91,9 +91,12 @@ transport freshness deadline is extended to conceal intermittent reception.
 
 ## UI and diagnostic evidence
 
-The existing phone cell shows LIVE only for usable mounted input with fresh GPS,
-otherwise GPS or DEMO, without growing the navbar. Its accessible name and the
-phone/local panel explain the effective source: **Phone motion + GPS speed**,
+The September 20 owner refinement removes the navbar subtitle entirely. Shared
+rail geometry and stroke stay unchanged: satellite for GPS fallback, checked phone
+for a connected peer, phone/gyroscope for usable mounted input with fresh GPS;
+inner pairing, retry and Demo symbols remain distinct. The checked phone does not
+claim road-sensor use. The source sentence is immediately visible below the drawer
+heading, while its accessible name and details explain the effective source: **Phone motion + GPS speed**,
 connecting, awaiting ZERO, unsupported/moved mount, stale or unavailable, or
 waiting for fresh GPS speed. Open transport alone never turns this indicator on.
 The phone distinguishes local mount calibration from receiver usage.

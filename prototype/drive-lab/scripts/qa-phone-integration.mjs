@@ -81,7 +81,7 @@ function hardwareFixture() {
   };
   window.DeviceMotionEvent = class { static requestPermission() { return Promise.resolve('granted'); } };
   window.DeviceOrientationEvent = class { static requestPermission() { return Promise.resolve('granted'); } };
-  let a = [0, 0, 0], rotation = [0, 0, 0], running = true, wake, wakeDenied = false;
+  let a = [0, 0, 0], rotation = [0, 0, 0], running = true, wake, wakeDenied = false, inclined = false;
   Object.defineProperty(navigator, 'wakeLock', { configurable: true, value: { request: async () => {
     if (wakeDenied) throw new DOMException('Synthetic denial', 'NotAllowedError');
     wake = new EventTarget(); wake.released = false;
@@ -90,12 +90,14 @@ function hardwareFixture() {
   } } });
   setInterval(() => {
     if (!running) return;
-    listeners.get('deviceorientation')?.forEach(fn => fn({ isTrusted: true, alpha: 0, beta: 0, gamma: 0 }));
+    const gravity = inclined ? [0, 9.81 / Math.sqrt(2), 9.81 / Math.sqrt(2)] : [0, 0, 9.81];
+    listeners.get('deviceorientation')?.forEach(fn => fn({ isTrusted: true, alpha: 0, beta: inclined ? 45 : 0, gamma: 0 }));
     listeners.get('devicemotion')?.forEach(fn => fn({ isTrusted: true, acceleration: { x: a[0], y: a[1], z: a[2] },
-      accelerationIncludingGravity: { x: a[0], y: a[1], z: a[2] + 9.81 }, rotationRate: { beta: rotation[0], gamma: rotation[1], alpha: rotation[2] } }));
+      accelerationIncludingGravity: { x: a[0] + gravity[0], y: a[1] + gravity[1], z: a[2] + gravity[2] }, rotationRate: { beta: rotation[0], gamma: rotation[1], alpha: rotation[2] } }));
   }, 20);
   window.motionHardware = {
     set(acceleration, gyro) { a = acceleration; rotation = gyro; },
+    incline(value) { inclined = value; },
     pause(value) { running = !value; },
     denyWake(value) { wakeDenied = value; },
     releaseWake() { return wake?.release(); },
@@ -399,11 +401,70 @@ try {
   await phone.locator('.motion-input-health[data-fresh="true"]').waitFor();
   await receiver.getByText('Fresh', { exact: true }).waitFor();
   check('sensor gaps invalidate ZERO; a new generation and reciprocal receipts restore readings');
+  assert.match(await receiver.locator('.motion-setup-intro').innerText(), /Phone connected · car motion off/);
+  await receiver.getByRole('button', { name: 'CLOSE', exact: true }).click();
+  await receiver.locator('.motion-dialog').waitFor({ state: 'detached' });
+  await receiver.keyboard.press('Tab');
+  const navbar = receiver.locator('.motion-button');
+  await receiver.locator('.motion-button[data-motion-state="paired"]').waitFor();
+  const cellSize = await navbar.evaluate(e => ({ width:e.getBoundingClientRect().width, height:e.getBoundingClientRect().height }));
+  assert.equal((await navbar.innerText()).trim(), '', 'the phone cell uses an icon, never a subtitle');
+  assert.equal(await navbar.getAttribute('data-connected'), 'true');
+  await receiver.screenshot({ path:join(output,'navbar-paired.png') });
+  check('paired phone has a checked icon without a subtitle and immediate road-use status in the drawer');
+  await phone.evaluate(() => motionHardware.incline(true));
+  await phone.getByRole('button', { name:'Connection & sensor details', exact:true }).click();
+  await phone.getByRole('checkbox', { name:/Use aligned car motion/ }).check();
+  await phone.getByRole('button', { name:'ZERO', exact:true }).click();
+  await phone.locator('.motion-input-health[data-fresh="true"]').waitFor();
+  await receiver.locator('.motion-button[data-motion-state="active"]').waitFor();
+  await receiver.keyboard.press('Tab');
+  assert.equal(await navbar.locator('ellipse').count(),1);
+  assert.deepEqual(await navbar.evaluate(e => ({ width:e.getBoundingClientRect().width, height:e.getBoundingClientRect().height })),cellSize);
+  await receiver.screenshot({ path:join(output,'navbar-sensors.png') });
+  await navbar.click();
+  await receiver.getByText('Phone sensors active · GPS speed', {exact:true}).waitFor();
+  await receiver.screenshot({ path:join(output,'drawer-sensors.png') });
+  await receiver.getByRole('button', { name:'CLOSE',exact:true }).click();
+  await receiver.keyboard.press('Tab');
+  check('real optional aligned ZERO selects the gyroscope icon with current sensor input and unchanged navbar geometry');
+  await receiver.locator('.source-readout').click();
+  await receiver.locator('.motion-button[data-motion-state="demo"]').waitFor();
+  assert.equal(await navbar.getAttribute('data-connected'),'true');
+  assert.match(await navbar.getAttribute('aria-label'),/phone excluded/);
+  await receiver.keyboard.press('Tab'); await receiver.locator('.source-readout').click();
+  await receiver.locator('.motion-button[data-motion-state="active"]').waitFor();
+  await receiver.evaluate(() => gpsHardware.pause(true));
+  await receiver.locator('.motion-button[data-motion-state="paired"]').waitFor();
+  assert.match(await navbar.getAttribute('aria-label'),/waiting for fresh speed/);
+  await receiver.evaluate(() => gpsHardware.pause(false));
+  await receiver.locator('.motion-button[data-motion-state="active"]').waitFor();
+  check('Demo and lost GPS remove the active-sensor claim without losing the pairing indicator');
+  for (const appearance of ['dark','light']) {
+    await receiver.keyboard.press('Tab'); await receiver.locator('.appearance-trigger').click();
+    if (!await receiver.getByRole('menuitemradio',{name:appearance.toUpperCase(),exact:true}).isVisible()) await receiver.locator('.appearance-trigger').click();
+    await receiver.getByRole('menuitemradio',{name:appearance.toUpperCase(),exact:true}).click();
+    for (const [width,height] of [[773,601],[760,390]]) {
+      await receiver.setViewportSize({width,height}); await receiver.keyboard.press('Tab');
+      const geometry=await navbar.evaluate(e=>{const b=e.getBoundingClientRect(),s=e.querySelector('svg').getBoundingClientRect();return {button:[b.width,b.height],svg:[s.width,s.height],inside:s.left>=b.left&&s.right<=b.right&&s.top>=b.top&&s.bottom<=b.bottom};});
+      assert.ok(geometry.inside); assert.deepEqual(geometry.svg,[28,28]); assert.ok(geometry.button.every(n=>n>=48));
+      await receiver.screenshot({path:join(output,`navbar-${width}-${appearance}.png`)});
+    }
+    await receiver.setViewportSize({width:773,height:601});
+  }
+  check('icon-only navbar preserves shared 28px glyphs and touch targets in both appearances and compact landscape');
+  await receiver.keyboard.press('Tab'); await navbar.click();
+  await receiver.getByText('Phone sensors active · GPS speed', {exact:true}).waitFor();
   await phone.getByRole('button', { name: 'STOP', exact: true }).click();
   await receiver.getByText('Connection ended', { exact: true }).waitFor();
+  await receiver.locator('.motion-button[data-motion-state="gps"]').waitFor();
+  assert.equal(await navbar.getAttribute('data-connected'),'false');
   assert.equal((await phone.evaluate(() => motionHardware.listeners())).find(([name]) => name === 'devicemotion')[1], 0);
   check('STOP clears readiness and removes the sensor listener');
-  await receiver.getByRole('button', { name: 'CREATE NEW QR', exact: true }).click();
+  await receiver.getByRole('button', { name:'CLOSE',exact:true }).click();
+  await receiver.keyboard.press('Tab');
+  await receiver.screenshot({path:join(output,'navbar-gps.png')});
+  await navbar.click();
   await receiver.locator('.motion-qr').waitFor();
   assert.equal(await receiver.locator('.motion-live-readings').count(), 0);
   assert.deepEqual(await done(), [false, false, false, false, false]);

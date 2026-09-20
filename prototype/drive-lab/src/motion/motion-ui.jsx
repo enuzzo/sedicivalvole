@@ -3,8 +3,18 @@ import QRCode from "qrcode";
 import { SETUP_LABELS, receiverSetup, motionLiveStatus, setupEvidence, ended } from "./guided-setup.js";
 import { createRecentMotionReadings } from "./recent-readings.js";
 
-export function MotionIcon() {
-  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><rect x="8" y="3" width="8" height="18" rx="2"/><path d="M11 17h2M4 8l-2 4 2 4M20 8l2 4-2 4"/></svg>;
+export function MotionIcon({ state = "gps" }) {
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    {state === "gps" ? <><path d="m13 5 6 6-5 5-6-6zM7 2l4 4-5 5-4-4zM18 13l4 4-5 5-4-4zM11 13l-2 2M7 15a4 4 0 0 0 4 4M3 15a8 8 0 0 0 8 8"/></>
+      : <><rect x="5.5" y="2" width="13" height="20" rx="2"/><path d="M10 5h4M11 19h2"/>
+        {state === "paired" && <path d="m8.5 11.5 2.5 2.5 4.5-4.5"/>}
+        {state === "active" && <><circle cx="12" cy="12" r="3"/><ellipse cx="12" cy="12" rx="5" ry="1.8" transform="rotate(-35 12 12)"/></>}
+        {state === "local" && <circle cx="12" cy="12" r="2"/>}
+        {state === "retrying" && <path d="M15.5 10a4 4 0 1 0 .2 4M15.5 7.5V10H13"/>}
+        {state === "pairing" && <path strokeDasharray=".1 3" d="M9 12h6"/>}
+        {state === "demo" && <path d="m10 9 5 3-5 3z"/>}
+      </>}
+  </svg>;
 }
 
 export function SetupMark({ kind }) {
@@ -56,7 +66,7 @@ export function MotionNext({ guide }) {
   </div>;
 }
 
-export function MotionPanel({ snapshot, onStart, onStop, onClose, responseLabel, children }) {
+export function MotionPanel({ snapshot, onStart, onStop, onClose, responseLabel, responseSummary, children }) {
   const [qr, setQr] = useState(null), [qrError, setQrError] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false), [review, setReview] = useState(false);
   const [completed, setCompleted] = useState(false);
@@ -91,7 +101,7 @@ export function MotionPanel({ snapshot, onStart, onStop, onClose, responseLabel,
   const restart = () => { setCompleted(false); setReview(false); onStop(); onStart(); };
   return <div className="motion-panel-content motion-guided-panel">
     <header><h2 id="motion-title">Connect your phone</h2><button className="motion-close" data-dialog-initial-focus onClick={onClose}><SetupMark kind="close"/>CLOSE</button></header>
-    <p className="motion-setup-intro">GPS for driving. Phone for motion + rotation.</p>
+    <p className="motion-setup-intro" title={responseLabel}>{responseSummary ?? "GPS for driving. Phone for motion + rotation."}</p>
     {setupCompleted && !needsAction && <SetupDisclosure expanded={review} onClick={() => setReview(v => !v)}/>}
     {showSetup ? <>
       <MotionSteps active={guide.active} done={setupSteps}/>

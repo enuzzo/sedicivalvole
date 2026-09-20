@@ -16,8 +16,11 @@ present in all 1,160 observations. Seventeen canonical HTTPS identity/hash/cache
 checks and six public compiled-browser checks pass. The public native direct path
 reaches **120/120** mutually fresh observations and recovers automatically after
 thirty seconds offline with the same pairing and ZERO. Hardware remains synthetic
-in those tests. The owner confirms the real devices share Wi-Fi; physical iPhone /
-Safari / Tesla acceptance and the post-publication retry remain open. See the
+in those tests. The owner now reports stable, clean physical Mac/iPhone operation on shared Wi-Fi;
+read-only inspection confirms LOCAL · WEBRTC around 6 ms, with car motion not yet
+enabled. This accepts the desk connection/presentation trial; Tesla driving and
+actual aligned-sensor response remain open. An icon-only navbar clarification is
+under verification. See the
 [causes, architecture and evidence](PHONE-STABILITY-2026-09-20.md).
 
 ## Phone network recovery — September 20 (published; physical retry open)

@@ -71,3 +71,32 @@ export function roadSourceLabel({ source, active, sample, gpsFresh = true, senso
   if (sensor.sensorState === 'live') return 'GPS motion · mount not calibrated';
   return 'GPS motion · phone unavailable';
 }
+
+// Pairing and effective road input are separate facts. This is presentation only;
+// consumers keep reading current samples through their existing freshness gates.
+export function roadNavbarStatus(options) {
+  const { source, active, sample, gpsFresh = true, sensor = {}, link = {}, local = false } = options;
+  const paired = !local && link.state === 'connected';
+  const retrying = paired && ['offline', 'retrying'].includes(link.networkState);
+  const inUse = source === 'GPS' && active && gpsFresh && Boolean(usableRoadSample(sample));
+  const responseSource = source !== 'GPS' ? 'demo-motion' : inUse ? 'phone-motion' : 'gps-motion';
+  const connected = paired && !retrying;
+  let label = roadSourceLabel(options);
+  let state = 'gps', summary = gpsFresh ? 'GPS response · phone not connected' : 'Waiting for GPS · phone not connected';
+  if (source !== 'GPS') { state = 'demo'; summary = 'Demo response · phone sensors excluded'; }
+  else if (inUse) { state = 'active'; summary = `${local ? 'Device' : 'Phone'} sensors active · GPS speed`; }
+  else if (retrying) { state = 'retrying'; summary = gpsFresh ? 'Phone reconnecting · GPS response' : 'Phone reconnecting · waiting for GPS'; }
+  else if (paired) {
+    state = 'paired';
+    summary = !sensor.mountSelected ? 'Phone connected · car motion off'
+      : !gpsFresh ? 'Phone connected · waiting for GPS' : 'Phone connected · GPS response';
+  }
+  else if (['preparing', 'pairing', 'connecting'].includes(link.state)) { state = 'pairing'; summary = 'Connecting your phone'; }
+  else if (local && sensor.sensorState === 'live') { state = 'local'; summary = gpsFresh ? 'Local sensors · GPS response' : 'Local sensors · waiting for GPS'; }
+  if (paired && !inUse && source === 'GPS') {
+    label = retrying ? `Phone pairing retained · reconnecting. ${gpsFresh ? 'GPS supplies road response.' : 'Waiting for fresh GPS speed.'}`
+      : !sensor.mountSelected ? 'Phone paired · car motion off. Enable Use aligned car motion and ZERO on your phone.'
+      : `Phone paired · ${label}`;
+  } else if (paired && source !== 'GPS') label = `Phone paired · ${label}`;
+  return { label, summary, state, connected, source: responseSource };
+}
