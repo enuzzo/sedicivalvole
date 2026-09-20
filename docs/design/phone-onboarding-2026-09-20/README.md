@@ -6,6 +6,14 @@ numbered/checkmarked steps and automatic collapse after setup. The combined
 `20260920-1716.24c955b`. [Local and canonical evidence](../../qa/2026-09-20-phone-onboarding/README.md)
 passes; real iPhone/Tesla acceptance remains separate and open.
 
+## Owner review after publication
+
+The September 20 owner review rejects the actual drawer as too flat, empty and
+generic, with inconsistent button/disclosure alignment. Visual acceptance is
+reopened; use smartphone/phone in generic guidance. The selected starting layouts
+and behavioral contract remain, while the execution requires refinement. See
+[revision handoff](../../PHONE-DESIGN-REVIEW-HANDOFF-2026-09-20.md).
+
 ## Shared requirements
 
 - Guide the phone through local sensor permission, connection, placement, ZERO

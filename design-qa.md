@@ -1,6 +1,11 @@
 # Guided companion design QA
 
-final result: passed
+final result: reopened after owner visual review
+
+The owner rejected the published drawer composition on September 20: flat/empty
+visual hierarchy and inconsistent alignment, especially Connection details. The
+prior comparison below is historical evidence, not owner aesthetic acceptance.
+See [revision handoff](docs/PHONE-DESIGN-REVIEW-HANDOFF-2026-09-20.md).
 
 ## Target and evidence
 

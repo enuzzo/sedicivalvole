@@ -1,5 +1,13 @@
 # Current Project State
 
+## Owner design review — September 20 (revision required)
+
+The current smartphone drawer is published but not visually accepted. The owner
+requests a more considered composition, coherent control/disclosure alignment and
+platform-neutral smartphone/phone wording. Fresh-context continuation uses
+Frontend App Builder and real rendered/reference comparison; existing functional
+checks do not close this review. See the [exact scope and handoff](PHONE-DESIGN-REVIEW-HANDOFF-2026-09-20.md).
+
 ## Guided phone onboarding — September 20 (published; physical acceptance open)
 
 The owner selected the first phone layout and second receiver drawer. The combined
