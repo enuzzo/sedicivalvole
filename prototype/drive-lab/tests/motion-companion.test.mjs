@@ -451,3 +451,13 @@ test('a newly prepared QR never asks the user to replace itself', async () => {
  assert.match(motionLiveStatus({state:'pairing'}).hint,/scan this QR/);
  for(const state of ['closed','expired','error','suspended']) assert.match(motionLiveStatus({state}).hint,/new QR/);
 });
+
+
+test('connected setup is waiting for calibration, not a network delay', async () => {
+ const {motionLiveStatus}=await import('../src/motion/guided-setup.js');
+ const s={state:'connected',dataFresh:true,sensorState:'live',tared:false,roadState:'needs-zero'};
+ assert.equal(motionLiveStatus(s).quality,'Waiting');
+ assert.equal(motionLiveStatus(s).title,'Connected · Finish setup');
+ assert.match(motionLiveStatus(s).hint,/On iPhone/);
+ assert.equal(motionLiveStatus({...s,dataFresh:false}).quality,'Delayed');
+});
