@@ -33,7 +33,8 @@ import { ExperienceCard } from "./experience-card.jsx";
 import { CURATED_EXPERIENCES, applyExperienceSettings, matchingExperience } from "./curated-experiences.js";
 import { resolveSemanticTheme } from "./semantic-theme.js";
 import { RailIcon } from "./rail-icon.jsx";
-import { MotionIcon, MotionPanel } from "./motion/motion-ui.jsx";
+import { MotionIcon } from "./motion/motion-ui.jsx";
+import { MotionReceiverPanel } from "./motion/receiver-view.jsx";
 import { createMotionSession } from "./motion/session.js";
 import { Component, lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 // Keep the support QR inside the already-loaded application bundle so opening
@@ -2160,6 +2161,7 @@ export function App() {
   const [motionOpen, setMotionOpen] = useState(false);
   const [motionSnapshot, setMotionSnapshot] = useState({ state: "idle" });
   const motionSessionRef = useRef(null);
+  const readMotionSnapshot = useCallback(() => motionSessionRef.current?.snapshot() ?? { state: "idle" }, []);
   const motionPresentationRef = useRef(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [controlsAwake, setControlsAwake] = useState(true);
@@ -2446,24 +2448,26 @@ export function App() {
     const refresh = () => {
       const sample = getAudioRoadMotion();
       const label = roadSourceLabel({ source: sourceRef.current, active: phase === "running", sample, gpsFresh: engineMotionRef.current.snapshot(performance.now()).freshness === "fresh",
-        sensor: showLocalSensors ? localSensors.summary : motionSnapshot, link: showLocalSensors ? {} : motionSnapshot });
+        sensor: showLocalSensors ? localSensors.summary : readMotionSnapshot(), link: showLocalSensors ? {} : readMotionSnapshot() });
       const next = { label, source: sourceRef.current !== "GPS" ? "demo-motion" : usableRoadSample(sample) ? "phone-motion" : "gps-motion" };
       setRoadInputStatus(previous => previous.label === next.label ? previous : next);
     };
     refresh(); const timer = window.setInterval(refresh, 100);
     return () => window.clearInterval(timer);
-  }, [phase, source, showLocalSensors, localSensors.summary, motionSnapshot, getAudioRoadMotion]);
+  }, [phase, source, showLocalSensors, localSensors.summary, readMotionSnapshot, getAudioRoadMotion]);
 
   useEffect(() => {
     let lastUiAt = -Infinity;
-    const session = createMotionSession({ role: "receiver", getPresentation: () => motionPresentationRef.current, onChange: (next) => setMotionSnapshot((current) => {
+    let previous = {};
+    const session = createMotionSession({ role: "receiver", getPresentation: () => motionPresentationRef.current, onChange: (next) => {
       const at = performance.now();
-      if (current.state === next.state && current.qrUrl === next.qrUrl && current.sensorState === next.sensorState
-        && current.tared === next.tared && current.receiverConfirmed === next.receiverConfirmed
-        && current.tareState === next.tareState && at - lastUiAt < 1000) return current;
+      // The root owns connection controls and slow diagnostic metadata. The
+      // mounted receiver panel reads live values/health at its own boundary.
+      if (previous.state === next.state && previous.qrUrl === next.qrUrl && at - lastUiAt < 1000) return;
       lastUiAt = at;
-      return { ...next, values: undefined };
-    }),
+      previous = { ...next, values: undefined };
+      setMotionSnapshot(previous);
+    },
       onEvent: (type, detail) => logDiagnosticEvent(`motion.${type}`, detail) });
     motionSessionRef.current = session;
     return () => { session.dispose(); motionSessionRef.current = null; };
@@ -5585,7 +5589,7 @@ export function App() {
       </section>
 
       {motionOpen ? <DialogSurface className="diagnostic-drawer motion-dialog" labelledBy="motion-title" focusKey={showLocalSensors ? "local" : "remote"} onClose={() => setMotionOpen(false)}>
-        {showLocalSensors ? <LocalSensorsPanel responseLabel={roadInputStatus.label} sensors={localSensors} gpsState={gpsState} source={source} themeKey={`${themeId}:${appearanceResolution.appearance}`} onClose={() => setMotionOpen(false)} onRemote={() => { localSensors.stop(); setMotionSourceChoice("remote"); void motionSessionRef.current?.start(null, "https"); }}/> : <><MotionPanel responseLabel={roadInputStatus.label} snapshot={motionSnapshot} onStart={(transport = "https") => void motionSessionRef.current?.start(null, transport)} onStop={() => motionSessionRef.current?.stop()} onClose={() => setMotionOpen(false)}>{localSensors.capability.potential && <button className="motion-local-choice" onClick={() => { motionSessionRef.current?.stop(); setMotionSourceChoice("local"); }}>USE THIS DEVICE’S SENSORS</button>}</MotionPanel></>}
+        {showLocalSensors ? <LocalSensorsPanel responseLabel={roadInputStatus.label} sensors={localSensors} gpsState={gpsState} source={source} themeKey={`${themeId}:${appearanceResolution.appearance}`} onClose={() => setMotionOpen(false)} onRemote={() => { localSensors.stop(); setMotionSourceChoice("remote"); void motionSessionRef.current?.start(null, "https"); }}/> : <MotionReceiverPanel responseLabel={roadInputStatus.label} readSnapshot={readMotionSnapshot} onStart={(transport = "https") => void motionSessionRef.current?.start(null, transport)} onStop={() => motionSessionRef.current?.stop()} onClose={() => setMotionOpen(false)}>{localSensors.capability.potential && <button className="motion-local-choice" onClick={() => { motionSessionRef.current?.stop(); setMotionSourceChoice("local"); }}>USE THIS DEVICE’S SENSORS</button>}</MotionReceiverPanel>}
       </DialogSurface> : null}
       {supportOpen ? (
         <SupportPanel

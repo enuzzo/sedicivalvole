@@ -1,0 +1,290 @@
+// Compiled App + compiled phone + real sensor owner, session, cipher, protocol and PHP.
+// Only hardware events/permissions/wake are synthetic. No production test hooks or mail.
+import assert from 'node:assert/strict';
+import { createServer } from 'node:http';
+import { spawn } from 'node:child_process';
+import { mkdtemp, mkdir, readFile, writeFile, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { resolve, join, extname, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { webcrypto } from 'node:crypto';
+import { createMotionCipher } from '../src/motion/relay.js';
+
+const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwright');
+const project = fileURLToPath(new URL('..', import.meta.url));
+const dist = resolve(process.env.SEDICIVALVOLE_QA_DIST || join(project, 'dist/client'));
+const output = process.env.QA_OUTPUT || join(tmpdir(), 'sv-phone-integration');
+const directory = await mkdtemp(join(tmpdir(), 'sv-phone-integration-pairs-'));
+const evidence = { syntheticSensors: true, checks: [], pageErrors: [], consoleErrors: [], http: [], wire: [] };
+let delay = 0, cipher = null;
+const roles = new Map();
+// Keep PHP loaded: launching a new interpreter for every exchange would add
+// process-start latency unrelated to the deployed endpoint.
+const workerScript = "define('SEDICIVALVOLE_MOTION_PAIR_TEST',true); require $argv[1]; while(($line=fgets(STDIN))!==false){echo json_encode(motionPairRequest(json_decode($line,true),$argv[2],time())).\"\\n\";fflush(STDOUT);}";
+const worker = spawn('php', ['-r', workerScript, join(project, 'public/api/motion-pair.php'), directory], { stdio: ['pipe', 'pipe', 'ignore'] });
+const pending = []; let phpOutput = '';
+worker.stdout.on('data', chunk => {
+  phpOutput += chunk;
+  while (phpOutput.includes('\n')) {
+    const end = phpOutput.indexOf('\n'), line = phpOutput.slice(0, end); phpOutput = phpOutput.slice(end + 1);
+    pending.shift()?.(JSON.parse(line));
+  }
+});
+const endpoint = body => new Promise(done => { pending.push(done); worker.stdin.write(body + '\n'); });
+const mime = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.woff2': 'font/woff2', '.ttf': 'font/ttf' };
+const server = createServer(async (request, response) => {
+  const pathname = new URL(request.url, 'http://localhost').pathname;
+  if (pathname === '/api/motion-pair.php' && request.method === 'POST') {
+    let body = ''; for await (const chunk of request) body += chunk;
+    const started = performance.now(), input = JSON.parse(body), action = input.action;
+    if (action === 'exchange' && delay) await new Promise(r => setTimeout(r, delay));
+    const [status, payload] = await endpoint(body);
+    if (status === 200 && action === 'create') roles.set(payload.token, 'receiver');
+    if (status === 200 && action === 'join') roles.set(payload.token, 'phone');
+    if (cipher && action === 'exchange' && input.packet && roles.has(input.token)) {
+      try {
+        const role = roles.get(input.token), decoded = JSON.parse(await cipher.open(input.packet, role));
+        // In-memory test timing only: never retain keys, axes or packet bodies.
+        if (evidence.wire.length < 3000) evidence.wire.push({ at: Math.round(started), role, request: decoded.request,
+          sequence: decoded.sequence, generation: decoded.values?.generation, ageMs: decoded.ageMs,
+          acceptedSequence: decoded.context?.acceptedSequence, acceptedGeneration: decoded.context?.acceptedGeneration,
+          confirmed: decoded.summary?.receiverConfirmed, sensorState: decoded.summary?.sensorState, tared: decoded.summary?.tared });
+      } catch { /* A later QR uses a different in-memory key. */ }
+    }
+    evidence.http.push({ action, status, at: Math.round(started), durationMs: Math.round(performance.now() - started) });
+    response.writeHead(status, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' }); response.end(JSON.stringify(payload)); return;
+  }
+  if (pathname.startsWith('/api/')) { response.writeHead(503, { 'Content-Type': 'application/json' }); response.end('{}'); return; }
+  const path = resolve(dist, '.' + (pathname === '/' ? '/index.html' : pathname));
+  if (!path.startsWith(dist + sep)) { response.writeHead(403); response.end(); return; }
+  try { const bytes = await readFile(path); response.writeHead(200, { 'Content-Type': mime[extname(path)] || 'application/octet-stream', 'Cache-Control': 'no-store' }); response.end(bytes); }
+  catch { if (!response.headersSent) response.writeHead(404); response.end(); }
+});
+await new Promise((done, reject) => { server.once('error', reject); server.listen(0, '127.0.0.1', done); });
+const base = `http://127.0.0.1:${server.address().port}`;
+const browser = await chromium.launch({ channel: 'chrome', headless: true });
+const check = name => { evidence.checks.push(name); console.log(`PASS ${name}`); };
+let receiver, phone;
+
+// Run in the phone browser before product code. Invoke only registered platform
+// listeners: ZERO, projection, freshness, permissions and teardown remain real.
+function hardwareFixture() {
+  const listeners = new Map();
+  const add = window.addEventListener.bind(window), remove = window.removeEventListener.bind(window);
+  window.addEventListener = (name, fn, ...args) => {
+    if (['devicemotion', 'deviceorientation'].includes(name)) { if (!listeners.has(name)) listeners.set(name, new Set()); listeners.get(name).add(fn); }
+    else add(name, fn, ...args);
+  };
+  window.removeEventListener = (name, fn, ...args) => {
+    if (listeners.has(name)) listeners.get(name).delete(fn); else remove(name, fn, ...args);
+  };
+  window.DeviceMotionEvent = class { static requestPermission() { return Promise.resolve('granted'); } };
+  window.DeviceOrientationEvent = class { static requestPermission() { return Promise.resolve('granted'); } };
+  let a = [0, 0, 0], rotation = [0, 0, 0], running = true, wake, wakeDenied = false;
+  Object.defineProperty(navigator, 'wakeLock', { configurable: true, value: { request: async () => {
+    if (wakeDenied) throw new DOMException('Synthetic denial', 'NotAllowedError');
+    wake = new EventTarget(); wake.released = false;
+    wake.release = async () => { wake.released = true; wake.dispatchEvent(new Event('release')); };
+    return wake;
+  } } });
+  setInterval(() => {
+    if (!running) return;
+    listeners.get('deviceorientation')?.forEach(fn => fn({ isTrusted: true, alpha: 0, beta: 0, gamma: 0 }));
+    listeners.get('devicemotion')?.forEach(fn => fn({ isTrusted: true, acceleration: { x: a[0], y: a[1], z: a[2] },
+      accelerationIncludingGravity: { x: a[0], y: a[1], z: a[2] + 9.81 }, rotationRate: { beta: rotation[0], gamma: rotation[1], alpha: rotation[2] } }));
+  }, 20);
+  window.motionHardware = {
+    set(acceleration, gyro) { a = acceleration; rotation = gyro; },
+    pause(value) { running = !value; },
+    denyWake(value) { wakeDenied = value; },
+    releaseWake() { return wake?.release(); },
+    listeners() { return [...listeners].map(([name, set]) => [name, set.size]); },
+  };
+}
+
+function renderProbe() {
+  window.motionRenders = { root: 0, panel: 0, rootMotionUpdates: 0, panelUpdates: 0 };
+  let lastRootMotion, lastPanel;
+  window.__REACT_DEVTOOLS_GLOBAL_HOOK__ = {
+    supportsFiber: true, inject() { return 1; }, onCommitFiberUnmount() {},
+    onCommitFiberRoot(_id, root) {
+      const visit = fiber => {
+        if (!fiber) return;
+        if (fiber.flags & 1) {
+          if (fiber.memoizedProps?.readSnapshot) {
+            window.motionRenders.panel++;
+            if (fiber.memoizedState?.memoizedState !== lastPanel) { window.motionRenders.panelUpdates++; lastPanel = fiber.memoizedState?.memoizedState; }
+          }
+          // App has many independent owners; the focused panel has two hooks.
+          let hooks = 0, state = fiber.memoizedState, motion;
+          if (fiber.tag === 0) while (state && hooks < 500) {
+            hooks++;
+            if (state.memoizedState?.role === 'receiver' && state.memoizedState?.qrUrl !== undefined) motion = state.memoizedState;
+            state = state.next;
+          }
+          if (hooks >= 60) {
+            window.motionRenders.root++;
+            if (motion && motion !== lastRootMotion) { window.motionRenders.rootMotionUpdates++; lastRootMotion = motion; }
+          }
+        }
+        visit(fiber.child); visit(fiber.sibling);
+      };
+      visit(root.current);
+    },
+  };
+}
+
+try {
+  await mkdir(output, { recursive: true });
+  const receiverContext = await browser.newContext({ viewport: { width: 773, height: 601 }, serviceWorkers: 'block' });
+  const phoneContext = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' });
+  await phoneContext.addInitScript(hardwareFixture);
+  await receiverContext.addInitScript(renderProbe);
+  for (const context of [receiverContext, phoneContext]) await context.route('**/*', route => {
+    if (new URL(route.request().url()).origin !== base) return route.abort();
+    return route.continue();
+  });
+  receiver = await receiverContext.newPage(); phone = await phoneContext.newPage();
+  for (const [name, page] of [['receiver', receiver], ['phone', phone]]) {
+    page.on('pageerror', error => evidence.pageErrors.push({ name, error: error.message }));
+    page.on('console', message => { if (message.type() === 'error') evidence.consoleErrors.push({ name, error: message.text() }); });
+  }
+  await receiver.goto(base);
+  evidence.release = await receiver.locator('meta[name="sedicivalvole-release"]').getAttribute('content');
+  await receiver.getByRole('button', { name: /START MUSIC/ }).click();
+  await receiver.locator('.motion-button').click();
+  if (await receiver.locator('.local-sensors-panel').count()) await receiver.getByRole('button', { name: 'USE ANOTHER PHONE INSTEAD', exact: true }).click();
+  await receiver.locator('.motion-qr').waitFor();
+  // Read exactly the QR input through React props; never replace a session/sample.
+  const qr = await receiver.locator('.motion-qr').evaluate(element => {
+    let fiber = element[Object.keys(element).find(key => key.startsWith('__reactFiber$'))];
+    while (fiber) { if (fiber.memoizedProps?.snapshot?.qrUrl) return fiber.memoizedProps.snapshot.qrUrl; fiber = fiber.return; }
+    throw new Error('Rendered QR input not found');
+  });
+  cipher = await createMotionCipher(new URL(qr).hash.slice(6).split('.')[2], webcrypto);
+  await phone.goto(qr);
+  await phone.getByRole('button', { name: 'ENABLE LOCAL SENSORS', exact: true }).click();
+  await phone.getByRole('button', { name: 'CONNECT TO DISPLAY', exact: true }).click();
+  await phone.getByRole('button', { name: 'PHONE IS SECURED', exact: true }).click();
+  await receiver.getByText('Set ZERO on your phone.', { exact: true }).waitFor();
+  const done = () => receiver.locator('.motion-setup-steps li').evaluateAll(items => items.map(item => item.dataset.done === 'true'));
+  assert.deepEqual(await done(), [true, true, true, false, false]);
+  delay = 400;
+  await receiver.getByText('Waiting for your phone.', { exact: true }).waitFor();
+  assert.deepEqual(await done(), [true, true, true, false, false]);
+  check('timed pre-ZERO delay retains completed actions while current health becomes delayed');
+  delay = 0;
+  await receiver.getByText('Set ZERO on your phone.', { exact: true }).waitFor();
+  await phone.getByRole('button', { name: 'ZERO', exact: true }).click();
+  await phone.evaluate(() => motionHardware.denyWake(true));
+  await phone.getByRole('button', { name: 'KEEP SCREEN AWAKE', exact: true }).click();
+  await phone.getByText(/Screen wake was not granted/).waitFor();
+  assert.equal(await phone.getByRole('heading', { name: 'Motion is live.', exact: true }).count(), 0);
+  await phone.evaluate(() => motionHardware.denyWake(false));
+  await phone.getByRole('button', { name: 'KEEP SCREEN AWAKE', exact: true }).click();
+  await phone.getByRole('heading', { name: 'Motion is live.', exact: true }).waitFor();
+  await receiver.getByText('Fresh', { exact: true }).waitFor();
+  check('real compiled phone and receiver complete arbitrary-pose ZERO and reciprocal setup');
+  await phone.evaluate(() => motionHardware.set([0.3, 0.4, 0], [0, 0, 12]));
+  await phone.waitForFunction(() => document.querySelector('.motion-live-row strong')?.textContent.includes('+0.50'));
+  // This is the prior coverage gap: App's real onChange used to strip values.
+  await receiver.waitForFunction(() => document.querySelector('.motion-live-row strong')?.textContent.includes('+0.50'), null, { timeout: 5000 });
+  assert.match(await receiver.locator('.motion-live-row').nth(1).innerText(), /\+12\.0.*°\/s/s);
+  await receiver.screenshot({ path: join(output, 'receiver-readings.png') });
+  await phone.screenshot({ path: join(output, 'phone-readings.png') });
+  check('real session/protocol inputs reach compiled App numbers with m/s² and °/s units');
+  await phone.evaluate(() => motionHardware.set([0, 0, 1.25], [0, 0, -8]));
+  await receiver.waitForFunction(() => document.querySelector('.motion-live-row strong')?.textContent.includes('+1.25'));
+  await receiver.waitForFunction(() => document.querySelectorAll('.motion-live-row strong')[1]?.textContent.includes('-8.0'));
+  check('successive acceleration and signed gyro samples change actual receiver rows');
+  const rendersBefore = await receiver.evaluate(() => ({ ...motionRenders }));
+  await receiver.waitForTimeout(2000);
+  const rendersAfter = await receiver.evaluate(() => ({ ...motionRenders }));
+  evidence.renders = { milliseconds: 2000, ...Object.fromEntries(Object.keys(rendersBefore).map(key => [key, rendersAfter[key] - rendersBefore[key]])) };
+  assert.ok(evidence.renders.panelUpdates >= 25, JSON.stringify(evidence.renders));
+  assert.ok(evidence.renders.rootMotionUpdates <= 3, JSON.stringify(evidence.renders));
+  check('20 Hz drawer values leave root motion metadata bounded to one update per second');
+  await phone.evaluate(() => motionHardware.releaseWake());
+  await phone.getByRole('button', { name: 'KEEP SCREEN AWAKE', exact: true }).waitFor();
+  await receiver.getByText('Keep your phone awake.', { exact: true }).waitFor();
+  assert.deepEqual(await done(), [true, true, true, true, false]);
+  await phone.getByRole('button', { name: 'KEEP SCREEN AWAKE', exact: true }).click();
+  await phone.getByRole('heading', { name: 'Motion is live.', exact: true }).waitFor();
+  await receiver.getByText('Fresh', { exact: true }).waitFor();
+  check('denied/released wake is never completed until a new explicit acquisition');
+  delay = 400;
+  await receiver.waitForTimeout(350);
+  assert.match(await receiver.locator('.motion-live-row').first().innerText(), /—/);
+  assert.match(await receiver.locator('.motion-live-metrics').innerText(), /Delayed/);
+  check('expired samples disappear without disconnecting or extending 250 ms validity');
+  delay = 0;
+  await receiver.getByText('Fresh', { exact: true }).waitFor();
+  await receiver.getByRole('button', { name: 'CLOSE', exact: true }).click();
+  await receiver.locator('.motion-dialog').waitFor({ state: 'detached' });
+  await receiver.keyboard.press('Tab'); await receiver.locator('.motion-button').click();
+  await receiver.getByText('Fresh', { exact: true }).waitFor();
+  await receiver.waitForFunction(() => document.querySelector('.motion-live-row strong')?.textContent.includes('+1.25'));
+  check('drawer close and reopen retain session and refresh current readings');
+  await receiver.getByRole('button', { name: 'CLOSE', exact: true }).click();
+  await receiver.locator('.motion-dialog').waitFor({ state: 'detached' });
+  const closedCount = await receiver.evaluate(() => motionRenders.panel);
+  await receiver.waitForTimeout(350);
+  assert.equal(await receiver.evaluate(() => motionRenders.panel), closedCount);
+  await receiver.keyboard.press('Tab'); await receiver.locator('.motion-button').click();
+  await receiver.getByText('Fresh', { exact: true }).waitFor();
+  check('closing the drawer stops its telemetry rendering');
+  for (const appearance of ['dark', 'light']) {
+    await receiver.getByRole('button', { name: 'CLOSE', exact: true }).click();
+    await receiver.locator('.motion-dialog').waitFor({ state: 'detached' });
+    await receiver.keyboard.press('Tab'); await receiver.locator('.appearance-trigger').click();
+    await receiver.getByRole('menuitemradio', { name: appearance.toUpperCase(), exact: true }).click();
+    await receiver.keyboard.press('Tab'); await receiver.locator('.motion-button').click();
+    await receiver.getByText('Fresh', { exact: true }).waitFor();
+    await phone.locator(`.motion-phone[data-appearance="${appearance}"]`).waitFor();
+    await receiver.screenshot({ path: join(output, `receiver-${appearance}.png`) });
+    for (const [width, height] of [[390, 844], [320, 568], [760, 390]]) {
+      await phone.setViewportSize({ width, height });
+      assert.ok(await phone.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+      await phone.screenshot({ path: join(output, `phone-${width}-${appearance}.png`) });
+    }
+  }
+  await phone.setViewportSize({ width: 390, height: 844 });
+  check('real paired LIGHT/DARK presentation preserves readings across compact portrait and landscape sizes');
+  await phone.evaluate(() => motionHardware.pause(true));
+  await receiver.getByText('Enable sensors on your phone.', { exact: true }).waitFor();
+  await phone.evaluate(() => { motionHardware.set([0, 0, 0], [0, 0, 0]); motionHardware.pause(false); });
+  await receiver.getByText('Set ZERO on your phone.', { exact: true }).waitFor();
+  const ring = phone.locator('.motion-setup-steps [data-active="true"][data-done="false"] .motion-step-number');
+  assert.equal(await ring.evaluate(element => getComputedStyle(element, '::after').animationDuration), '2.4s');
+  await phone.emulateMedia({ reducedMotion: 'reduce' });
+  assert.equal(await ring.evaluate(element => getComputedStyle(element, '::after').animationName), 'none');
+  check('approved active ring retains its 2.4-second pulse and reduced-motion static state');
+  await phone.getByRole('button', { name: 'ZERO', exact: true }).click();
+  await phone.getByRole('heading', { name: 'Motion is live.', exact: true }).waitFor();
+  await receiver.getByText('Fresh', { exact: true }).waitFor();
+  check('sensor gaps invalidate ZERO; a new generation and reciprocal receipts restore readings');
+  await phone.getByRole('button', { name: 'STOP', exact: true }).click();
+  await receiver.getByText('Connection ended', { exact: true }).waitFor();
+  assert.equal((await phone.evaluate(() => motionHardware.listeners())).find(([name]) => name === 'devicemotion')[1], 0);
+  check('STOP clears readiness and removes the sensor listener');
+  await receiver.getByRole('button', { name: 'CREATE NEW QR', exact: true }).click();
+  await receiver.locator('.motion-qr').waitFor();
+  assert.equal(await receiver.locator('.motion-live-readings').count(), 0);
+  assert.deepEqual(await done(), [false, false, false, false, false]);
+  check('new QR clears old progress, readings and readiness');
+  assert.ok(evidence.wire.some(packet => packet.confirmed && Number.isSafeInteger(packet.generation)));
+  assert.ok(evidence.wire.some(packet => Number.isSafeInteger(packet.acceptedSequence) && Number.isSafeInteger(packet.acceptedGeneration)));
+  assert.deepEqual(evidence.pageErrors, []);
+} catch (error) {
+  for (const [name, page] of [['receiver', receiver], ['phone', phone]]) if (page) {
+    await page.screenshot({ path: join(output, `${name}-failure.png`) });
+    await writeFile(join(output, `${name}-failure.txt`), await page.locator('body').innerText());
+  }
+  throw error;
+} finally {
+  await browser.close();
+  await new Promise(r => server.close(r));
+  worker.stdin.end();
+  await rm(directory, { recursive: true, force: true });
+  await writeFile(join(output, 'evidence.json'), JSON.stringify(evidence, null, 2));
+}

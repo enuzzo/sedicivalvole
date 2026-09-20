@@ -5,6 +5,8 @@ import { orientationMatrix, applyRotation } from '../src/motion/reference.js';
 import { createMotionProtocol } from '../src/motion/channel.js';
 import { estimateEngineDemand } from '../src/engine/powertrain.js';
 import { createEngineMotion } from '../src/engine/motion.js';
+import { createPhoneSensors } from '../src/motion/sensors.js';
+import { apertureCurveTarget } from '../src/motion/aperture-curve.js';
 const near = (a,b) => assert.ok(Math.abs(a-b)<1e-8, `${a} != ${b}`);
 const transpose = m => [m[0],m[3],m[6],m[1],m[4],m[7],m[2],m[5],m[8]];
 const sample = (a=2, ageMs=0, generation=1) => ({ frame:'tare-relative',generation,ageMs,acceleration:[0,0,0],rotation:[0,0,0],tilt:[0,0,0],turnRate:0,road:{longitudinalMps2:a,yawRate:0} });
@@ -82,4 +84,52 @@ test('declared aligned mounts accept upright and landscape inclines with W3C or 
  for(const pose of [{alpha:0,beta:0,gamma:0},{alpha:0,beta:180,gamma:0}]) {
   const m=orientationMatrix(pose);assert.equal(mountedBasis(m.slice(6).map(v=>v*-9.81),m),null);
  }
+});
+
+test('measured synthetic stationary noise stays observable but cannot drive road consumers; small real inputs retain sign and latency', async () => {
+ let at = 0;
+ const listeners = new Map();
+ const host = { isSecureContext: true, DeviceMotionEvent: {}, DeviceOrientationEvent: {}, navigator: {},
+  addEventListener: (name, fn) => listeners.set(name, fn), removeEventListener: name => listeners.delete(name) };
+ const doc = { visibilityState: 'visible', addEventListener() {}, removeEventListener() {} };
+ const sensors = createPhoneSensors({ host, doc, now: () => at, autoWake: false });
+ const matrix = orientationMatrix({ alpha: 0, beta: 45, gamma: 0 }), up = matrix.slice(6);
+ const gravity = up.map(v => v * 9.81), basis = mountedBasis(gravity, matrix);
+ const tick = (a, yaw) => {
+  at += 20;
+  listeners.get('deviceorientation')({ isTrusted: true, alpha: 0, beta: 45, gamma: 0 });
+  const acceleration = basis.forward.map(v => v * a), rotation = up.map(v => v * yaw);
+  listeners.get('devicemotion')({ isTrusted: true, acceleration: { x: acceleration[0], y: acceleration[1], z: acceleration[2] },
+   accelerationIncludingGravity: Object.fromEntries(['x', 'y', 'z'].map((key, i) => [key, acceleration[i] + gravity[i]])),
+   rotationRate: { beta: rotation[0], gamma: rotation[1], alpha: rotation[2] } });
+ };
+ const receiver = createMotionProtocol({ role: 'receiver', now: () => at });
+ const phone = createMotionProtocol({ role: 'phone', now: () => at, getPhone: () => ({ summary: sensors.summary(), values: sensors.latest() }) });
+ const response = createRoadResponse(), measured = [];
+ try {
+  await sensors.start(); sensors.setMount(true); tick(0, 0); sensors.requestTare();
+  for (let i = 0; i < 27; i++) tick(0, 0);
+  assert.equal(sensors.summary().tared, true);
+  for (let i = 0; i < 500; i++) {
+   tick(.055 * Math.sin(i * .73) + .025 * Math.cos(i * 1.17), .45 * Math.sin(i * .41));
+   receiver.receive(phone.receive(receiver.poll()));
+   const sample = receiver.sample();
+   measured.push({ acceleration: Math.abs(sample.road.longitudinalMps2), rotation: Math.abs(sample.road.yawRate) });
+   near(response.resolve(sample, 0, at).accelerationMps2, 0);
+   near(apertureCurveTarget({ ...sample, turnRate: sample.road.yawRate }, 40), 0);
+  }
+  assert.ok(Math.max(...measured.map(s => s.acceleration)) >= .07, 'visible input was measured, not suppressed in the sensor/protocol');
+  assert.ok(Math.max(...measured.map(s => s.rotation)) >= .4);
+  for (const sign of [1, -1]) {
+   tick(sign * .18, sign); receiver.receive(phone.receive(receiver.poll()));
+   const sample = receiver.sample();
+   // The opposite sign takes at most two 20 ms steps through the existing slew limit.
+   response.resolve(sample, 0, at); tick(sign * .18, sign); receiver.receive(phone.receive(receiver.poll()));
+   near(response.resolve(receiver.sample(), 0, at).accelerationMps2, sign * .18);
+   assert.equal(Math.sign(apertureCurveTarget({ ...sample, turnRate: sample.road.yawRate }, 40)), sign);
+  }
+  at += 251;
+  assert.equal(receiver.sample(), null); assert.equal(sensors.latest(), null);
+  assert.equal(response.resolve(receiver.sample(), 0, at).responseSource, 'gps-motion');
+ } finally { sensors.dispose(); }
 });

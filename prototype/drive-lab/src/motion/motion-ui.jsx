@@ -49,7 +49,8 @@ export function MotionPanel({ snapshot, onStart, onStop, onClose, responseLabel,
   const [detailsOpen, setDetailsOpen] = useState(false), [review, setReview] = useState(false);
   const [completed, setCompleted] = useState(false);
   const pendingStep = useRef(1);
-  const guide = receiverSetup(snapshot, pendingStep.current);
+  const guide = receiverSetup(snapshot, snapshot.setupProgress?.pendingStep ?? pendingStep.current);
+  const setupCompleted = snapshot.setupProgress?.complete ?? completed;
   useEffect(() => {
     if (snapshot.dataFresh === true && guide.active >= 0 && guide.active < 5) pendingStep.current = guide.active;
     if (["idle", "preparing", "pairing"].includes(snapshot.state) || ended(snapshot.state)) pendingStep.current = 1;
@@ -71,27 +72,29 @@ export function MotionPanel({ snapshot, onStart, onStop, onClose, responseLabel,
       } catch { setQrError(true); }
     }
   }, [snapshot.qrUrl]);
-  const needsAction = snapshot.dataFresh === true && (!(snapshot.placementConfirmed ?? snapshot.mountSelected) || !snapshot.tared || !snapshot.wakeLock);
-  const showSetup = !completed || review || needsAction;
+  const setupSteps = snapshot.setupProgress?.steps ?? setupEvidence(snapshot);
+  const needsAction = snapshot.setupProgress ? [0, 2, 3, 4].some(index => !setupSteps[index])
+    : snapshot.dataFresh === true && (!(snapshot.placementConfirmed ?? snapshot.mountSelected) || !snapshot.tared || !snapshot.wakeLock);
+  const showSetup = !setupCompleted || review || needsAction;
   const restart = () => { setCompleted(false); setReview(false); onStop(); onStart(); };
   return <div className="motion-panel-content motion-guided-panel">
     <header><h2 id="motion-title">Connect your phone</h2><button className="motion-close" data-dialog-initial-focus onClick={onClose}><SetupMark kind="close"/>CLOSE</button></header>
     <p className="motion-setup-intro">GPS for driving. Phone for motion + rotation.</p>
-    {completed && !needsAction && <SetupDisclosure expanded={review} onClick={() => setReview(v => !v)}/>}
+    {setupCompleted && !needsAction && <SetupDisclosure expanded={review} onClick={() => setReview(v => !v)}/>}
     {showSetup ? <>
-      <MotionSteps active={guide.active} done={setupEvidence(snapshot)}/>
+      <MotionSteps active={guide.active} done={setupSteps}/>
       <div className="motion-setup-pairing">
         <div className="motion-setup-instruction"><MotionNext guide={guide}/>
           {(guide.restart || qrError) && <button className="motion-primary" onClick={restart}>CREATE NEW QR</button>}
         </div>
         {qr && snapshot.state === "pairing" ? <svg className="motion-qr" viewBox={`0 0 ${qr.size} ${qr.size}`} role="img" aria-label="Scan to pair this session with your phone" shapeRendering="crispEdges"><rect width={qr.size} height={qr.size} fill="#fff"/><path d={qr.path} fill="#000"/></svg>
-          : (!completed || needsAction) && <img className="motion-setup-art" src={`/brand/phone-guide/${guide.active < 1 ? "scan" : guide.active === 1 ? "connect" : guide.active < 4 ? "zero-console" : "awake"}.png`} alt=""/>}
+          : (!setupCompleted || needsAction) && <img className="motion-setup-art" src={`/brand/phone-guide/${guide.active < 1 ? "scan" : guide.active === 1 ? "connect" : guide.active < 4 ? "zero-console" : "awake"}.png`} alt=""/>}
       </div>
       {qrError && <p role="alert">QR could not be drawn. Create a new QR.</p>}
       {review && <ol className="motion-review-list"><li>On your phone: enable local sensors and allow access.</li><li>On your phone: tap CONNECT TO DISPLAY.</li><li>While parked: secure the phone, then confirm placement.</li><li>On your phone: tap ZERO and keep still.</li><li>On your phone: tap KEEP SCREEN AWAKE and wait for confirmation.</li></ol>}
     </> : <><h3 className="motion-readings-label">LIVE FROM YOUR PHONE</h3><MotionReadings summary={snapshot} values={snapshot.values}/></>}
-    <MotionLiveStatus summary={snapshot}>{!["idle", "closed", "expired"].includes(snapshot.state) && <button onClick={onStop}>{completed ? "DISCONNECT" : "CANCEL"}</button>}</MotionLiveStatus>
-    {completed && !guide.ready && <button className="motion-restart" onClick={restart}>RESTART SETUP · NEW QR</button>}
+    <MotionLiveStatus summary={snapshot}>{!["idle", "closed", "expired"].includes(snapshot.state) && <button onClick={onStop}>{setupCompleted ? "DISCONNECT" : "CANCEL"}</button>}</MotionLiveStatus>
+    {setupCompleted && !guide.ready && <button className="motion-restart" onClick={restart}>RESTART SETUP · NEW QR</button>}
     <details className="motion-connection-details" open={detailsOpen} onToggle={e => setDetailsOpen(e.currentTarget.open)}><summary>Connection details<SetupMark kind="chevron"/></summary>
       {detailsOpen && <><MotionSourceStatus label={responseLabel}/><MotionQuality summary={snapshot}/><button onClick={() => { onStop(); onStart("direct"); }}>CREATE LOCAL WEBRTC QR</button><p>Round trip measures the request and reply, not one-way latency. Data quality follows fresh, calibrated samples confirmed by both screens. Delayed samples are excluded; GPS remains the speed source.</p><p>Keep both pages visible. Hiding a page ends this session; create a new QR to restart. CLOSE only closes this drawer. Encrypted motion uses the same-origin HTTPS relay. Reports contain quality summaries, never sensor streams or pairing keys.</p>{children}</>}
     </details>

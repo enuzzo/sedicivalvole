@@ -475,6 +475,62 @@ test('guided ZERO accepts every stable pose without requiring vehicle-axis calib
  }
 });
 
+test('receiver session exposes changing protocol values and exact expiry independently of root notifications', async () => {
+ let time = 0, hooks, notifications = 0;
+ let current = { ...values, ageMs: 0 };
+ const status = { sensorState: 'live', tared: true, tareState: 'tared', placementConfirmed: true, wakeLock: true, wakeState: 'active' };
+ const receiver = createMotionProtocol({ role: 'receiver', now: () => time });
+ const phone = createMotionProtocol({ role: 'phone', now: () => time, getPhone: () => ({ values: current, summary: status }) });
+ const f = sessionFixture({ role: 'receiver', now: () => time, onChange: () => notifications++,
+  peerFactory: options => { hooks = options; return { ...receiver, offer: async () => 'fixture', close() {}, summary: () => ({ ...receiver.summary(), state: 'connected' }) }; },
+ });
+ try {
+  await f.session.start(); hooks.onEvent('channel-open', { state: 'connected' });
+  const exchange = () => receiver.receive(phone.receive(receiver.poll()));
+  exchange(); time = 50; exchange();
+  const count = notifications;
+  let view = f.session.snapshot();
+  assert.equal(view.receiverConfirmed, true); assert.deepEqual(view.values.acceleration, current.acceleration);
+  assert.deepEqual(view.setupProgress.steps, [true, true, true, true, true]); assert.equal(view.setupProgress.complete, true);
+  time = 100; current = { ...current, acceleration: [0, 0, 1.25], turnRate: -8 }; exchange();
+  view = f.session.snapshot(); assert.equal(view.values.acceleration[2], 1.25); assert.equal(view.values.turnRate, -8);
+  time = 350; assert.ok(f.session.snapshot().values);
+  time = 351; view = f.session.snapshot();
+  assert.equal(view.values, null); assert.equal(view.receiverConfirmed, false); assert.equal(view.dataFresh, false);
+  assert.deepEqual(view.setupProgress.steps, [true, true, true, true, true], 'transport expiry does not undo completed actions');
+  assert.equal(notifications, count, 'drawer reads do not publish root state');
+  status.tared = false; status.tareState = 'settling'; current = null;
+  exchange(); view = f.session.snapshot();
+  assert.equal(view.setupProgress.steps[3], false, 'explicit new ZERO status revises completed evidence');
+  assert.equal(view.setupProgress.pendingStep, 3); assert.equal(view.receiverConfirmed, false);
+  f.session.stop(); view = f.session.snapshot();
+  assert.equal(view.values, null); assert.equal(view.setupProgress.complete, false);
+  assert.deepEqual(view.setupProgress.steps, [false, false, false, false, false]);
+  assert.doesNotMatch(JSON.stringify(f.session.report()), /setupProgress|acceleration|acceptedSequence|acceptedGeneration/);
+ } finally { f.session.dispose(); }
+});
+
+test('receiver progress preserves actions during timed gaps, but honors explicit wake release and a new pairing', async () => {
+ const { createReceiverSetupProgress, receiverSetup, motionLiveStatus } = await import('../src/motion/guided-setup.js');
+ const progress = createReceiverSetupProgress();
+ const good = { state: 'connected', sensorState: 'live', dataFresh: true, received: 1, placementConfirmed: true, tared: true, tareState: 'tared', referenceReceived: true, receiverConfirmed: false, wakeLock: false, wakeState: 'idle' };
+ assert.deepEqual(progress.update(good).setupProgress.steps, [true, true, true, true, false]);
+ for (let i = 0; i < 20; i++) {
+  const gap = { ...good, dataFresh: false, sensorState: 'stale', tared: false, referenceReceived: false };
+  const previous = progress.update(gap).setupProgress;
+  assert.deepEqual(previous.steps, [true, true, true, true, false]);
+  assert.equal(receiverSetup(gap, previous.pendingStep).active, 4);
+  assert.equal(motionLiveStatus(gap).fresh, false);
+  assert.deepEqual(progress.update({ ...good, received: i + 2 }).setupProgress.steps, previous.steps);
+ }
+ const awake = { ...good, received: 30, wakeLock: true, wakeState: 'active', receiverConfirmed: true };
+ assert.equal(progress.update(awake).setupProgress.complete, true);
+ const released = progress.update({ ...awake, received: 31, wakeLock: false, wakeState: 'released' }).setupProgress;
+ assert.equal(released.steps[4], false); assert.equal(released.pendingStep, 4);
+ assert.equal(progress.update({ state: 'preparing' }).setupProgress.complete, false);
+ assert.deepEqual(progress.update({ ...good, received: 1 }).setupProgress.steps, [true, true, true, true, false]);
+});
+
 test('receiver setup waits at the current step during a transport gap without redoing connection',async()=>{
  const {receiverSetup}=await import('../src/motion/guided-setup.js');
  for(const active of [0,2,3,4]) {

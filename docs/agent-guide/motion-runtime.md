@@ -114,7 +114,7 @@ confirmed placement in any orientation, pose ZERO and an explicit screen-wake
 gesture. The local sensor owner keeps its existing wake-on-start default; only
 the remote companion defers wake to the final action. Actual wake acquisition,
 calibration and reciprocal fresh receipt are required for setup completion.
-Numbers become checks from current step-specific evidence. Completed setup folds
+Numbers become checks from accepted step-specific evidence. Completed setup folds
 away; data gaps show blank telemetry and delayed status without toggling transport
 connection or replaying old values. Denial/release, invalid calibration and ended
 sessions show corrective guidance; terminal pairing still requires a new QR.
@@ -132,6 +132,22 @@ aligned car motion in details. Relative magnitude and vertical rotation are labe
 as phone motion; forward/braking labels require actual admitted road values. GPS
 retains vehicle acceleration fallback when car alignment is unknown. Keep the
 500 ms settling window, eight-second deadline, 250 ms freshness, real wake lock
-and reciprocal receipt. Receiver delays retain only the current pending step index,
-never stale success checks or values. See the updated
+and reciprocal receipt. The later integration repair below supersedes the earlier
+rule that cleared every completion check on transport delay. See the updated
 [calibration contract](../PHONE-ROAD-INPUT-2026-09-19.md).
+
+## Receiver integration repair — September 20
+
+The receiver drawer reads the real session at a focused 20 Hz boundary, including
+expiry wakeups; root motion metadata stays bounded to 1 Hz except connection/QR
+transitions. Never feed a stripped App metadata snapshot to live readings. Closing
+the drawer stops its timer without closing the session; reopening reads current
+values, never a saved sample. Consumer sample access stays independent of UI state.
+
+Completed actions are pairing-scoped history, updated only by accepted fresh status.
+A transport gap retains those checks and the pending step, while current health,
+numbers and reciprocal receipt still expire at 250 ms. Explicit received sensor
+failure, new ZERO or wake release revises the affected checks. Terminal state or a
+new QR clears history. Keep action guidance visible during subsequent status gaps.
+These history marks never authorize sample use. See
+[implementation, verification and physical retry](../PHONE-INTEGRATION-REPAIR-2026-09-20.md).

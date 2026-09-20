@@ -1,5 +1,17 @@
 # Current Project State
 
+## Phone integration repair — September 20 (candidate verified; publication pending)
+
+The real compiled App regression reproduces the owner's missing receiver numbers
+before the fix and passes after it. A focused drawer boundary now reads actual
+session values/current health with 250 ms expiry, independently of slow App metadata.
+Pairing-scoped action history removes the transport-gap check flicker; explicitly
+invalid ZERO/wake evidence still requires recovery. Road consumers already used the
+direct session sample path and retain GPS/freshness gates. Existing noise thresholds
+reject the controlled stationary fixture; physical iPhone noise remains unmeasured.
+See [repair and physical retry](PHONE-INTEGRATION-REPAIR-2026-09-20.md). Final gates
+and publication identity follow; earlier owner feedback is preserved below.
+
 ## Phone integration owner trial — September 20 (repair open)
 
 After publication `20260920-1847.e82f181`, the owner reports that ZERO completes,

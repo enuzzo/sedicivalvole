@@ -50,3 +50,24 @@ export function setupEvidence(s = {}, phone = false) {
   return [current && s.sensorState === 'live', s.state === 'connected', current && (s.placementConfirmed ?? s.mountSelected) === true,
     current && s.tared === true && s.tareState !== 'settling', current && s.wakeLock === true && s.wakeState === 'active'];
 }
+
+// Completion belongs to the pairing attempt, not to a render or the latest
+// transport deadline. Only an accepted status can revise an action's evidence.
+// Current health/values still expire independently in the protocol.
+export function createReceiverSetupProgress() {
+  let steps = [false, false, false, false, false], pendingStep = 1, complete = false, received = -1;
+  return {
+    update(s) {
+      if (["idle", "preparing", "pairing"].includes(s.state) || ended(s.state)) {
+        steps = [false, false, false, false, false]; pendingStep = 1; complete = false; received = -1;
+      } else if (s.dataFresh === true && s.received !== received) {
+        received = s.received;
+        steps = setupEvidence(s);
+        const guide = receiverSetup(s, pendingStep);
+        if (guide.active >= 0 && guide.active < 5) pendingStep = guide.active;
+        if (guide.ready) complete = true;
+      }
+      return { setupProgress: { steps, pendingStep, complete } };
+    },
+  };
+}

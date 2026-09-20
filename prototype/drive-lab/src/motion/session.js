@@ -2,10 +2,12 @@ import { createRelayKey, createMotionCipher, createMotionRelay } from './relay.j
 import { createMotionPeer } from "./channel.js";
 import { createMotionTelemetry, safeMotionSummary } from "./telemetry.js";
 import { safeMotionPresentation, DEFAULT_MOTION_PRESENTATION } from "./presentation.js";
+import { createReceiverSetupProgress } from "./guided-setup.js";
 
 export function createMotionSession({ role, host = window, doc = document, fetcher = fetch, now = () => performance.now(),
   getPhone = () => ({}), getPresentation = () => DEFAULT_MOTION_PRESENTATION, peerFactory = createMotionPeer, onChange = () => {}, onEvent = () => {} } = {}) {
   const telemetry = createMotionTelemetry(now);
+  const setupProgress = createReceiverSetupProgress();
   let peer = null, credentials = null, qrUrl = null;
   let state = "idle", generation = 0, polling = null, refresh = null;
   let deadline = 0, previousState = null, previousPhone = null, previousFresh = null;
@@ -31,8 +33,14 @@ export function createMotionSession({ role, host = window, doc = document, fetch
     } catch (error) { if (!abort.signal.aborted || timedOut) signaling.signalingErrors += 1; throw error; }
     finally { clearTimeout(timeout); requests.delete(abort); }
   }
+  function snapshot() {
+    const phone = getPhone(), remote = peer?.summary();
+    const summary = safeMotionSummary({ ...phone.summary, ...remote, ...signaling, stage, failureReason, role, transport, state: ["pairing", "preparing", "error", "suspended", "expired", "closed", "unavailable"].includes(state) ? state : remote?.state ?? state });
+    return { ...summary, ...(role === "receiver" ? setupProgress.update(summary) : {}), qrUrl,
+      presentation: peer?.presentation?.() ?? null, values: role === "phone" ? phone.values : peer?.sample() ?? null };
+  }
   function notify() {
-    const summary = { ...getPhone().summary, ...peer?.summary(), ...signaling, stage, failureReason, role, transport, state: ["pairing", "preparing", "error", "suspended", "expired", "closed", "unavailable"].includes(state) ? state : peer?.summary().state ?? state };
+    const next = snapshot(), summary = safeMotionSummary(next);
     telemetry.update(summary);
     if (previousState !== summary.state || previousFresh !== summary.dataFresh) {
       if (summary.state === "connected" && summary.dataFresh === false && previousFresh === true) event("stale", summary);
@@ -40,7 +48,7 @@ export function createMotionSession({ role, host = window, doc = document, fetch
       previousState = summary.state;
       previousFresh = summary.dataFresh;
     }
-    onChange({ ...safeMotionSummary(summary), qrUrl, presentation: peer?.presentation?.() ?? null, values: role === "phone" ? getPhone().values : peer?.sample() ?? null });
+    onChange(next);
   }
   function cleanup(next = "closed") {
     generation += 1;
@@ -185,6 +193,6 @@ export function createMotionSession({ role, host = window, doc = document, fetch
   const offline = () => { if (["preparing", "pairing", "connecting", "connected"].includes(state)) fail(); };
   doc.addEventListener("visibilitychange", hidden); host.addEventListener("pagehide", pagehide);
   host.addEventListener("offline", offline);
-  return { sample: () => peer?.sample() ?? null, start, stop: () => stop(), event, refresh: notify, report: () => telemetry.snapshot(),
+  return { sample: () => peer?.sample() ?? null, snapshot, start, stop: () => stop(), event, refresh: notify, report: () => telemetry.snapshot(),
     dispose() { cleanup(); doc.removeEventListener("visibilitychange", hidden); host.removeEventListener("pagehide", pagehide); host.removeEventListener("offline", offline); } };
 }

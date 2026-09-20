@@ -78,20 +78,25 @@ Dev is the default, with coordinate-free automatic reports every **15 minutes of
 
 The top-bar phone icon prepares an expiring QR and opens a compact connection
 panel. The smartphone follows five explicit steps: sensor permission, connection,
-portrait-holder placement, mounted ZERO and screen wake. Evidence-based checks
+secure placement in any stable pose, pose ZERO and screen wake. Evidence-based checks
 collapse into acceleration/rotation readings after setup; TRACE remains an optional
 view with bounded history. Setup and recovery text is platform-neutral and follows
 actual browser capabilities, without promising physical Android or iPhone support.
 The receiver keeps its title, action and details on one grid, shows current round-trip
 latency and blanks delayed readings. Alternative local WebRTC and this-device sensing
 remain in Connection details. Phone styling follows the paired palette and LIGHT/DARK.
+The open drawer reads current session telemetry independently of the slower App
+metadata. Completed actions survive a transport gap; current health and readings
+still expire at 250 ms. Explicit ZERO invalidation or wake release requires recovery.
 
 ZERO needs half a second of fresh steady samples, bounded to eight seconds. Screen
 wake must be actually acquired; denied, unsupported and released states remain
 incomplete. Sensor retry never reuses consumed QR admission. The default connection
 uses end-to-end encrypted HTTPS through the same site. GPS remains the speed authority;
-fresh calibrated holder acceleration drives Engine demand and Flux braking/Underwater,
-and mounted gyro bends Aperture. Demo excludes sensors. Reports contain bounded,
+optional, explicitly aligned car motion drives Engine demand and Flux braking/Underwater,
+and its gyro bends Aperture. Alignment defaults off; other poses retain GPS response.
+Small vibrations remain visible in telemetry; road consumers retain their existing
+noise thresholds. Demo excludes sensors. Reports contain bounded,
 coordinate-free summaries, never raw sensor history or pairing capabilities.
 Physical wake retention, mounting signs and sustained phone/Tesla continuity remain
 open; see [current evidence](docs/qa/2026-09-20-phone-design-review/README.md) and

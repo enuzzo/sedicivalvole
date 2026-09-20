@@ -152,12 +152,22 @@ The mode selector must remain reachable and clearly show the active mode at the 
 
 ## Phone motion companion
 
-The owner-selected [XYZ companion](PHONE-MOTION-COMPANION-2026-09-18.md) now
-provides production sensing, relative-pose tare, QR/PHP signaling and direct
-WebRTC transport. The App owns the receiver session; the separate phone entry
-owns sensor permission/lifecycle. No motion samples enter GPS, audio or renderer
-inputs yet. Physical acceptance is still open. This supersedes the local-only
-scope below without promoting probe evidence into hardware proof.
+The selected [TRACE companion](PHONE-MOTION-COMPANION-2026-09-18.md) provides
+permission-gated sensing, any-stable-pose ZERO, encrypted HTTPS by default and
+optional local WebRTC. App owns the receiver session; the separate phone entry
+owns sensor permission/lifecycle. Optional, default-off aligned car input reaches
+Engine/Flux/Aperture under the [road contract](PHONE-ROAD-INPUT-2026-09-19.md);
+GPS/Demo remains the only speed authority. Physical acceptance is still open.
+
+`MotionReceiverPanel` reads `session.snapshot()` only while mounted, at 20 Hz with
+an additional expiry deadline. This boundary supplies actual values and current
+health without pushing sensor frames into App state. App connection transitions
+remain immediate; other motion metadata updates at most once per second. Consumers
+read `session.sample()` directly and retain their own GPS/lifecycle/freshness gates.
+Pairing-scoped setup progress records accepted action evidence separately from
+expiring data health. A delayed response cannot renew values or receipts; a newly
+accepted invalid ZERO/wake status revises progress. Terminal cleanup clears both.
+See the [integration repair](PHONE-INTEGRATION-REPAIR-2026-09-20.md).
 
 ### Earlier isolated feasibility
 
