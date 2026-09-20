@@ -48,7 +48,7 @@ export function motionLiveStatus(s = {}, phone = false) {
 export function motionRecoveryNotice(s = {}, source, gpsFresh) {
   const interrupted = ['offline', 'retrying'].includes(s.networkState);
   const delayed = s.dataFresh === false && s.ageUpperMs > 1000;
-  if (s.state !== 'connected' || !s.setupProgress?.complete || !interrupted && !delayed) return null;
+  if (s.state !== 'connected' || !s.setupProgress?.complete || s.dataFresh === true || !interrupted && !delayed) return null;
   const reason = interrupted ? 'Phone link interrupted' : 'Phone data delayed';
   return source !== 'GPS' ? `${reason} · recovering automatically`
     : gpsFresh ? `${reason} · using GPS · recovering automatically`

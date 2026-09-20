@@ -585,6 +585,7 @@ test('network recovery copy retains pairing and distinguishes fresh GPS from a m
  assert.equal(status.fresh,false);assert.match(status.title,/Pairing kept/);
  assert.match(status.hint,/Recovery is automatic/);assert.doesNotMatch(status.hint,/restart|new QR/i);
  assert.match(motionRecoveryNotice(s,'GPS',true),/using GPS/);
+ assert.equal(motionRecoveryNotice({...s,dataFresh:true},'GPS',true),null,'a retry cannot claim GPS fallback while the current phone data remains usable');
  assert.match(motionRecoveryNotice(s,'GPS',false),/waiting for GPS/);
  assert.doesNotMatch(motionRecoveryNotice(s,'Demo',true),/using GPS/);
  assert.equal(motionRecoveryNotice({...s,networkState:'online'},'GPS',true),null);
