@@ -42,7 +42,7 @@ export function motionLiveStatus(s = {}, phone = false) {
   return { connected, fresh, quality: fresh ? 'Fresh' : connected ? 'Delayed' : ended(s.state) ? 'Stopped' : 'Waiting',
     rtt: !phone && connected && s.dataFresh === true && s.received > 0 && Number.isFinite(s.rttMs) ? Math.round(s.rttMs) : null,
     title: !connected ? ended(s.state) ? 'Connection ended' : s.state === 'idle' ? 'Not connected' : s.state === 'pairing' ? 'Waiting for iPhone' : 'Connecting' : !fresh ? 'Connected · Data delayed' : !s.wakeLock ? 'Connected · Screen may sleep' : 'Connected · Screen awake',
-    hint: !connected ? 'Restart setup with a new QR on the display.' : !fresh ? 'Keep iPhone Safari visible. Restart setup if data does not return.' : !s.wakeLock ? 'On iPhone, retry screen wake or restart setup.' : phone ? 'Display receiving fresh motion.' : 'Fresh motion received.' };
+    hint: !connected ? ended(s.state) ? 'Restart setup with a new QR on the display.' : s.state === 'pairing' ? 'On iPhone, scan this QR and follow setup.' : s.state === 'idle' ? 'Create a QR on the display to begin.' : 'Keep both pages visible while connecting.' : !fresh ? 'Keep iPhone Safari visible. Restart setup if data does not return.' : !s.wakeLock ? 'On iPhone, retry screen wake or restart setup.' : phone ? 'Display receiving fresh motion.' : 'Fresh motion received.' };
 }
 
 export function setupEvidence(s = {}, phone = false) {

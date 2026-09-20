@@ -443,3 +443,11 @@ test('guided phone sensors defer wake acquisition to the final user action', asy
  await sensor.requestWake();assert.equal(requests,1);assert.equal(sensor.summary().wakeLock,true);
  sensor.stop();assert.equal(sensor.summary().wakeLock,false);sensor.dispose();
 });
+
+
+test('a newly prepared QR never asks the user to replace itself', async () => {
+ const {motionLiveStatus}=await import('../src/motion/guided-setup.js');
+ for(const state of ['idle','preparing','pairing','connecting']) assert.doesNotMatch(motionLiveStatus({state}).hint,/Restart|new QR/);
+ assert.match(motionLiveStatus({state:'pairing'}).hint,/scan this QR/);
+ for(const state of ['closed','expired','error','suspended']) assert.match(motionLiveStatus({state}).hint,/new QR/);
+});
