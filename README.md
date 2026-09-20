@@ -67,7 +67,7 @@ Public development repository: [github.com/enuzzo/sedicivalvole](https://github.
 
 ## Development reports
 
-Dev is the default, with coordinate-free automatic reports every **15 minutes of observable active session time**. Selecting Dev enables sending; explicit pauses persist. Session report separates the current ON/OFF state from **PAUSE SENDING / ENABLE SENDING** actions. Stops, GPS loss and offline time count; hidden time does not. If the browser froze the app, the report is sent when it wakes (catch-up after 15 wall minutes); closing or hiding the app also sends a compact report when the browser allows it. Progress counters, never reports, survive reloads. At most one due report waits for reconnection, with no persistent outbox. Standard keeps manual reports. Travel Reports are never automatic.
+Dev is the default, with coordinate-free automatic reports every **15 minutes of observable active session time**. Selecting Dev enables sending; explicit pauses persist. Session report separates the current ON/OFF state from **PAUSE SENDING / ENABLE SENDING** actions. Stops, GPS loss and offline time count; hidden time does not. If the browser froze the app, the report is sent when it wakes (catch-up after 15 wall minutes); closing or hiding the app also sends a compact report when the browser allows it. Progress counters and a random pending-delivery identity, never reports, survive reloads. Unconfirmed attempts retain progress; bounded private server receipts suppress duplicate emails after a lost response. Server acceptance is not inbox receipt. At most one due report waits for reconnection, with no persistent outbox. Standard keeps manual reports. Travel Reports are never automatic.
 
 ## Experimental phone motion
 

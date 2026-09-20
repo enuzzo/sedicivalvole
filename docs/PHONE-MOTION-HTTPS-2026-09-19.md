@@ -16,7 +16,7 @@ The existing PHP endpoint remains backward-compatible with legacy direct signali
 
 A random 256-bit AES-GCM key stays in receiver memory and the QR fragment. The phone removes the fragment before rendering/logging. Only the admission token, never this key, is sent in API bodies. Each envelope gets a fresh random 96-bit nonce and authenticates its sender role. The server stores capability hashes and at most one ciphertext slot per direction; packets cease being served after two seconds. Session files are private (0700 directory / 0600 file) outside the web root; STOP deletes them, expired inactive files are removed on subsequent traffic cleanup. No promise of physical deletion at an exact wall-clock instant is made. No plaintext vectors, coordinates, encryption keys, envelopes or raw history enter reports.
 
-Requests are serial per peer, bounded in body/response size and server cadence, without queued history or sleeping PHP workers. Real traffic is answered promptly; idle polling waits 40 ms. This is a bounded experimental shared-hosting relay, not a WebSocket/TURN service or a demonstrated fleet-scale backend.
+Requests are serial per peer, bounded in body/response size and server cadence, without queued history or sleeping PHP workers. Real traffic is answered promptly; idle polling starts at least 40 ms apart, including the HTTP request duration. This is a bounded experimental shared-hosting relay, not a WebSocket/TURN service or a demonstrated fleet-scale backend.
 
 The same conservative receiver-clock freshness protocol remains: full request round trip plus phone sample age must fit 250 ms. No clock subtraction between devices, guessed latency compensation or stale replay. Mutual readiness still requires a returned generation/sequence receipt. Transport success does not imply suitable latency; slow data pauses and is excluded from the visual. The phone's local TRACE remains at local sensor cadence.
 
@@ -36,3 +36,16 @@ Phone rotation in the hand also counts. ZERO is a pose reference, not a mount/ve
 ## Verification
 
 See [QA evidence](qa/2026-09-19-phone-relay/README.md). The owner attachment stays outside the repository. Tests, local PHP exchange, browser visual inspection, canonical publication and physical acceptance are separate evidence layers.
+
+## September 20 continuity correction
+
+Serial HTTP exchanges now carry a bounded window of up to eight pending protocol requests,
+instead of waiting for each full multi-hop reply before asking for another sample. Each reply
+must still match its own receiver-clock request, arrive within the 250 ms upper bound and
+advance the accepted sample sequence. The wire envelope and PHP relay are unchanged.
+A 22 ms post-response floor also respects the server arrival limit despite request jitter.
+Connection state remains open while sample freshness may expire; the receiver explains
+CONNECTED versus WAITING / DELAYED data, without treating latency as a new QR requirement.
+This fixes reproduced pre-ZERO status oscillation and moderate-latency cadence; sufficiently
+slow networks still cannot supply usable motion. Physical mobile-network evidence remains
+separate from local protocol and browser verification.

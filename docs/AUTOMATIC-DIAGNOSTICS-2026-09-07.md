@@ -131,6 +131,23 @@ Contract (client `src/automatic-diagnostics.js`, endpoint `public/api/send-diagn
 | `catch-up` | ≥ 900 s wall since the last accepted report and ≥ 60 s unsent activity observed by this page instance (restored counters alone never qualify), first tick that runs, hidden allowed | `activeMs ≥ 60000`, `wallElapsedMs ≥ 900000` | 900 s |
 | `hide-flush` | app hidden/closed with ≥ 120 s active (this page) and ≥ 300 s wall unsent, compact keepalive packet | `activeMs ≥ 120000`, `wallElapsedMs ≥ 300000` | 300 s |
 
-All still require Dev, explicit flags, `timeBasis: active-visible-session`, coordinate-free content and the existing destination. `deliveryReason` is whitelisted for **every** trigger, including manual, because the endpoint copies it verbatim into the mail summary as a `Reason:` line; an unknown or non-string reason is rejected with the packet. RESET SAVED STATE forgets the clock through the clock itself (stored record plus unsent in-memory progress), because the drawer holding that button is reachable while the session runs and a bare storage removal would be rewritten at the next persist. A failed or permanently rejected attempt restarts the wall anchor so a rejected report cannot loop. The flush packet keeps only the last 40 non-sample events, 4 runtime issues and 30 flight samples and is refused rather than sent above 60,000 bytes; browsers cap in-flight `keepalive` bodies at 64 KiB. Disclosure copy (Support, Session report, Submit evidence) states the new sending points. The Tesla may never emit a lifecycle event, so the flush is best-effort and catch-up is the dependable path; the new `deliveryReason`, `wallElapsedMs`, `unobservedMs` and `restored` fields in the next reports show which path fired. Physical Tesla acceptance and the first real automatic receipt remain open.
+All still require Dev, explicit flags, `timeBasis: active-visible-session`, coordinate-free content and the existing destination. `deliveryReason` is whitelisted for **every** trigger, including manual, because the endpoint copies it verbatim into the mail summary as a `Reason:` line; an unknown or non-string reason is rejected with the packet. RESET SAVED STATE forgets the clock through the clock itself (stored record plus unsent in-memory progress), because the drawer holding that button is reachable while the session runs and a bare storage removal would be rewritten at the next persist. The later acknowledgement correction retains failed progress and applies bounded retries/cooldown; it supersedes the original reset-on-failure behavior. The flush packet keeps only the last 40 non-sample events, 4 runtime issues and 30 flight samples and is refused rather than sent above 60,000 bytes; browsers cap in-flight `keepalive` bodies at 64 KiB. Disclosure copy (Support, Session report, Submit evidence) states the new sending points. The Tesla may never emit a lifecycle event, so the flush is best-effort and catch-up is the dependable path; the new `deliveryReason`, `wallElapsedMs`, `unobservedMs` and `restored` fields in the next reports show which path fired. Physical Tesla acceptance and the first real automatic receipt remain open.
 
 Verification handoff for the next session: [automatic diagnostics handoff](AUTOMATIC-DIAGNOSTICS-HANDOFF-2026-09-20.md).
+
+## September 20 acknowledgement correction
+
+The owner approved correcting remaining reliability defects and publishing verified work.
+A close-time flush now shares ordinary response validation and the single in-flight owner.
+Counters and a random delivery ID survive unconfirmed attempts; server acceptance receipts
+prevent a repeated ID from mailing twice after a lost response, including after an IP change.
+Fresh snapshots are still constructed at sending time; reports never enter persistent storage.
+Only confirmed acceptance advances delivery. New activity since the first attempt is retained.
+Three short retries lead to a fifteen-minute cooldown, preserving progress; OFF/Standard/reset
+clear pending work immediately. Receipt storage and crash limits are defined in the
+[active contract](agent-guide/diagnostics-reports.md#acknowledged-delivery-correction--september-20).
+
+The current Gmail check independently confirms five manual diagnostic mails on September 19.
+Three decoded attachments contain 588460.9, 116016.1 and 338036 active milliseconds. The first
+contains 1931556.8 unobserved milliseconds. The last report has no motion attempt, so it cannot
+prove the later HTTPS companion worked. The exact cause of the execution gap remains inference.

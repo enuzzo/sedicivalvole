@@ -1,5 +1,11 @@
 # Automatic diagnostics catch-up — adversarial verification, September 20
 
+> Follow-up correction: this is historical evidence for the earlier checkpoint.
+> Python 3.11.16 is installed; the failing test selected the default Python 3.9.6.
+> The mailbox findings have since been independently verified. Optimistic flush reset is
+> superseded by confirmed delivery and server receipts. See the
+> [September 20 reliability correction](../../RELIABILITY-CORRECTION-2026-09-20.md).
+
 Verification pass over the September 20 commit `7fec6ff` (catch-up on wake, reload-surviving
 progress counters, close-time keepalive flush). The brief was to break the work, not continue it:
 [verification handoff](../../AUTOMATIC-DIAGNOSTICS-HANDOFF-2026-09-20.md),

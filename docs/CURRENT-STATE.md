@@ -1,12 +1,21 @@
 # Current Project State
 
+## Diagnostic and companion reliability correction — September 20 (verified locally; publication next)
+
+The owner authorized keeping verified September 20 work, correcting remaining defects, and
+canonical publication after gates. Diagnostics retain unconfirmed attempts and use bounded
+server receipts; HTTPS motion pipelines fresh requests and separates connection from usable
+data. No freshness deadline, speed authority or physical acceptance is relaxed. See
+[correction and evidence](RELIABILITY-CORRECTION-2026-09-20.md). The section below records the
+previous checkpoint; its optimistic flush and host-Python limitation are superseded.
+
 ## Automatic diagnostics catch-up — September 20 (verified and pushed, not published)
 
 After a day of driving with no automatic mail, decoded reports showed sessions of 9.8, 1.9 and 5.6 active minutes and a silent 32-minute page suspension with no lifecycle event, so the 15-active-minute timer never fired. Delivery now also has wall-time **catch-up** on wake, reload-surviving progress counters and a best-effort compact **close-time flush**; the server validates each `deliveryReason` with its own proof and floor. The Travel Report stays manual.
 
 An adversarial verification pass found and fixed two defects test-first: `deliveryReason` escaped validation on manual packets although the endpoint copies it verbatim into the mail summary, and RESET SAVED STATE did not actually reset the running clock. Native **1024/1025** and a production build with **827** exact static hashes pass from an isolated Intel copy; the single failure is a host Python gate in the untouched deploy script. Browser end-to-end with delivery intercepted proves catch-up, restore across a reload and a single `keepalive` flush, with every recorded body accepted and coordinate-free in real PHP. No mail was sent.
 
-**Publication, the first real inbox receipt and physical Tesla acceptance remain open**; the deploy script needs Python 3.11 or newer, which this Mac does not have. See the [contract](AUTOMATIC-DIAGNOSTICS-2026-09-07.md#september-20-catch-up-persistence-and-close-time-flush), the [QA evidence](qa/2026-09-20-automatic-catch-up/README.md) and the [implementation and verification handoff](VERIFICATION-HANDOFF-2026-09-20.md).
+**Publication, the first real inbox receipt and physical Tesla acceptance remain open**; the deploy script needs Python 3.11 or newer, which is available as `python3.11` on this Mac (the earlier claim of absence was incorrect). See the [contract](AUTOMATIC-DIAGNOSTICS-2026-09-07.md#september-20-catch-up-persistence-and-close-time-flush), the [QA evidence](qa/2026-09-20-automatic-catch-up/README.md) and the [implementation and verification handoff](VERIFICATION-HANDOFF-2026-09-20.md).
 
 ## Mounted phone road input — September 19
 

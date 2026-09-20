@@ -93,3 +93,15 @@ replaces a stale session instead of silently reusing admission.
 ## Mounted road response — September 19
 
 The explicit owner request supersedes earlier no-sensor/audio-coupling restrictions. Follow [mount, axes, fallback and physical limits](../PHONE-ROAD-INPUT-2026-09-19.md). Preserve explicit mount selection, gravity-based ZERO, latched handling rejection, 250 ms freshness and distinct GPS speed authority. Other poses retain TRACE with GPS road response. Never claim automatic vehicle identification or complete handheld-motion rejection.
+
+## Companion continuity correction — September 20
+
+Connection health is independent of sample freshness: an open transport stays CONNECTED
+while delayed motion is excluded, with `dataFresh` and sensor/receipt status shown separately.
+HTTPS keeps serial HTTP exchanges but pipelines at most eight protocol requests within the
+unchanged 250 ms deadline. A matching earlier response can complete while a newer request is
+in flight; expired, replayed, unmatched and out-of-order samples remain rejected. Poll pacing
+includes HTTP time instead of adding a fixed idle wait after every request. Direct WebRTC
+retains its one-pending-request cadence and legacy envelope compatibility. No additional
+server, provider or clock synchronization is introduced. See
+[reliability correction](../RELIABILITY-CORRECTION-2026-09-20.md).

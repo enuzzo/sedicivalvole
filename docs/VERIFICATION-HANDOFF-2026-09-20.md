@@ -1,5 +1,12 @@
 # Automatic diagnostics — implementation and verification handoff, September 20, 2026
 
+> September 20 follow-up: the owner authorized corrections and canonical publication.
+> The earlier optimistic close-time reset is superseded by acknowledgement-based delivery
+> and bounded acceptance receipts. See [reliability correction](RELIABILITY-CORRECTION-2026-09-20.md).
+> Python 3.11.16 is installed on the Intel host; only the default `python3` selects 3.9.6.
+> The previously failing port-redaction test passes with the 3.11 bin directory on PATH.
+> The September 19 mailbox and three attachments have now been independently rechecked.
+
 For the next session, whichever assistant picks this up. It covers two sessions: the one that
 **implemented** the automatic-diagnostics catch-up work, and the one that **verified** it
 adversarially, fixed two defects and recorded the evidence. It also documents the **isolated
@@ -87,7 +94,7 @@ Verify its `package-lock.json` matches the checkout's before trusting it.
 ```bash
 S=<scratch dir>
 mkdir -p "$S/prototype"
-rsync -a --exclude node_modules --exclude .sample-analysis-venv --exclude .playwright-cli \
+rsync -a --exclude '.env*' --exclude '*recipient.local.php' --exclude node_modules --exclude .sample-analysis-venv --exclude .playwright-cli \
   <repo>/prototype/drive-lab "$S/prototype/"
 rsync -a <repo>/docs <repo>/scripts <repo>/licenses <repo>/logo <repo>/diagnostics <repo>/tools "$S/"
 cp <repo>/README.md <repo>/CHANGELOG.md <repo>/VERSION <repo>/AGENTS.md <repo>/LICENSE \
@@ -105,20 +112,21 @@ Things that cost the previous session a lot of time, so they are written down:
   `THIRD_PARTY_NOTICES.md`, `LICENSE-SCOPE.md` and `licenses/`; `sample-harmony-tool` reads
   `.gitignore`. Each missing one costs a full suite run to discover.
 - **`_references/` is 2.3 GB and must not be copied.** `junction-voicing-selection` only calls
-  `readdir` on it and never opens a file, so mirror the directory tree with **zero-byte files of the
-  same names**. No external material is duplicated and the audit passes.
+  `readdir` on it and never opens a file. For that read-only inventory, reference the
+  existing private directory without copying bytes; do not manufacture empty stand-in assets.
 - **rsync can wedge** against the Dropbox file provider while the source itself reads instantly. If
   throughput stalls with rsync idle and no file open, kill it and copy the remaining directories one
   at a time; they complete in seconds.
 - **Run the build before the suite.** `sites-worker` and `build-identity` read `dist/`.
-- Verify completeness by comparing `find … -type f | wc -l` on both sides before trusting a result.
+- Verify mirrored tracked-source hashes and the dependency lockfile before trusting a result;
+  a matching file count alone is not source identity.
 
 ### Running it
 
 ```bash
 cd "$S/prototype/drive-lab"
-GIT_DIR=<repo>/.git npm run build:native
-npm run test:native
+SEDICIVALVOLE_NO_LOCAL_ENV=1 GIT_DIR=<repo>/.git npm run build:native
+PATH=/usr/local/opt/python@3.11/libexec/bin:$PATH npm run test:native
 npm run test:sites          # the && chain does not reach it when an earlier group fails
 ```
 
@@ -127,17 +135,18 @@ commit of `unknown`, the release key becomes `<stamp>.unknown`, and `verify-sess
 `BUILD_KEY` (`/^\d{8}-\d{4}\.[a-f0-9]{7,40}$/`) on a perfectly good build. Pointing `GIT_DIR` at the
 checkout is read-only — the only git call in the whole build is `git rev-parse --short HEAD`.
 
-There is no `.env` in the isolated copy and none should ever be put there. Vite's `loadEnv` simply
-finds nothing, which makes this the safest place to build.
+The documented copy excluded private configuration in that session. Always exclude `.env*`
+and recipient configuration explicitly, and set `SEDICIVALVOLE_NO_LOCAL_ENV=1`; do not rely on
+a copy happening to contain no environment file.
 
 ### Results to expect on this host
 
 - Suite: **1025 tests, 1024 pass, 1 fail.** The one failure is
   `deploy-audio-identity.test.mjs › an invalid configured FTP port never appears in deployment output`.
   `scripts/deploy_drive_lab_ftp.py` returns `configuration=FAIL reason=python_3_11_or_newer_is_required`
-  before it ever evaluates the port, because this Mac has only Python 3.9.6. It is a host gate,
-  unrelated to any diagnostics change. **It also means canonical publication cannot run from this Mac**
-  — the deploy script needs Python 3.11 or newer.
+  before it ever evaluates the port, because its default `python3` selected Python 3.9.6. It is a host gate,
+  unrelated to any diagnostics change. **Correction:** `python3.11` is available and satisfies the deploy requirement;
+  the prior claim that this Mac cannot publish was incorrect.
 - Build: both `vite build` passes, the inline LAB package, the Sites build, and
   `PASS release <stamp>.<commit>: 827 exact static hashes`.
 
