@@ -1,6 +1,6 @@
 # Current Project State
 
-## Guided phone onboarding — September 20 (local candidate)
+## Guided phone onboarding — September 20 (published; physical acceptance open)
 
 The owner selected the first phone layout and second receiver drawer. The combined
 implementation now guides sensor permission, explicit connection, placement, mounted
@@ -12,13 +12,16 @@ transparent PNG illustrations replace the guide SVGs; TRACE is optional after se
 
 Local browser fixtures confirm the selected hierarchy at 390 x 760 and 320 x 568,
 including primary onboarding without scroll; they do not prove physical Safari wake
-retention or iPhone/Tesla continuity. Canonical publication is pending. The currently
-published reliability build below remains the live identity until verified delivery.
+retention or iPhone/Tesla continuity. Canonical **20260920-1716.24c955b** is published:
+1,034 native baseline tests, final 50 motion checks, 833 production hashes and sixteen
+canonical HTTPS checks pass. The public drawer and release identity are verified.
+Fresh QR instructions and incomplete calibration are distinct from reconnect/data-delay
+recovery. See [publication evidence](qa/2026-09-20-phone-onboarding/README.md).
 See [selected design and evidence](design/phone-onboarding-2026-09-20/README.md).
 
 ## Diagnostic and companion reliability correction — September 20 (published; continuity acceptance open)
 
-Canonical **20260920-1540.2bf4cb6** is published with the verified diagnostics correction and
+The earlier **20260920-1540.2bf4cb6** publication, included in the current build above, carries the verified diagnostics correction and
 bounded HTTPS pacing/backpressure follow-up. Diagnostics preserve unconfirmed work across
 reloads, count only server acceptance, and deduplicate confirmed retries. The companion
 separates connection from fresh input, pipelines matching requests, and retains 250 ms

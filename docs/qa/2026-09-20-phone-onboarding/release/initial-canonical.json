@@ -1,0 +1,107 @@
+{
+  "release": "20260920-1653.2cd7623",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 1445,
+      "sha256": "998d06f33d32507b919bc0e33b8e51da2e347c22fd6b56a88d68ae9e4a1c075d",
+      "cacheControl": "no-store, no-cache, must-revalidate, max-age=0",
+      "cache": null
+    },
+    {
+      "path": "/?verify=20260920-1653.2cd7623",
+      "status": 200,
+      "bytes": 1445,
+      "sha256": "998d06f33d32507b919bc0e33b8e51da2e347c22fd6b56a88d68ae9e4a1c075d",
+      "cacheControl": "no-store, no-cache, must-revalidate, max-age=0",
+      "cache": null
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "bytes": 1445,
+      "sha256": "998d06f33d32507b919bc0e33b8e51da2e347c22fd6b56a88d68ae9e4a1c075d",
+      "cacheControl": "no-store, no-cache, must-revalidate, max-age=0",
+      "cache": null
+    },
+    {
+      "path": "/assets/index-CUL_cjvW.js",
+      "status": 200,
+      "bytes": 1624202,
+      "sha256": "2c7e8eb18c36eca863634b3eca57a6dc1ae948bbfbe4c3ab79a9a44569b46b16"
+    },
+    {
+      "path": "/assets/index-DW0O482r.css",
+      "status": 200,
+      "bytes": 290198,
+      "sha256": "edb77d25200cfd5b7b7b6f1f587a848f45828200aeae634caa243a00ee64c47e"
+    },
+    {
+      "path": "/assets/phone-BHnRuZPg.js",
+      "status": 200,
+      "bytes": 7038,
+      "sha256": "04f32c3e7ea2ee8052355a299d5634daa6f09a94ec34d3b1362dcc051faf5121"
+    },
+    {
+      "path": "/assets/release-20260920-1653.2cd7623.json",
+      "status": 200,
+      "bytes": 117134,
+      "sha256": "34150a304560ea8d6e7c915b830289aa2955ae2026c3cb2efa3209cb6e4ea0ef"
+    },
+    {
+      "path": "/brand/phone-guide/awake.png",
+      "status": 200,
+      "bytes": 550057,
+      "sha256": "94354f2ea944057d9f3b8cc65a0ea25e70471878aafaaccc7726cc38619f280d"
+    },
+    {
+      "path": "/brand/phone-guide/connect.png",
+      "status": 200,
+      "bytes": 412834,
+      "sha256": "43751dfeff7512ffbecf0a06ed1745698b7b1186df2a78bab37e943010ed16da"
+    },
+    {
+      "path": "/brand/phone-guide/scan.png",
+      "status": 200,
+      "bytes": 411764,
+      "sha256": "b274d899114f042cdb0153b12594e5d07f9391487a10f1e4e6a968dafaab2823"
+    },
+    {
+      "path": "/brand/phone-guide/zero.png",
+      "status": 200,
+      "bytes": 627345,
+      "sha256": "395da334053cc42416e514f394a28ec8a343360f87c3631a782721f557c1f346"
+    },
+    {
+      "path": "/third-party/tabler-icons/arrow-up-right.svg",
+      "status": 200,
+      "bytes": 410,
+      "sha256": "f31ac53da37951d3f1323e1ce9891480be2c3d68b0556c3986c61a0520226cd1"
+    },
+    {
+      "path": "/third-party/tabler-icons/rotate-clockwise.svg",
+      "status": 200,
+      "bytes": 412,
+      "sha256": "4bcb2b749f9c9fd35199f3fc8217469cbabcb0a90ceb5b6eaca53cc540fcea20"
+    },
+    {
+      "path": "/api/motion-pair.php",
+      "method": "GET",
+      "status": 405,
+      "expected": 405
+    },
+    {
+      "path": "/api/motion-pair.php",
+      "method": "POST",
+      "status": 400,
+      "expected": 400
+    },
+    {
+      "path": "/api/motion-pair.php",
+      "method": "POST",
+      "status": 403,
+      "expected": 403
+    }
+  ]
+}

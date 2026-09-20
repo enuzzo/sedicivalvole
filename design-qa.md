@@ -33,3 +33,10 @@ No actionable P0/P1/P2 findings remain for the selected UI. Larger accessibility
 ## Follow-up polish
 
 P3: generated illustrations retain slight material shading and the static UI does not reproduce decorative traces from the mock. Neither affects measurement truth or the primary onboarding action.
+
+## Canonical delivery
+
+Published and verified as `20260920-1716.24c955b`; sixteen HTTPS identity/hash/cache/API
+checks pass. Public browser verification is recorded separately from the synthetic
+layout captures and the still-open physical iPhone/Tesla acceptance. See
+[release evidence](docs/qa/2026-09-20-phone-onboarding/README.md).

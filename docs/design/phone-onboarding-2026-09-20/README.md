@@ -2,8 +2,9 @@
 
 Owner brief: September 20, 2026. Status: owner selected the first phone layout and second receiver drawer, with
 numbered/checkmarked steps and automatic collapse after setup. The combined
-[visual target](reference/selected-combination.png) is implemented locally.
-Canonical publication and physical acceptance are separate, pending evidence.
+[visual target](reference/selected-combination.png) is implemented and published as
+`20260920-1716.24c955b`. [Local and canonical evidence](../../qa/2026-09-20-phone-onboarding/README.md)
+passes; real iPhone/Tesla acceptance remains separate and open.
 
 ## Shared requirements
 
