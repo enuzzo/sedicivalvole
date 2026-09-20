@@ -65,6 +65,11 @@ third-party work retains the credits and licences recorded below.
 
 Public development repository: [github.com/enuzzo/sedicivalvole](https://github.com/enuzzo/sedicivalvole).
 
+The phone companion now has a guided sensor / connect / position / ZERO / screen-awake
+setup, with compact live readings after completion. The receiver drawer distinguishes
+connection from fresh data and shows measured round-trip latency. Physical iPhone/Tesla
+acceptance remains separate; see [current status](docs/CURRENT-STATE.md).
+
 ## Development reports
 
 Dev is the default, with coordinate-free automatic reports every **15 minutes of observable active session time**. Selecting Dev enables sending; explicit pauses persist. Session report separates the current ON/OFF state from **PAUSE SENDING / ENABLE SENDING** actions. Stops, GPS loss and offline time count; hidden time does not. If the browser froze the app, the report is sent when it wakes (catch-up after 15 wall minutes); closing or hiding the app also sends a compact report when the browser allows it. Progress counters and a random pending-delivery identity, never reports, survive reloads. Unconfirmed attempts retain progress; bounded private server receipts suppress duplicate emails after a lost response. Server acceptance is not inbox receipt. At most one due report waits for reconnection, with no persistent outbox. Standard keeps manual reports. Travel Reports are never automatic.
@@ -640,7 +645,7 @@ A heartfelt thank-you to the people who share the code, type, music, data and ex
 | 📊 Robin Doerfler and Lonce Wyse — Pulse-Train-Resonator / Procedural Engine Sounds | [Source](https://arxiv.org/abs/2603.09391) · [Public route](https://github.com/rdoerfler/ptr-model) | **Study only.** 2026 paper and RPM/torque-annotated dataset study; no code/audio imported. CC BY-NC code is not admitted as project software. |
 | 🛣️ Rezmason; original Drivey by Mark Pursey — Drivey.js | [Project](https://github.com/Rezmason/drivey) | **Integrated vendor runtime.** 51 unchanged runtime files at 5104cda in public/third-party/drivey/, behind a separate integration shell and bridge. |
 | 🎨 ruucm and stone-skipper — ShaderGradient | [Project](https://github.com/ruucm/shadergradient) | **Production dependency.** Unmodified @shadergradient/react 2.4.20 in the lazy Gradient family and protected LAB; project-owned starting points, response and fallback. |
-| ✒️ Paweł Kuna and contributors — Tabler Icons | [Project](https://github.com/tabler/tabler-icons) | **Integrated assets.** Unchanged v3.46.0 SVGs in public/third-party/tabler-icons/; project CSS supplies optical sizing, masks and semantic colour, including the launch Music and Engine accents. Play/pause/previous/next and the Now Playing level icon are bundled inline from the same unchanged SVG files so controls do not wait for image requests. |
+| ✒️ Paweł Kuna and contributors — Tabler Icons | [Project](https://github.com/tabler/tabler-icons) | **Integrated assets.** Unchanged v3.46.0 SVGs in public/third-party/tabler-icons/; project CSS supplies optical sizing, masks and semantic colour, including the launch Music and Engine accents and the companion acceleration/rotation icons. Play/pause/previous/next and the Now Playing level icon are bundled inline from the same unchanged SVG files so controls do not wait for image requests. |
 | 🌈 Björn Ottosson — Oklab reference conversion | [Project](https://bottosson.github.io/posts/oklab/) | **Adapted numeric implementation.** Forward/inverse conversion matrices translated into src/semantic-theme.js; contrast search and role resolution are project-owned. |
 | ⚛️ Meta and React contributors — React / React DOM | [Project](https://github.com/facebook/react) | **Production dependencies.** React 19.2.0 and React DOM power the interface and component lifecycle in src/. |
 | 🧊 Ricardo Cabello (mrdoob) and contributors — Three.js | [Project](https://github.com/mrdoob/three.js) | **Production and upstream-bundled dependency.** 0.169.0 for ShaderGradient, r109 inside Infinite Lights and r115 inside Drivey; upstream copies remain separate. |

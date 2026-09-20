@@ -1,32 +1,31 @@
 import { useEffect, useState } from "react";
 import QRCode from "qrcode";
-import { receiverOnboarding } from "./onboarding.js";
+import { SETUP_LABELS, receiverSetup, motionLiveStatus, setupEvidence, ended } from "./guided-setup.js";
 
 export function MotionIcon() {
   return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden="true"><rect x="8" y="3" width="8" height="18" rx="2"/><path d="M11 17h2M4 8l-2 4 2 4M20 8l2 4-2 4"/></svg>;
 }
 
-function Guide({ step }) {
-  return <svg viewBox="0 0 140 76" fill="none" stroke="var(--ui-text)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-    {step === 1 ? <>
-      <rect x="12" y="16" width="62" height="44" rx="3" stroke="var(--ui-chart-secondary)"/><path d="M22 26h12v12H22zM45 26h12v12H45zM22 47h12m11 0h12"/>
-      <g stroke="var(--ui-accent-text)"><rect x="99" y="7" width="27" height="62" rx="4"/><path d="M109 61h7M89 24l-9 14 9 14M108 25h9v19h-9z"/></g>
-    </> : step === 2 ? <>
-      <rect x="38" y="5" width="48" height="66" rx="5" stroke="var(--ui-chart-secondary)"/><path d="M57 63h10"/>
-      <g stroke="var(--ui-accent-text)"><rect x="47" y="17" width="30" height="32" rx="2"/><path d="m53 28 6 6 12-12M47 42h30M104 39l-7 10-7-10m7-16v26"/></g>
-    </> : <>
-      <path d="M19 65h101M60 57l-7 8h36l-7-8" stroke="var(--ui-chart-secondary)"/><rect x="56" y="6" width="30" height="48" rx="4"/>
-      <g stroke="var(--ui-accent-text)"><circle cx="71" cy="30" r="8"/><path d="M71 16v6m0 16v6M57 30h6m16 0h6M109 16v28m-5-5 5 5 5-5"/></g>
-    </>}
-  </svg>;
-}
-
-export function MotionSteps({ active, compact = false }) {
-  return <ol className={`motion-guide${compact ? " motion-guide-compact" : ""}`} aria-label="Connection steps">
-    {["Scan", "Connect", "Zero"].map((title, i) => <li key={title} data-active={active === i} data-done={active > i} aria-current={active === i ? "step" : undefined}>
-      <Guide step={i + 1}/><strong><span aria-label={active > i ? "Complete" : `Step ${i + 1}`}>{active > i ? "✓" : i + 1}</span> {title}</strong>
+export function MotionSteps({ active, done = [], labels = SETUP_LABELS }) {
+  return <ol className="motion-setup-steps" aria-label="Setup progress">
+    {labels.map((title, i) => <li key={title} data-active={active === i} data-done={done[i] === true} aria-current={active === i ? "step" : undefined}>
+      <span className="motion-step-number" aria-label={done[i] ? `${title} complete` : `Step ${i + 1}`}>{done[i] ? "✓" : i + 1}</span><span>{title}</span>
     </li>)}
   </ol>;
+}
+export function MotionReadings({ summary, values, phone = false }) {
+  const live = motionLiveStatus(summary, phone);
+  const road = live.fresh ? values?.road : null;
+  const number = (n, digits) => Number.isFinite(n) ? `${n > 0 ? "+" : ""}${n.toFixed(digits)}` : "—";
+  return <section className="motion-live-readings" aria-label="Live phone telemetry">
+    <div className="motion-live-row"><img src="/third-party/tabler-icons/arrow-up-right.svg" alt=""/><span>Acceleration<small>Forward / braking</small></span><strong>{number(road?.longitudinalMps2, 2)} <small>m/s²</small></strong></div>
+    <div className="motion-live-row"><img src="/third-party/tabler-icons/rotate-clockwise.svg" alt=""/><span>Rotation<small>Turn rate</small></span><strong>{number(road?.yawRate, 1)} <small>°/s</small></strong></div>
+    <dl className="motion-live-metrics">{!phone && <div><dt>ROUND TRIP</dt><dd>{live.rtt ?? "—"} <small>ms</small></dd></div>}<div><dt>DATA QUALITY</dt><dd>{live.quality}</dd></div>{phone && <div><dt>SCREEN</dt><dd>{summary.wakeLock ? "Awake" : "May sleep"}</dd></div>}</dl>
+  </section>;
+}
+export function MotionLiveStatus({ summary, phone = false, children }) {
+  const live = motionLiveStatus(summary, phone);
+  return <div className="motion-live-status" data-good={live.fresh && summary.wakeLock === true} role="status"><div><strong>{live.title}</strong><p>{live.hint}</p></div>{children}</div>;
 }
 
 export function MotionNext({ guide }) {
@@ -36,11 +35,16 @@ export function MotionNext({ guide }) {
 }
 
 export function MotionPanel({ snapshot, onStart, onStop, onClose, responseLabel }) {
-  const [qr, setQr] = useState(null);
-  const [qrError, setQrError] = useState(false);
-  const [detailsOpen, setDetailsOpen] = useState(false);
+  const [qr, setQr] = useState(null), [qrError, setQrError] = useState(false);
+  const [detailsOpen, setDetailsOpen] = useState(false), [review, setReview] = useState(false);
+  const [completed, setCompleted] = useState(false);
+  const guide = receiverSetup(snapshot);
   useEffect(() => {
-    let active = true; setQr(null); setQrError(false);
+    if (guide.ready && !completed) { setCompleted(true); setReview(false); }
+    else if (["idle", "preparing", "pairing"].includes(snapshot.state) || ended(snapshot.state)) setCompleted(false);
+  }, [guide.ready, snapshot.state, completed]);
+  useEffect(() => {
+    setQr(null); setQrError(false);
     if (snapshot.qrUrl) {
       try {
         const { modules } = QRCode.create(snapshot.qrUrl, { errorCorrectionLevel: "M" });
@@ -48,36 +52,34 @@ export function MotionPanel({ snapshot, onStart, onStop, onClose, responseLabel 
         for (let y = 0; y < modules.size; y++) for (let x = 0; x < modules.size; x++) {
           if (modules.data[y * modules.size + x]) cells.push(`M${x + 4} ${y + 4}h1v1h-1z`);
         }
-        if (active) setQr({ size: modules.size + 8, path: cells.join("") });
-      } catch { if (active) setQrError(true); }
+        setQr({ size: modules.size + 8, path: cells.join("") });
+      } catch { setQrError(true); }
     }
-    return () => { active = false; };
   }, [snapshot.qrUrl]);
-  const guide = snapshot.state === "pairing" && !qr
-    ? { active: 0, ready: false, restart: qrError, title: qrError ? "QR could not be drawn" : "Drawing QR…", hint: qrError ? "Retry to create a new QR." : "The connection is prepared. Please wait." }
-    : receiverOnboarding(snapshot);
-  return <div className="motion-panel-content">
-    <header><div><small>PHONE COMPANION · EXPERIMENTAL</small><h2 id="motion-title">Connect your phone</h2></div><button data-dialog-initial-focus onClick={onClose}>CLOSE</button></header>
-    <MotionSourceStatus label={responseLabel}/>
-    <div className="motion-benefits"><p>Your phone, a motion sensor.</p><p>Acceleration. Rotation. Live.</p><p>Feel the road in Engine and Music.</p></div>
-    <MotionSteps active={guide.active}/>
-    <div className="motion-pairing"><div>
-      <MotionNext guide={guide}/>
-      <div className="motion-actions">
-        {guide.ready ? <button className="motion-primary" onClick={onClose}>DONE</button> : guide.restart ? <button className="motion-primary motion-nudge" onClick={() => { onStop(); onStart(); }}>CREATE QR</button> : null}
-        {["preparing", "pairing", "connecting", "connected", "stale"].includes(snapshot.state) && <button onClick={onStop}>{guide.ready ? "DISCONNECT" : "CANCEL"}</button>}
+  const needsAction = snapshot.dataFresh === true && (!snapshot.mountSelected || !snapshot.tared || snapshot.roadState !== "calibrated" || !snapshot.wakeLock);
+  const showSetup = !completed || review || needsAction;
+  const restart = () => { setCompleted(false); setReview(false); onStop(); onStart(); };
+  return <div className="motion-panel-content motion-guided-panel">
+    <header><h2 id="motion-title">Connect your phone</h2><button data-dialog-initial-focus onClick={onClose}>CLOSE</button></header>
+    <p className="motion-setup-intro">GPS for speed. Phone for acceleration + rotation.</p>
+    {completed && !needsAction && <button className="motion-setup-disclosure" aria-expanded={review} onClick={() => setReview(v => !v)}><span>✓ Setup completed</span><span>{review ? "Hide steps" : "Review steps"}</span></button>}
+    {showSetup ? <>
+      <MotionSteps active={guide.active} done={setupEvidence(snapshot)}/>
+      <div className="motion-setup-pairing">
+        <div className="motion-setup-instruction"><MotionNext guide={guide}/>
+          {(guide.restart || qrError) && <button className="motion-primary" onClick={restart}>CREATE NEW QR</button>}
+        </div>
+        {qr && snapshot.state === "pairing" ? <svg className="motion-qr" viewBox={`0 0 ${qr.size} ${qr.size}`} role="img" aria-label="Scan to pair this session with your phone" shapeRendering="crispEdges"><rect width={qr.size} height={qr.size} fill="#fff"/><path d={qr.path} fill="#000"/></svg>
+          : !completed && <img className="motion-setup-art" src={`/brand/phone-guide/${guide.active < 1 ? "scan" : guide.active < 3 ? "connect" : guide.active === 3 ? "zero" : "awake"}.png`} alt=""/>}
       </div>
-      {qrError && <p role="alert">QR unavailable. Cancel, then create a new QR.</p>}
-    </div>{qr ? <svg className="motion-qr motion-nudge" viewBox={`0 0 ${qr.size} ${qr.size}`} role="img" aria-label="Scan to pair this session with your phone" shapeRendering="crispEdges"><rect width={qr.size} height={qr.size} fill="#fff"/><path d={qr.path} fill="#000"/></svg> : <div className="motion-qr-placeholder" data-ready={guide.ready}><MotionIcon/><span>{guide.ready ? "✓ CONNECTED" : snapshot.state === "preparing" ? "PREPARING QR…" : "PHONE COMPANION"}</span></div>}</div>
-    <div className="motion-connection-details"><button className="motion-connection-toggle" aria-expanded={detailsOpen} aria-controls="motion-connection-details-content" onClick={() => setDetailsOpen(open => !open)}>Connection details</button>
-      <div id="motion-connection-details-content" hidden={!detailsOpen}>
-      <MotionQuality summary={snapshot}/>
-      <button onClick={() => { onStop(); onStart("direct"); }}>CREATE LOCAL WEBRTC QR</button>
-      <p>HTTPS connects through sedicivalvole.app, even on different networks. Encrypted motion envelopes are held briefly; only your two screens have the key. A local connection is also available when the network allows it.</p>
-      <p>To replace a pending QR, tap CANCEL, then CREATE QR. Hiding either page, disconnecting or reaching one hour ends the session; scan a new QR to reconnect. CLOSE only closes this panel.</p>
-      <p>GPS supplies speed. Calibrated mounted acceleration drives Engine and Music response; gyro bends Aperture. Demo excludes the phone. Keep the phone fixed in its holder. REPORT includes connection and sensor-quality summaries, never sensor streams or pairing keys.</p>
-      </div>
-    </div>
+      {qrError && <p role="alert">QR could not be drawn. Create a new QR.</p>}
+      {review && <ol className="motion-review-list"><li>On iPhone: enable local sensors and allow access.</li><li>On iPhone: tap CONNECT TO DISPLAY.</li><li>While parked: secure the phone, then confirm placement.</li><li>On iPhone: tap ZERO and keep still.</li><li>On iPhone: tap KEEP SCREEN AWAKE and wait for confirmation.</li></ol>}
+    </> : <MotionReadings summary={snapshot} values={snapshot.values}/>}
+    <MotionLiveStatus summary={snapshot}>{!["idle", "closed", "expired"].includes(snapshot.state) && <button onClick={onStop}>{completed ? "DISCONNECT" : "CANCEL"}</button>}</MotionLiveStatus>
+    {completed && !guide.ready && <button className="motion-restart" onClick={restart}>RESTART SETUP · NEW QR</button>}
+    <details className="motion-connection-details" open={detailsOpen} onToggle={e => setDetailsOpen(e.currentTarget.open)}><summary>Connection details</summary>
+      {detailsOpen && <><MotionSourceStatus label={responseLabel}/><MotionQuality summary={snapshot}/><button onClick={() => { onStop(); onStart("direct"); }}>CREATE LOCAL WEBRTC QR</button><p>Round trip measures the request and reply, not one-way latency. Data quality follows fresh, calibrated samples confirmed by both screens. Delayed samples are excluded; GPS remains the speed source.</p><p>Keep both pages visible. Hiding a page ends this session; create a new QR to restart. CLOSE only closes this drawer. Encrypted motion uses the same-origin HTTPS relay. Reports contain quality summaries, never sensor streams or pairing keys.</p></>}
+    </details>
   </div>;
 }
 

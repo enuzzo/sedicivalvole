@@ -35,5 +35,5 @@ export function createScreenWake({ host = window, doc = document, onChange = () 
       if (token === epoch) { failures += 1; state = error?.name === 'NotAllowedError' ? 'denied' : 'error'; emit(); }
     } finally { if (token === epoch) pending = false; }
   }
-  return { start() { wanted = true; void request(); }, retry: request, stop, summary };
+  return { start() { wanted = true; return request(); }, retry: request, stop, summary };
 }

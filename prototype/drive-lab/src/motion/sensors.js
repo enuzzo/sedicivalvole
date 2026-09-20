@@ -4,7 +4,7 @@ import { mountedBasis, mountedReading } from "./road-input.js";
 const finite = (n) => typeof n === "number" && Number.isFinite(n);
 const vector = (value, keys) => keys.every((key) => finite(value?.[key])) ? keys.map((key) => value[key]) : null;
 
-export function createPhoneSensors({ host = window, doc = document, now = () => performance.now(), onEvent = () => {} } = {}) {
+export function createPhoneSensors({ host = window, doc = document, now = () => performance.now(), onEvent = () => {}, autoWake = true } = {}) {
   const pose = createPoseReference();
   let mountSelected = false, roadBasis = null, roadState = "not-selected";
   let state = "idle";
@@ -150,7 +150,7 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
         host.addEventListener("devicemotion", motion);
         host.addEventListener("deviceorientation", orient);
         onEvent("permission", { ...summary(), sensorState: "granted" });
-        wake.start();
+        if (autoWake) wake.start();
       } catch { if (token === generation) { state = "error"; onEvent("permission", summary()); } }
     },
     setMount(selected) { mountSelected = selected === true; invalidate(); zeroDeadline = null; stableSince = null; },
@@ -170,6 +170,7 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
     },
     latest() { summary(); const value = sample ? pose.project({ ...sample, orientation, orientationAt }, now()) : null; return value ? { ...value, sampleAt: sample.at, ...(roadBasis ? { road: mountedReading(roadBasis, sample) } : {}) } : null; },
     retryWake: () => wake.retry(),
+    requestWake: () => wake.start(),
     summary,
     stop: () => stop(),
     dispose() { stop(); disposed = true; doc.removeEventListener("visibilitychange", visibility); host.removeEventListener("pagehide", pagehide); host.removeEventListener("offline", pagehide); },

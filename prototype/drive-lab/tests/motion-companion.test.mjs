@@ -410,3 +410,36 @@ test('mounted sensor ZERO latches invalidation and needs explicit recalibration 
  f.sensor.requestTare();assert.equal(f.sensor.latest().road,undefined);
  f.host.emit('offline');assert.equal(f.sensor.latest(),null);f.sensor.dispose();
 });
+
+test('guided remote onboarding requires placement, road ZERO and explicit acquired screen wake', async () => {
+ const {phoneSetup, receiverSetup, setupEvidence, motionLiveStatus} = await import('../src/motion/guided-setup.js');
+ const live = {state:'connected', sensorState:'live', dataFresh:true, referenceReceived:true, receiverConfirmed:true, tared:true, tareState:'tared', roadState:'calibrated', mountSelected:true, wakeLock:true, wakeState:'active', received:5, rttMs:108};
+ assert.equal(phoneSetup({hasPair:true,link:live,sensor:live}).ready,true);
+ assert.equal(receiverSetup(live).ready,true);
+ for (const changes of [{wakeLock:false,wakeState:'denied'}, {wakeLock:false,wakeState:'released'}, {wakeLock:false,wakeState:'unsupported'}, {mountSelected:false}, {roadState:'unsupported-pose'}, {tareState:'settling'}, {receiverConfirmed:false}]) {
+  assert.equal(phoneSetup({hasPair:true,link:{...live,...changes},sensor:{...live,...changes}}).ready,false);
+  assert.equal(receiverSetup({...live,...changes}).ready,false);
+ }
+ assert.equal(phoneSetup({hasPair:true,sensor:{sensorState:'live'},link:{state:'idle'}}).action,'connect');
+ assert.equal(phoneSetup({hasPair:true,sensor:live,link:{state:'closed'}}).restart,true);
+ assert.equal(phoneSetup({hasPair:false,sensor:live,link:live}).ready,false);
+ assert.deepEqual(setupEvidence({state:'connecting'}),[false,false,false,false,false]);
+ const delayed={...live,dataFresh:false};
+ assert.equal(receiverSetup(delayed).ready,false);
+ assert.equal(motionLiveStatus(delayed).fresh,false);
+ assert.equal(motionLiveStatus(delayed).quality,'Delayed');
+ assert.equal(motionLiveStatus(delayed).rtt,null);
+ assert.equal(motionLiveStatus({...live,roadState:'moved'}).fresh,false);
+ assert.equal(motionLiveStatus(live).rtt,108);
+ assert.equal(motionLiveStatus(live,true).rtt,null, 'phone must not invent receiver RTT');
+});
+
+test('guided phone sensors defer wake acquisition to the final user action', async () => {
+ const events=new Map(); let requests=0;
+ const host={isSecureContext:true, navigator:{wakeLock:{request:async()=>{requests++;return {released:false,addEventListener(){},release:async()=>{}};}}}, DeviceMotionEvent:{requestPermission:async()=> 'granted'},DeviceOrientationEvent:{requestPermission:async()=> 'granted'},addEventListener:(n,f)=>events.set(n,f),removeEventListener(){}};
+ const doc={visibilityState:'visible',addEventListener(){},removeEventListener(){}};
+ const sensor=createPhoneSensors({host,doc,autoWake:false});
+ await sensor.start();assert.equal(requests,0);assert.equal(sensor.summary().wakeLock,false);
+ await sensor.requestWake();assert.equal(requests,1);assert.equal(sensor.summary().wakeLock,true);
+ sensor.stop();assert.equal(sensor.summary().wakeLock,false);sensor.dispose();
+});

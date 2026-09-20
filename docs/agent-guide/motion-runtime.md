@@ -105,3 +105,20 @@ includes HTTP time instead of adding a fixed idle wait after every request. Dire
 retains its one-pending-request cadence and legacy envelope compatibility. No additional
 server, provider or clock synchronization is introduced. See
 [reliability correction](../RELIABILITY-CORRECTION-2026-09-20.md).
+
+
+## Guided remote companion setup — September 20
+
+The selected remote phone flow separates sensor permission, explicit connection,
+confirmed portrait placement, calibrated mounted ZERO and an explicit screen-wake
+gesture. The local sensor owner keeps its existing wake-on-start default; only
+the remote companion defers wake to the final action. Actual wake acquisition,
+calibration and reciprocal fresh receipt are required for setup completion.
+Numbers become checks from current step-specific evidence. Completed setup folds
+away; data gaps show blank telemetry and delayed status without toggling transport
+connection or replaying old values. Denial/release, invalid calibration and ended
+sessions show corrective guidance; terminal pairing still requires a new QR.
+Receiver RTT is request/reply time, not synchronized one-way delay; stale RTT is
+not displayed as current. Phone telemetry renders only after setup; receiver live
+rows exist only while the drawer is mounted. The optional TRACE cube mounts only
+after setup and deliberate disclosure. No raw samples enter diagnostic reports.

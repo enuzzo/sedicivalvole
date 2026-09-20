@@ -1,0 +1,26 @@
+[
+  {
+    "file": "zero.png",
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "fullyTransparentPixels": 976263
+  },
+  {
+    "file": "connect.png",
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "fullyTransparentPixels": 1095137
+  },
+  {
+    "file": "scan.png",
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "fullyTransparentPixels": 1028134
+  },
+  {
+    "file": "awake.png",
+    "alphaMin": 0,
+    "alphaMax": 255,
+    "fullyTransparentPixels": 911518
+  }
+]

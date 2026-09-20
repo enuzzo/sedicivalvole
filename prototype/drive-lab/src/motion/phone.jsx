@@ -3,140 +3,104 @@ import { createPhoneSensors } from "./sensors.js";
 import { createMotionSession } from "./session.js";
 import { getFluxTheme } from "../flux-themes.js";
 import { resolveSemanticTheme } from "../semantic-theme.js";
-
-import { MotionQuality, MotionSteps, MotionNext, MountChoice } from "./motion-ui.jsx";
-import { phoneStatus } from "./phone-status.js";
+import { MotionQuality, MotionSteps, MotionReadings, MotionLiveStatus } from "./motion-ui.jsx";
 import { MotionTrace } from "./trace-view.jsx";
 import { motionPresentationFromSearch } from "./presentation.js";
-import { phoneOnboarding } from "./onboarding.js";
+import { phoneSetup, setupEvidence, ended } from "./guided-setup.js";
 const initialPresentation = motionPresentationFromSearch(window.location.search);
-
 // The bearer capability stays in memory; remove it from history before UI/logging.
 const match = /^#pair=([a-f0-9]{32})\.([a-f0-9]{64})(?:\.([a-f0-9]{64}))?$/.exec(window.location.hash);
 const initialPair = match ? { id: match[1], token: match[2], ...(match[3] ? { key: match[3] } : {}) } : null;
 if (window.location.hash) history.replaceState(null, "", `${location.pathname}?motion=phone`);
-const number = value => !Number.isFinite(value) ? "—" : Math.abs(value) >= 10000 ? value.toExponential(0)
-  : value.toFixed(Math.abs(value) < 10 ? 2 : Math.abs(value) < 100 ? 1 : 0);
 
-export function MotionPhone() {
-  const sensorsRef = useRef(null), sessionRef = useRef(null);
-  const traceRef = useRef({});
+export function MotionPhone({ createSensors = createPhoneSensors, createSession = createMotionSession, pair = initialPair } = {}) {
+  const sensorsRef = useRef(null), sessionRef = useRef(null), traceRef = useRef({});
   const attemptedRef = useRef(false);
-  const zeroStepRef = useRef(null), revealZeroRef = useRef(false);
   const [presentation, setPresentation] = useState(initialPresentation);
-  const phoneTheme = resolveSemanticTheme(getFluxTheme(presentation.palette), presentation.appearance);
-  const [viewReset, setViewReset] = useState(0);
-  const getSample = useCallback(() => sensorsRef.current?.latest() ?? null, []);
-  const traceTelemetry = useCallback(detail => {
-    if (traceRef.current.traceRenderer !== detail.traceRenderer) sessionRef.current?.event("trace", detail);
-    traceRef.current = detail;
-  }, []);
+  const theme = resolveSemanticTheme(getFluxTheme(presentation.palette), presentation.appearance);
   const [snapshot, setSnapshot] = useState({ state: "idle" });
   const [sensor, setSensor] = useState({ sensorState: "idle" });
-  const [values, setValues] = useState(null);
-  const [activity, setActivity] = useState(null);
-  const [localOnly, setLocalOnly] = useState(false);
+  const [values, setValues] = useState(null), [completed, setCompleted] = useState(false);
+  const [review, setReview] = useState(false), [detail, setDetail] = useState(false), [trace, setTrace] = useState(false);
+  const [viewReset, setViewReset] = useState(0);
+  const getSample = useCallback(() => sensorsRef.current?.latest() ?? null, []);
+  const traceTelemetry = useCallback(value => { traceRef.current = value; }, []);
   useEffect(() => {
     const previousTitle = document.title;
     document.title = "Phone companion — sedicivalvole";
     let previousLink = "idle";
-    const session = createMotionSession({ role: "phone", onChange: next => {
-      // A lost/ended pairing also invalidates the phone reference and wake owner.
+    const session = createSession({ role: "phone", onChange: next => {
       const changed = previousLink !== next.state; previousLink = next.state;
-      if (changed && ["closed", "expired", "error", "suspended", "unavailable"].includes(next.state)) setLocalOnly(false);
-      if (changed && ["closed", "expired", "error", "suspended", "unavailable"].includes(next.state)
-        && !["stopped", "suspended", "idle"].includes(sensorsRef.current?.summary().sensorState)) sensorsRef.current?.stop();
+      if (changed && ended(next.state)) { sensorsRef.current?.stop(); setCompleted(false); setReview(false); setTrace(false); }
       if (next.presentation) setPresentation(previous => previous.palette === next.presentation.palette && previous.appearance === next.presentation.appearance ? previous : next.presentation);
       setSnapshot(next);
-    },
-      getPhone: () => ({ summary: { ...sensorsRef.current?.summary(), ...traceRef.current }, values: sensorsRef.current?.latest() ?? null }) });
-    const sensors = createPhoneSensors({ onEvent: (type, detail) => session.event(type, detail) });
+    }, getPhone: () => ({ summary: { ...sensorsRef.current?.summary(), ...traceRef.current }, values: sensorsRef.current?.latest() ?? null }) });
+    // Remote onboarding requests wake only from its own final explicit gesture.
+    const sensors = createSensors({ autoWake: false, onEvent: (type, value) => session.event(type, value) });
     sensorsRef.current = sensors; sessionRef.current = session;
-    const timer = setInterval(() => { setSensor(sensors.summary()); setValues(sensors.latest()); setActivity(sensors.activity()); session.refresh(); }, 100);
+    const timer = setInterval(() => { setSensor(sensors.summary()); setValues(sensors.latest()); session.refresh(); }, 100);
     return () => { document.title = previousTitle; clearInterval(timer); sensors.dispose(); session.dispose(); sensorsRef.current = null; sessionRef.current = null; };
   }, []);
-  useEffect(() => {
-    if (revealZeroRef.current && sensor.sensorState === "live" && !sensor.tared && (!initialPair || localOnly || snapshot.state === "connected")) {
-      revealZeroRef.current = false;
-      const bounds = zeroStepRef.current?.getBoundingClientRect();
-      if (bounds && (bounds.top < 0 || bounds.bottom > window.innerHeight)) zeroStepRef.current.scrollIntoView({ block: "end", behavior: "auto" });
-    }
-  }, [sensor.sensorState, sensor.tared, snapshot.state, localOnly]);
+  const guide = phoneSetup({ link: snapshot, sensor, hasPair: Boolean(pair), attempted: attemptedRef.current });
+  const summary = { ...snapshot, ...sensor };
+  useEffect(() => { if (guide.ready && !completed) { setCompleted(true); setReview(false); } }, [guide.ready, completed]);
+  const requiresAction = sensor.sensorState !== "live" || !sensor.mountSelected || !sensor.tared || sensor.roadState !== "calibrated" || !sensor.wakeLock;
+  const showSetup = !completed || review || requiresAction;
+  const refresh = () => setSensor(sensorsRef.current?.summary() ?? {});
   const start = () => {
-    revealZeroRef.current = true;
-    setLocalOnly(!initialPair || ["closed", "expired", "error", "suspended", "unavailable"].includes(snapshot.state));
-    void sensorsRef.current?.start();
-    if (status.canJoin && !attemptedRef.current) {
-      attemptedRef.current = true;
-      void sessionRef.current?.start(initialPair);
-    }
-    setSensor(sensorsRef.current?.summary() ?? {});
+    if (sensor.sensorState === "waiting" && sensor.waitingMs >= 5000) sensorsRef.current?.stop();
+    void sensorsRef.current?.start(); refresh();
   };
-  const tare = () => {
-    sensorsRef.current?.requestTare();
-    setSensor(sensorsRef.current?.summary() ?? {});
+  const connect = () => {
+    if (!pair || attemptedRef.current || ended(snapshot.state)) return;
+    attemptedRef.current = true; void sessionRef.current?.start(pair);
   };
-  const stop = () => { sensorsRef.current?.stop(); sessionRef.current?.stop(); setLocalOnly(false); setSensor(sensorsRef.current?.summary() ?? {}); setValues(null); setActivity(null); };
-  const status = phoneStatus({ link: snapshot, sensor, hasPair: Boolean(initialPair), attempted: attemptedRef.current });
-  const guide = phoneOnboarding({ link: snapshot, sensor, hasPair: Boolean(initialPair), localOnly, attempted: attemptedRef.current });
+  const stop = () => { sensorsRef.current?.stop(); sessionRef.current?.stop(); setCompleted(false); setReview(false); setTrace(false); refresh(); setValues(null); };
+  const restart = () => { sensorsRef.current?.stop(); sensorsRef.current?.setMount(false); setCompleted(false); setReview(false); setTrace(false); setDetail(false); refresh(); setValues(null); };
+  const actions = {
+    sensors: start, connect,
+    position: () => { sensorsRef.current?.setMount(true); refresh(); },
+    zero: () => { sensorsRef.current?.requestTare(); refresh(); },
+    awake: () => { void sensorsRef.current?.requestWake(); refresh(); },
+  };
+  const labels = { sensors: "ENABLE LOCAL SENSORS", connect: "CONNECT TO DISPLAY", position: "PHONE IS SECURED", zero: "ZERO", awake: "KEEP SCREEN AWAKE" };
   const download = () => {
-    const report = { schema: "sedicivalvole.motion-phone-report.v1", generatedAt: new Date().toISOString(),
-      build: __APP_BUILD__, commit: __APP_COMMIT__, platform: navigator.userAgent,
-      motion: sessionRef.current?.report() };
+    const report = { schema: "sedicivalvole.motion-phone-report.v1", generatedAt: new Date().toISOString(), build: __APP_BUILD__, commit: __APP_COMMIT__, platform: navigator.userAgent, motion: sessionRef.current?.report() };
     const url = URL.createObjectURL(new Blob([JSON.stringify(report, null, 2)], { type: "application/json" }));
     const a = document.createElement("a"); a.href = url; a.download = "sedicivalvole-phone-motion.json"; a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
-  return <main className="motion-phone" data-palette={presentation.palette} data-appearance={presentation.appearance} style={{ ...phoneTheme.css, colorScheme: presentation.appearance }}>
-    <div className="motion-phone-stage">
-    <div className="motion-phone-lead">
-    <header className="motion-phone-brand">
-      <img src={`/brand/pistons-v1/mark-512.png?build=${encodeURIComponent(__APP_BUILD__)}`} width="48" height="48" alt=""/>
-      <div><span className="motion-wordmark">sedicivalvole</span><span className="motion-phone-kicker">{initialPair?.key ? "ENCRYPTED VIA SEDICIVALVOLE.APP" : "PHONE COMPANION"}</span></div>
-    </header>
-    <div className="motion-phone-heading"><h1>Motion instrument</h1><span>TRACE</span></div>
-    <section className="motion-phone-controls" aria-label="Connection and sensor controls">
-      {initialPair && !localOnly && <MotionSteps active={guide.active} compact/>}
-      <MotionNext guide={guide}/>
-      {(!status.running || sensor.sensorState === "requesting") && <div className="motion-actions"><button key={status.action} className="motion-primary motion-nudge" onClick={start} disabled={sensor.sensorState === "requesting"}>{sensor.sensorState === "requesting" ? "AWAITING PERMISSION…" : status.action}</button></div>}
-      {(["incomplete", "stale"].includes(sensor.sensorState) || sensor.sensorState === "waiting" && sensor.waitingMs > 5000) && <div className="motion-actions"><button className="motion-primary motion-nudge" onClick={() => { sensorsRef.current?.stop(); start(); }}>RETRY SENSORS</button></div>}
-      {["released", "denied", "error"].includes(sensor.wakeState) && <button className="motion-wake-retry" onClick={() => void sensorsRef.current?.retryWake()}>KEEP SCREEN AWAKE</button>}
-    </section>
+  return <main className="motion-phone motion-guided-phone" data-palette={presentation.palette} data-appearance={presentation.appearance} style={{ ...theme.css, colorScheme: presentation.appearance }}>
+    <div className="motion-guided-stage" data-setup={showSetup}>
+      <header className="motion-phone-brand"><img src={`/brand/pistons-v1/mark-512.png?build=${encodeURIComponent(__APP_BUILD__)}`} width="48" height="48" alt=""/><div><span className="motion-wordmark">sedicivalvole</span><span className="motion-phone-kicker">PHONE COMPANION</span></div></header>
+      {showSetup ? <>
+        <MotionSteps active={guide.active} done={setupEvidence(summary, true)}/>
+        <div className="motion-focus-copy" role="status"><h1>{guide.title}</h1><p>{guide.hint}</p></div>
+        <div className="motion-focus-art"><img src={`/brand/phone-guide/${guide.active === 4 ? "awake" : guide.active >= 2 ? "zero" : guide.active === 1 ? "connect" : "scan"}.png`} alt=""/></div>
+        <div className="motion-focus-action">
+          {guide.action && <button className="motion-primary" onClick={actions[guide.action]}>{labels[guide.action]}</button>}
+          {guide.active === 4 && !sensor.wakeLock && <p>{sensor.wakeState === "requesting" ? "Requesting screen wake…" : "Screen-awake lock not acquired"}</p>}
+          {review && guide.ready && <button onClick={() => setReview(false)}>BACK TO LIVE DATA</button>}
+        </div>
+        <footer className="motion-setup-footer"><span>{ended(snapshot.state) ? "New QR required" : guide.ready ? "Setup complete" : `Step ${Math.min(5, guide.active + 1)} of 5`}</span>{!ended(snapshot.state) && <button onClick={restart}>Restart setup</button>}</footer>
+      </> : <>
+        <button className="motion-setup-disclosure" aria-expanded={false} onClick={() => setReview(true)}><span>✓ Setup completed</span><span>Review steps</span></button>
+        <h1 className="motion-live-title">{guide.ready ? "Motion is live." : "Motion is paused."}</h1>
+        <MotionReadings summary={summary} values={values} phone/>
+        <MotionLiveStatus summary={summary} phone/>
+        <button className="motion-stop" onClick={stop}>STOP</button>
+      </>}
+      <button className="motion-detail-toggle" aria-expanded={detail} onClick={() => setDetail(v => !v)}>Connection & sensor details</button>
     </div>
-    <section className="motion-instrument" aria-label="Live motion readings">
-      {activity && !sensor.tared && <div className="motion-input-proof" aria-label="Sensor activity before zero">
-        <strong>SENSORS LIVE · SET ZERO TO DRAW</strong>
-        <div><span>Acceleration</span><span className="motion-input-value">{number(activity.acceleration)} m/s²</span></div>
-        <div><span>Rotation</span><span className="motion-input-value">{number(activity.rotation)} °/s</span></div>
-      </div>}
-      <MotionTrace getSample={getSample} onTelemetry={traceTelemetry} resetKey={viewReset} themeKey={`${presentation.palette}:${presentation.appearance}`}/>
-      <MountChoice selected={sensor.mountSelected} onChange={selected => { sensorsRef.current?.setMount(selected); setSensor(sensorsRef.current?.summary() ?? {}); }}/>
-      <div className="motion-zero-row"><button className={`motion-zero${guide.active === 2 && !sensor.tared && sensor.tareState !== "settling" ? " motion-nudge" : ""}`} onClick={tare} disabled={sensor.tareState === "settling" || sensor.sensorState !== "live"}>{sensor.tareState === "settling" ? "HOLD STILL" : "ZERO"}<small>recalibrate</small></button></div>
-      <p ref={zeroStepRef} className="motion-phone-message">{sensor.tareState === "settling" ? "Keep still…" : ["hold-still", "unavailable"].includes(sensor.tareState) ? (sensor.tared ? "Previous ZERO kept · try again" : "Not set · rest the phone and retry") : sensor.tared ? sensor.mountSelected ? sensor.roadState === "calibrated" ? "✓ ZERO SET · holder calibrated" : sensor.roadState === "moved" ? "Holder moved · ZERO again" : "Check holder pose · ZERO again" : "✓ ZERO SET · TRACE only" : sensor.sensorState === "live" ? "Tap ZERO · lift your finger · keep still" : "Enable sensors to set ZERO"}</p>
-      <div className="motion-view-actions"><button onClick={() => setViewReset(n => n + 1)}>RECENTER VIEW</button><button onClick={stop}>STOP</button></div>
-    </section>
-    </div>
-    <section className="motion-instrument-readings" aria-label="Detailed motion readings">
-      <div className="motion-section-label"><span>ACCELERATION</span><span>m/s²</span></div>
-      <div className="motion-readings">{["X", "Y", "Z"].map((axis,i) => <div key={axis}><small>{axis}</small><strong>{number(values?.acceleration[i])}</strong></div>)}</div>
-      <div className="motion-section-label"><span>ROTATION</span><span>°/s</span></div>
-      <div className="motion-readings motion-gyro-readings">{["X", "Y", "Z"].map((axis,i) => <div key={axis}><small>{axis}</small><strong>{number(values?.rotation[i])}</strong></div>)}</div>
-      <div className="motion-reference"><span data-tared={Boolean(sensor.tared)}>{sensor.tared ? "REFERENCE SET" : "ZERO REQUIRED"}</span><span>{sensor.wakeLock ? "SCREEN AWAKE" : sensor.wakeState === "requesting" ? "WAKE REQUESTED" : !sensor.wakeState || sensor.wakeState === "idle" ? "WAKE ON START" : "SCREEN MAY SLEEP"}</span></div>
-    </section>
-    <details className="motion-phone-guide"><summary>Placement & your zero</summary>
-      <div className="motion-mount-guide">
-        <svg viewBox="0 0 140 110" fill="none" stroke="currentColor" strokeWidth="2" role="img" aria-label="Phone upright in a holder tilted about 45 degrees">
-          <path d="M14 94h112M40 94l54-54 22 54M53 94a28 28 0 0 1 8-20"/>
-          <rect x="37" y="15" width="38" height="72" rx="5" transform="rotate(45 56 51)"/>
-          <path d="m41 69 7 7"/><text x="81" y="83" fill="currentColor" stroke="none" fontSize="14">45°</text>
-        </svg>
-        <p><strong>Your holder is your zero.</strong> For road response, select the portrait car holder: top up, screen facing the cabin, aligned with the car. Park, then ZERO. Gravity measures the actual incline; no fixed angle is assumed.</p>
-      </div>
-      <p>Handheld or other mounts keep TRACE and GPS road response. Mount movement can invalidate road calibration: remount and ZERO. Slow yaw or translation in your hand cannot reliably be distinguished from car motion; uncheck the holder before lifting the phone.</p>
-      <p>The cube shows acceleration in m/s² over the last three seconds, not a position or road path. Axis scales expand together when needed and reset with ZERO. Drag sideways to turn the view; RECENTER VIEW restores the camera without changing your zero. The phone icon shows orientation relative to your reference.</p>
-      <p>Keep this page visible. Screen wake is {sensor.wakeLock ? "active" : sensor.wakeState ?? "not requested"}. Hiding the page ends the connection.</p>
-    </details>
-    <details className="motion-phone-diagnostics"><summary>Connection & sensor details</summary><MotionQuality summary={{ ...snapshot, ...sensor }}/><p>{status.connection}. {status.recovery}</p><p>{status.instruction}</p><p>Quality, permission, tare and connection events only. No raw sensor history, location or pairing keys. Download this report if the phone cannot connect; the Tesla report cannot contain events it never received.</p><button onClick={download}>DOWNLOAD PHONE REPORT</button><pre>{JSON.stringify({ ...snapshot, qrUrl: undefined, values: undefined, ...sensor }, null, 2)}</pre></details>
-    <footer className="motion-phone-footer"><span>A project by enuzzo</span><span>{__APP_BUILD__}</span></footer>
+    {detail && <section className="motion-extra-details">
+      <MotionQuality summary={summary}/>
+      <p>{snapshot.state === "connected" ? "Display link open. Only fresh calibrated readings are live." : "This phone is not connected to the display."} GPS remains the speed source.</p>
+      <p>Keep Safari visible. Hiding or locking either screen ends this session. On the display, create a new QR to restart.</p>
+      <button onClick={stop}>STOP SENSORS & CONNECTION</button><button onClick={download}>DOWNLOAD PHONE REPORT</button>
+      <p>Reports contain quality and connection events only, never raw sensor history, location or pairing keys.</p>
+      {(!pair || ended(snapshot.state)) && <div className="motion-local-check"><p>Local sensor check only. This does not reconnect to the display.</p><button onClick={start}>ENABLE LOCAL SENSORS</button><button disabled={sensor.sensorState !== "live"} onClick={() => { sensorsRef.current?.requestTare(); refresh(); }}>LOCAL ZERO</button><button onClick={() => void sensorsRef.current?.requestWake()}>KEEP SCREEN AWAKE</button></div>}
+      {(completed || sensor.tared && (!pair || ended(snapshot.state))) && <><button aria-expanded={trace} onClick={() => setTrace(v => !v)}>{trace ? "HIDE" : "SHOW"} TRACE CUBE</button>{trace && <><MotionTrace getSample={getSample} onTelemetry={traceTelemetry} resetKey={viewReset} themeKey={`${presentation.palette}:${presentation.appearance}`}/><button onClick={() => setViewReset(n => n + 1)}>RECENTER VIEW</button></>}</>}
+      <p className="motion-meta">A project by enuzzo · {__APP_BUILD__}</p>
+    </section>}
   </main>;
 }

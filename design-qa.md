@@ -1,66 +1,35 @@
-# ATLAS / Stats approved remix — design QA, 2026-09-07
+# Guided companion design QA
 
 final result: passed
 
-## Selected reference and scope
+## Target and evidence
 
-Owner explicitly selected a remix of Travel Observatory (natural map/POIs and
-summary bands), Mission Control (heading/network instruments), and Journey
-Magazine (photo place card and synchronized speed/altitude). These are two
-separate views. The existing product shell, English UI, 48 px controls and real
-provider data remain authoritative. PDF/email is a separate planned capability.
-Reference boards are the generated images ending `08be0b93`, `d4dee68a` and
-`d817d301` in the current task's generated_images directory.
+- Selected target: `docs/design/phone-onboarding-2026-09-20/reference/selected-combination.png` (1568 x 1003 board, three differently scaled content views; no real device chrome).
+- Actual browser captures: `docs/qa/2026-09-20-phone-onboarding/phone-awake-390.png`, `phone-live-390.png`, `phone-live-320.png`, `receiver-live.png`, `receiver-delayed.png`, `phone-wake-denied-320.png`, `phone-awake-dark.png`, `phone-ended.png`.
+- Browser: Codex integrated Chromium. CSS/capture pixels 390 x 760, 320 x 568 and 773 x 601 at 1:1. Compare the corresponding phone setup/live and receiver live regions of the source board, excluding its frame and captions. The generated receiver panel aspect ratio differs from the product; the established compact viewport controls implementation geometry.
+- Source and the three primary implementation captures were opened together in one comparison tool input. Full-view text, controls and illustration are legible at these sizes, so separate focused crops were unnecessary. A premature capture immediately after a viewport resize was discarded and replaced after DOM geometry settled.
+- Screens use development-only synthetic samples. They are UI evidence, not sensor, wake-lock or physical network acceptance.
 
-The Travel Observatory board and current 773 × 601 map/stats/place captures were
-opened together in one comparison input. The generated board contains two
-stacked screens; comparison uses their respective content regions, not the full
-board as a single viewport. Mock route/distance/altitude/POI positions are not
-production facts; the browser evidence uses explicitly simulated GPS and real
-Wikipedia place responses. No claim of identical geographic content is made.
+## Comparison history and fixes
 
-## Iterations and fixes
+1. P2: completed-step disclosure wrapped at 320 px and pushed the last control below the viewport. Fixed the disclosure typography and nowrap labels; reduced short-height title spacing. Fresh geometry: main clientHeight=scrollHeight=568, scrollWidth=320. All primary controls remain visible.
+2. P2: temporary navigation/appearance icons did not communicate the intended measured axes. Replaced with the admitted original Tabler arrow-up-right and rotate-clockwise icons; final live captures show them.
+3. Rechecked phone 390 x 760: clientHeight=scrollHeight=760 and clientWidth=scrollWidth=390. Final wake action remains 56 px; recovery and disclosure targets remain 48 px.
 
-- P2: initial map remained too close. Follow now starts at zoom 13.4 and widens
-  to 11.9; Area gives a wider overview and manual framing stays selected.
-- P2: waking chrome moved persistent controls between pointer down/up. Persistent
-  map controls now keep their geometry and execute on the first tap.
-- P2: old map/sidebar wasted the field. The sidebar renderer is removed; Stats
-  owns the entire passenger sheet and unmounts MapLibre while active.
-- P2: lower summary consumed extra rows. Moving-average/terrain detail no longer
-  expands the primary grid; network follows the speed bands/elevation/heading row.
-- P2: place photo needed an actual load check. Final card capture waits for a
-  decoded image; failed thumbnails have the existing Wikipedia icon fallback.
+## Required fidelity surfaces
 
-## Final visual and interaction evidence
+- Typography: actual Space Grotesk/Orbitron assets, semantic sizes and accessible control targets take precedence over raster-generated letterforms. Correct headings, wrapping and hierarchy; no clipped copy in checked portrait states.
+- Spacing: focused phone step, illustration/action/status order, numbered circles and the selected compact two-row receiver hierarchy are retained. The completed guide collapses. Compact-height art shrinks before controls.
+- Colors: existing LIGHT/DARK semantic colors control surfaces, type, accent and state; intentional contrast-corrected reds differ from the generated mock. No new palette system.
+- Images: original piston identity and four generated genuine RGBA PNGs; real alpha verified separately. Objects have subtle generated tonal shading, but no artificial transparency pattern. The decorative mock sparklines are omitted rather than fabricating history. TRACE remains optional after setup.
+- Copy: exact device-specific instructions, receiver request/reply latency, measured forward acceleration and yaw rotation, explicit stale/ended/denied states. The phone shows actual wake state instead of inventing receiver RTT. These necessary truth corrections are documented in the selected brief.
 
-`/tmp/sv-atlas-interaction/`: map.png, place.png, reader.png, stats-773.png,
-stats-system-773.png, stats-1440x900.png, stats-773x440.png, stats-390x844.png,
-map-return.png and evidence.json. Final comparison confirms full-width pastel
-cartography, source-coordinate markers, compact image-led card, large summary
-numbers, paired red/blue timeline, speed bands/elevation/heading and network.
-The sheet scrolls vertically on short screens; no horizontal overflow or clipped
-primary controls at tested sizes. The source's unimplemented Export PDF button
-is deliberately absent, rather than represented as a working capability.
+## Interactions and limits
 
-POI → complete Wikipedia iframe → same selected place passes. Area persists
-beyond six seconds; Stats unmounts the map and Close restores it. Engine →
-report → Stats → Atlas → Engine retains the same running AudioContext; evidence
-is in `/tmp/sv-atlas-engine/evidence.json`. No diagnostic email was sent.
+Verified the five button sequence, evidence-driven checkmarks, automatic collapse, receiver delayed-data blanking and restart CTA, denied wake staying incomplete, STOP returning to new-QR guidance, light/dark layout, and zero browser console warnings/errors in the final fixture pass. Unit tests cover unsupported/released wake, missing placement, invalid calibration, missing receipts and deferred wake acquisition. Existing sensor, relay and lifecycle suites remain the protocol evidence.
 
-P3: physical Tesla readability, touch and GPU acceptance remain a separate
-owner check. A short synthetic trace is not an endurance or real-drive test.
+No actionable P0/P1/P2 findings remain for the selected UI. Larger accessibility text or unusually short browser heights may scroll rather than hide controls. A real Safari wake-lock acquisition/release and iPhone/Tesla end-to-end drive remain open physical checks.
 
-## Canonical closeout — 2026-09-07 18:41
+## Follow-up polish
 
-Final production **20260907-1833 / aecd44e**. The final map and Stats captures
-were opened after the canonical checks. Persistent controls, natural map,
-separate statistics hierarchy, source data and no horizontal overflow all pass.
-A final P2 dark-appearance contrast issue was fixed with distinct light/dark
-red/blue chart inks and themed controls; the corrected dark capture is verified.
-Durable current-build map/stats captures and identity/browser JSON are in
-`docs/qa/2026-09-07-atlas-stats/`. Full place/photo/reader captures remain in
-`/tmp/sv-atlas-live/`; no third-party article photography was bundled as a new
-repository asset. 25 canonical byte/cache checks and independent no-write
-postflight pass. Final result remains **passed** with physical Tesla P3 acceptance
-separate from this browser/release gate.
+P3: generated illustrations retain slight material shading and the static UI does not reproduce decorative traces from the mock. Neither affects measurement truth or the primary onboarding action.

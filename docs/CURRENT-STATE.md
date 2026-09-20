@@ -1,5 +1,21 @@
 # Current Project State
 
+## Guided phone onboarding — September 20 (local candidate)
+
+The owner selected the first phone layout and second receiver drawer. The combined
+implementation now guides sensor permission, explicit connection, placement, mounted
+ZERO and explicit screen-wake acquisition. Step checks follow current evidence;
+completed setup collapses into live acceleration/rotation and honest data quality.
+The drawer shows measured round trip only while current. Denial/release, invalid
+calibration, delayed data and ended sessions retain corrective guidance. Original
+transparent PNG illustrations replace the guide SVGs; TRACE is optional after setup.
+
+Local browser fixtures confirm the selected hierarchy at 390 x 760 and 320 x 568,
+including primary onboarding without scroll; they do not prove physical Safari wake
+retention or iPhone/Tesla continuity. Canonical publication is pending. The currently
+published reliability build below remains the live identity until verified delivery.
+See [selected design and evidence](design/phone-onboarding-2026-09-20/README.md).
+
 ## Diagnostic and companion reliability correction — September 20 (published; continuity acceptance open)
 
 Canonical **20260920-1540.2bf4cb6** is published with the verified diagnostics correction and

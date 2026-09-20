@@ -531,3 +531,17 @@ MapLibre contributors, [MapLibre GL JS v6.7.0](https://github.com/maplibre/mapli
 The full unmodified MapLibre 6.7.0 license is shipped at `prototype/drive-lab/public/third-party/maplibre/LICENSE.txt`, SHA-256 `ee5fc05a0677eaf69601d2c7db0d9ecd6cc27c3abc1d0733bc9ed34707cf8ef2`. The reviewed updated dependency subtree includes MapLibre geojson-vt/style-spec (ISC), mlt (MIT OR Apache-2.0), Mapbox unitbezier/vector-tile and pbf (BSD), plus the browserslist build-data subtree (MIT, ISC, Apache-2.0 and caniuse-lite CC-BY-4.0). Exact versions, public author/source metadata and scope are recorded in `docs/community-npm-credits.json`; tarball integrities are retained in `prototype/drive-lab/package-lock.json`. These packages are unmodified; build datasets are not a claim of browser-shipped application code.
 
 The initial 6.4.1 candidate passed normal rendering but failed a forced WebGL2 initialization test: its constructor returned a partial map and cleanup threw. The first later release containing the upstream initialization/cleanup fix is [6.7.0](https://github.com/maplibre/maplibre-gl-js/releases/tag/v6.7.0) (PR #8066); 6.5.0 and 6.6.0 were inspected only in temporary storage and still contain the defect. The final pin is therefore 6.7.0. Its npm tarball SHA-512 and unchanged license were verified before admission; no library patch is maintained.
+
+## Companion telemetry icons — September 20, 2026
+
+Two additional unmodified Tabler Icons v3.46.0 SVGs by Paweł Kuna use the existing
+MIT license in `public/third-party/tabler-icons/LICENSE`. Product CSS supplies
+size and dark-appearance treatment; upstream bytes remain unchanged.
+
+| File | Exact source | SHA-256 |
+| --- | --- | --- |
+| `rotate-clockwise.svg` | https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/rotate-clockwise.svg | `4bcb2b749f9c9fd35199f3fc8217469cbabcb0a90ceb5b6eaca53cc540fcea20` |
+| `arrow-up-right.svg` | https://raw.githubusercontent.com/tabler/tabler-icons/v3.46.0/icons/outline/arrow-up-right.svg | `f31ac53da37951d3f1323e1ce9891480be2c3d68b0556c3986c61a0520226cd1` |
+
+The original Image Gen companion illustrations are separate project artwork, not
+Tabler assets or MIT-licensed material. See the [asset inventory](docs/design/phone-onboarding-2026-09-20/assets.json).

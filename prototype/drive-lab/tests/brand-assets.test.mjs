@@ -132,3 +132,10 @@ test("appearance controls package the pinned byte-identical Tabler icons", () =>
   assert.match(notices, /tabler-icons\/tree\/v3\.46\.0\/icons/);
   assert.match(notices, /media, appearance, search/);
 });
+
+
+test("companion telemetry icons retain the admitted upstream bytes", () => {
+  for (const [name, hash] of [["rotate-clockwise.svg", "4bcb2b749f9c9fd35199f3fc8217469cbabcb0a90ceb5b6eaca53cc540fcea20"], ["arrow-up-right.svg", "f31ac53da37951d3f1323e1ce9891480be2c3d68b0556c3986c61a0520226cd1"]]) {
+    assert.equal(createHash("sha256").update(readFileSync(resolve(DRIVE_LAB_ROOT, "public/third-party/tabler-icons", name))).digest("hex"), hash);
+  }
+});

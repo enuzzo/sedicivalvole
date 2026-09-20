@@ -47,8 +47,10 @@ The September 20 phone onboarding request supersedes the initial-viewport cube a
 all-at-once control hierarchy for the companion's next selected implementation.
 The requested sequence is local sensors, pairing, placement, ZERO, explicit
 screen-awake activation, then live readings. Clear interruption and restart guidance
-must appear on both paired surfaces. The new two-direction selection is pending;
-this records an approved behavior brief, not a shipped redesign. See
+must appear on both paired surfaces. The owner selected the first phone layout and second receiver drawer, combined
+with numbered/checkmarked progress and automatic collapse after completed setup.
+The selected implementation retains real semantic tokens and touch targets; local
+verification and canonical/physical acceptance remain separately recorded. See
 [onboarding brief](../design/phone-onboarding-2026-09-20/README.md).
 
 ## Shared geometry and palette

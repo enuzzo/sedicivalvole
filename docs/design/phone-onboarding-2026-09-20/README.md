@@ -1,8 +1,9 @@
 # Phone onboarding and receiver drawer
 
-Owner brief: September 20, 2026. Status: two Image Gen directions generated and displayed;
-selection, implementation and physical acceptance pending. This is a design brief,
-not evidence of changed production behavior.
+Owner brief: September 20, 2026. Status: owner selected the first phone layout and second receiver drawer, with
+numbered/checkmarked steps and automatic collapse after setup. The combined
+[visual target](reference/selected-combination.png) is implemented locally.
+Canonical publication and physical acceptance are separate, pending evidence.
 
 ## Shared requirements
 
@@ -30,7 +31,7 @@ not evidence of changed production behavior.
 - Replace the existing Scan / Connect / Zero guide SVG illustrations with three
   original, coordinated vector-style PNG assets in two or three colors after the
   direction is selected. Generate each separately; verify genuine RGBA alpha,
-  rather than a drawn checkerboard. These assets are not yet delivered.
+  rather than a drawn checkerboard. The three assets and a screen-awake illustration are generated and included; see [inventory](assets.json).
 
 ## Visual constraints
 
@@ -51,8 +52,8 @@ to replace the product's design language.
   status and telemetry model.
 
 The displayed order is 1: One step at a time; 2: Guided checklist.
-See [generation prompts and required corrections](PROMPTS.md). Wait for the
-owner's choice before implementation. Any illustrated sample values are mock data,
+See [generation prompts and required corrections](PROMPTS.md). The owner selected
+the combination described above; no further alternative-selection gate is pending. Any illustrated sample values are mock data,
 not measurements or physical acceptance evidence.
 
 ## Verification after selection
@@ -63,3 +64,25 @@ Compare actual renders with the chosen image at the target viewports. Verify
 denied permissions, unsupported/released wake lock, stale data, calibration failure,
 disconnect and restart. Keep automated/browser verification distinct from the
 owner's real iPhone onboarding, screen-awake, interruption and Tesla acceptance.
+
+## Implementation and intentional deviations
+
+- One action per phone step; all core onboarding controls fit the tested 390 x 760
+  and 320 x 568 CSS viewports. Illustration space shrinks first. Larger accessibility
+  text or smaller available heights may scroll rather than clipping controls.
+- Numbered circles turn into checks only from their own current evidence.
+- Wake is requested by the final button, not by permission startup. Denial,
+  unsupported API and release retain an incomplete setup with explicit recovery.
+- Completed setup collapses automatically. Brief transport delays retain the live
+  layout with blank readings and recovery status, avoiding repeated layout jumps.
+- The receiver displays measured request/reply round trip only when current.
+  The phone does not invent the receiver's latency: its second metric shows the
+  actual screen-wake state. Data quality means Fresh / Delayed / Waiting / Stopped,
+  not a promise of sustained network quality.
+- Use the existing logo, fonts, semantic colors and official Tabler arrows.
+  Decorative sparkline histories in the mock are omitted; live values and the
+  optional existing TRACE cube remain the evidence-bearing views.
+- Connection details and the optional cube may scroll when deliberately opened.
+  The cube is not mounted before completed setup and explicit disclosure.
+- The development-only browser harness uses synthetic fixtures with no network,
+  GPS, audio or mail and is not a physical test.

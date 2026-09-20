@@ -1,0 +1,39 @@
+{
+  "generator": "Built-in Image Gen",
+  "date": "2026-09-20",
+  "license": "Original standalone artwork excluded from code license; enuzzo controls publication.",
+  "assets": [
+    {
+      "file": "zero.png",
+      "bytes": 627345,
+      "sha256": "395da334053cc42416e514f394a28ec8a343360f87c3631a782721f557c1f346",
+      "width": 1254,
+      "height": 1254,
+      "pngColorType": 6
+    },
+    {
+      "file": "connect.png",
+      "bytes": 412834,
+      "sha256": "43751dfeff7512ffbecf0a06ed1745698b7b1186df2a78bab37e943010ed16da",
+      "width": 1254,
+      "height": 1254,
+      "pngColorType": 6
+    },
+    {
+      "file": "scan.png",
+      "bytes": 411764,
+      "sha256": "b274d899114f042cdb0153b12594e5d07f9391487a10f1e4e6a968dafaab2823",
+      "width": 1254,
+      "height": 1254,
+      "pngColorType": 6
+    },
+    {
+      "file": "awake.png",
+      "bytes": 550057,
+      "sha256": "94354f2ea944057d9f3b8cc65a0ea25e70471878aafaaccc7726cc38619f280d",
+      "width": 1254,
+      "height": 1254,
+      "pngColorType": 6
+    }
+  ]
+}
