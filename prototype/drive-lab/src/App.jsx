@@ -1,4 +1,5 @@
 import { roadSourceLabel, usableRoadSample } from "./motion/road-input.js";
+import { motionRecoveryNotice } from "./motion/guided-setup.js";
 import { useOutsideDismiss } from "./ui/use-outside-dismiss.js";
 import { createSoundtrackRecovery } from "./soundtrack/recovery.js";
 import { ContextualControlsContext } from "./contextual-controls.jsx";
@@ -2447,10 +2448,12 @@ export function App() {
   useEffect(() => {
     const refresh = () => {
       const sample = getAudioRoadMotion();
-      const label = roadSourceLabel({ source: sourceRef.current, active: phase === "running", sample, gpsFresh: engineMotionRef.current.snapshot(performance.now()).freshness === "fresh",
-        sensor: showLocalSensors ? localSensors.summary : readMotionSnapshot(), link: showLocalSensors ? {} : readMotionSnapshot() });
-      const next = { label, source: sourceRef.current !== "GPS" ? "demo-motion" : usableRoadSample(sample) ? "phone-motion" : "gps-motion" };
-      setRoadInputStatus(previous => previous.label === next.label ? previous : next);
+      const link = showLocalSensors ? {} : readMotionSnapshot();
+      const gpsFresh = engineMotionRef.current.snapshot(performance.now()).freshness === "fresh";
+      const label = roadSourceLabel({ source: sourceRef.current, active: phase === "running", sample, gpsFresh,
+        sensor: showLocalSensors ? localSensors.summary : link, link });
+      const next = { label, notice: motionRecoveryNotice(link, sourceRef.current, gpsFresh), source: sourceRef.current !== "GPS" ? "demo-motion" : usableRoadSample(sample) ? "phone-motion" : "gps-motion" };
+      setRoadInputStatus(previous => previous.label === next.label && previous.notice === next.notice ? previous : next);
     };
     refresh(); const timer = window.setInterval(refresh, 100);
     return () => window.clearInterval(timer);
@@ -5505,9 +5508,9 @@ export function App() {
           onDemo={runAtlasDemo}
         />
 
-        {controlNotice ? (
-          <div className="control-status-notice" role="status" aria-live="polite" aria-atomic="true">
-            {controlNotice}
+        {controlNotice || !motionOpen && roadInputStatus.notice ? (
+          <div className="control-status-notice" role="status" aria-live="polite" aria-atomic="true" data-motion-recovery={!controlNotice && Boolean(roadInputStatus.notice)}>
+            {controlNotice || roadInputStatus.notice}
           </div>
         ) : null}
 

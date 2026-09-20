@@ -641,6 +641,13 @@ optional **Use aligned car motion** declaration in sensor details. Without known
 car alignment, the phone shows relative motion and GPS retains vehicle response.
 Physical iPhone/Tesla acceptance remains separate from browser verification.
 
+Phone network gaps now retain an admitted pairing within its original one-hour
+session. Both screens explain automatic recovery; the driving display distinguishes
+fresh GPS fallback from a missing GPS fix. Samples older than 250 ms remain excluded.
+ZERO survives network-only outages while local sensors continue; real sensor gaps,
+STOP and hidden pages retain their separate recovery requirements. See the
+[network recovery contract and evidence](docs/PHONE-NETWORK-RECOVERY-2026-09-20.md).
+
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
 

@@ -54,9 +54,16 @@ explicit owner with observable release/denial; hidden pages stop the connection
 and cannot silently regain a valid reference.
 
 Companion recovery must distinguish local sensing from an open Tesla transport.
-Permission retry cannot restart pairing or reuse consumed QR admission. Setup
-is bounded to 30 seconds (unused QR admission remains three minutes); hide,
-offline and terminal peer states clear the pairing and require a new QR.
+Permission retry cannot restart pairing or reuse consumed QR admission. Initial admission/direct setup is bounded to 30 seconds (unused QR admission
+remains three minutes). The September 20 owner-requested [network recovery](../PHONE-NETWORK-RECOVERY-2026-09-20.md)
+supersedes offline teardown for an admitted HTTPS session: retain pairing until
+its original one-hour expiry, retry serially with bounded backoff, and preserve
+local ZERO only while sensor evidence stays valid. Offline immediately clears
+transport receipts and excludes phone input; valid GPS remains the fallback.
+Show the interruption and automatic recovery on both screens, distinguishing an
+absent GPS fix. Hidden pages, STOP and terminal peer/authentication states still
+clear pairing and require a new QR. Temporary direct WebRTC `disconnected` may
+recover; `failed`/closed remain terminal.
 Incomplete axes invalidate ZERO just like stale observations; remote stale
 summaries cannot retain Zero SET. Explicit local sensing after a terminal link
 is allowed, visibly labeled local-only, without reviving pairing or calibration.

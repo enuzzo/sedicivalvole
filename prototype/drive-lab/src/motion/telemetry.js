@@ -13,6 +13,7 @@ export function safeMotionSummary(value = {}) {
   if (["new", "checking", "connected", "completed", "failed", "disconnected", "closed"].includes(value.iceState)) safe.iceState = value.iceState;
   if (["new", "connecting", "connected", "disconnected", "failed", "closed"].includes(value.peerState)) safe.peerState = value.peerState;
   if (["direct", "https"].includes(value.transport)) safe.transport = value.transport;
+  if (["online", "offline", "retrying"].includes(value.networkState)) safe.networkState = value.networkState;
   if (["ice_no_candidates", "rtc_unavailable", "rtc_setup_failed", "invalid_pairing", "signaling_unavailable"].includes(value.failureReason)) safe.failureReason = value.failureReason;
   if (["idle", "offer", "create", "poll", "join", "answer", "accept", "connected"].includes(value.stage)) safe.stage = value.stage;
   if (["idle", "requesting", "active", "released", "denied", "unsupported", "error"].includes(value.wakeState)) safe.wakeState = value.wakeState;

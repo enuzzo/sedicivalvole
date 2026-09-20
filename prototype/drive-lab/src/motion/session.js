@@ -99,7 +99,7 @@ export function createMotionSession({ role, host = window, doc = document, fetch
       if (transport === "direct") peer = peerFactory(peerOptions(token));
       deadline = now() + 30000;
       refresh = setInterval(() => {
-        if (["preparing", "pairing", "connecting"].includes(state) && now() >= deadline) { stop("expired"); return; }
+        if (["preparing", "pairing", "connecting"].includes(state) && !(transport === "https" && peer) && now() >= deadline) { stop("expired"); return; }
         notify();
       }, 200);
       if (transport === "https") {
@@ -190,9 +190,14 @@ export function createMotionSession({ role, host = window, doc = document, fetch
   function fail(next = "error") { const failure = { state: next, stage, failureReason, ...signaling }; cleanup(next); event("error", failure); notify(); }
   const hidden = () => { if (doc.visibilityState !== "visible") stop("suspended"); };
   const pagehide = () => stop("suspended");
-  const offline = () => { if (["preparing", "pairing", "connecting", "connected"].includes(state)) fail(); };
+  const offline = () => {
+    if (peer && (state === "connected" || transport === "https")) { peer.setOnline(false); notify(); }
+    else if (["preparing", "pairing", "connecting"].includes(state)) fail();
+  };
+  const online = () => { peer?.setOnline?.(true); notify(); };
   doc.addEventListener("visibilitychange", hidden); host.addEventListener("pagehide", pagehide);
   host.addEventListener("offline", offline);
+  host.addEventListener("online", online);
   return { sample: () => peer?.sample() ?? null, snapshot, start, stop: () => stop(), event, refresh: notify, report: () => telemetry.snapshot(),
-    dispose() { cleanup(); doc.removeEventListener("visibilitychange", hidden); host.removeEventListener("pagehide", pagehide); host.removeEventListener("offline", offline); } };
+    dispose() { cleanup(); doc.removeEventListener("visibilitychange", hidden); host.removeEventListener("pagehide", pagehide); host.removeEventListener("offline", offline); host.removeEventListener("online", online); } };
 }

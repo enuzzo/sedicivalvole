@@ -15,7 +15,12 @@ function motionPairRequest(array $input, string $directory, int $now): array
     try {
         $files = glob($directory . '/session-*.json') ?: [];
         foreach ($files as $file) {
-            if (!is_link($file) && is_file($file) && filemtime($file) < $now - 180) @unlink($file);
+            if (!is_link($file) && is_file($file) && filemtime($file) < $now - 180) {
+                // A road outage must not revoke an admitted pairing. Respect the
+                // absolute lease; unused QR admission still lasts three minutes.
+                $old = json_decode((string) @file_get_contents($file), true);
+                if (!is_array($old) || !is_int($old['expires'] ?? null) || $old['expires'] <= $now) @unlink($file);
+            }
         }
         if ($action === 'create') {
             $relay = ($input['transport'] ?? '') === 'https';
@@ -49,7 +54,7 @@ function motionPairRequest(array $input, string $directory, int $now): array
             $record['phone'] = hash('sha256', $phone);
             $record['joined'] = true;
             $record['join'] = '';
-            if (($record['transport'] ?? '') === 'https') $record['expires'] = min($record['until'], $now + 15);
+            if (($record['transport'] ?? '') === 'https') $record['expires'] = $record['until'];
             if (@file_put_contents($path, json_encode($record), LOCK_EX) === false) return [503, ['status' => 'storage_unavailable']];
             return [200, ['status' => 'joined', 'token' => $phone, 'transport' => $record['transport'] ?? 'direct', 'sdp' => $record['offer']]];
         }
@@ -72,7 +77,7 @@ function motionPairRequest(array $input, string $directory, int $now): array
                 if ($now - $slot['at'] >= 2) $record['slots'][$side]['packet'] = null;
             }
             if ($packet !== null) $record['slots'][$sender] = ['sequence' => ($record['slots'][$sender]['sequence'] ?? 0) + 1, 'at' => $now, 'packet' => $packet];
-            $record['expires'] = min($record['until'], $now + 15);
+            $record['expires'] = $record['until'];
             if (@file_put_contents($path, json_encode($record), LOCK_EX) === false) return [503, ['status' => 'storage_unavailable']];
             $slot = $record['slots'][$other] ?? [];
             return [200, ['status' => 'relay', 'sequence' => $slot['sequence'] ?? 0, 'packet' => $slot['packet'] ?? null]];

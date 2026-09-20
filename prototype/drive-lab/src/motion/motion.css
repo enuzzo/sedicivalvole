@@ -321,3 +321,5 @@
 .motion-guided-phone .motion-detail-toggle { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 @media (max-width: 650px) { .motion-dialog .drawer-panel:has(.motion-guided-panel) { width: calc(100vw - 16px); max-height: calc(100dvh - 16px); margin: 8px; } }
 @media (max-width: 360px) { .motion-phone .motion-setup-disclosure { padding-inline: 8px; font-size: 13px; gap: 6px; }.motion-setup-disclosure > span { gap: 4px; }.motion-setup-complete > .motion-setup-mark { width: 22px; height: 22px; flex-basis: 22px; } }
+
+.app[data-moving="true"].controls-resting .control-status-notice[data-motion-recovery="true"] { visibility: visible; }

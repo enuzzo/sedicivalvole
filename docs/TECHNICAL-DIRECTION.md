@@ -169,6 +169,15 @@ expiring data health. A delayed response cannot renew values or receipts; a newl
 accepted invalid ZERO/wake status revises progress. Terminal cleanup clears both.
 See the [integration repair](PHONE-INTEGRATION-REPAIR-2026-09-20.md).
 
+The owner's [road outage recovery](PHONE-NETWORK-RECOVERY-2026-09-20.md) separates
+transport availability from session lifetime. Admitted HTTPS capability/metadata
+survives temporary outages within the original one-hour lease. One serial retry
+owner backs off to two seconds; offline/online resets transport receipts and
+pending challenges without resetting sequence monotonicity or a still-valid local
+ZERO. The PHP mailbox still serves only its latest ciphertext younger than two
+seconds; clients retain the stricter 250 ms input deadline. No replay queue,
+persistent browser credentials, hidden sensing or automatic admission is added.
+
 ### Earlier isolated feasibility
 
 The [N03/N04 development probes](MOTION-FEASIBILITY-2026-09-18.md) keep nullable

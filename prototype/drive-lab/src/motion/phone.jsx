@@ -97,6 +97,7 @@ export function MotionPhone({ createSensors = createPhoneSensors, createSession 
       <MountChoice selected={sensor.mountSelected} onChange={selected => { sensorsRef.current?.setMount(selected); refresh(); }}/>
       <p>ZERO works in any orientation. Car-axis motion is optional: enable it only when the screen faces the cabin and the phone is aligned straight ahead, then set ZERO again. Otherwise GPS controls vehicle acceleration.</p>
       <p>Small vibrations can appear in the readings without affecting the driving response.</p>
+      <p>Network gaps keep your pairing and ZERO while local sensors stay live. Recovery is automatic within this one-hour session.</p>
       <p>{snapshot.state === "connected" ? "Display link open. Only fresh calibrated readings are live." : "This phone is not connected to the display."} GPS remains the speed source.</p>
       <p>Keep this page visible. Hiding or locking either screen ends this session. On the display, create a new QR to restart.</p>
       <button onClick={stop}>STOP SENSORS & CONNECTION</button><button onClick={download}>DOWNLOAD PHONE REPORT</button>

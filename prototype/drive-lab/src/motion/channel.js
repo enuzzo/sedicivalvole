@@ -43,6 +43,11 @@ export function createMotionProtocol({ role, now = () => performance.now(), getP
   };
   const counters = { received: 0, sent: 0, rejected: 0, expiredRequests: 0, latencyDrops: 0, rttMs: 0, rttMaxMs: 0 };
   return {
+    resetTransport() {
+      // Preserve sequence monotonicity and local ZERO, but never carry a receipt
+      // or an outstanding challenge across a known transport interruption.
+      pending.clear(); sentSamples.clear(); last = null; receiverContext = null; contextAt = null;
+    },
     poll() {
       for (const [id, at] of pending) if (now() - at > 250) { counters.expiredRequests += 1; pending.delete(id); }
       if (pending.size >= pendingLimit) return null;
@@ -109,6 +114,8 @@ export function createMotionPeer({ role, host = window, now = () => performance.
   const pc = new host.RTCPeerConnection({ iceServers: [] });
   const protocol = createMotionProtocol({ role, now, getPhone, getPresentation, onSummary });
   let channel = null, closed = false, tick = null;
+  let online = host.navigator?.onLine !== false;
+  const available = () => online && pc.connectionState !== "disconnected";
   let backpressureDrops = 0, sendErrors = 0;
   const started = now();
   const cleanups = new Set();
@@ -127,7 +134,7 @@ export function createMotionPeer({ role, host = window, now = () => performance.
     if (closed || channel || candidate.label !== LABEL || candidate.ordered !== false || candidate.maxRetransmits !== 0) { candidate.close(); return; }
     channel = candidate;
     channel.addEventListener("open", () => onEvent("channel-open", { state: "connected" }));
-    channel.addEventListener("message", ({ data }) => { if (!closed) send(protocol.receive(data)); });
+    channel.addEventListener("message", ({ data }) => { if (!closed && available()) send(protocol.receive(data)); });
     channel.addEventListener("close", () => close());
     channel.addEventListener("error", () => close("error"));
   }
@@ -135,7 +142,8 @@ export function createMotionPeer({ role, host = window, now = () => performance.
   pc.addEventListener("iceconnectionstatechange", () => onEvent("connection", { iceState: pc.iceConnectionState, peerState: pc.connectionState }));
   pc.addEventListener("connectionstatechange", () => {
     onEvent("connection", { iceState: pc.iceConnectionState, peerState: pc.connectionState });
-    if (["failed", "closed", "disconnected"].includes(pc.connectionState)) close();
+    if (pc.connectionState === "disconnected") protocol.resetTransport();
+    if (["failed", "closed"].includes(pc.connectionState)) close();
   });
   if (role === "receiver") {
     try { bind(pc.createDataChannel(LABEL, { ordered: false, maxRetransmits: 0 })); }
@@ -143,7 +151,7 @@ export function createMotionPeer({ role, host = window, now = () => performance.
   }
   tick = setInterval(() => {
     if (now() - started >= 3600000) { close("expired"); return; }
-    if (channel?.readyState === "open" && role === "receiver") send(protocol.poll());
+    if (available() && channel?.readyState === "open" && role === "receiver") send(protocol.poll());
   }, 50);
   async function local(type) {
     if (closed) throw new Error("closed");
@@ -158,9 +166,12 @@ export function createMotionPeer({ role, host = window, now = () => performance.
     async answer(sdp) { await pc.setRemoteDescription({ type: "offer", sdp }); return local("answer"); },
     async accept(sdp) { if (closed) throw new Error("closed"); await pc.setRemoteDescription({ type: "answer", sdp }); },
     close,
+    setOnline(value) { if (online !== value) { online = value; protocol.resetTransport(); } },
     presentation: () => closed ? null : protocol.presentation(),
-    sample: () => closed ? null : protocol.sample(),
+    sample: () => closed || !available() ? null : protocol.sample(),
     summary: () => ({ ...protocol.summary(), role, backpressureDrops, sendErrors, rtc: true,
+      ...(!available() ? { dataFresh: false, receiverConfirmed: false, referenceReceived: false } : {}),
+      networkState: !online ? "offline" : !available() ? "retrying" : "online",
       state: closed ? "closed" : channel?.readyState === "open" ? "connected" : "connecting" }),
   };
 }

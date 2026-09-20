@@ -71,7 +71,22 @@ test('encrypted relay has single-use admission, capability isolation, latest-onl
  $read=req(['action'=>'exchange','packet'=>null]+$receiver);
  usleep(25000);$invalid=req(['action'=>'exchange','packet'=>'raw sensor plaintext']+$phone)[0];
  $now+=2;usleep(25000);$stale=req(['action'=>'exchange','packet'=>null]+$receiver)[1]['packet'];
- $now+=15;$expired=req(['action'=>'exchange','packet'=>null]+$receiver)[0];
+ $now+=3600;$expired=req(['action'=>'exchange','packet'=>null]+$receiver)[0];
  echo json_encode([$s,$js,$j['transport'],$again,$unauth,$write,$read[1]['packet']===$packet,$invalid,$stale,$expired]);`);
  assert.deepEqual(result,[200,200,'https',403,403,200,true,400,null,410]);
+});
+
+
+test('admitted HTTPS pairing survives both peers absent for thirty seconds and several minutes without replay or renewed lifetime',()=>{
+ const result=run(`
+ $born=$now;[$s,$r]=req(['action'=>'create','transport'=>'https']);$receiver=['id'=>$r['id'],'token'=>$r['token']];
+ [$js,$j]=req(['action'=>'join','id'=>$r['id'],'token'=>$r['join']]);$phone=['id'=>$r['id'],'token'=>$j['token']];
+ $packet=base64_encode(str_repeat('encrypted-fixture',4));req(['action'=>'exchange','packet'=>$packet]+$phone);
+ $now+=30;$after30=req(['action'=>'exchange','packet'=>null]+$receiver);
+ $now+=300;touch($dir.'/session-'.$r['id'].'.json',$now-181);usleep(25000);
+ $afterMinutes=req(['action'=>'exchange','packet'=>null]+$receiver);
+ $raw=json_decode(file_get_contents($dir.'/session-'.$r['id'].'.json'),true);
+ $now=$born+3600;$expired=req(['action'=>'exchange','packet'=>null]+$receiver)[0];
+ echo json_encode([$after30[0],$after30[1]['packet'],$afterMinutes[0],$afterMinutes[1]['packet'],$raw['expires']===$born+3600,$expired]);`);
+ assert.deepEqual(result,[200,null,200,null,true,410]);
 });

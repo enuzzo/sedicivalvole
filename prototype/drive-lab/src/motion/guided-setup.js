@@ -19,7 +19,7 @@ export function phoneSetup({ sensor = {}, link = {}, hasPair = false, attempted 
     sensor.tareState === 'hold-still' ? 'ZERO needs steady readings. Rest the phone, tap ZERO again and lift your finger.' : 'Any orientation works. Tap ZERO, lift your finger and keep the phone still.', 'zero');
   if (!sensor.wakeLock || sensor.wakeState !== 'active') return result(4, sensor.wakeState === 'released' ? 'Screen lock was released.' : 'Keep your screen on.',
     sensor.wakeState === 'unsupported' ? 'This browser cannot keep the screen awake. Try a browser with screen-wake support, then restart setup.' : sensor.wakeState === 'denied' ? 'Screen wake was not granted. Keep this page visible, check power-saving settings and retry.' : sensor.wakeState === 'error' ? 'Screen wake failed. Keep this page visible and retry, or restart setup.' : 'On your phone, tap below. Keep this page open.', sensor.wakeState === 'requesting' || sensor.wakeState === 'unsupported' ? null : 'awake');
-  if (!link.receiverConfirmed) return result(4, 'Waiting for fresh receipt.', 'Phone connected. The display has not confirmed fresh motion. Keep both pages visible; restart setup if this persists.');
+  if (!link.receiverConfirmed) return result(4, 'Waiting for fresh receipt.', 'Pairing kept. Waiting for fresh motion to reach both screens. Recovery is automatic; keep both pages visible.');
   return result(5, 'Motion is live.', 'Display receiving fresh motion.', null, { ready: true });
 }
 export function receiverSetup(s = {}, pendingStep = 1) {
@@ -32,7 +32,7 @@ export function receiverSetup(s = {}, pendingStep = 1) {
   if (!(s.placementConfirmed ?? s.mountSelected)) return result(2, 'Position your phone.', 'Rest the phone securely in any orientation. Confirm placement on your phone.');
   if (!s.tared || s.tareState === 'settling' || !s.referenceReceived) return result(3, 'Set ZERO on your phone.', 'Any orientation works. Tap ZERO, lift your finger and keep the phone still.');
   if (!s.wakeLock || s.wakeState !== 'active') return result(4, 'Keep your phone awake.', s.wakeState === 'released' ? 'Screen wake was released. On your phone, retry KEEP SCREEN AWAKE or restart setup.' : 'On your phone, tap KEEP SCREEN AWAKE. Wait for confirmation.');
-  if (!s.receiverConfirmed) return result(4, 'Checking fresh motion…', 'Waiting for confirmation on both screens. Restart setup if this persists.');
+  if (!s.receiverConfirmed) return result(4, 'Checking fresh motion…', 'Waiting for confirmation on both screens. Pairing is kept; recovery is automatic.');
   return result(5, 'Connected · Screen awake', 'Fresh motion received.', null, { ready: true });
 }
 export function motionLiveStatus(s = {}, phone = false) {
@@ -41,8 +41,18 @@ export function motionLiveStatus(s = {}, phone = false) {
   const setupPending = connected && (phone || s.dataFresh === true) && s.sensorState !== 'stale' && (!s.tared || s.tareState === 'settling');
   return { connected, fresh, quality: fresh ? 'Fresh' : setupPending ? 'Waiting' : connected ? 'Delayed' : ended(s.state) ? 'Stopped' : 'Waiting',
     rtt: !phone && connected && s.dataFresh === true && s.received > 0 && Number.isFinite(s.rttMs) ? Math.round(s.rttMs) : null,
-    title: !connected ? ended(s.state) ? 'Connection ended' : s.state === 'idle' ? 'Not connected' : s.state === 'pairing' ? 'Waiting for your phone' : 'Connecting' : setupPending ? 'Connected · Finish setup' : !fresh ? 'Connected · Data delayed' : !s.wakeLock ? 'Connected · Screen may sleep' : 'Connected · Screen awake',
-    hint: !connected ? ended(s.state) ? 'Restart setup with a new QR on the display.' : s.state === 'pairing' ? 'On your phone, scan this QR and follow setup.' : s.state === 'idle' ? 'Create a QR on the display to begin.' : 'Keep both pages visible while connecting.' : setupPending ? 'On your phone, finish sensors, placement and ZERO.' : !fresh ? 'Keep the phone page visible. Restart setup if data does not return.' : !s.wakeLock ? 'On your phone, retry screen wake or restart setup.' : phone ? 'Display receiving fresh motion.' : 'Fresh motion received.' };
+    title: !connected ? ended(s.state) ? 'Connection ended' : s.state === 'idle' ? 'Not connected' : s.state === 'pairing' ? 'Waiting for your phone' : 'Connecting' : s.networkState === 'offline' ? 'Network unavailable · Pairing kept' : s.networkState === 'retrying' ? 'Reconnecting · Pairing kept' : setupPending ? 'Connected · Finish setup' : !fresh ? 'Connected · Data delayed' : !s.wakeLock ? 'Connected · Screen may sleep' : 'Connected · Screen awake',
+    hint: !connected ? ended(s.state) ? 'Restart setup with a new QR on the display.' : s.state === 'pairing' ? 'On your phone, scan this QR and follow setup.' : s.state === 'idle' ? 'Create a QR on the display to begin.' : 'Keep both pages visible while connecting.' : setupPending ? 'On your phone, finish sensors, placement and ZERO.' : !fresh ? 'Phone motion is paused. The display uses GPS when available. Recovery is automatic; keep both pages visible.' : !s.wakeLock ? 'On your phone, retry screen wake or restart setup.' : phone ? 'Display receiving fresh motion.' : 'Fresh motion received.' };
+}
+
+export function motionRecoveryNotice(s = {}, source, gpsFresh) {
+  const interrupted = ['offline', 'retrying'].includes(s.networkState);
+  const delayed = s.dataFresh === false && s.ageUpperMs > 1000;
+  if (s.state !== 'connected' || !s.setupProgress?.complete || !interrupted && !delayed) return null;
+  const reason = interrupted ? 'Phone link interrupted' : 'Phone data delayed';
+  return source !== 'GPS' ? `${reason} · recovering automatically`
+    : gpsFresh ? `${reason} · using GPS · recovering automatically`
+      : `${reason} · waiting for GPS · recovering automatically`;
 }
 
 export function setupEvidence(s = {}, phone = false) {

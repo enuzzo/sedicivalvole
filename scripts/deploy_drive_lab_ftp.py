@@ -72,6 +72,7 @@ RETIRED_BRAND_HASHES = {
 }
 MOTION_PAIR_ENDPOINT = "motion-pair.php"
 MOTION_PAIR_ENDPOINT_HASHES = {
+    "555241ae1144dee05eead227fe7445bc22ebe5f0d9686c0701c26b7235b04a3a",  # Road outage recovery within the original absolute one-hour lease.
     "df91546ced9dc2f5853285f3aab9958c15cebcf54695d109c3154e60f95f5a31",  # Reviewed encrypted HTTPS relay; preserve legacy signaling during cache overlap.
     "19754f1ac14dc6ab82e87ef5ecd79546b3389924ca8287c4c69e1c3b157ff9df",
 }

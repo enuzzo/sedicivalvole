@@ -130,7 +130,6 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
   const pagehide = () => stop("suspended");
   doc.addEventListener("visibilitychange", visibility);
   host.addEventListener("pagehide", pagehide);
-  host.addEventListener("offline", pagehide);
   return {
     async start() {
       if (disposed || ["requesting", "live", "waiting"].includes(summary().sensorState)) return;
@@ -176,6 +175,6 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
     requestWake: () => wake.start(),
     summary,
     stop: () => stop(),
-    dispose() { stop(); disposed = true; doc.removeEventListener("visibilitychange", visibility); host.removeEventListener("pagehide", pagehide); host.removeEventListener("offline", pagehide); },
+    dispose() { stop(); disposed = true; doc.removeEventListener("visibilitychange", visibility); host.removeEventListener("pagehide", pagehide); },
   };
 }

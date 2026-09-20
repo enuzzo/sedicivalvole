@@ -118,9 +118,13 @@ build, package, canonical identity and visible-number delivery. External evidenc
    ranges separately. This provides the missing physical noise evidence.
 3. Keep both pages visible for one minute; note any Delayed intervals. Close and
    reopen only the receiver drawer: current numbers should return without a QR.
-4. STOP, hiding a page or going offline must end the attempt and remove live
-   readings. Use a new QR, repeat ZERO/wake, and verify recovery. Wake release
-   requires another explicit wake action; a sensor gap requires a new ZERO.
+4. With both pages visible, remove network access for at least 30 seconds. Both
+   screens must show delayed/paused motion and retained pairing. The display must
+   use fresh GPS when available, or explicitly wait for GPS. Restoring the network
+   must resume fresh mutual readings without a new QR/ZERO when local sensors
+   stayed live. See the later [network recovery contract](PHONE-NETWORK-RECOVERY-2026-09-20.md).
+   STOP/hiding still ends the attempt and needs a new QR; wake release requires
+   another explicit wake action, and an actual sensor gap requires a new ZERO.
 5. Separately, with a fixed screen facing the cabin and aligned ahead, enable car
    motion and ZERO again. Check forward/brake and curve signs with fresh GPS;
    GPS remains speed authority. Cabin response and physical Tesla acceptance are

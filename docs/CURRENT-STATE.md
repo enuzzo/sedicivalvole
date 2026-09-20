@@ -1,5 +1,20 @@
 # Current Project State
 
+## Phone network recovery — September 20 (candidate verified; publication pending)
+
+The owner explicitly requires continuity of an admitted phone pairing through
+mountain-road network gaps. HTTPS now preserves that pairing within the original
+one-hour lease, backs off transient failures and automatically resumes fresh
+reciprocal motion. Local ZERO survives network-only outages while sensing remains
+valid. A sustained interruption/data delay is visible on both surfaces; the driving
+notice distinguishes fresh GPS fallback from a missing GPS fix. The 250 ms sample
+limit, actual sensor-gap invalidation, hidden-page/STOP teardown and terminal
+capability expiry remain strict. Browser QA passes sixteen checkpoints including
+both contexts offline for over thirty seconds and recovery without QR/ZERO/gestures.
+All 1,053 native tests, dependency credits and public hygiene pass.
+See [network contract and evidence](PHONE-NETWORK-RECOVERY-2026-09-20.md). Publication
+identity follows. Earlier canonical continuity and physical limits remain open.
+
 ## Phone integration repair — September 20 (candidate verified; publication pending)
 
 The real compiled App regression reproduces the owner's missing receiver numbers

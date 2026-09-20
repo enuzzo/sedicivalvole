@@ -140,11 +140,23 @@ try {
   const phoneContext = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' });
   await phoneContext.addInitScript(hardwareFixture);
   await receiverContext.addInitScript(renderProbe);
+  // Synthetic GPS remains separate from network availability, as satellite fixes
+  // can continue through a mobile data outage. It never changes the product owner.
+  await receiverContext.addInitScript(() => {
+    let paused = false;
+    const position = () => ({timestamp: Date.now(), coords: {latitude: 0, longitude: 0, accuracy: 5, speed: 12, heading: 0, altitude: 100, altitudeAccuracy: 5}});
+    Object.defineProperty(navigator, 'geolocation', {configurable:true, value: {
+      watchPosition(ok) { const tick = () => {if (!paused) ok(position());}; setTimeout(tick,0); return setInterval(tick,500); },
+      clearWatch(id) { clearInterval(id); }, getCurrentPosition(ok) { if (!paused) setTimeout(() => ok(position()),0); },
+    }});
+    window.gpsHardware = {pause(value) {paused=value;}};
+  });
   for (const context of [receiverContext, phoneContext]) await context.route('**/*', route => {
     if (new URL(route.request().url()).origin !== base) return route.abort();
     return route.continue();
   });
   receiver = await receiverContext.newPage(); phone = await phoneContext.newPage();
+  receiver.setDefaultTimeout(15000); phone.setDefaultTimeout(15000);
   for (const [name, page] of [['receiver', receiver], ['phone', phone]]) {
     page.on('pageerror', error => evidence.pageErrors.push({ name, error: error.message }));
     page.on('console', message => { if (message.type() === 'error') evidence.consoleErrors.push({ name, error: message.text() }); });
@@ -219,6 +231,35 @@ try {
   check('expired samples disappear without disconnecting or extending 250 ms validity');
   delay = 0;
   await receiver.getByText('Fresh', { exact: true }).waitFor();
+  const admissionsBefore = evidence.http.filter(r => ['create','join','delete'].includes(r.action)).length;
+  const generationBefore = evidence.wire.findLast(r => r.role === 'phone' && r.confirmed)?.generation;
+  await receiver.getByRole('button', {name:'CLOSE',exact:true}).click();
+  await receiver.locator('.motion-dialog').waitFor({state:'detached'});
+  await Promise.all([receiverContext.setOffline(true), phoneContext.setOffline(true)]);
+  await receiver.locator('[data-motion-recovery="true"]').waitFor();
+  await receiver.waitForFunction(() => document.querySelector('[data-motion-recovery="true"]')?.textContent.includes('using GPS'));
+  await phone.getByText(/(?:Network unavailable|Reconnecting) · Pairing kept/, {exact:true}).waitFor();
+  assert.match(await phone.locator('.motion-live-row').first().innerText(), /—/);
+  await receiver.waitForTimeout(30000);
+  await receiver.screenshot({path:join(output,'receiver-network-gap.png')});
+  await phone.screenshot({path:join(output,'phone-network-gap.png')});
+  assert.equal(await phone.getByText('Setup complete',{exact:true}).count(),1);
+  assert.equal(await phone.getByRole('button',{name:'ZERO',exact:true}).count(),0);
+  assert.equal(await receiver.locator('[data-motion-recovery="true"]').evaluate(e=>getComputedStyle(e).visibility),'visible');
+  await receiver.evaluate(() => gpsHardware.pause(true));
+  await receiver.waitForFunction(() => document.querySelector('[data-motion-recovery="true"]')?.textContent.includes('waiting for GPS'));
+  check('thirty-second real browser outage keeps setup and warns outside drawer; missing GPS is not represented as usable');
+  await receiver.evaluate(() => gpsHardware.pause(false));
+  await Promise.all([receiverContext.setOffline(false), phoneContext.setOffline(false)]);
+  await phone.getByRole('heading',{name:'Motion is live.',exact:true}).waitFor();
+  await receiver.locator('[data-motion-recovery="true"]').waitFor({state:'detached'});
+  await receiver.keyboard.press('Tab');await receiver.locator('.motion-button').click();
+  await receiver.getByText('Fresh',{exact:true}).waitFor();
+  await receiver.waitForFunction(() => document.querySelector('.motion-live-row strong')?.textContent.includes('+1.25'));
+  assert.equal(evidence.http.filter(r => ['create','join','delete'].includes(r.action)).length,admissionsBefore);
+  assert.equal(evidence.wire.findLast(r=>r.role==='phone'&&r.confirmed)?.generation,generationBefore);
+  check('fresh reciprocal motion returns automatically with the same pairing and ZERO after network restoration');
+
   await receiver.getByRole('button', { name: 'CLOSE', exact: true }).click();
   await receiver.locator('.motion-dialog').waitFor({ state: 'detached' });
   await receiver.keyboard.press('Tab'); await receiver.locator('.motion-button').click();
@@ -276,6 +317,7 @@ try {
   assert.ok(evidence.wire.some(packet => Number.isSafeInteger(packet.acceptedSequence) && Number.isSafeInteger(packet.acceptedGeneration)));
   assert.deepEqual(evidence.pageErrors, []);
 } catch (error) {
+  console.error(error);
   for (const [name, page] of [['receiver', receiver], ['phone', phone]]) if (page) {
     await page.screenshot({ path: join(output, `${name}-failure.png`) });
     await writeFile(join(output, `${name}-failure.txt`), await page.locator('body').innerText());
@@ -283,6 +325,7 @@ try {
   throw error;
 } finally {
   await browser.close();
+  server.closeAllConnections();
   await new Promise(r => server.close(r));
   worker.stdin.end();
   await rm(directory, { recursive: true, force: true });

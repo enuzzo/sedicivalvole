@@ -45,8 +45,10 @@ within this calibration contract by the September 20 owner correction.
 
 A gravity-direction change over 12 degrees, angular rate over 80 degrees/second
 or acceleration magnitude over 15 m/s² latches the mounted input invalid until
-another ZERO. Sensor gaps/incomplete axes, STOP, hide and offline invalidate the
-reference. Gravity estimation on slopes and hard motion can conservatively
+another ZERO. Sensor gaps/incomplete axes, STOP and hide invalidate the reference.
+The owner's September 20 [network recovery correction](PHONE-NETWORK-RECOVERY-2026-09-20.md)
+keeps local ZERO through network-only outages while valid sensing continues;
+transport receipts and remotely usable data expire independently. Gravity estimation on slopes and hard motion can conservatively
 reject valid driving; physical tuning remains open. Smooth handheld yaw or
 translation is fundamentally indistinguishable from car movement using these
 inputs alone. Uncheck aligned car motion before lifting the phone. Other mounts and
@@ -106,7 +108,7 @@ reporting and explicit saved pauses are unchanged. Synthetic QA blocks delivery.
 
 On the next parked setup: confirm placement, ZERO in the actual pose, acquire screen wake and verify fresh motion on both screens. Separately test optional aligned car motion.
 Then check forward acceleration versus braking, curve direction and comfort,
-GPS fallback after sensor STOP, hide/offline and reconnection with a new QR/ZERO.
+GPS fallback after sensor STOP/hide; network-only outages recover automatically with the same pairing/ZERO while sensor evidence remains valid.
 Observe mobile-network continuity without increasing the 250 ms limit. Compare
 Engine load/coast and Music Underwater against ordinary lift-off and stronger
 braking. Recheck the actual incline and mounting stability. This is experimental

@@ -173,13 +173,13 @@ test('first use and recovery never present a local instrument as a Tesla connect
 function sessionFixture(options={}) {
  const host=surface(),doc=surface();host.RTCPeerConnection=function(){};
  let time=0,peerState='connecting',hooks,closes=0;
- const snapshots=[],calls=[];
+ const snapshots=[],calls=[],network=[];
  const pair={id:'a'.repeat(32),token:'b'.repeat(64)};
  const response=value=>({ok:true,status:200,text:async()=>JSON.stringify(value)});
  const session=createMotionSession({role:'phone',host,doc,now:()=>time,onChange:s=>snapshots.push(s),
-  peerFactory:params=>{hooks=params;return {offer:async()=> 'fixture',answer:async()=> 'fixture',accept:async()=>{},close(){closes++;},summary:()=>({state:peerState}),sample:()=>null};},
+  peerFactory:params=>{hooks=params;return {offer:async()=> 'fixture',answer:async()=> 'fixture',accept:async()=>{},close(){closes++;},setOnline(value){network.push(value);},summary:()=>({state:peerState}),sample:()=>null};},
   fetcher:async(_url,request)=>{const body=JSON.parse(request.body);calls.push(body.action);return response(body.action==='create'?{...pair,join:'c'.repeat(64)}:{token:'c'.repeat(64),sdp:'fixture'});},...options});
- return {session,host,doc,snapshots,calls,pair,response,time:n=>{time=n;},closes:()=>closes,
+ return {session,host,doc,snapshots,calls,network,pair,response,time:n=>{time=n;},closes:()=>closes,
   emit:(type,state='connected')=>{peerState=state;hooks.onEvent(type,{state});}};
 }
 const settle=()=>new Promise(resolve=>setImmediate(resolve));
@@ -408,7 +408,7 @@ test('mounted sensor ZERO latches invalidation and needs explicit recalibration 
  f.time(40);f.motion(mounted);assert.equal(f.sensor.latest().road,undefined);
  f.sensor.tare();assert.ok(f.sensor.latest().road);
  f.sensor.requestTare();assert.equal(f.sensor.latest().road,undefined);
- f.host.emit('offline');assert.equal(f.sensor.latest(),null);f.sensor.dispose();
+ f.host.emit('pagehide');assert.equal(f.sensor.latest(),null);f.sensor.dispose();
 });
 
 test('guided remote onboarding requires placement, pose ZERO and explicit acquired screen wake', async () => {
@@ -561,4 +561,45 @@ test('real sensor ZERO accepts flat, upright, landscape, inclined and inverted p
   assert.equal(phoneSetup({sensor:f.sensor.summary(),link:{...phone.summary(),state:'connected'},hasPair:true}).ready,true);
   f.sensor.dispose();
  }
+});
+
+
+test('a thirty-second network gap keeps live local sensors and ZERO; an actual sensor gap still invalidates them', async () => {
+ const f=sensorFixture();
+ try {
+  await f.sensor.start();f.orient();f.motion();f.sensor.tare();
+  const generation=f.sensor.latest().generation;
+  f.host.emit('offline');
+  for(let at=20;at<=30000;at+=20){f.time(at);f.motion();}
+  assert.equal(f.sensor.summary().sensorState,'live');assert.equal(f.sensor.summary().tared,true);
+  assert.equal(f.sensor.latest().generation,generation);
+  f.host.emit('online');assert.ok(f.sensor.latest());
+  f.time(30300);assert.equal(f.sensor.latest(),null);assert.equal(f.sensor.summary().tared,false);
+ }finally{f.sensor.dispose();}
+});
+
+test('network recovery copy retains pairing and distinguishes fresh GPS from a missing GPS fix', async () => {
+ const {motionLiveStatus,motionRecoveryNotice}=await import('../src/motion/guided-setup.js');
+ const s={state:'connected',networkState:'offline',setupProgress:{complete:true},dataFresh:false};
+ const status=motionLiveStatus(s);
+ assert.equal(status.fresh,false);assert.match(status.title,/Pairing kept/);
+ assert.match(status.hint,/Recovery is automatic/);assert.doesNotMatch(status.hint,/restart|new QR/i);
+ assert.match(motionRecoveryNotice(s,'GPS',true),/using GPS/);
+ assert.match(motionRecoveryNotice(s,'GPS',false),/waiting for GPS/);
+ assert.doesNotMatch(motionRecoveryNotice(s,'Demo',true),/using GPS/);
+ assert.equal(motionRecoveryNotice({...s,networkState:'online'},'GPS',true),null);
+ assert.match(motionRecoveryNotice({...s,networkState:'online',ageUpperMs:1100},'GPS',true),/Phone data delayed.*using GPS/);
+ assert.equal(safeMotionSummary({networkState:'arbitrary'}).networkState,undefined);
+});
+
+
+test('an already open session retains its peer on offline/online and only explicit stop revokes it',async()=>{
+ const f=sessionFixture();try {
+  await f.session.start(f.pair);f.emit('channel-open');const closes=f.closes();
+  f.host.emit('offline');f.time(30000);f.session.refresh();
+  assert.equal(f.snapshots.at(-1).state,'connected');assert.equal(f.closes(),closes);
+  f.host.emit('online');assert.deepEqual(f.network,[false,true]);
+  assert.equal(f.calls.filter(a=>a==='join').length,1);assert.equal(f.calls.filter(a=>a==='delete').length,0);
+  f.session.stop();f.host.emit('online');assert.equal(f.snapshots.at(-1).state,'closed');assert.equal(f.calls.filter(a=>a==='delete').length,1);
+ }finally{f.session.dispose();}
 });
