@@ -89,3 +89,10 @@ Agency review question: the current implementation faithfully reproduces the acc
 arrangement subject to the documented system/truth constraints; no material fixable
 visual mismatch remains in the tested core surfaces. This is an agent fidelity
 assessment, explicitly not the owner's aesthetic approval or physical acceptance.
+
+### Compiled-wrapper correction
+
+Actual App QA caught the gesture surface intercepting Connection details, unlike the
+isolated fixture. Fixed native summary/SVG target exclusion and refocused remote/local
+panel swaps. The final release gate includes a dedicated rendered regression covering
+real disclosure, local mode, keyboard Escape, close-icon and non-control drag paths.

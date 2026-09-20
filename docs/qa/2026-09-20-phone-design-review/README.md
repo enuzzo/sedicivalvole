@@ -61,3 +61,18 @@ The inspection pairing was cancelled; retained QA uses synthetic fixtures only.
   Owner visual acceptance and first real automatic diagnostic receipt remain open.
 
 Publication evidence follows after committed-source build and official deployment.
+
+## Real App follow-up
+
+The compiled wrapper revealed a defect absent from the isolated visual harness:
+shared drawer pointer capture swallowed clicks on the native summary. The same
+HTMLElement-only guard missed SVG descendants of buttons. The fix excludes summary
+and all Element descendants of controls from drag initiation. Summary joins the
+keyboard focus traversal. Remote/local panel replacement resets initial focus while
+preserving the original opener for dismissal.
+
+The dedicated `prototype/drive-lab/scripts/qa-phone-drawer.mjs` exercises the real
+App with external requests blocked and API failures simulated; it sends no mail,
+requests no GPS and does not acquire real sensors or wake lock. Re-run against the
+final compiled build before activation. This gate supplements, not replaces, the
+32-state visual comparison. The previous 1746 package was not published.

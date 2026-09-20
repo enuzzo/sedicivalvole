@@ -811,6 +811,7 @@ const DIALOG_FOCUSABLE_SELECTOR = [
   "input:not([disabled])",
   "select:not([disabled])",
   "textarea:not([disabled])",
+  "summary",
   "[tabindex]:not([tabindex='-1'])",
 ].join(", ");
 
@@ -822,6 +823,7 @@ function DialogSurface({
   backdropClass = "drawer-backdrop",
   panelClass = "drawer-panel",
   dismissDirection = "right",
+  focusKey,
   children,
 }) {
   const panelRef = useRef(null);
@@ -832,6 +834,10 @@ function DialogSurface({
     previousFocusRef.current = document.activeElement instanceof HTMLElement
       ? document.activeElement
       : null;
+    return () => previousFocusRef.current?.focus?.({ preventScroll: true });
+  }, []);
+
+  useEffect(() => {
     const frameId = requestAnimationFrame(() => {
       const panel = panelRef.current;
       const initial = panel?.querySelector("[data-dialog-initial-focus]")
@@ -839,11 +845,8 @@ function DialogSurface({
       if (initial instanceof HTMLElement) initial.focus({ preventScroll: true });
       else panel?.focus({ preventScroll: true });
     });
-    return () => {
-      cancelAnimationFrame(frameId);
-      previousFocusRef.current?.focus?.({ preventScroll: true });
-    };
-  }, []);
+    return () => cancelAnimationFrame(frameId);
+  }, [focusKey]);
 
   const handleKeyDown = (event) => {
     if (event.key === "Escape") {
@@ -886,8 +889,8 @@ function DialogSurface({
 
   const handlePointerDown = (event) => {
     if (event.pointerType === "mouse" && event.button !== 0) return;
-    if (event.target instanceof HTMLElement
-      && event.target.closest("button, a, input, select, textarea, [role='slider'], [contenteditable='true']")) return;
+    if (event.target instanceof Element
+      && event.target.closest("button, a, input, select, textarea, summary, [role='slider'], [contenteditable='true']")) return;
     const panel = panelRef.current;
     if (!panel) return;
     if (dismissDirection === "right" && event.clientX < 28) return;
@@ -5581,7 +5584,7 @@ export function App() {
         </div>
       </section>
 
-      {motionOpen ? <DialogSurface className="diagnostic-drawer motion-dialog" labelledBy="motion-title" onClose={() => setMotionOpen(false)}>
+      {motionOpen ? <DialogSurface className="diagnostic-drawer motion-dialog" labelledBy="motion-title" focusKey={showLocalSensors ? "local" : "remote"} onClose={() => setMotionOpen(false)}>
         {showLocalSensors ? <LocalSensorsPanel responseLabel={roadInputStatus.label} sensors={localSensors} gpsState={gpsState} source={source} themeKey={`${themeId}:${appearanceResolution.appearance}`} onClose={() => setMotionOpen(false)} onRemote={() => { localSensors.stop(); setMotionSourceChoice("remote"); void motionSessionRef.current?.start(null, "https"); }}/> : <><MotionPanel responseLabel={roadInputStatus.label} snapshot={motionSnapshot} onStart={(transport = "https") => void motionSessionRef.current?.start(null, transport)} onStop={() => motionSessionRef.current?.stop()} onClose={() => setMotionOpen(false)}>{localSensors.capability.potential && <button className="motion-local-choice" onClick={() => { motionSessionRef.current?.stop(); setMotionSourceChoice("local"); }}>USE THIS DEVICE’S SENSORS</button>}</MotionPanel></>}
       </DialogSurface> : null}
       {supportOpen ? (
