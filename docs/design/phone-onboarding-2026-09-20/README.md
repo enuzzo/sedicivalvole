@@ -1,6 +1,6 @@
 # Phone onboarding and receiver drawer
 
-Owner brief: September 20, 2026. Status: two Image Gen directions requested;
+Owner brief: September 20, 2026. Status: two Image Gen directions generated and displayed;
 selection, implementation and physical acceptance pending. This is a design brief,
 not evidence of changed production behavior.
 
@@ -50,7 +50,8 @@ to replace the product's design language.
   expanded, completed steps reduced to compact rows, and the same concise receiver
   status and telemetry model.
 
-The two generated images will be numbered in their displayed order. Wait for the
+The displayed order is 1: One step at a time; 2: Guided checklist.
+See [generation prompts and required corrections](PROMPTS.md). Wait for the
 owner's choice before implementation. Any illustrated sample values are mock data,
 not measurements or physical acceptance evidence.
 
