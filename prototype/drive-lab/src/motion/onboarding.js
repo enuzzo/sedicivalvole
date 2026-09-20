@@ -8,7 +8,9 @@ export function receiverOnboarding(s = {}) {
   if (s.state === "preparing") return step(0, "Getting QR ready…", "Keep both pages open.");
   if (s.state === "pairing") return step(0, "Scan with iPhone Camera", s.transport === "direct" ? "Same Wi-Fi · keep both pages open." : "Internet on both devices · keep both pages open.");
   if (s.state === "connecting") return step(1, "Connecting…", "On your phone, allow sensor access.");
-  if (s.state === "stale" || s.sensorState === "stale") return step(1, "Phone data paused", s.transport === "https" ? "Keep the phone open. Delayed data is ignored; try LOCAL on a shared Wi-Fi if needed." : "Check the phone. Keep its page open.", { restart: true });
+  if (s.state === "stale" || s.sensorState === "stale") return step(1, "Phone data paused", s.state === "connected"
+    ? "Phone connected. Waiting for fresh sensor data; GPS remains in control. Keep both pages open."
+    : "Check the phone. Keep its page open.", { restart: s.state !== "connected" });
   if (s.sensorState !== "live") return step(1, "Allow sensors on your phone", "Tap Allow when your phone asks.");
   if (s.tareState === "settling") return step(2, "Keep the phone still", "ZERO is being set…");
   if (!s.tared || !s.referenceReceived) return step(2, "On your phone: tap ZERO", "Select the portrait holder for road response. Park, then ZERO.");

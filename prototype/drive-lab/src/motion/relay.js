@@ -25,7 +25,9 @@ export async function createMotionCipher(secret, crypto = globalThis.crypto) {
 }
 
 export function createMotionRelay({ role, cipher, exchange, now = () => performance.now(), getPhone, getPresentation, onEvent = () => {}, onSummary }) {
-  const protocol = createMotionProtocol({ role, now, getPhone, getPresentation, onSummary });
+  // HTTP exchanges stay serial, but a poll need not wait for its multi-hop reply.
+  // The bounded protocol window accepts only matching, fresh, monotonic replies.
+  const protocol = createMotionProtocol({ role, now, getPhone, getPresentation, onSummary, maxPending: 8 });
   let closed = false, timer = null, opened = false, lastSequence = 0, outgoing = null, failures = 0;
   let lastReceipt = null;
   const started = now();
@@ -58,8 +60,9 @@ export function createMotionRelay({ role, cipher, exchange, now = () => performa
       failures += 1;
       if ([403, 410].includes(error?.status) || failures >= 3) { close('error'); return; }
     }
-    // Reply promptly after real traffic; idle polls stay bounded and serial.
-    if (!closed) timer = setTimeout(tick, exchanged ? Math.max(0, 24 - (now() - cycleStarted)) : 40);
+    // Include HTTP time in pacing, but leave a small post-response floor: request-start
+    // spacing alone cannot respect PHP's 20 ms arrival limit when network delay varies.
+    if (!closed) timer = setTimeout(tick, Math.max(22, (exchanged ? 24 : 40) - (now() - cycleStarted)));
   }
   function close(reason = 'closed') {
     if (closed) return;
@@ -70,5 +73,6 @@ export function createMotionRelay({ role, cipher, exchange, now = () => performa
   timer = setTimeout(tick, 0);
   return { close, sample: () => closed ? null : protocol.sample(), presentation: () => closed ? null : protocol.presentation(),
     summary: () => ({ ...protocol.summary(), role, transport: 'https', rtc: false,
-      state: closed ? 'closed' : !opened ? 'connecting' : role === 'phone' ? 'connected' : protocol.summary().state }) };
+      transportAgeMs: lastReceipt === null ? null : Math.max(0, now() - lastReceipt),
+      state: closed ? 'closed' : !opened ? 'connecting' : 'connected' }) };
 }

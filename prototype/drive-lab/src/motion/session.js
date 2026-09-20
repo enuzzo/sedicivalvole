@@ -8,7 +8,7 @@ export function createMotionSession({ role, host = window, doc = document, fetch
   const telemetry = createMotionTelemetry(now);
   let peer = null, credentials = null, qrUrl = null;
   let state = "idle", generation = 0, polling = null, refresh = null;
-  let deadline = 0, previousState = null, previousPhone = null;
+  let deadline = 0, previousState = null, previousPhone = null, previousFresh = null;
   const requests = new Set();
   let stage = "idle", startedAt = 0, failureReason = null;
   let attemptedPair = null;
@@ -34,10 +34,11 @@ export function createMotionSession({ role, host = window, doc = document, fetch
   function notify() {
     const summary = { ...getPhone().summary, ...peer?.summary(), ...signaling, stage, failureReason, role, transport, state: ["pairing", "preparing", "error", "suspended", "expired", "closed", "unavailable"].includes(state) ? state : peer?.summary().state ?? state };
     telemetry.update(summary);
-    if (previousState !== summary.state) {
-      if (summary.state === "stale") event("stale", summary);
-      if (previousState === "stale" && summary.state === "connected") event("recovered", summary);
+    if (previousState !== summary.state || previousFresh !== summary.dataFresh) {
+      if (summary.state === "connected" && summary.dataFresh === false && previousFresh === true) event("stale", summary);
+      if (summary.state === "connected" && summary.dataFresh === true && previousFresh === false) event("recovered", summary);
       previousState = summary.state;
+      previousFresh = summary.dataFresh;
     }
     onChange({ ...safeMotionSummary(summary), qrUrl, presentation: peer?.presentation?.() ?? null, values: role === "phone" ? getPhone().values : peer?.sample() ?? null });
   }

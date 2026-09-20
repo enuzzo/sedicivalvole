@@ -51,6 +51,8 @@ function validDiagnosticDelivery(array $report): bool
     // before manual packets take their shortcut.
     $reason = $delivery['deliveryReason'] ?? null;
     if ($reason !== null && !in_array($reason, ['interval', 'catch-up', 'hide-flush'], true)) return false;
+    $deliveryId = $delivery['deliveryId'] ?? null;
+    if ($deliveryId !== null && (!is_string($deliveryId) || !preg_match('/\A[a-f0-9]{32}\z/', $deliveryId))) return false;
     if ($delivery['trigger'] === 'manual') return true;
     if ($reason === 'catch-up' || $reason === 'hide-flush') {
         // A frozen page delivers late (catch-up) or a closing page delivers what it has (hide-flush).
@@ -81,6 +83,49 @@ function validDiagnosticDelivery(array $report): bool
 function automaticFloorSeconds($reason): int
 {
     return $reason === 'hide-flush' ? 300 : 900;
+}
+
+/** Locked acceptance receipt only: no report, address, IP, or sensor payload is stored here.
+ * The random ID follows an unconfirmed attempt across reloads and network/address changes.
+ */
+function openDiagnosticReceipt(string $id, string $directory, int $now, bool $create = true): ?array
+{
+    if (!preg_match('/\A[a-f0-9]{32}\z/', $id)) throw new RuntimeException('delivery_rejected');
+    if (is_link($directory)) throw new RuntimeException('receipt_unavailable');
+    $path = $directory . '/receipt-' . hash('sha256', $id);
+    if (!$create && !is_file($path)) return null;
+    if (!is_dir($directory) && !@mkdir($directory, 0700, true)) throw new RuntimeException('receipt_unavailable');
+    @chmod($directory, 0700);
+    if ($create) {
+        $files = glob($directory . '/receipt-*') ?: [];
+        foreach ($files as $file) {
+            if (!is_link($file) && is_file($file) && filemtime($file) < $now - 86400) {
+                $old = @fopen($file, 'r+');
+                if ($old && flock($old, LOCK_EX | LOCK_NB)) { @unlink($file); flock($old, LOCK_UN); }
+                if ($old) fclose($old);
+            }
+        }
+        if (!is_file($path) && count(glob($directory . '/receipt-*') ?: []) >= 4096) throw new RuntimeException('receipt_unavailable');
+    }
+    if (is_link($path)) throw new RuntimeException('receipt_unavailable');
+    $handle = @fopen($path, $create ? 'c+' : 'r+');
+    if (!$handle || !flock($handle, LOCK_EX)) { if ($handle) fclose($handle); throw new RuntimeException('receipt_unavailable'); }
+    @chmod($path, 0600);
+    $acceptedAt = (int) trim((string) stream_get_contents($handle));
+    return ['handle' => $handle, 'accepted' => $acceptedAt > 0 && $acceptedAt <= $now && $now - $acceptedAt <= 86400];
+}
+
+function confirmDiagnosticReceipt(array $receipt, int $now): void
+{
+    $handle = $receipt['handle']; $stamp = (string) $now;
+    if (!rewind($handle) || !ftruncate($handle, 0) || fwrite($handle, $stamp) !== strlen($stamp) || !fflush($handle)) {
+        throw new RuntimeException('receipt_unavailable');
+    }
+}
+
+function closeDiagnosticReceipt(?array $receipt): void
+{
+    if ($receipt) { flock($receipt['handle'], LOCK_UN); fclose($receipt['handle']); }
 }
 
 function buildDiagnosticMail(array $report, string $receivedAt, string $recipient, ?string $fixedBoundary = null): array
@@ -221,6 +266,19 @@ if (!is_string($reportJson) || strlen($reportJson) > MAX_BODY_BYTES) {
     respond(422, 'report_rejected');
 }
 
+$deliveryId = ($payload['report']['diagnosticDelivery']['trigger'] ?? 'manual') === 'automatic'
+    ? ($payload['report']['diagnosticDelivery']['deliveryId'] ?? null) : null;
+$receiptDirectory = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'sv-diag-receipts';
+// A confirmed retry returns before rate limits and never calls mail() a second time.
+if ($deliveryId !== null) {
+    try {
+        $priorReceipt = openDiagnosticReceipt($deliveryId, $receiptDirectory, time(), false);
+        $alreadyAccepted = $priorReceipt['accepted'] ?? false;
+        closeDiagnosticReceipt($priorReceipt);
+        if ($alreadyAccepted) respond(202, 'already_accepted_by_mail_transport', true);
+    } catch (RuntimeException $error) { respond(503, $error->getMessage()); }
+}
+
 $recipientPath = __DIR__ . '/recipient.local.php';
 if (!is_file($recipientPath)) {
     respond(503, 'recipient_unavailable');
@@ -264,6 +322,14 @@ if (($payload['report']['diagnosticDelivery']['trigger'] ?? 'manual') === 'autom
     if ($lastAutomatic > 0 && $currentTimestamp - $lastAutomatic < automaticFloorSeconds($payload['report']['diagnosticDelivery']['deliveryReason'] ?? null)) respond(429, 'rate_limited');
 }
 
+$receipt = null;
+if ($deliveryId !== null) {
+    try {
+        $receipt = openDiagnosticReceipt($deliveryId, $receiptDirectory, time());
+        if ($receipt['accepted']) { closeDiagnosticReceipt($receipt); respond(202, 'already_accepted_by_mail_transport', true); }
+    } catch (RuntimeException $error) { respond(503, $error->getMessage()); }
+}
+
 $receivedAt = gmdate('c');
 $subject = '[sedicivalvole] Tesla diagnostic ' . gmdate('Y-m-d H:i:s') . ' UTC';
 try {
@@ -276,6 +342,12 @@ try {
 
 if (!mail($diagnosticRecipient, $subject, $mailContent['message'], $mailContent['headers'])) {
     respond(502, 'mail_transport_rejected');
+}
+
+if ($receipt !== null) {
+    try { confirmDiagnosticReceipt($receipt, time()); }
+    catch (RuntimeException $error) { closeDiagnosticReceipt($receipt); respond(503, $error->getMessage()); }
+    closeDiagnosticReceipt($receipt);
 }
 
 if (is_resource($autoRateHandle)) {

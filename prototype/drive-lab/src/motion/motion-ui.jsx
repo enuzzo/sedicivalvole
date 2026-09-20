@@ -83,6 +83,8 @@ export function MotionPanel({ snapshot, onStart, onStop, onClose, responseLabel 
 
 export function MotionQuality({ summary = {} }) {
   return <dl className="motion-quality">
+    <div><dt>Connection</dt><dd>{summary.state === "connected" ? "CONNECTED" : (summary.state ?? "idle").toUpperCase()}</dd></div>
+    {summary.role === "receiver" && <div><dt>Sensor data</dt><dd>{summary.dataFresh ? "FRESH" : "WAITING / DELAYED"}<small>Only fresh calibrated motion can control response.</small></dd></div>}
     <div><dt>Acceleration / Gyro</dt><dd>{summary.accelerometer ? "YES" : "—"} / {summary.gyroscope ? "YES" : "—"}<small>{summary.sensorState ?? "not connected"}</small></dd></div>
     <div><dt>Zero</dt><dd>{summary.tared ? "SET" : "REQUIRED"}</dd></div>
     <div><dt>Cadence</dt><dd>{summary.cadenceHz > 0 ? `${summary.cadenceHz.toFixed(1)} Hz` : "—"}</dd></div>

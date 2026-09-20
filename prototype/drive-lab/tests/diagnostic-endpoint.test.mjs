@@ -10,6 +10,40 @@ import { gunzipSync } from "node:zlib";
 const TEST_DIR = dirname(fileURLToPath(import.meta.url));
 const ENDPOINT = resolve(TEST_DIR, "../public/api/send-diagnostic.php");
 
+test('a confirmed delivery identity survives retry, while failed attempts and new identities never claim acceptance', () => {
+  const source = `
+define('SEDICIVALVOLE_DIAGNOSTIC_LIBRARY_ONLY', true);
+require ${JSON.stringify(ENDPOINT)};
+$dir = sys_get_temp_dir() . '/sv-receipt-test-' . bin2hex(random_bytes(8));
+try {
+  $id = str_repeat('a', 32); $now = time();
+  $first = openDiagnosticReceipt($id, $dir, $now);
+  if ($first['accepted']) throw new Exception('new delivery already accepted');
+  $probe = fopen($dir . '/receipt-' . hash('sha256', $id), 'r+');
+  if (flock($probe, LOCK_EX | LOCK_NB)) throw new Exception('concurrent send not serialized');
+  fclose($probe);
+  closeDiagnosticReceipt($first);
+  $retry = openDiagnosticReceipt($id, $dir, $now + 1);
+  if ($retry['accepted']) throw new Exception('failed attempt marked accepted');
+  confirmDiagnosticReceipt($retry, $now + 1); closeDiagnosticReceipt($retry);
+  $duplicate = openDiagnosticReceipt($id, $dir, $now + 2, false);
+  if (!$duplicate['accepted']) throw new Exception('accepted retry not recognized');
+  closeDiagnosticReceipt($duplicate);
+  $other = openDiagnosticReceipt(str_repeat('b', 32), $dir, $now + 2);
+  if ($other['accepted']) throw new Exception('unrelated delivery suppressed');
+  closeDiagnosticReceipt($other);
+  if (trim(file_get_contents($dir . '/receipt-' . hash('sha256', $id))) !== (string) ($now + 1)) throw new Exception('unexpected stored data');
+  if ((fileperms($dir) & 0777) !== 0700) throw new Exception('directory not private');
+  if ((fileperms($dir . '/receipt-' . hash('sha256', $id)) & 0777) !== 0600) throw new Exception('receipt not private');
+  try { openDiagnosticReceipt('../invalid', $dir, $now + 2); throw new Exception('invalid identity accepted'); }
+  catch (RuntimeException $expected) {}
+  echo 'PASS';
+} finally { foreach (glob($dir . '/*') ?: [] as $path) unlink($path); if (is_dir($dir)) rmdir($dir); }
+`;
+  const result = spawnSync('php', ['-r', source], { encoding: 'utf8' });
+  assert.equal(result.status, 0, result.stderr); assert.equal(result.stdout, 'PASS');
+});
+
 test("diagnostic endpoint accepts ten times the original request budget", async () => {
   const endpointSource = await readFile(ENDPOINT, "utf8");
   assert.match(endpointSource, /const MAX_BODY_BYTES = 1966080;/);

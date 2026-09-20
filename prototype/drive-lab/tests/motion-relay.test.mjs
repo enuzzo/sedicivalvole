@@ -4,9 +4,45 @@ import { webcrypto } from 'node:crypto';
 import { createMotionCipher, createRelayKey, createMotionRelay } from '../src/motion/relay.js';
 import { apertureCurveTarget, advanceApertureCurve } from '../src/motion/aperture-curve.js';
 import { createMotionSession } from '../src/motion/session.js';
+import { createMotionProtocol } from '../src/motion/channel.js';
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const values = () => ({ frame: 'tare-relative', generation: 1, acceleration: [0,0,0], rotation: [0,0,10], tilt: [0,0,0], turnRate: 10, ageMs: 0 });
 const phone = () => ({ values: values(), summary: { tared: true, sensorState: 'live' } });
+
+test('pipelined HTTPS polls accept matching earlier replies without admitting expired or replayed motion', () => {
+ let t=0; const now=()=>t;
+ const receiver=createMotionProtocol({role:'receiver',now,maxPending:8});
+ const sender=createMotionProtocol({role:'phone',now,getPhone:phone});
+ const first=receiver.poll();t=50;const second=receiver.poll();
+ assert.ok(second,'another request can travel while the earlier response is returning');
+ t=75;const a=sender.receive(first);t=125;const b=sender.receive(second);
+ t=150;receiver.receive(a);assert.ok(receiver.sample());
+ t=200;receiver.receive(b);assert.equal(receiver.summary().received,2);
+ receiver.receive(a);assert.equal(receiver.summary().received,2);
+ t=301;assert.equal(receiver.sample(),null,'the 250 ms upper bound is not extended');
+ const late=receiver.poll();t=380;const reply=sender.receive(late);t=600;receiver.receive(reply);
+ assert.equal(receiver.sample(),null);assert.ok(receiver.summary().latencyDrops>0);
+});
+
+test('HTTPS remains connected before ZERO and supplies sustained fresh motion across realistic request latency', async () => {
+ const cipher=await createMotionCipher(createRelayKey(webcrypto),webcrypto),slots={};let calibrated=false,delay=35;
+ const exchange=role=>async packet=>{
+  await sleep(delay/2);if(packet)slots[role]={sequence:(slots[role]?.sequence??0)+1,packet};
+  const reply={...(slots[role==='phone'?'receiver':'phone']??{})};await sleep(delay/2);return reply;
+ };
+ const receiver=createMotionRelay({role:'receiver',cipher,exchange:exchange('receiver')});
+ const sender=createMotionRelay({role:'phone',cipher,exchange:exchange('phone'),getPhone:()=>calibrated?phone():{values:null,summary:{sensorState:'live',tared:false}}});
+ try {
+  await sleep(400);
+  for(let i=0;i<20;i++){assert.equal(receiver.summary().state,'connected');assert.equal(receiver.sample(),null);await sleep(20);}
+  calibrated=true;await sleep(600);let fresh=0,confirmed=0;
+  for(let i=0;i<60;i++){fresh+=Boolean(receiver.sample());confirmed+=Boolean(receiver.summary().receiverConfirmed);await sleep(20);}
+  assert.ok(fresh>=57,`fresh at ${fresh}/60 observations`);assert.ok(confirmed>=54,`mutual receipt at ${confirmed}/60 observations`);
+  delay=180;await sleep(1000);
+  assert.equal(receiver.summary().state,'connected','slow data is not a transport disconnect');
+  assert.equal(receiver.sample(),null);assert.equal(receiver.summary().receiverConfirmed,false);
+ }finally{receiver.close();sender.close();}
+});
 
 test('relay encryption authenticates contents and direction; fresh nonces hide repeated packets', async () => {
  const secret=createRelayKey(webcrypto), cipher=await createMotionCipher(secret,webcrypto);

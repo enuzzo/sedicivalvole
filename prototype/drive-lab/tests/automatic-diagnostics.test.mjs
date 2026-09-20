@@ -15,9 +15,9 @@ test('fifteen active minutes count stops and missing GPS, but not hidden clock g
  const c=createAutomaticDiagnosticClock();c.update(live,0);
  for(let t=1000;t<900000;t+=1000) assert.equal(c.update(live,t),false);
  assert.equal(c.update(live,900000),true);c.begin();assert.equal(c.update(live,901000),false);
- c.complete(true,901000);assert.equal(c.snapshot().accepted,1);assert.equal(c.snapshot().activeMs,0);
- c.update({...live,moving:false},902000);c.update({...live,moving:false},903000);assert.equal(c.snapshot().activeMs,2000);
- c.update({...live,visible:false},904000);c.update(live,1804000);assert.equal(c.snapshot().activeMs,2000);assert.ok(c.snapshot().unobservedMs>=900000);
+ c.complete(true,901000);assert.equal(c.snapshot().accepted,1);assert.equal(c.snapshot().activeMs,1000, 'activity during sending is retained');
+ c.update({...live,moving:false},902000);c.update({...live,moving:false},903000);assert.equal(c.snapshot().activeMs,3000);
+ c.update({...live,visible:false},904000);c.update(live,1804000);assert.equal(c.snapshot().activeMs,3000);assert.ok(c.snapshot().unobservedMs>=900000);
 });
 test('offline due work resumes once, OFF clears due work, and no backlog accumulates',()=>{
  const c=dueClock();assert.equal(c.update({...live,online:false},901000),false);
@@ -29,7 +29,7 @@ test('transient failures have three bounded retries, permanent rejection waits f
  const c=dueClock();let t=900000;
  for(const delay of [30000,60000,120000]) {c.begin();c.complete(false,t);assert.equal(c.update({...live,moving:false},t+delay-1),false);t+=delay;assert.equal(c.update({...live,moving:false},t),true);}
  c.begin();c.complete(false,t);assert.equal(c.snapshot().status,'failed');assert.equal(c.update({...live,moving:false},t+1000),false);
- const d=dueClock();d.begin();d.complete(false,900000,false);assert.equal(d.snapshot().activeMs,0);
+ const d=dueClock();d.begin();d.complete(false,900000,false);assert.equal(d.snapshot().activeMs,900000, 'failed delivery retains unsent progress');
 });
 
 test('a GPS-free offline session becomes pending at fifteen active minutes and sends once online',()=>{
@@ -163,10 +163,11 @@ test('closing the app may flush unsent activity once five wall minutes and two a
   const thin = createAutomaticDiagnosticClock();
   for (let t = 0; t <= 100000; t += 1000) thin.update(liveW(t), t);
   assert.equal(thin.canFlush(W0 + 400000), false, 'a hundred active seconds is below the flush minimum');
-  c.beginFlush();
+  const flushId = c.beginFlush();
   assert.equal(c.snapshot().deliveryReason, 'hide-flush');
   assert.equal(c.canFlush(W0 + 302000), false, 'one flush at a time');
-  c.completeFlush();
+  assert.equal(c.snapshot().accepted, 0);
+  c.complete(true, 301000, true, flushId);
   assert.equal(c.snapshot().flushes, 1);
   assert.equal(c.snapshot().activeMs, 0);
   assert.equal(c.canFlush(W0 + 303000), false);
@@ -192,6 +193,33 @@ test('a flush that cannot be built is released without losing progress', () => {
   assert.equal(c.snapshot().deliveryReason, null);
   assert.equal(c.snapshot().activeMs, 400000);
   assert.equal(c.canFlush(W0 + 400000), true);
+});
+
+test('unconfirmed close delivery survives reload with the same identity and never counts as accepted', () => {
+ const storage=memoryStorage(), c=createAutomaticDiagnosticClock({storage});
+ for(let t=0;t<=360000;t+=1000)c.update(liveW(t),t);
+ const id=c.beginFlush(W0+360000);
+ assert.match(id,/^[a-f0-9]{32}$/);assert.equal(c.snapshot().accepted,0);
+ assert.equal(c.snapshot().activeMs,360000);
+ const restored=createAutomaticDiagnosticClock({storage});
+ assert.equal(restored.update(liveW(1560000),0),false,'old counters alone do not trigger');
+ for(let t=1000;t<60000;t+=1000)assert.equal(restored.update(liveW(1560000+t),t),false);
+ assert.equal(restored.update(liveW(1620000),60000),true);
+ assert.equal(restored.begin(),id);
+ restored.complete(true,60000,true,id);
+ assert.equal(restored.snapshot().accepted,1);
+ assert.equal(restored.snapshot().activeMs,60000,'new-page activity was not in the original attempt');
+});
+
+test('failed flush retains progress, retries are bounded, and stale completions cannot clear a reset clock', () => {
+ const c=createAutomaticDiagnosticClock();
+ for(let t=0;t<=360000;t+=1000)c.update(liveW(t),t);
+ const id=c.beginFlush(W0+360000);c.complete(false,360000,true,id);
+ assert.equal(c.snapshot().activeMs,360000);assert.equal(c.snapshot().accepted,0);
+ assert.equal(c.update(liveW(389000),389000),false);
+ assert.equal(c.update(liveW(390000),390000),true);assert.equal(c.begin(),id);
+ c.forget();c.complete(true,391000,true,id);
+ assert.equal(c.snapshot().accepted,0);assert.equal(c.snapshot().activeMs,0);
 });
 
 test('a close-time flush reports the wall time of the moment it fires, not of the last tick', () => {

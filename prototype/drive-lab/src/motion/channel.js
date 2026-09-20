@@ -23,9 +23,11 @@ export function safeMotionValues(value) {
     ...(safeRoadValues(value.road) ? { road: safeRoadValues(value.road) } : {}) };
 }
 
-export function createMotionProtocol({ role, now = () => performance.now(), getPhone = () => ({}), getPresentation = () => DEFAULT_MOTION_PRESENTATION, onSummary = () => {} }) {
+export function createMotionProtocol({ role, now = () => performance.now(), getPhone = () => ({}), getPresentation = () => DEFAULT_MOTION_PRESENTATION, onSummary = () => {}, maxPending = 1 }) {
   let request = 0, sequence = 0, lastSequence = -1;
-  let pending = null, last = null;
+  const pending = new Map();
+  const pendingLimit = Math.max(1, Math.min(8, Math.floor(maxPending) || 1));
+  let last = null;
   let remoteSummary = {};
   let receiverContext = null, contextAt = null;
   const sentSamples = new Map();
@@ -39,15 +41,16 @@ export function createMotionProtocol({ role, now = () => performance.now(), getP
       && phone.summary?.tared && phone.summary?.sensorState === "live" && phone.values
       && sent.generation === phone.values.generation && receiverContext?.acceptedGeneration === phone.values.generation);
   };
-  const counters = { received: 0, sent: 0, rejected: 0, expiredRequests: 0, rttMs: 0, rttMaxMs: 0 };
+  const counters = { received: 0, sent: 0, rejected: 0, expiredRequests: 0, latencyDrops: 0, rttMs: 0, rttMaxMs: 0 };
   return {
     poll() {
-      if (pending && now() - pending.at > 250) { counters.expiredRequests += 1; pending = null; }
-      if (pending) return null;
-      pending = { id: request++, at: now() };
+      for (const [id, at] of pending) if (now() - at > 250) { counters.expiredRequests += 1; pending.delete(id); }
+      if (pending.size >= pendingLimit) return null;
+      const id = request++;
+      pending.set(id, now());
       // Older phones keep receiving the exact legacy envelope until they advertise support.
       const presentation = safeMotionPresentation(getPresentation()) ?? DEFAULT_MOTION_PRESENTATION;
-      return JSON.stringify({ v: VERSION, kind: "poll", request: pending.id,
+      return JSON.stringify({ v: VERSION, kind: "poll", request: id,
         ...(remoteSummary.supportsUiContext ? { context: { ...presentation, acceptedGeneration: referenceReceived() ? last.values.generation : null, acceptedSequence: referenceReceived() ? lastSequence : null } } : {}) });
     },
     receive(text) {
@@ -70,13 +73,16 @@ export function createMotionProtocol({ role, now = () => performance.now(), getP
           ageMs,
           values, summary: safeMotionSummary({ ...phone.summary, supportsUiContext: true, receiverConfirmed: confirmed }) });
       }
-      const rtt = pending ? now() - pending.at : null;
-      if (packet.kind !== "sample" || Object.keys(packet).length !== 7 || !pending || packet.request !== pending.id
+      const requestedAt = pending.get(packet.request);
+      const rtt = requestedAt === undefined ? null : now() - requestedAt;
+      if (packet.kind !== "sample" || Object.keys(packet).length !== 7 || rtt === null
         || !integer(packet.sequence) || packet.sequence <= lastSequence || !finite(packet.ageMs) || packet.ageMs < 0
-        || rtt < 0 || rtt + packet.ageMs > 250) { counters.rejected += 1; return null; }
+        || rtt < 0) { counters.rejected += 1; return null; }
+      counters.rttMs = rtt; counters.rttMaxMs = Math.max(counters.rttMaxMs, rtt);
+      if (rtt + packet.ageMs > 250) { counters.rejected += 1; counters.latencyDrops += 1; return null; }
       const values = packet.values === null ? null : safeMotionValues(packet.values);
       if (packet.values !== null && !values) { counters.rejected += 1; return null; }
-      pending = null; lastSequence = packet.sequence;
+      pending.delete(packet.request); lastSequence = packet.sequence;
       counters.received += 1; counters.rttMs = rtt; counters.rttMaxMs = Math.max(counters.rttMaxMs, rtt);
       remoteSummary = safeMotionSummary(packet.summary);
       last = { at: now(), age: rtt + packet.ageMs, values };
@@ -93,7 +99,7 @@ export function createMotionProtocol({ role, now = () => performance.now(), getP
       return { ...remoteSummary, ...counters, ageUpperMs: age !== null && age >= 0 ? age : null,
         ...(role === "receiver" ? { referenceReceived: referenceReceived(), receiverConfirmed: referenceReceived() && remoteSummary.receiverConfirmed === true,
           ...(!fresh ? { tared: false, sensorState: "stale" } : {}) } : { supportsUiContext: true, receiverConfirmed: receiverConfirmed() }),
-        state: fresh ? "connected" : "stale" };
+        ...(role === "receiver" ? { dataFresh: Boolean(fresh) } : {}), state: fresh ? "connected" : "stale" };
     },
   };
 }
@@ -155,6 +161,6 @@ export function createMotionPeer({ role, host = window, now = () => performance.
     presentation: () => closed ? null : protocol.presentation(),
     sample: () => closed ? null : protocol.sample(),
     summary: () => ({ ...protocol.summary(), role, backpressureDrops, sendErrors, rtc: true,
-      state: closed ? "closed" : channel?.readyState === "open" ? role === "phone" ? "connected" : protocol.summary().state : "connecting" }),
+      state: closed ? "closed" : channel?.readyState === "open" ? "connected" : "connecting" }),
   };
 }

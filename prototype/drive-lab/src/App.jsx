@@ -2178,6 +2178,7 @@ export function App() {
   useEffect(() => {
     try { localStorage.setItem(DIAGNOSTIC_PREFERENCES_KEY, JSON.stringify(diagnosticPreferences)); } catch {}
     if (diagnosticPreferences.mode !== "dev" || !diagnosticPreferences.automatic) {
+      automaticClockRef.current.forget();
       if (diagnosticTransferRef.current?.trigger === "automatic") diagnosticTransferRef.current.controller.abort();
     }
   }, [diagnosticPreferences]);
@@ -4990,29 +4991,32 @@ export function App() {
     [diagnosticReport],
   );
 
-  const sendDiagnostic = useCallback(async (requestedTrigger = "manual") => {
+  const sendDiagnostic = useCallback(async (requestedTrigger = "manual", { keepalive = false } = {}) => {
     const trigger = requestedTrigger === "automatic" ? "automatic" : "manual";
     const freshReport = buildDiagnosticReport();
     if (!freshReport || diagnosticTransferRef.current) return { ok: false, retryable: true };
     if (trigger === "automatic" && (diagnosticPreferencesRef.current.mode !== "dev" || !diagnosticPreferencesRef.current.automatic)) return { ok: false, retryable: false };
     const controller = new AbortController();
-    diagnosticTransferRef.current = { controller, trigger };
+    diagnosticTransferRef.current = { controller, trigger, keepalive };
     const timeout = window.setTimeout(() => controller.abort(), 25000);
     const transferId = `diagnostic-${Date.now()}`;
     setSendState("sending");
     setSendErrorCode(null);
-    logDiagnosticEvent("diagnostic-send.requested", { trigger });
+    logDiagnosticEvent("diagnostic-send.requested", { trigger, reason: freshReport.diagnosticDelivery.deliveryReason, keepalive });
     const eventReport = createDiagnosticEventReport(diagnosticEventsRef.current);
     try {
-      const reportToSend = fitDiagnosticReportForTransport({
+      const fitReport = keepalive ? fitDiagnosticReportForKeepalive : fitDiagnosticReportForTransport;
+      const reportToSend = fitReport({
         ...freshReport,
-        diagnosticDelivery: { ...freshReport.diagnosticDelivery, trigger },
+        diagnosticDelivery: { ...freshReport.diagnosticDelivery, trigger,
+          ...(trigger === "manual" ? { deliveryId: null, deliveryReason: null } : {}) },
         generatedAt: new Date().toISOString(),
         flightRecorder: createDriveTelemetryReport(driveTelemetryRef.current, performance.now()),
         runtimeIssues: runtimeIssuesRef.current,
         events: eventReport.events,
         eventRetention: eventReport.retention,
       });
+      if (!reportToSend) throw Object.assign(new Error("compact_too_large"), { code: "compact_too_large", retryable: false });
       const body = JSON.stringify({ schema: reportToSend.schema, report: reportToSend });
       startAppNetworkTransfer(networkTelemetryRef.current, {
         id: transferId,
@@ -5023,6 +5027,7 @@ export function App() {
       });
       const response = await fetch(`${import.meta.env.BASE_URL}api/send-diagnostic.php`, {
         method: "POST",
+        keepalive,
         signal: controller.signal,
         credentials: "same-origin",
         cache: "no-store",
@@ -5042,7 +5047,7 @@ export function App() {
         success: true,
       });
       setSendState("sent");
-      logDiagnosticEvent("diagnostic-send.accepted", { status: result.status, trigger });
+      logDiagnosticEvent("diagnostic-send.accepted", { status: result.status, trigger, keepalive, duplicate: result.status === "already_accepted_by_mail_transport" });
       return { ok: true };
     } catch (error) {
       if (networkTelemetryRef.current.activeTransfers[transferId]) {
@@ -5081,16 +5086,16 @@ export function App() {
       }
       dueLogged = pending;
       if (due && !diagnosticTransferRef.current) {
-        clock.begin(); setAutomaticSnapshot(clock.snapshot());
-        const result = await sendDiagnosticRef.current?.("automatic");
-        clock.complete(result?.ok === true, performance.now(), result?.retryable !== false);
+        const deliveryId = clock.begin(); setAutomaticSnapshot(clock.snapshot());
+        const result = await sendDiagnosticRef.current?.("automatic", { keepalive: document.visibilityState === "hidden" });
+        clock.complete(result?.ok === true, performance.now(), result?.retryable !== false, deliveryId);
       }
       if (!disposed && (due || now - lastPaint >= 5000)) { lastPaint = now; setAutomaticSnapshot(clock.snapshot()); }
     };
     void tick();
     const timer = window.setInterval(tick, 1000);
     window.addEventListener("online", tick); document.addEventListener("visibilitychange", tick);
-    return () => { disposed = true; window.clearInterval(timer); window.removeEventListener("online", tick); document.removeEventListener("visibilitychange", tick); if (diagnosticTransferRef.current?.trigger === "automatic") diagnosticTransferRef.current.controller.abort(); };
+    return () => { disposed = true; window.clearInterval(timer); window.removeEventListener("online", tick); document.removeEventListener("visibilitychange", tick); if (diagnosticTransferRef.current?.trigger === "automatic" && !diagnosticTransferRef.current.keepalive) diagnosticTransferRef.current.controller.abort(); };
   }, [phase, logDiagnosticEvent]);
 
   // Best-effort report as the app is hidden or closed (reverse gear, another app). The Tesla browser was observed to freeze the
@@ -5100,30 +5105,15 @@ export function App() {
     const prefs = diagnosticPreferencesRef.current;
     if (prefs.mode !== "dev" || !prefs.automatic || navigator.onLine === false || diagnosticTransferRef.current) return;
     if (!clock.canFlush(Date.now())) return;
-    clock.beginFlush(Date.now());
-    try {
-      const freshReport = buildDiagnosticReport();
-      if (!freshReport) { clock.abortFlush(); return; }
-      logDiagnosticEvent("diagnostic-send.requested", { trigger: "automatic", reason: "hide-flush", source });
-      const eventReport = createDiagnosticEventReport(diagnosticEventsRef.current);
-      const compact = fitDiagnosticReportForKeepalive({
-        ...freshReport,
-        diagnosticDelivery: { ...freshReport.diagnosticDelivery, trigger: "automatic" },
-        generatedAt: new Date().toISOString(),
-        flightRecorder: createDriveTelemetryReport(driveTelemetryRef.current, performance.now()),
-        runtimeIssues: runtimeIssuesRef.current,
-        events: eventReport.events,
-        eventRetention: eventReport.retention,
-      });
-      if (!compact) { logDiagnosticEvent("diagnostic-send.failed", { code: "compact_too_large", trigger: "automatic", reason: "hide-flush" }); clock.abortFlush(); return; }
-      void fetch(`${import.meta.env.BASE_URL}api/send-diagnostic.php`, {
-        method: "POST", keepalive: true, credentials: "same-origin", cache: "no-store",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ schema: compact.schema, report: compact }),
-      }).catch(() => {});
-      clock.completeFlush();
-    } catch { clock.abortFlush(); }
-  }, [buildDiagnosticReport, logDiagnosticEvent]);
+    const deliveryId = clock.beginFlush(Date.now());
+    logDiagnosticEvent("diagnostic-send.due", { trigger: "automatic", reason: "hide-flush", source });
+    // Keepalive shares the ordinary send owner, response validation and bounded retry.
+    // Persist the identity before dispatch: termination can prevent every callback below.
+    void sendDiagnosticRef.current?.("automatic", { keepalive: true }).then(result => {
+      clock.complete(result?.ok === true, performance.now(), result?.retryable !== false, deliveryId);
+      setAutomaticSnapshot(clock.snapshot());
+    });
+  }, [logDiagnosticEvent]);
   const flushDiagnosticRef = useRef(null);
   flushDiagnosticRef.current = flushDiagnosticOnClose;
   useEffect(() => {

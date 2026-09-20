@@ -1112,6 +1112,8 @@ export function fitDiagnosticReportForKeepalive(report) {
   fitted.transport.originalSamples = samples.length;
   fitted.transport.originalEvents = events.length;
   fitted.transport.originalRuntimeIssues = (report.runtimeIssues ?? []).length;
+  // Re-measure after the compact metadata is written; the reported size is the actual request size.
+  for (let pass = 0; pass < 3; pass++) fitted.transport.requestBodyBytes = serializedRequestUtf8Bytes(fitted);
   return fitted.transport.requestBodyBytes <= DIAGNOSTIC_KEEPALIVE_BODY_BYTES ? fitted : null;
 }
 
