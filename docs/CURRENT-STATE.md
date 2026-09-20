@@ -1,6 +1,26 @@
 # Current Project State
 
-## Phone stability — September 20 (published; physical retry open)
+## Phone source icons — September 20 (published)
+
+Canonical **20260920-2231.b696bc4**, source **b696bc4**, removes the phone-cell
+subtitle. Shared frame, stroke, alignment and navbar dimensions are preserved.
+Satellite means GPS fallback; checked phone means paired; phone/gyroscope means
+actual eligible road-sensor input. Pairing/retry/Demo remain distinct. Opening the
+drawer immediately names the effective source, including car motion off or waiting
+for GPS. Aligned car motion, ZERO, freshness and consumer semantics are unchanged.
+
+Native **1,064/1,064**, final focused **77/77**, complete compiled HTTPS **20/20**,
+credits/hygiene and **834** production hashes pass. The automatic-path run passes
+23 checkpoints and 120/120 mutual / 1,207/1,207 high-rate observations before a
+modal-visibility test expectation is corrected. Seventeen canonical HTTPS checks
+and six public compiled-browser checks pass, including native direct aligned input,
+GPS/Demo exclusion, recovery and STOP, without page exceptions or synthetic mail.
+The owner's successful physical desk trial is recorded below; the Tesla drive,
+phone-as-hotspot topology and actual road response remain physical acceptance.
+[Final source and publication evidence](PHONE-STABILITY-2026-09-20.md#icon-only-effective-source-refinement).
+
+
+## Phone stability — September 20 (desk accepted; Tesla drive open)
 
 Canonical build **20260920-2153.3936555**, source **3936555**, is published. The
 admitted encrypted HTTPS pairing automatically upgrades to native direct WebRTC
@@ -19,8 +39,8 @@ thirty seconds offline with the same pairing and ZERO. Hardware remains syntheti
 in those tests. The owner now reports stable, clean physical Mac/iPhone operation on shared Wi-Fi;
 read-only inspection confirms LOCAL · WEBRTC around 6 ms, with car motion not yet
 enabled. This accepts the desk connection/presentation trial; Tesla driving and
-actual aligned-sensor response remain open. An icon-only navbar clarification is
-under verification. See the
+actual aligned-sensor response remain open. The icon-only navbar clarification is
+published above. See the
 [causes, architecture and evidence](PHONE-STABILITY-2026-09-20.md).
 
 ## Phone network recovery — September 20 (published; physical retry open)

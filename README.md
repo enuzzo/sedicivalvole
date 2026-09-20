@@ -84,6 +84,9 @@ view with bounded history. Setup and recovery text is platform-neutral and follo
 actual browser capabilities, without promising physical Android or iPhone support.
 The receiver keeps its title, action and details on one grid. Recent readings are
 explicitly labelled one-second display averages; current input validity remains separate.
+The navbar uses the shared icon frame without a subtitle: satellite for GPS response,
+a checked phone for pairing, and a phone/gyroscope only for effective road-sensor input.
+Opening it immediately names the current source; pairing alone never implies road use.
 Automatic direct WebRTC uses the encrypted HTTPS pairing, with HTTPS fallback. Manual local WebRTC and this-device sensing
 remain in Connection details. Phone styling follows the paired palette and LIGHT/DARK.
 The open drawer reads current session telemetry independently of the slower App

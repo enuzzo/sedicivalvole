@@ -1,5 +1,34 @@
 # Deployment
 
+## Icon-only phone source status — 2026-09-20
+
+Canonical **20260920-2231.b696bc4**, source **b696bc4**, is published at
+https://sedicivalvole.app/. Satellite, checked-phone and phone/gyroscope states
+separate GPS fallback, pairing and effective road-sensor input within the shared
+navbar geometry. The drawer immediately names the actual source. Consumer gates
+and the verified direct/HTTPS transport are unchanged.
+
+- Native 1,064/1,064, final focused 77/77, complete compiled HTTPS 20/20,
+  189 dependency credits, hygiene across 1,612 text files and 834 exact package
+  hashes pass. Native direct QA records 120/120 mutual and 1,207/1,207 high-rate
+  observations; its 23-checkpoint run then exposes a modal-visibility harness
+  expectation, corrected for the completed final run.
+- Official publisher read-only identity and preserve-existing publication pass:
+  38 files / 6,527,706 bytes uploaded, 832 static files and 29 recordings fully
+  verified/reused, two prior assets retained, ROOT_UPLOAD_ONLY, no legacy deletion.
+- Seventeen canonical HTTPS identity/hash/cache/API checks pass. Bare/query/reloaded
+  HTML is byte-identical, 1,445 bytes, SHA-256
+  `b9e0ff74e00f0bc9f6f9dcd638f337dee0d68bbe6a2dd1d7c056d7d47fab6628`,
+  no-store/no-cache and `x-proxy-cache: MISS`.
+- Six real public compiled-browser checks pass: changing data, paired/source-off
+  state, native direct mounted input with GPS, Demo/GPS exclusion, same-pair
+  recovery and STOP. Shared glyphs measure 28 x 28 px in the unchanged 64 px rail.
+  Zero page exceptions and no synthetic mail. Physical desk stability was accepted
+  on the preceding transport build; Tesla driving/hotspot/sensor response remain open.
+
+[Evidence and scoped physical acceptance](PHONE-STABILITY-2026-09-20.md#navbar-canonical-publication).
+
+
 ## Phone direct transport and stable presentation — 2026-09-20
 
 Canonical **20260920-2153.3936555**, source **3936555**, is published at

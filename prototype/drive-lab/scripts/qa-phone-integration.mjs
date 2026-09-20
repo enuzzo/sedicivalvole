@@ -410,6 +410,7 @@ try {
   const cellSize = await navbar.evaluate(e => ({ width:e.getBoundingClientRect().width, height:e.getBoundingClientRect().height }));
   assert.equal((await navbar.innerText()).trim(), '', 'the phone cell uses an icon, never a subtitle');
   assert.equal(await navbar.getAttribute('data-connected'), 'true');
+  await receiver.waitForFunction(() => document.querySelector('.motion-button').getBoundingClientRect().top >= 0 && Number(getComputedStyle(document.querySelector('.topbar')).opacity) > .99 && Number(getComputedStyle(document.querySelector('.motion-button')).opacity) > .99);
   await receiver.screenshot({ path:join(output,'navbar-paired.png') });
   check('paired phone has a checked icon without a subtitle and immediate road-use status in the drawer');
   await phone.evaluate(() => motionHardware.incline(true));
@@ -457,12 +458,14 @@ try {
   await receiver.getByText('Phone sensors active · GPS speed', {exact:true}).waitFor();
   await phone.getByRole('button', { name: 'STOP', exact: true }).click();
   await receiver.getByText('Connection ended', { exact: true }).waitFor();
-  await receiver.locator('.motion-button[data-motion-state="gps"]').waitFor();
+  await receiver.locator('.motion-button[data-motion-state="gps"]').waitFor({state:'attached'});
   assert.equal(await navbar.getAttribute('data-connected'),'false');
   assert.equal((await phone.evaluate(() => motionHardware.listeners())).find(([name]) => name === 'devicemotion')[1], 0);
   check('STOP clears readiness and removes the sensor listener');
   await receiver.getByRole('button', { name:'CLOSE',exact:true }).click();
+  await receiver.locator('.motion-dialog').waitFor({state:'detached'});
   await receiver.keyboard.press('Tab');
+  await receiver.waitForFunction(() => document.querySelector('.motion-button').getBoundingClientRect().top >= 0 && Number(getComputedStyle(document.querySelector('.topbar')).opacity) > .99 && Number(getComputedStyle(document.querySelector('.motion-button')).opacity) > .99);
   await receiver.screenshot({path:join(output,'navbar-gps.png')});
   await navbar.click();
   await receiver.locator('.motion-qr').waitFor();

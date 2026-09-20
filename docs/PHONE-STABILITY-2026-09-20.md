@@ -203,4 +203,74 @@ valid new ZERO and current GPS/sensor evidence. The owner requests an unmistakab
 navbar indicator, then explicitly rejects text below the icon: preserve shared
 rail geometry/strokes, use state-specific glyphs inside the phone/satellite
 silhouette and expose the effective source immediately on opening the drawer.
-This scoped refinement is under verification; it changes no consumer gate.
+This scoped refinement is implemented and locally verified; it changes no consumer gate.
+
+## Icon-only effective source refinement
+
+Source **b696bc4**, build **20260920-2231.b696bc4**, preserves the shared 32 px
+icon frame, 28 px glyph, 2 px stroke, rail dimensions and touch targets. There is
+no text below the icon. The satellite represents GPS fallback; a checked phone
+represents a connected peer; a phone with a gyroscope represents effective current
+road-sensor input. Pending pairing, retained-pair retry and Demo have distinct
+inner symbols. Local-only sensing has a neutral dot, not the active gyroscope.
+The immediately visible drawer subtitle identifies the effective source; its
+existing details and accessible button name explain required actions.
+
+Presentation reads the same current eligible sample as the existing consumers.
+A still-usable sample takes precedence over a transient HTTPS retry, while lost
+GPS, expired input, Demo and terminal state cannot retain an active sensor claim.
+Pairing remains independently visible when car motion is disabled or GPS absent.
+Engine demand/coast/load-sensitive shifting and Flux braking/Underwater keep all
+existing gates. Engine's ordinary downshift speed thresholds, GPS speed authority,
+Flux effects-enable boundary and arbitrary-pose ZERO are unchanged.
+
+Local verification passes **1,064 native tests**, **77 final focused checks**,
+**189** dependency credits, hygiene across **1,612** text files and **834** exact
+production hashes. The automatic-path compiled run passes 23 checkpoints,
+including **120/120** mutual and **1,207/1,207** high-rate fresh/confirmed/numeric
+observations and all new mounted-input/Demo/GPS/geometry states. That run then
+stops on a test-only expectation that the navbar be visible while the modal is
+open; the actual element already correctly reads GPS/disconnected. The corrected
+complete forced-HTTPS run passes **20/20** checkpoints, including STOP and a new
+QR. Both have zero page exceptions. Expected console responses are retained:
+automatic path 12 fixture 503s, three handled 429s and two teardown 410s; final
+HTTPS path eight fixture 503s, 31 handled 429s and two teardown 410s. Screenshot
+capture additionally waits for the shared chrome fade to finish.
+
+Evidence: `/private/tmp/sv-phone-navbar-tests.log`,
+`/private/tmp/sv-phone-navbar-focused.log`,
+`/private/tmp/sv-phone-navbar-release-build.log`,
+`/private/tmp/sv-phone-navbar-browser/evidence.json` and
+`/private/tmp/sv-phone-navbar-final-browser/evidence.json`. Browser plugin was not
+available; the existing project Playwright workflow supplied the actual compiled
+App/phone/PHP/native-RTC path with synthetic hardware and no diagnostic mail.
+
+For the next physical drive, [Tesla documents phone hotspots and the option to
+remain connected in Drive](https://www.tesla.com/ownersmanual/model3/it_it/GUID-1FE9620C-3D7F-4FD3-BBD9-28DD342AC150.html).
+Trying the Tesla on the same iPhone's hotspot is a physical test, not established
+WebRTC support. [Apple's hotspot instructions](https://support.apple.com/it-it/111785)
+document Internet sharing, not host-to-client WebRTC behavior. The verified desk
+Wi-Fi topology does not prove the phone-as-hotspot topology or the Tesla browser.
+
+### Navbar canonical publication
+
+Build **20260920-2231.b696bc4** is live. The official publisher passes its read-only
+identity gate and preserve-existing delivery: **38 files / 6,527,706 bytes**,
+**832** unchanged static files, **29** full-hash recordings, two retained prior
+assets and `ROOT_UPLOAD_ONLY`, without legacy deletion. All **17** canonical
+HTTPS identity/hash/cache/API checks pass. Bare/query/no-cache root is 1,445 bytes,
+SHA-256 `b9e0ff74e00f0bc9f6f9dcd638f337dee0d68bbe6a2dd1d7c056d7d47fab6628`,
+with no-store/no-cache and proxy MISS.
+
+All **six** public compiled-browser checks pass without asset substitution:
+changing real encrypted samples; checked-phone plus immediate car-motion-off
+status; native WebRTC mounted input becoming active only with GPS; Demo/GPS-loss
+exclusion; retry and automatic same-pair recovery; STOP returning to the satellite.
+The cell is 78.171875 x 64 px at the compact Tesla viewport, with a 28 x 28 px glyph.
+Final screenshots wait for shared chrome to finish fading in, and visibly verify
+paired, active and GPS states. No page exceptions or synthetic diagnostic sends.
+Hardware, GPS and wake inputs remain fixtures; the owner tab was not interrupted.
+
+Evidence: `/private/tmp/sv-phone-navbar-publish.log`,
+`/private/tmp/sv-phone-navbar-canonical-verify.json` and
+`/private/tmp/sv-phone-navbar-canonical-browser/evidence.json`.
