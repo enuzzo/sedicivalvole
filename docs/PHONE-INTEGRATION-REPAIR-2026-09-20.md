@@ -69,7 +69,43 @@ The extended regression records sanitized HTTP/protocol timing and React update
 counts. It distinguishes all App activity from the root motion metadata: a
 two-second observation has 38 focused sample updates and two root motion updates;
 the whole App also renders for its other existing owners. This is not a GPU benchmark.
-Final regression, visual and canonical results are recorded after their gates.
+The full native suite passes 1,043/1,043; 37 deployment/identity/documentation/phone
+checks also pass with Python 3.11. An extra shell run initially selected system
+Python 3.9; rerunning with the already verified 3.11 shim passes. Credits verify
+189 entries; public hygiene checks 1,607 text files without findings. The compiled
+package verifies 834 exact static hashes. Fourteen compiled integration checkpoints
+cover the actual data path, timed delay, wake denial/release, drawer teardown/reopen,
+new ZERO, STOP/new QR, LIGHT/DARK at 773 x 601 and phone 390 x 844 / 320 x 568 /
+760 x 390, plus pulse/reduced motion. No page exceptions occur. Local catalogue
+requests deliberately receive 503; their resource errors are fixture-related.
+
+## Canonical relay continuity remains open
+
+The candidate compiled pages were also served at the canonical origin against the
+real PHP relay, with native browser networking for motion, no concurrent FTP and
+synthetic hardware only. This closes the display integration gap against the real
+endpoint; it does not prove sustained reception. A sixty-second run records current
+receiver values in 99/120 observations, phone freshness in 105/120, and simultaneous
+freshness in 97/120. **The unchanged 95% continuity target fails.** Receiver HTTP
+durations: median 41 ms, p95 72 ms, p99 152 ms, maximum 680 ms; phone median 41 ms,
+p95 50 ms, p99 122 ms, maximum 672 ms. Sign changes and actual browser offline/cleanup
+pass; no page exception or diagnostic send occurs.
+
+An instrumented follow-up cannot sustain readiness during its initial observation:
+receiver HTTP median 155 ms / p95 606 ms / maximum 1,480 ms, phone median 122 ms /
+p95 603 ms / maximum 1,297 ms. It is not counted as a passing continuity trial.
+Independent curl GET to the same endpoint returns expected 405 in 126 ms. Browser
+request duration includes browser scheduling; this evidence does not identify the
+provider, network or host as the sole cause. Such multi-hop delays can exceed the
+250 ms deadline regardless of correct rendering. No transport parameter, safety
+deadline or acceptance threshold is changed to make these observations pass.
+
+The release fixes reproducible App delivery/presentation and preserves truthful
+Delayed behavior. It must not be described as reliable continuous physical motion.
+Further transport/physical diagnosis remains necessary, separately from verified
+build, package, canonical identity and visible-number delivery. External evidence:
+`/private/tmp/sv-phone-canonical-candidate/evidence.json` and
+`/private/tmp/sv-phone-canonical-timing/evidence.json`.
 
 ## Physical retry after publication
 

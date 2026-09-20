@@ -9,8 +9,13 @@ Pairing-scoped action history removes the transport-gap check flicker; explicitl
 invalid ZERO/wake evidence still requires recovery. Road consumers already used the
 direct session sample path and retain GPS/freshness gates. Existing noise thresholds
 reject the controlled stationary fixture; physical iPhone noise remains unmeasured.
-See [repair and physical retry](PHONE-INTEGRATION-REPAIR-2026-09-20.md). Final gates
-and publication identity follow; earlier owner feedback is preserved below.
+Source `e8ec1e4` is committed/pushed; 1,043 native tests, 37 release checks, 14 real
+compiled browser checkpoints and 834 static hashes pass. The canonical relay trial
+delivers changing numbers but reaches only 97/120 simultaneous fresh observations;
+the unchanged 95% continuity target is not met. A slower follow-up also cannot
+sustain readiness. This is an explicit transport/physical acceptance limit, not a
+green reliability claim. See [repair and physical retry](PHONE-INTEGRATION-REPAIR-2026-09-20.md).
+Publication identity follows; earlier owner feedback is preserved below.
 
 ## Phone integration owner trial — September 20 (repair open)
 
