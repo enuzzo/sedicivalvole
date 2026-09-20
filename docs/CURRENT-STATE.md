@@ -1,5 +1,15 @@
 # Current Project State
 
+## Phone stability — September 20 (implementation under verification)
+
+The physical owner reports retained setup and connection but repeated fresh/delayed
+telemetry and resizing on both surfaces. The live receiver tab confirms build
+20260920-2044.7ba2b1c; a fresh controlled canonical run reaches only 96/120 mutual
+fresh observations. Automatic encrypted direct upgrade, retained action guidance
+and explicitly historical one-second display averages are under verification.
+No new publication or physical acceptance is claimed yet. See the
+[causes, architecture and evidence](PHONE-STABILITY-2026-09-20.md).
+
 ## Phone network recovery — September 20 (published; physical retry open)
 
 The owner explicitly requires continuity of an admitted phone pairing through

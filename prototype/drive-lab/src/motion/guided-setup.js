@@ -27,7 +27,9 @@ export function receiverSetup(s = {}, pendingStep = 1) {
   if (s.state === 'preparing') return result(-1, 'Preparing your QR…', 'Keep this display open.');
   if (s.state === 'pairing') return result(-1, 'Scan to connect.', 'Scan this QR with your phone camera. Open the link, then enable local sensors.');
   if (s.state === 'connecting') return result(1, 'Connecting your phone…', 'Keep both pages open. Follow the next action on your phone.');
-  if (s.state === 'stale' || s.dataFresh !== true) return result(pendingStep, 'Waiting for your phone.', 'Keep both pages visible. This step resumes when fresh status arrives. GPS remains in control.');
+  if (s.state === 'stale' || s.dataFresh !== true) return s.setupProgress?.guide
+    ? { ...s.setupProgress.guide, ready: false }
+    : result(pendingStep, 'Waiting for your phone.', 'Keep both pages visible. This step resumes when fresh status arrives. GPS remains in control.');
   if (s.sensorState !== 'live') return result(0, 'Enable sensors on your phone.', 'On your phone, tap ENABLE LOCAL SENSORS and allow motion and orientation.');
   if (!(s.placementConfirmed ?? s.mountSelected)) return result(2, 'Position your phone.', 'Rest the phone securely in any orientation. Confirm placement on your phone.');
   if (!s.tared || s.tareState === 'settling' || !s.referenceReceived) return result(3, 'Set ZERO on your phone.', 'Any orientation works. Tap ZERO, lift your finger and keep the phone still.');
@@ -65,19 +67,19 @@ export function setupEvidence(s = {}, phone = false) {
 // transport deadline. Only an accepted status can revise an action's evidence.
 // Current health/values still expire independently in the protocol.
 export function createReceiverSetupProgress() {
-  let steps = [false, false, false, false, false], pendingStep = 1, complete = false, received = -1;
+  let steps = [false, false, false, false, false], pendingStep = 1, complete = false, received = null, guide = null;
   return {
     update(s) {
       if (["idle", "preparing", "pairing"].includes(s.state) || ended(s.state)) {
-        steps = [false, false, false, false, false]; pendingStep = 1; complete = false; received = -1;
-      } else if (s.dataFresh === true && s.received !== received) {
-        received = s.received;
+        steps = [false, false, false, false, false]; pendingStep = 1; complete = false; received = null; guide = null;
+      } else if (s.dataFresh === true && `${s.transport}:${s.received}` !== received) {
+        received = `${s.transport}:${s.received}`;
         steps = setupEvidence(s);
-        const guide = receiverSetup(s, pendingStep);
+        guide = receiverSetup(s, pendingStep);
         if (guide.active >= 0 && guide.active < 5) pendingStep = guide.active;
-        if (guide.ready) complete = true;
+        if (guide.ready) { complete = true; guide = null; }
       }
-      return { setupProgress: { steps, pendingStep, complete } };
+      return { setupProgress: { steps, pendingStep, complete, guide } };
     },
   };
 }

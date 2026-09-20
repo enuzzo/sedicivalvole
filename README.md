@@ -82,17 +82,21 @@ secure placement in any stable pose, pose ZERO and screen wake. Evidence-based c
 collapse into acceleration/rotation readings after setup; TRACE remains an optional
 view with bounded history. Setup and recovery text is platform-neutral and follows
 actual browser capabilities, without promising physical Android or iPhone support.
-The receiver keeps its title, action and details on one grid, shows current round-trip
-latency and blanks delayed readings. Alternative local WebRTC and this-device sensing
+The receiver keeps its title, action and details on one grid. Recent readings are
+explicitly labelled one-second display averages; current input validity remains separate.
+Automatic direct WebRTC uses the encrypted HTTPS pairing, with HTTPS fallback. Manual local WebRTC and this-device sensing
 remain in Connection details. Phone styling follows the paired palette and LIGHT/DARK.
 The open drawer reads current session telemetry independently of the slower App
 metadata. Completed actions survive a transport gap; current health and readings
-still expire at 250 ms. Explicit ZERO invalidation or wake release requires recovery.
+still expire at 250 ms for motion use. Display averages expire within one second;
+accepted setup instructions survive short gaps. Explicit ZERO invalidation or wake
+release requires recovery. See the [stability contract](docs/PHONE-STABILITY-2026-09-20.md).
 
 ZERO needs half a second of fresh steady samples, bounded to eight seconds. Screen
 wake must be actually acquired; denied, unsupported and released states remain
 incomplete. Sensor retry never reuses consumed QR admission. The default connection
-uses end-to-end encrypted HTTPS through the same site. GPS remains the speed authority;
+uses end-to-end encrypted HTTPS through the same site and automatically selects
+an authenticated direct path when reachable. GPS remains the speed authority;
 optional, explicitly aligned car motion drives Engine demand and Flux braking/Underwater,
 and its gyro bends Aperture. Alignment defaults off; other poses retain GPS response.
 Small vibrations remain visible in telemetry; road consumers retain their existing

@@ -24,13 +24,15 @@ export async function createMotionCipher(secret, crypto = globalThis.crypto) {
   };
 }
 
-export function createMotionRelay({ role, host = globalThis, cipher, exchange, now = () => performance.now(), getPhone, getPresentation, onEvent = () => {}, onSummary }) {
+export function createMotionRelay({ role, host = globalThis, cipher, exchange, now = () => performance.now(), getPhone, getPresentation, onEvent = () => {}, onSummary,
+  wrapPacket = text => text, unwrapPacket = text => text, expiresAt = now() + 3600000 }) {
   // Serial HTTP requests and a bounded challenge window. Transport recovery does
   // not extend the 250 ms sample deadline or the original one-hour session lease.
   const protocol = createMotionProtocol({ role, now, getPhone, getPresentation, onSummary, maxPending: 8 });
   let closed = false, timer = null, opened = false, lastSequence = 0, outgoing = null, outgoingAt = 0;
   let failures = 0, lastReceipt = null, relayBackoffs = 0, consecutiveBackoffs = 0;
   let online = host.navigator?.onLine !== false, running = false, epoch = 0, wakeRequested = false;
+  let standby = false;
   const started = now();
   const opposite = role === 'receiver' ? 'phone' : 'receiver';
   const receiptAge = () => Math.max(0, now() - (lastReceipt ?? started));
@@ -38,7 +40,7 @@ export function createMotionRelay({ role, host = globalThis, cipher, exchange, n
   function schedule(delay) { clearTimeout(timer); if (!closed) timer = setTimeout(tick, delay); }
   async function tick() {
     if (closed || running) return;
-    if (now() - started >= 3600000) { close('expired'); return; }
+    if (now() >= expiresAt) { close('expired'); return; }
     if (!online) { schedule(1000); return; }
     running = true;
     const cycleStarted = now(), attempt = epoch;
@@ -46,7 +48,8 @@ export function createMotionRelay({ role, host = globalThis, cipher, exchange, n
     try {
       if (role === 'receiver') outgoing = protocol.poll();
       else if (now() - outgoingAt > 250) outgoing = null;
-      const packet = outgoing ? await cipher.seal(outgoing, role) : null;
+      const envelope = wrapPacket(outgoing);
+      const packet = envelope ? await cipher.seal(envelope, role) : null;
       if (closed || attempt !== epoch) return;
       const result = await exchange(packet);
       if (closed || attempt !== epoch) return;
@@ -57,7 +60,8 @@ export function createMotionRelay({ role, host = globalThis, cipher, exchange, n
         if (closed || attempt !== epoch) return;
         exchanged = true;
         lastSequence = result.sequence;
-        outgoing = protocol.receive(text); outgoingAt = now();
+        const motion = unwrapPacket(text);
+        outgoing = motion ? protocol.receive(motion) : null; outgoingAt = now();
         lastReceipt = now();
         if (!opened) { opened = true; onEvent('channel-open', { state: 'connected', transport: 'https' }); }
       }
@@ -79,7 +83,7 @@ export function createMotionRelay({ role, host = globalThis, cipher, exchange, n
       // Keep successful idle polls below the two-second mailbox TTL (which is
       // checked with integer server seconds), so opposite phases cannot miss forever.
       const quietBackoff = receiptAge() > 1000 ? Math.min(500, 250 * 2 ** Math.min(3, Math.floor(receiptAge() / 1000) - 1)) : 0;
-      const delay = wakeRequested && online ? 0 : !online ? 1000 : Math.max(backoff, quietBackoff, (exchanged ? 24 : 40) - (now() - cycleStarted));
+      const delay = wakeRequested && online ? 0 : !online ? 1000 : Math.max(backoff, quietBackoff, (standby ? 500 : exchanged ? 24 : 40) - (now() - cycleStarted));
       wakeRequested = false;
       schedule(delay);
     }
@@ -99,7 +103,11 @@ export function createMotionRelay({ role, host = globalThis, cipher, exchange, n
   }
   // Defer the first request until the session has assigned its peer owner.
   schedule(0);
-  return { close, setOnline, sample: () => closed || !online ? null : protocol.sample(), presentation: () => closed ? null : protocol.presentation(),
+  return { close, setOnline, setStandby(value) {
+    if (closed || standby === value) return;
+    standby = value;
+    if (!standby) { if (running) wakeRequested = true; else schedule(0); }
+  }, sample: () => closed || !online ? null : protocol.sample(), presentation: () => closed ? null : protocol.presentation(),
     summary: () => ({ ...protocol.summary(), role, transport: 'https', rtc: false,
       ...(!online ? { dataFresh: false, receiverConfirmed: false, referenceReceived: false } : {}),
       networkState: networkState(), relayBackoffs, transportAgeMs: lastReceipt === null ? null : receiptAge(),

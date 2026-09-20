@@ -153,8 +153,8 @@ The mode selector must remain reachable and clearly show the active mode at the 
 ## Phone motion companion
 
 The selected [TRACE companion](PHONE-MOTION-COMPANION-2026-09-18.md) provides
-permission-gated sensing, any-stable-pose ZERO, encrypted HTTPS by default and
-optional local WebRTC. App owns the receiver session; the separate phone entry
+permission-gated sensing, any-stable-pose ZERO and encrypted HTTPS admission with
+automatic host-only WebRTC upgrade and retained HTTPS fallback. App owns the receiver session; the separate phone entry
 owns sensor permission/lifecycle. Optional, default-off aligned car input reaches
 Engine/Flux/Aperture under the [road contract](PHONE-ROAD-INPUT-2026-09-19.md);
 GPS/Demo remains the only speed authority. Physical acceptance is still open.
@@ -177,6 +177,14 @@ pending challenges without resetting sequence monotonicity or a still-valid loca
 ZERO. The PHP mailbox still serves only its latest ciphertext younger than two
 seconds; clients retain the stricter 250 ms input deadline. No replay queue,
 persistent browser credentials, hidden sensing or automatic admission is added.
+
+The [September 20 stability correction](PHONE-STABILITY-2026-09-20.md) gives the
+admitted session one optional RTC child. Authenticated encrypted SDP, attempt
+identity and a shared absolute expiry preserve pairing authority. Reciprocal
+progress controls direct/relay selection; child failure never owns sensor teardown.
+The display separately aggregates distinct accepted samples over one second at
+4 Hz, explicitly labelled as historical. Current input and consumer freshness
+remain 250 ms; action guidance and connection/wake text do not follow each packet.
 
 ### Earlier isolated feasibility
 

@@ -90,3 +90,9 @@ test('admitted HTTPS pairing survives both peers absent for thirty seconds and s
  echo json_encode([$after30[0],$after30[1]['packet'],$afterMinutes[0],$afterMinutes[1]['packet'],$raw['expires']===$born+3600,$expired]);`);
  assert.deepEqual(result,[200,null,200,null,true,410]);
 });
+
+test('late QR admission reports only the conservatively remaining original lease',()=>{
+ const result=run(`[$s,$r]=req(['action'=>'create','transport'=>'https']);$now+=179;
+ [$js,$j]=req(['action'=>'join','id'=>$r['id'],'token'=>$r['join']]);echo json_encode([$js,$j['expiresIn']]);`);
+ assert.deepEqual(result,[200,3420]);
+});

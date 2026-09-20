@@ -531,11 +531,20 @@ test('receiver progress preserves actions during timed gaps, but honors explicit
  assert.deepEqual(progress.update({ ...good, received: 1 }).setupProgress.steps, [true, true, true, true, false]);
 });
 
-test('receiver setup waits at the current step during a transport gap without redoing connection',async()=>{
- const {receiverSetup}=await import('../src/motion/guided-setup.js');
- for(const active of [0,2,3,4]) {
-  const pending=receiverSetup({state:'connected',dataFresh:false},active);
-  assert.equal(pending.active,active);assert.equal(pending.ready,false);assert.match(pending.title,/Waiting/);
+test('receiver retains the accepted POSITION/ZERO instruction through repeated gaps while current health expires',async()=>{
+ const {receiverSetup,createReceiverSetupProgress,motionLiveStatus}=await import('../src/motion/guided-setup.js');
+ const progress=createReceiverSetupProgress();
+ for(const placed of [false,true]) {
+  const status={state:'connected',dataFresh:true,received:placed?2:1,sensorState:'live',placementConfirmed:placed,tared:false};
+  const accepted={...status,...progress.update(status)};
+  const expected=receiverSetup(accepted);
+  assert.equal(expected.active,placed?3:2);
+  for(let i=0;i<20;i++) {
+   const stale={...status,dataFresh:false,sensorState:'stale'};
+   const gap={...stale,...progress.update(stale)};
+   assert.deepEqual(receiverSetup(gap),expected);
+   assert.equal(motionLiveStatus(gap).quality,'Delayed');
+  }
  }
 });
 

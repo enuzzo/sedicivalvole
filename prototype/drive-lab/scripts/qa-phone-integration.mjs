@@ -14,8 +14,9 @@ const { chromium } = await import(process.env.PLAYWRIGHT_MODULE || 'playwright')
 const project = fileURLToPath(new URL('..', import.meta.url));
 const dist = resolve(process.env.SEDICIVALVOLE_QA_DIST || join(project, 'dist/client'));
 const output = process.env.QA_OUTPUT || join(tmpdir(), 'sv-phone-integration');
+const adaptive = process.env.QA_TRANSPORT === 'auto';
 const directory = await mkdtemp(join(tmpdir(), 'sv-phone-integration-pairs-'));
-const evidence = { syntheticSensors: true, checks: [], pageErrors: [], consoleErrors: [], http: [], wire: [] };
+const evidence = { syntheticSensors: true, adaptive, checks: [], pageErrors: [], consoleErrors: [], http: [], wire: [] };
 let delay = 0, cipher = null;
 const roles = new Map();
 // Keep PHP loaded: launching a new interpreter for every exchange would add
@@ -138,6 +139,21 @@ try {
   await mkdir(output, { recursive: true });
   const receiverContext = await browser.newContext({ viewport: { width: 773, height: 601 }, serviceWorkers: 'block' });
   const phoneContext = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' });
+  for (const context of [receiverContext, phoneContext]) await context.addInitScript(enabled => {
+    if (!enabled) { window.RTCPeerConnection = undefined; return; }
+    const NativePeer = window.RTCPeerConnection;
+    const fault = window.motionNetwork = { drop: false, peers: 0, closed: 0 };
+    window.RTCPeerConnection = class extends NativePeer {
+      constructor(...args) {
+        super(...args); fault.peers++;
+        this.addEventListener('datachannel', event => {
+          const channel = event.channel, send = channel.send.bind(channel);
+          channel.send = text => { if (!fault.drop) send(text); };
+        });
+      }
+      close() { fault.closed++; return super.close(); }
+    };
+  }, adaptive);
   await phoneContext.addInitScript(hardwareFixture);
   await receiverContext.addInitScript(renderProbe);
   // Synthetic GPS remains separate from network availability, as satellite fixes
@@ -164,6 +180,8 @@ try {
   await receiver.goto(base);
   evidence.release = await receiver.locator('meta[name="sedicivalvole-release"]').getAttribute('content');
   await receiver.getByRole('button', { name: /START MUSIC/ }).click();
+  await receiver.waitForFunction(() => document.querySelector('.app')?.dataset.phase === 'running' || !document.querySelector('.intro'));
+  await receiver.keyboard.press('Tab');
   await receiver.locator('.motion-button').click();
   if (await receiver.locator('.local-sensors-panel').count()) await receiver.getByRole('button', { name: 'USE ANOTHER PHONE INSTEAD', exact: true }).click();
   await receiver.locator('.motion-qr').waitFor();
@@ -182,7 +200,11 @@ try {
   const done = () => receiver.locator('.motion-setup-steps li').evaluateAll(items => items.map(item => item.dataset.done === 'true'));
   assert.deepEqual(await done(), [true, true, true, false, false]);
   delay = 400;
-  await receiver.getByText('Waiting for your phone.', { exact: true }).waitFor();
+  await receiver.waitForTimeout(500);
+  for (let i = 0; i < 10; i++) {
+    assert.equal(await receiver.getByText('Set ZERO on your phone.', { exact: true }).count(), 1);
+    await receiver.waitForTimeout(50);
+  }
   assert.deepEqual(await done(), [true, true, true, false, false]);
   check('timed pre-ZERO delay retains completed actions while current health becomes delayed');
   delay = 0;
@@ -191,23 +213,80 @@ try {
   await phone.evaluate(() => motionHardware.denyWake(true));
   await phone.getByRole('button', { name: 'KEEP SCREEN AWAKE', exact: true }).click();
   await phone.getByText(/Screen wake was not granted/).waitFor();
-  assert.equal(await phone.getByRole('heading', { name: 'Motion is live.', exact: true }).count(), 0);
+  assert.equal(await phone.getByRole('heading', { name: 'Recent phone motion', exact: true }).count(), 0);
   await phone.evaluate(() => motionHardware.denyWake(false));
   await phone.getByRole('button', { name: 'KEEP SCREEN AWAKE', exact: true }).click();
-  await phone.getByRole('heading', { name: 'Motion is live.', exact: true }).waitFor();
+  await phone.getByRole('heading', { name: 'Recent phone motion', exact: true }).waitFor();
+  await phone.locator('.motion-input-health[data-fresh="true"]').waitFor();
   await receiver.getByText('Fresh', { exact: true }).waitFor();
   check('real compiled phone and receiver complete arbitrary-pose ZERO and reciprocal setup');
+  if (adaptive) {
+    const readState = () => {
+      const element = document.querySelector('.motion-panel-content');
+      let fiber = element?.[Object.keys(element).find(key => key.startsWith('__reactFiber$'))];
+      while (fiber) {
+        if (fiber.memoizedProps?.readSnapshot) {
+          const s = fiber.memoizedProps.readSnapshot();
+          return { transport: s.transport, state: s.state, fresh: s.dataFresh, confirmed: s.receiverConfirmed,
+            hasValues: !!s.values, generation: s.values?.generation, sensorState: s.sensorState, complete: s.setupProgress?.complete };
+        }
+        fiber = fiber.return;
+      }
+      return null;
+    };
+    await receiver.waitForFunction(read => {
+      const fn = (0, eval)(`(${read})`); return fn()?.transport === 'direct';
+    }, readState.toString());
+    check('same encrypted HTTPS pairing automatically selects a real host-only WebRTC data channel');
+    await receiver.evaluate(read => {
+      const fn = (0, eval)(`(${read})`);
+      window.motionContinuity = [];
+      window.motionContinuityTimer = setInterval(() => {
+        const s = fn();
+        if (window.motionContinuity.length < 1600) window.motionContinuity.push({ at: performance.now(), ...s,
+          numeric: [...document.querySelectorAll('.motion-live-row strong')].every(e => !e.textContent.includes('—')) });
+      }, 50);
+    }, readState.toString());
+    const observations = [];
+    for (let i = 0; i < 120; i++) {
+      const [r, p] = await Promise.all([receiver.evaluate(readState), phone.locator('.motion-live-metrics').innerText()]);
+      observations.push({ ...r, phoneFresh: p.includes('Fresh') });
+      await receiver.waitForTimeout(500);
+    }
+    evidence.continuity = { samples: observations, observations: 120,
+      mutual: observations.filter(s => s.fresh && s.confirmed && s.hasValues && s.phoneFresh).length };
+    evidence.continuity.highRate = await receiver.evaluate(() => { clearInterval(motionContinuityTimer); return motionContinuity; });
+    evidence.continuity.targetMet = evidence.continuity.mutual >= 114;
+    assert.ok(evidence.continuity.targetMet, JSON.stringify({ mutual: evidence.continuity.mutual, target: 114 }));
+    assert.ok(evidence.continuity.highRate.filter(s => s.fresh && s.confirmed && s.numeric && s.complete).length / evidence.continuity.highRate.length >= .95);
+    check('sixty seconds exceed unchanged 114/120 mutual continuity and 95% at 20 Hz');
+    delay = 450; await receiver.waitForTimeout(2500);
+    assert.equal((await receiver.evaluate(readState)).transport, 'direct');
+    assert.equal((await receiver.evaluate(readState)).confirmed, true);
+    check('slow HTTPS requests do not interrupt current direct sensor delivery');
+    delay = 0;
+    const admissions = evidence.http.filter(r => ['create', 'join', 'delete'].includes(r.action)).length;
+    const generation = (await receiver.evaluate(readState)).generation;
+    await phone.evaluate(() => { motionNetwork.drop = true; });
+    await receiver.waitForFunction(read => { const s = (0, eval)(`(${read})`)(); return s?.transport === 'https' && s.fresh && s.confirmed; }, readState.toString());
+    assert.equal((await receiver.evaluate(readState)).generation, generation);
+    assert.equal(evidence.http.filter(r => ['create', 'join', 'delete'].includes(r.action)).length, admissions);
+    check('one-way direct failure recovers fresh HTTPS readings without a new pairing or ZERO');
+    await phone.evaluate(() => { motionNetwork.drop = false; });
+    await receiver.waitForFunction(read => { const s = (0, eval)(`(${read})`)(); return s?.transport === 'direct' && s.confirmed; }, readState.toString());
+    check('direct path recovers without duplicate owners after one-way loss');
+  }
   await phone.evaluate(() => motionHardware.set([0.3, 0.4, 0], [0, 0, 12]));
-  await phone.waitForFunction(() => document.querySelector('.motion-live-row strong')?.textContent.includes('+0.50'));
+  await phone.waitForFunction(() => document.querySelector('.motion-live-row strong')?.textContent.includes('+0.5'));
   // This is the prior coverage gap: App's real onChange used to strip values.
-  await receiver.waitForFunction(() => document.querySelector('.motion-live-row strong')?.textContent.includes('+0.50'), null, { timeout: 5000 });
-  assert.match(await receiver.locator('.motion-live-row').nth(1).innerText(), /\+12\.0.*°\/s/s);
+  await receiver.waitForFunction(() => document.querySelector('.motion-live-row strong')?.textContent.includes('+0.5'), null, { timeout: 5000 });
+  assert.match(await receiver.locator('.motion-live-row').nth(1).innerText(), /\+12.*°\/s/s);
   await receiver.screenshot({ path: join(output, 'receiver-readings.png') });
   await phone.screenshot({ path: join(output, 'phone-readings.png') });
   check('real session/protocol inputs reach compiled App numbers with m/s² and °/s units');
   await phone.evaluate(() => motionHardware.set([0, 0, 1.25], [0, 0, -8]));
-  await receiver.waitForFunction(() => document.querySelector('.motion-live-row strong')?.textContent.includes('+1.25'));
-  await receiver.waitForFunction(() => document.querySelectorAll('.motion-live-row strong')[1]?.textContent.includes('-8.0'));
+  await receiver.waitForFunction(() => document.querySelector('.motion-live-row strong')?.textContent.includes('+1.3'));
+  await receiver.waitForFunction(() => document.querySelectorAll('.motion-live-row strong')[1]?.textContent.includes('-8'));
   check('successive acceleration and signed gyro samples change actual receiver rows');
   const rendersBefore = await receiver.evaluate(() => ({ ...motionRenders }));
   await receiver.waitForTimeout(2000);
@@ -221,14 +300,23 @@ try {
   await receiver.getByText('Keep your phone awake.', { exact: true }).waitFor();
   assert.deepEqual(await done(), [true, true, true, true, false]);
   await phone.getByRole('button', { name: 'KEEP SCREEN AWAKE', exact: true }).click();
-  await phone.getByRole('heading', { name: 'Motion is live.', exact: true }).waitFor();
+  await phone.getByRole('heading', { name: 'Recent phone motion', exact: true }).waitFor();
+  await phone.locator('.motion-input-health[data-fresh="true"]').waitFor();
   await receiver.getByText('Fresh', { exact: true }).waitFor();
   check('denied/released wake is never completed until a new explicit acquisition');
+  await receiver.waitForFunction(() => !document.querySelector('.motion-live-row strong')?.textContent.includes('—'));
+  const stableHeight = await receiver.locator('.motion-panel-content').evaluate(e => e.getBoundingClientRect().height);
+  if (adaptive) await phone.evaluate(() => { motionNetwork.drop = true; });
   delay = 400;
   await receiver.waitForTimeout(350);
-  assert.match(await receiver.locator('.motion-live-row').first().innerText(), /—/);
   assert.match(await receiver.locator('.motion-live-metrics').innerText(), /Delayed/);
-  check('expired samples disappear without disconnecting or extending 250 ms validity');
+  assert.doesNotMatch(await receiver.locator('.motion-live-row').first().innerText(), /—/);
+  assert.equal(await receiver.getByText('Recent motion · 1 s average · display only', { exact: true }).count(), 1);
+  await receiver.waitForTimeout(1100);
+  assert.match(await receiver.locator('.motion-live-row').first().innerText(), /—/);
+  assert.equal(await receiver.locator('.motion-panel-content').evaluate(e => e.getBoundingClientRect().height), stableHeight);
+  check('current input expires at 250 ms; explicitly historical averages clear by one second without panel resizing');
+  if (adaptive) await phone.evaluate(() => { motionNetwork.drop = false; });
   delay = 0;
   await receiver.getByText('Fresh', { exact: true }).waitFor();
   const admissionsBefore = evidence.http.filter(r => ['create','join','delete'].includes(r.action)).length;
@@ -238,7 +326,7 @@ try {
   await Promise.all([receiverContext.setOffline(true), phoneContext.setOffline(true)]);
   await receiver.locator('[data-motion-recovery="true"]').waitFor();
   await receiver.waitForFunction(() => document.querySelector('[data-motion-recovery="true"]')?.textContent.includes('using GPS'));
-  await phone.getByText(/(?:Network unavailable|Reconnecting) · Pairing kept/, {exact:true}).waitFor();
+  await phone.getByText('Network unavailable. Pairing kept; recovery is automatic.', {exact:true}).waitFor();
   assert.match(await phone.locator('.motion-live-row').first().innerText(), /—/);
   await receiver.waitForTimeout(30000);
   await receiver.screenshot({path:join(output,'receiver-network-gap.png')});
@@ -251,11 +339,12 @@ try {
   check('thirty-second real browser outage keeps setup and warns outside drawer; missing GPS is not represented as usable');
   await receiver.evaluate(() => gpsHardware.pause(false));
   await Promise.all([receiverContext.setOffline(false), phoneContext.setOffline(false)]);
-  await phone.getByRole('heading',{name:'Motion is live.',exact:true}).waitFor();
+  await phone.getByRole('heading',{name:'Recent phone motion',exact:true}).waitFor();
+  await phone.locator('.motion-input-health[data-fresh="true"]').waitFor();
   await receiver.locator('[data-motion-recovery="true"]').waitFor({state:'detached'});
   await receiver.keyboard.press('Tab');await receiver.locator('.motion-button').click();
   await receiver.getByText('Fresh',{exact:true}).waitFor();
-  await receiver.waitForFunction(() => document.querySelector('.motion-live-row strong')?.textContent.includes('+1.25'));
+  await receiver.waitForFunction(() => document.querySelector('.motion-live-row strong')?.textContent.includes('+1.3'));
   assert.equal(evidence.http.filter(r => ['create','join','delete'].includes(r.action)).length,admissionsBefore);
   assert.equal(evidence.wire.findLast(r=>r.role==='phone'&&r.confirmed)?.generation,generationBefore);
   check('fresh reciprocal motion returns automatically with the same pairing and ZERO after network restoration');
@@ -264,7 +353,7 @@ try {
   await receiver.locator('.motion-dialog').waitFor({ state: 'detached' });
   await receiver.keyboard.press('Tab'); await receiver.locator('.motion-button').click();
   await receiver.getByText('Fresh', { exact: true }).waitFor();
-  await receiver.waitForFunction(() => document.querySelector('.motion-live-row strong')?.textContent.includes('+1.25'));
+  await receiver.waitForFunction(() => document.querySelector('.motion-live-row strong')?.textContent.includes('+1.3'));
   check('drawer close and reopen retain session and refresh current readings');
   await receiver.getByRole('button', { name: 'CLOSE', exact: true }).click();
   await receiver.locator('.motion-dialog').waitFor({ state: 'detached' });
@@ -278,6 +367,10 @@ try {
     await receiver.getByRole('button', { name: 'CLOSE', exact: true }).click();
     await receiver.locator('.motion-dialog').waitFor({ state: 'detached' });
     await receiver.keyboard.press('Tab'); await receiver.locator('.appearance-trigger').click();
+    // If this first deliberate gesture only woke resting chrome, use its now-visible control.
+    if (!await receiver.getByRole('menuitemradio', { name: appearance.toUpperCase(), exact: true }).isVisible()) {
+      await receiver.locator('.appearance-trigger').click();
+    }
     await receiver.getByRole('menuitemradio', { name: appearance.toUpperCase(), exact: true }).click();
     await receiver.keyboard.press('Tab'); await receiver.locator('.motion-button').click();
     await receiver.getByText('Fresh', { exact: true }).waitFor();
@@ -301,7 +394,8 @@ try {
   assert.equal(await ring.evaluate(element => getComputedStyle(element, '::after').animationName), 'none');
   check('approved active ring retains its 2.4-second pulse and reduced-motion static state');
   await phone.getByRole('button', { name: 'ZERO', exact: true }).click();
-  await phone.getByRole('heading', { name: 'Motion is live.', exact: true }).waitFor();
+  await phone.getByRole('heading', { name: 'Recent phone motion', exact: true }).waitFor();
+  await phone.locator('.motion-input-health[data-fresh="true"]').waitFor();
   await receiver.getByText('Fresh', { exact: true }).waitFor();
   check('sensor gaps invalidate ZERO; a new generation and reciprocal receipts restore readings');
   await phone.getByRole('button', { name: 'STOP', exact: true }).click();

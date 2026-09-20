@@ -1,4 +1,5 @@
-import { createRelayKey, createMotionCipher, createMotionRelay } from './relay.js';
+import { createRelayKey, createMotionCipher } from './relay.js';
+import { createAdaptiveMotionPeer } from './adaptive-peer.js';
 import { createMotionPeer } from "./channel.js";
 import { createMotionTelemetry, safeMotionSummary } from "./telemetry.js";
 import { safeMotionPresentation, DEFAULT_MOTION_PRESENTATION } from "./presentation.js";
@@ -35,7 +36,7 @@ export function createMotionSession({ role, host = window, doc = document, fetch
   }
   function snapshot() {
     const phone = getPhone(), remote = peer?.summary();
-    const summary = safeMotionSummary({ ...phone.summary, ...remote, ...signaling, stage, failureReason, role, transport, state: ["pairing", "preparing", "error", "suspended", "expired", "closed", "unavailable"].includes(state) ? state : remote?.state ?? state });
+    const summary = safeMotionSummary({ ...phone.summary, ...remote, ...signaling, stage, failureReason, role, transport: remote?.transport ?? transport, state: ["pairing", "preparing", "error", "suspended", "expired", "closed", "unavailable"].includes(state) ? state : remote?.state ?? state });
     return { ...summary, ...(role === "receiver" ? setupProgress.update(summary) : {}), qrUrl,
       presentation: peer?.presentation?.() ?? null, values: role === "phone" ? phone.values : peer?.sample() ?? null };
   }
@@ -103,12 +104,13 @@ export function createMotionSession({ role, host = window, doc = document, fetch
         notify();
       }, 200);
       if (transport === "https") {
+        let leaseDeadline = startedAt + 3600000;
         const secret = role === "receiver" ? createRelayKey(host.crypto) : pair?.key;
         const cipher = await createMotionCipher(secret, host.crypto);
         if (token !== generation) return;
         const activate = () => {
           stage = "connected"; state = "connecting"; qrUrl = null; deadline = now() + 30000;
-          peer = createMotionRelay({ ...peerOptions(token), cipher, exchange: packet => api({ action: "exchange", ...credentials, packet }) });
+          peer = createAdaptiveMotionPeer({ ...peerOptions(token), cipher, expiresAt: leaseDeadline, exchange: packet => api({ action: "exchange", ...credentials, packet }) });
           notify();
         };
         if (role === "receiver") {
@@ -133,9 +135,14 @@ export function createMotionSession({ role, host = window, doc = document, fetch
         } else {
           if (!pair || !/^[a-f0-9]{32}$/.test(pair.id) || !/^[a-f0-9]{64}$/.test(pair.token)) throw new Error("invalid_pairing");
           stage = "join";
+          const joinedAt = now();
           const result = await api({ action: "join", id: pair.id, token: pair.token });
           if (token !== generation) { if (/^[a-f0-9]{64}$/.test(result.token)) void api({ action: "delete", id: pair.id, token: result.token }, true).catch(() => {}); return; }
           if (!/^[a-f0-9]{64}$/.test(result.token) || result.transport !== "https") throw new Error("invalid_pairing");
+          // Count the response journey too. Older endpoints lack remaining TTL;
+          // subtract the entire QR window rather than extending their lease.
+          const remaining = Number.isInteger(result.expiresIn) && result.expiresIn > 0 && result.expiresIn <= 3600 ? result.expiresIn : 3420;
+          leaseDeadline = joinedAt + remaining * 1000;
           credentials = { id: pair.id, token: result.token }; activate();
         }
         return;

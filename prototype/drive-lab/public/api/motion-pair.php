@@ -56,7 +56,7 @@ function motionPairRequest(array $input, string $directory, int $now): array
             $record['join'] = '';
             if (($record['transport'] ?? '') === 'https') $record['expires'] = $record['until'];
             if (@file_put_contents($path, json_encode($record), LOCK_EX) === false) return [503, ['status' => 'storage_unavailable']];
-            return [200, ['status' => 'joined', 'token' => $phone, 'transport' => $record['transport'] ?? 'direct', 'sdp' => $record['offer']]];
+            return [200, ['status' => 'joined', 'token' => $phone, 'transport' => $record['transport'] ?? 'direct', 'sdp' => $record['offer'], 'expiresIn' => max(0, $record['expires'] - $now - 1)]];
         }
         if (!$isReceiver && !$isPhone) return [403, ['status' => 'pairing_unavailable']];
         if ($action === 'delete' || ($action === 'finish' && $isReceiver)) {

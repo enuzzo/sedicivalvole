@@ -85,7 +85,7 @@ export function MotionPhone({ createSensors = createPhoneSensors, createSession 
         <footer className="motion-setup-footer"><span>{ended(snapshot.state) ? "New QR required" : guide.ready ? "Setup complete" : `Step ${Math.min(5, guide.active + 1)} of 5`}</span>{!ended(snapshot.state) && <button onClick={restart}>Restart setup</button>}</footer>
       </> : <>
         <SetupDisclosure expanded={false} onClick={() => setReview(true)}/>
-        <h1 className="motion-live-title">{guide.ready ? "Motion is live." : "Motion is paused."}</h1>
+        <h1 className="motion-live-title">Recent phone motion</h1>
         <MotionReadings summary={summary} values={values} phone/>
         <MotionLiveStatus summary={summary} phone/>
         <button className="motion-stop" onClick={stop}>STOP</button>

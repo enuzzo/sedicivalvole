@@ -158,3 +158,22 @@ failure, new ZERO or wake release revises the affected checks. Terminal state or
 new QR clears history. Keep action guidance visible during subsequent status gaps.
 These history marks never authorize sample use. See
 [implementation, verification and physical retry](../PHONE-INTEGRATION-REPAIR-2026-09-20.md).
+
+
+## Automatic direct path and calm telemetry — September 20
+
+The owner's [stability correction](../PHONE-STABILITY-2026-09-20.md) authorizes
+opportunistic host-only WebRTC inside the existing encrypted HTTPS pairing. Keep
+one admitted owner, one optional RTC child and one serial relay loop. SDP must be
+QR-key encrypted, attempt-bound and bounded; no new ICE service or media permission.
+Only reciprocal evidence selects the direct path. Child failure wakes HTTPS without
+resetting sensors/ZERO, and both paths expire at the original admission lease.
+
+The later owner refinement separates readable historical telemetry from current
+input: label the one-second display average explicitly, update at most 4 Hz,
+deduplicate samples, and clear on generation/explicit invalidation/offline/terminal
+state or one second without valid data. Never feed display averages to consumers.
+Current input still expires at 250 ms. Preserve accepted POSITION/ZERO instructions
+through gaps and fixed telemetry geometry; connection/wake copy must not alternate
+on every packet deadline. This supersedes instantaneous number presentation, not
+freshness, mutual receipt, GPS authority, Demo exclusion or physical acceptance.
