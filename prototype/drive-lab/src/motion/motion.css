@@ -230,9 +230,12 @@
 /* Selected September 20 combination: a focused phone step and compact live drawer. */
 .motion-setup-steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); list-style: none; margin: 16px 0; padding: 0; gap: 6px; }
 .motion-setup-steps li { position: relative; display: grid; justify-items: center; gap: 6px; font-size: 13px; line-height: 1.2; color: var(--ui-muted); }
-.motion-step-number { z-index: 1; background: var(--ui-surface); display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--ui-line); border-radius: 50%; font-weight: 600; font-size: 15px; }
+.motion-step-number { position: relative; z-index: 1; background: var(--ui-surface); display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--ui-line); border-radius: 50%; font-weight: 600; font-size: 15px; }
 .motion-setup-steps [data-active="true"], .motion-setup-steps [data-done="true"] { color: var(--ui-text); }
 .motion-setup-steps [data-active="true"] .motion-step-number, .motion-setup-steps [data-done="true"] .motion-step-number { color: var(--ui-accent-fill-text); border-color: var(--ui-accent-text); background: var(--ui-accent-text); }
+.motion-setup-steps [data-active="true"][data-done="false"] .motion-step-number::after { content: ""; position: absolute; inset: -5px; border: 1px solid var(--ui-accent-text); border-radius: 50%; pointer-events: none; animation: motion-step-pulse 2.4s ease-in-out infinite; }
+@keyframes motion-step-pulse { 0%, 100% { transform: scale(.94); opacity: .45; } 50% { transform: scale(1.08); opacity: .9; } }
+@media (prefers-reduced-motion: reduce) { .motion-setup-steps [data-active="true"][data-done="false"] .motion-step-number::after { animation: none; opacity: .75; } }
 .motion-guided-phone { box-sizing: border-box; display: block; padding: max(12px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left)); }
 .motion-guided-stage { display: flex; flex-direction: column; gap: 12px; height: calc(100dvh - max(12px, env(safe-area-inset-top)) - max(12px, env(safe-area-inset-bottom))); min-height: 500px; max-width: 480px; }
 .motion-guided-stage > * { flex: none; margin-block: 0; }

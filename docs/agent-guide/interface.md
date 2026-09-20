@@ -35,6 +35,13 @@ resetting its history, camera or ZERO. Action emphasis pulses only twice (3.6 s)
 and stays static with reduced motion. Technical quality is disclosed on demand;
 ZERO stays below the graph and is brought into view once sensors start successfully.
 
+The September 20 owner refinement adds a slow repeating accent ring around only
+the active, incomplete numbered setup step, on both the phone and receiver drawer.
+It follows existing progress state and disappears on completion; completed checks
+and inactive steps stay still. Reduced motion keeps the ring static. This scoped
+progress-ring instruction supersedes the two-pulse limit above only for the step
+indicator; existing action-button emphasis remains bounded.
+
 The September 19 morning owner refinement keeps sensor enablement, ZERO,
 RECENTER VIEW and STOP in the initial phone viewport. The portrait instrument
 uses the available viewport height; detailed XYZ readings and disclosures follow
