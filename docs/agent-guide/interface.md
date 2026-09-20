@@ -53,6 +53,16 @@ The selected implementation retains real semantic tokens and touch targets; loca
 verification and canonical/physical acceptance remain separately recorded. See
 [onboarding brief](../design/phone-onboarding-2026-09-20/README.md).
 
+The September 20 owner review reopens aesthetic acceptance. Its scoped repair keeps
+the selected arrangement: an intrinsic-height, 640 px maximum receiver panel bounded
+by the viewport, common content gutters, a connected progress rail, accent telemetry
+icons, and right-aligned disclosure carets. Alternative local WebRTC and this-device
+sensing live in Connection details. Generic setup, errors and recovery say phone/page/
+browser; do not infer iOS or Safari from a missing capability. Use the
+[revision evidence](../qa/2026-09-20-phone-design-review/README.md); physical acceptance
+and the owner's aesthetic judgement remain separate from the agent's fidelity pass.
+
+
 ## Shared geometry and palette
 
 The maintained [interface system](../DESIGN-SYSTEM.md) links the exact shared

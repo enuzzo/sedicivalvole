@@ -3,7 +3,7 @@ import { createPhoneSensors } from "./sensors.js";
 import { createMotionSession } from "./session.js";
 import { getFluxTheme } from "../flux-themes.js";
 import { resolveSemanticTheme } from "../semantic-theme.js";
-import { MotionQuality, MotionSteps, MotionReadings, MotionLiveStatus } from "./motion-ui.jsx";
+import { MotionQuality, MotionSteps, MotionReadings, MotionLiveStatus, SetupDisclosure, SetupMark } from "./motion-ui.jsx";
 import { MotionTrace } from "./trace-view.jsx";
 import { motionPresentationFromSearch } from "./presentation.js";
 import { phoneSetup, setupEvidence, ended } from "./guided-setup.js";
@@ -84,18 +84,18 @@ export function MotionPhone({ createSensors = createPhoneSensors, createSession 
         </div>
         <footer className="motion-setup-footer"><span>{ended(snapshot.state) ? "New QR required" : guide.ready ? "Setup complete" : `Step ${Math.min(5, guide.active + 1)} of 5`}</span>{!ended(snapshot.state) && <button onClick={restart}>Restart setup</button>}</footer>
       </> : <>
-        <button className="motion-setup-disclosure" aria-expanded={false} onClick={() => setReview(true)}><span>✓ Setup completed</span><span>Review steps</span></button>
+        <SetupDisclosure expanded={false} onClick={() => setReview(true)}/>
         <h1 className="motion-live-title">{guide.ready ? "Motion is live." : "Motion is paused."}</h1>
         <MotionReadings summary={summary} values={values} phone/>
         <MotionLiveStatus summary={summary} phone/>
         <button className="motion-stop" onClick={stop}>STOP</button>
       </>}
-      <button className="motion-detail-toggle" aria-expanded={detail} onClick={() => setDetail(v => !v)}>Connection & sensor details</button>
+      <button className="motion-detail-toggle" aria-expanded={detail} onClick={() => setDetail(v => !v)}>Connection & sensor details<SetupMark kind="chevron"/></button>
     </div>
     {detail && <section className="motion-extra-details">
       <MotionQuality summary={summary}/>
       <p>{snapshot.state === "connected" ? "Display link open. Only fresh calibrated readings are live." : "This phone is not connected to the display."} GPS remains the speed source.</p>
-      <p>Keep Safari visible. Hiding or locking either screen ends this session. On the display, create a new QR to restart.</p>
+      <p>Keep this page visible. Hiding or locking either screen ends this session. On the display, create a new QR to restart.</p>
       <button onClick={stop}>STOP SENSORS & CONNECTION</button><button onClick={download}>DOWNLOAD PHONE REPORT</button>
       <p>Reports contain quality and connection events only, never raw sensor history, location or pairing keys.</p>
       {(!pair || ended(snapshot.state)) && <div className="motion-local-check"><p>Local sensor check only. This does not reconnect to the display.</p><button onClick={start}>ENABLE LOCAL SENSORS</button><button disabled={sensor.sensorState !== "live"} onClick={() => { sensorsRef.current?.requestTare(); refresh(); }}>LOCAL ZERO</button><button onClick={() => void sensorsRef.current?.requestWake()}>KEEP SCREEN AWAKE</button></div>}

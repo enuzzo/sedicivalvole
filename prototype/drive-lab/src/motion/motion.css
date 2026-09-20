@@ -229,8 +229,8 @@
 
 /* Selected September 20 combination: a focused phone step and compact live drawer. */
 .motion-setup-steps { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); list-style: none; margin: 16px 0; padding: 0; gap: 6px; }
-.motion-setup-steps li { display: grid; justify-items: center; gap: 6px; font-size: 13px; line-height: 1.2; color: var(--ui-muted); }
-.motion-step-number { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--ui-line); border-radius: 50%; font-weight: 600; font-size: 15px; }
+.motion-setup-steps li { position: relative; display: grid; justify-items: center; gap: 6px; font-size: 13px; line-height: 1.2; color: var(--ui-muted); }
+.motion-step-number { z-index: 1; background: var(--ui-surface); display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--ui-line); border-radius: 50%; font-weight: 600; font-size: 15px; }
 .motion-setup-steps [data-active="true"], .motion-setup-steps [data-done="true"] { color: var(--ui-text); }
 .motion-setup-steps [data-active="true"] .motion-step-number, .motion-setup-steps [data-done="true"] .motion-step-number { color: var(--ui-accent-fill-text); border-color: var(--ui-accent-text); background: var(--ui-accent-text); }
 .motion-guided-phone { box-sizing: border-box; display: block; padding: max(12px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left)); }
@@ -252,8 +252,9 @@
 .motion-setup-disclosure { display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 12px; text-align: left; font-size: 14px; }
 .motion-guided-phone .motion-live-title { padding-block: 10px; }
 .motion-live-row { display: grid; grid-template-columns: 30px minmax(0, 1fr) auto; align-items: center; gap: 12px; border-top: 1px solid var(--ui-line); min-height: 82px; padding-block: 12px; }
-.motion-live-row img { width: 26px; height: 26px; }
-[data-appearance="dark"] .motion-live-row img { filter: invert(1); }
+.motion-reading-icon { width: 28px; height: 28px; background: var(--ui-accent-text); mask: var(--motion-reading-icon) center / contain no-repeat; }
+.motion-reading-acceleration { --motion-reading-icon: url("/third-party/tabler-icons/arrow-up-right.svg"); }
+.motion-reading-rotation { --motion-reading-icon: url("/third-party/tabler-icons/rotate-clockwise.svg"); }
 .motion-live-row span { font-size: 15px; }.motion-live-row span small { display: block; color: var(--ui-muted); font-size: 13px; }
 .motion-live-row strong { font-size: 32px; font-weight: 500; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .motion-live-row strong small { font-size: 13px; font-weight: 400; color: var(--ui-muted); }
@@ -262,19 +263,20 @@
 .motion-live-metrics dt { font-size: 13px; color: var(--ui-muted); }.motion-live-metrics dd { margin: 4px 0 0; font-size: 22px; font-weight: 500; font-variant-numeric: tabular-nums; }
 .motion-live-status { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 12px; }
 .motion-live-status strong { font-size: 15px; }.motion-live-status p { font-size: 13px; line-height: 1.4; margin: 4px 0 0; color: var(--ui-muted); }
-.motion-live-status strong::before { content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; background: var(--ui-muted); }
+.motion-live-status > div { position: relative; padding-left: 26px; }
+.motion-live-status strong::before { content: ""; position: absolute; left: 0; top: 5px; width: 12px; height: 12px; border-radius: 50%; background: var(--ui-muted); }
 .motion-live-status[data-good="true"] strong::before { background: var(--ui-success); }
 .motion-guided-phone .motion-stop { min-height: 56px; color: var(--ui-accent-text); margin-top: auto; }
 .motion-extra-details { border-top: 1px solid var(--ui-line); padding-top: 16px; }.motion-extra-details > button { margin: 8px 8px 8px 0; }
 .motion-guided-panel header { align-items: center; }.motion-guided-panel h2 { margin: 0; }
-.motion-guided-panel .motion-setup-intro { margin: 8px 0 16px; font-size: 15px; }
-.motion-setup-pairing { display: grid; grid-template-columns: minmax(0, 1fr) 160px; align-items: center; gap: 20px; margin: 12px 0; }
-.motion-setup-pairing .motion-qr { width: 160px; height: 160px; }.motion-setup-art { width: 160px; height: 140px; object-fit: contain; }
+.motion-guided-panel .motion-setup-intro { margin: 4px 0 16px; font-size: 15px; color: var(--ui-muted); }
+.motion-setup-pairing { display: grid; grid-template-columns: minmax(0, 1fr) 184px; align-items: center; gap: 24px; padding-block: 16px; border-block: 1px solid var(--ui-line); }
+.motion-setup-pairing .motion-qr { width: 184px; height: 184px; }.motion-setup-art { width: 184px; height: 184px; object-fit: contain; }
 .motion-setup-instruction .motion-next { border-left: 0; padding-left: 0; }.motion-setup-instruction .motion-next strong { font-size: 22px; }
 .motion-setup-instruction > button { margin-top: 12px; min-height: 56px; }
-.motion-guided-panel .motion-live-readings { margin-top: 16px; }.motion-guided-panel .motion-live-row { min-height: 74px; padding-block: 8px; }
+.motion-guided-panel .motion-live-readings { margin-top: 0; }.motion-guided-panel .motion-live-row { min-height: 74px; padding-block: 8px; }
 .motion-guided-panel .motion-live-metrics { padding-block: 12px; }.motion-guided-panel .motion-live-status button { flex-shrink: 0; font-size: 13px; }
-.motion-guided-panel .motion-connection-details > summary { min-height: 48px; display: flex; align-items: center; cursor: pointer; font-size: 13px; }
+.motion-guided-panel .motion-connection-details > summary { min-height: 48px; padding: 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-size: 14px; list-style: none; }
 .motion-review-list { font-size: 14px; line-height: 1.5; }
 @media (max-height: 690px) { .motion-guided-stage { gap: 8px; }.motion-focus-art img { max-height: 170px; }.motion-guided-phone h1 { font-size: 22px; }.motion-guided-phone .motion-phone-brand { padding-bottom: 8px; } }
 @media (max-height: 580px) { .motion-guided-stage { gap: 6px; }.motion-guided-phone .motion-focus-art { flex-basis: 30px; }.motion-guided-phone .motion-live-row { min-height: 64px; padding-block: 6px; }.motion-guided-phone .motion-live-metrics { padding-block: 8px; } }
@@ -283,3 +285,36 @@
 .motion-guided-phone .motion-setup-disclosure { font-size: 13px; }
 .motion-setup-disclosure > span { white-space: nowrap; }
 @media (max-height: 580px) { .motion-guided-phone .motion-live-title { padding-block: 6px; } }
+
+/* Repair the selected compact composition within the shared drawer surface. */
+.motion-dialog .drawer-panel:has(.motion-guided-panel) { align-self: center; box-shadow: -8px 0 24px rgba(0, 0, 0, .18); padding-block: 16px; width: min(640px, calc(100vw - 32px)); height: auto; max-height: calc(100dvh - 32px); margin: 16px; border: 1px solid var(--ui-line); border-radius: 6px; box-sizing: border-box; }
+.motion-guided-panel { font-family: var(--font-ui); }
+.motion-guided-panel header { gap: 12px; }
+.motion-guided-panel h2 { font-weight: 650; letter-spacing: -.025em; line-height: 1.2; }
+.motion-guided-panel button, .motion-dialog .motion-local-choice { cursor: pointer; }
+.motion-guided-panel button:focus-visible, .motion-guided-panel summary:focus-visible, .motion-dialog .motion-local-choice:focus-visible { outline: 2px solid var(--ui-focus); outline-offset: 3px; }
+.motion-panel-content .motion-close { display: flex; gap: 6px; align-items: center; border: 0; padding: 0 0 0 12px; font-size: 13px; color: var(--ui-muted); }
+.motion-setup-mark { width: 20px; height: 20px; flex: 0 0 20px; }
+.motion-close .motion-setup-mark { width: 24px; height: 24px; flex-basis: 24px; }
+.motion-setup-steps li:not(:last-child)::after { content: ""; position: absolute; height: 1px; left: calc(50% + 21px); right: calc(-50% + 15px); top: 15px; background: var(--ui-line); }
+.motion-setup-steps li[data-done="true"]::after { background: var(--ui-accent-text); }
+.motion-guided-panel .motion-setup-steps { margin-block: 0 20px; }
+.motion-setup-instruction .motion-next strong { font-weight: 600; letter-spacing: -.02em; }
+.motion-setup-instruction .motion-next p { color: var(--ui-muted); }
+.motion-setup-disclosure > span { display: flex; align-items: center; gap: 8px; }
+.motion-panel-content .motion-setup-disclosure, .motion-phone .motion-setup-disclosure { padding: 10px 12px; border-color: var(--ui-line); background: var(--ui-control); font-size: 14px; }
+.motion-setup-complete > .motion-setup-mark { padding: 3px; box-sizing: border-box; width: 26px; height: 26px; flex-basis: 26px; background: var(--ui-accent-text); color: var(--ui-accent-fill-text); border-radius: 50%; }
+.motion-setup-disclosure > span + span { color: var(--ui-muted); }
+.motion-setup-disclosure[aria-expanded="true"] > span + span > svg, .motion-detail-toggle[aria-expanded="true"] > svg, .motion-connection-details[open] > summary > svg { transform: rotate(180deg); }
+.motion-readings-label { margin: 12px 0 0; padding: 0 0 10px; font-size: 13px; line-height: 1.3; font-weight: 500; letter-spacing: .08em; color: var(--ui-muted); }
+.motion-guided-panel .motion-live-row { min-height: 74px; }
+.motion-live-metrics dt { letter-spacing: .05em; }
+.motion-guided-panel .motion-live-metrics dd { font-size: 28px; }
+.motion-guided-panel .motion-live-status { padding-block: 12px; }
+.motion-guided-panel .motion-live-status button { border: 0; border-left: 1px solid var(--ui-line); border-radius: 0; padding-right: 0; color: var(--ui-accent-text); }
+.motion-guided-panel .motion-connection-details > summary::-webkit-details-marker { display: none; }
+.motion-guided-panel .motion-connection-details > summary > svg { color: var(--ui-muted); }
+.motion-dialog .motion-local-choice { margin: 0; width: 100%; min-height: 48px; padding: 8px 0; display: flex; align-items: center; border: 0; border-top: 1px solid var(--ui-line); border-radius: 0; background: transparent; color: var(--ui-muted); text-align: left; font: 13px/1.4 var(--font-ui); }
+.motion-guided-phone .motion-detail-toggle { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+@media (max-width: 650px) { .motion-dialog .drawer-panel:has(.motion-guided-panel) { width: calc(100vw - 16px); max-height: calc(100dvh - 16px); margin: 8px; } }
+@media (max-width: 360px) { .motion-phone .motion-setup-disclosure { padding-inline: 8px; font-size: 13px; gap: 6px; }.motion-setup-disclosure > span { gap: 4px; }.motion-setup-complete > .motion-setup-mark { width: 22px; height: 22px; flex-basis: 22px; } }

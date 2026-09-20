@@ -76,19 +76,26 @@ Dev is the default, with coordinate-free automatic reports every **15 minutes of
 
 ## Experimental phone motion
 
-The top-bar phone icon automatically prepares QR pairing and opens a guided three-step connection with palette-colored SVGs and reciprocal readiness checks. iPhone Safari
-provides live XYZ acceleration/gyro and an opaque TRACE cube with a three-second
-trail and phone orientation indicator. One-tap ZERO / recalibrate sits below the
-graph and captures after half a second of steady readings, within eight seconds.
-Sensor enablement, ZERO, RECENTER VIEW and STOP fit the initial compact phone
-viewport; detailed axis readings and disclosures continue below the instrument.
-Before ZERO, local activity magnitudes show that sensors are responding. TRACE supports arbitrary stable mounting; road response requires the explicitly selected portrait car holder and gravity-based ZERO. Its portrait-first instrument uses the piston/Orbitron identity,
-the paired display’s palette and LIGHT/DARK appearance, plus an illustrated holder guide, with a responsive
-landscape layout. Bounded connection/sensor summaries join REPORT; the phone can
-download its own diagnostics, including wake-lock and renderer availability.
-Screen-awake status reflects the actual optional lock. Local-only mode, incomplete
-sensors and ended links have explicit recovery guidance; permission retry does
-not reuse a QR. The default QR uses end-to-end encrypted HTTPS through the same site; local WebRTC remains optional. Both screens distinguish transport from fresh mutual sensor readiness. GPS remains road-speed authority. Fresh calibrated holder acceleration now drives Engine demand and Flux braking/Underwater; mounted gyro bends Aperture. The phone cell shows LIVE only while those inputs are usable, with explicit GPS fallback and Demo exclusion. See [mounted road response and limitations](docs/PHONE-ROAD-INPUT-2026-09-19.md). Real Tesla/iPhone relay latency and curve direction still require a physical recheck. See the [road connection refinement](docs/PHONE-MOTION-HTTPS-2026-09-19.md). [Setup and technical boundaries](docs/PHONE-MOTION-COMPANION-2026-09-18.md).
+The top-bar phone icon prepares an expiring QR and opens a compact connection
+panel. The smartphone follows five explicit steps: sensor permission, connection,
+portrait-holder placement, mounted ZERO and screen wake. Evidence-based checks
+collapse into acceleration/rotation readings after setup; TRACE remains an optional
+view with bounded history. Setup and recovery text is platform-neutral and follows
+actual browser capabilities, without promising physical Android or iPhone support.
+The receiver keeps its title, action and details on one grid, shows current round-trip
+latency and blanks delayed readings. Alternative local WebRTC and this-device sensing
+remain in Connection details. Phone styling follows the paired palette and LIGHT/DARK.
+
+ZERO needs half a second of fresh steady samples, bounded to eight seconds. Screen
+wake must be actually acquired; denied, unsupported and released states remain
+incomplete. Sensor retry never reuses consumed QR admission. The default connection
+uses end-to-end encrypted HTTPS through the same site. GPS remains the speed authority;
+fresh calibrated holder acceleration drives Engine demand and Flux braking/Underwater,
+and mounted gyro bends Aperture. Demo excludes sensors. Reports contain bounded,
+coordinate-free summaries, never raw sensor history or pairing capabilities.
+Physical wake retention, mounting signs and sustained phone/Tesla continuity remain
+open; see [current evidence](docs/qa/2026-09-20-phone-design-review/README.md) and
+[mounted road response](docs/PHONE-ROAD-INPUT-2026-09-19.md).
 
 ## Vision
 

@@ -1,12 +1,20 @@
 # Current Project State
 
-## Owner design review — September 20 (revision required)
+## Smartphone design refinement — September 20 (local verification complete)
 
-The current smartphone drawer is published but not visually accepted. The owner
-requests a more considered composition, coherent control/disclosure alignment and
-platform-neutral smartphone/phone wording. Fresh-context continuation uses
-Frontend App Builder and real rendered/reference comparison; existing functional
-checks do not close this review. See the [exact scope and handoff](PHONE-DESIGN-REVIEW-HANDOFF-2026-09-20.md).
+The selected phone wizard and receiver layout have been repaired after owner review:
+compact intrinsic drawer, aligned controls/disclosure, clearer hierarchy, connected
+progress rail and accent telemetry. Generic setup/error/recovery wording now uses
+phone/page/browser without platform or physical compatibility promises. Local sensing
+and direct WebRTC remain available through Connection details. All motion validity,
+250 ms freshness, reciprocal confirmation and GPS authority remain unchanged.
+
+Local regression covers 1,036 checks after correcting the Python QA environment;
+32 browser checkpoints cover LIGHT/DARK at 773 x 601, 390 x 760 and 320 x 568.
+Reference/render comparison is recorded in the [fidelity ledger](../design-qa.md)
+and [revision evidence](qa/2026-09-20-phone-design-review/README.md).
+Canonical publication is pending this checkpoint. Owner visual acceptance and actual
+phone/Tesla wake/continuity remain open; previous publication is recorded below.
 
 ## Guided phone onboarding — September 20 (published; physical acceptance open)
 

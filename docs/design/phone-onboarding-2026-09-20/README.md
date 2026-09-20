@@ -95,3 +95,13 @@ owner's real iPhone onboarding, screen-awake, interruption and Tesla acceptance.
   The cube is not mounted before completed setup and explicit disclosure.
 - The development-only browser harness uses synthetic fixtures with no network,
   GPS, audio or mail and is not a physical test.
+
+## Execution repair after owner review
+
+The [September 20 revision](../../qa/2026-09-20-phone-design-review/README.md)
+restores a compact receiver silhouette and stronger section hierarchy, common left
+alignment, connecting progress rules, actual check/close/disclosure vectors and
+accent-colored admitted telemetry icons. Generic instructions use phone/page/browser.
+Alternative local sensing moves inside Connection details, keeping the same capability
+gate and handler. The selected arrangement remains; owner aesthetic acceptance is
+still open. The agent's visual/functional verification does not close that decision.

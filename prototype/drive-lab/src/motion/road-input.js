@@ -53,7 +53,7 @@ export function roadSourceLabel({ source, active, sample, gpsFresh = true, senso
   if (source !== 'GPS') return 'Demo motion · phone excluded';
   if (!active) return 'GPS motion · session inactive';
   if (!gpsFresh) return 'GPS motion · waiting for fresh speed';
-  if (usableRoadSample(sample)) return 'iPhone motion + GPS speed';
+  if (usableRoadSample(sample)) return 'Phone motion + GPS speed';
   if (['preparing', 'pairing', 'connecting'].includes(link.state)) return 'GPS motion · phone connecting';
   if (sensor.roadState === 'moved') return 'GPS motion · remount and ZERO';
   if (sensor.roadState === 'unsupported-pose') return 'GPS motion · check portrait mount';

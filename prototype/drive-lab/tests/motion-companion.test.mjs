@@ -458,6 +458,6 @@ test('connected setup is waiting for calibration, not a network delay', async ()
  const s={state:'connected',dataFresh:true,sensorState:'live',tared:false,roadState:'needs-zero'};
  assert.equal(motionLiveStatus(s).quality,'Waiting');
  assert.equal(motionLiveStatus(s).title,'Connected · Finish setup');
- assert.match(motionLiveStatus(s).hint,/On iPhone/);
+ assert.match(motionLiveStatus(s).hint,/On your phone/);
  assert.equal(motionLiveStatus({...s,dataFresh:false}).quality,'Delayed');
 });

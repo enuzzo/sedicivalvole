@@ -65,5 +65,5 @@ test('encrypted-transport protocol preserves optional road values and expires th
 test('source UI never treats connected or Demo as usable road sensors',()=>{
  assert.match(roadSourceLabel({source:'Demo',active:true,sample:sample()}),/phone excluded/);
  assert.match(roadSourceLabel({source:'GPS',active:true,link:{state:'connected'}}),/unavailable/);
- assert.equal(roadSourceLabel({source:'GPS',active:true,sample:sample()}),'iPhone motion + GPS speed');
+ assert.equal(roadSourceLabel({source:'GPS',active:true,sample:sample()}),'Phone motion + GPS speed');
 });

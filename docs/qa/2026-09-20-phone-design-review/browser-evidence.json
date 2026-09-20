@@ -1,0 +1,414 @@
+{
+  "method": "Playwright Chromium; IAB first, fallback for exact CSS viewport after IAB zoom mismatch",
+  "checks": [
+    {
+      "name": "phone-start-390-light",
+      "geometry": {
+        "width": 390,
+        "height": 760,
+        "scrollWidth": 390,
+        "scrollHeight": 760,
+        "viewport": [
+          390,
+          760
+        ]
+      }
+    },
+    {
+      "name": "phone-awake-390-light",
+      "geometry": {
+        "width": 390,
+        "height": 760,
+        "scrollWidth": 390,
+        "scrollHeight": 760,
+        "viewport": [
+          390,
+          760
+        ]
+      }
+    },
+    {
+      "name": "phone-live-390-light",
+      "geometry": {
+        "width": 390,
+        "height": 760,
+        "scrollWidth": 390,
+        "scrollHeight": 760,
+        "viewport": [
+          390,
+          760
+        ]
+      }
+    },
+    {
+      "name": "phone-ended-390-light",
+      "geometry": {
+        "width": 390,
+        "height": 760,
+        "scrollWidth": 390,
+        "scrollHeight": 760,
+        "viewport": [
+          390,
+          760
+        ]
+      }
+    },
+    {
+      "name": "phone-start-320-light",
+      "geometry": {
+        "width": 320,
+        "height": 568,
+        "scrollWidth": 320,
+        "scrollHeight": 568,
+        "viewport": [
+          320,
+          568
+        ]
+      }
+    },
+    {
+      "name": "phone-awake-320-light",
+      "geometry": {
+        "width": 320,
+        "height": 568,
+        "scrollWidth": 320,
+        "scrollHeight": 568,
+        "viewport": [
+          320,
+          568
+        ]
+      }
+    },
+    {
+      "name": "phone-live-320-light",
+      "geometry": {
+        "width": 320,
+        "height": 568,
+        "scrollWidth": 320,
+        "scrollHeight": 568,
+        "viewport": [
+          320,
+          568
+        ]
+      }
+    },
+    {
+      "name": "phone-ended-320-light",
+      "geometry": {
+        "width": 320,
+        "height": 568,
+        "scrollWidth": 320,
+        "scrollHeight": 568,
+        "viewport": [
+          320,
+          568
+        ]
+      }
+    },
+    {
+      "name": "phone-wake-denied-320-light",
+      "geometry": {
+        "width": 320,
+        "height": 568,
+        "scrollWidth": 320,
+        "scrollHeight": 568,
+        "viewport": [
+          320,
+          568
+        ]
+      }
+    },
+    {
+      "name": "receiver-qr-light",
+      "geometry": {
+        "width": 638,
+        "height": 533,
+        "scrollWidth": 638,
+        "scrollHeight": 533,
+        "viewport": [
+          773,
+          601
+        ]
+      }
+    },
+    {
+      "name": "alignment-light",
+      "leftEdges": [
+        142,
+        142,
+        142,
+        142
+      ]
+    },
+    {
+      "name": "receiver-live-light",
+      "geometry": {
+        "width": 638,
+        "height": 561,
+        "scrollWidth": 638,
+        "scrollHeight": 561,
+        "viewport": [
+          773,
+          601
+        ]
+      }
+    },
+    {
+      "name": "receiver-delayed-light",
+      "geometry": {
+        "width": 638,
+        "height": 567,
+        "scrollWidth": 638,
+        "scrollHeight": 609,
+        "viewport": [
+          773,
+          601
+        ]
+      }
+    },
+    {
+      "name": "receiver-wake-lost-light",
+      "geometry": {
+        "width": 638,
+        "height": 567,
+        "scrollWidth": 638,
+        "scrollHeight": 581,
+        "viewport": [
+          773,
+          601
+        ]
+      }
+    },
+    {
+      "name": "receiver-ended-light",
+      "geometry": {
+        "width": 638,
+        "height": 526,
+        "scrollWidth": 638,
+        "scrollHeight": 526,
+        "viewport": [
+          773,
+          601
+        ]
+      }
+    },
+    {
+      "name": "receiver-details-light",
+      "geometry": {
+        "width": 638,
+        "height": 567,
+        "scrollWidth": 638,
+        "scrollHeight": 984,
+        "viewport": [
+          773,
+          601
+        ]
+      }
+    },
+    {
+      "name": "phone-start-390-dark",
+      "geometry": {
+        "width": 390,
+        "height": 760,
+        "scrollWidth": 390,
+        "scrollHeight": 760,
+        "viewport": [
+          390,
+          760
+        ]
+      }
+    },
+    {
+      "name": "phone-awake-390-dark",
+      "geometry": {
+        "width": 390,
+        "height": 760,
+        "scrollWidth": 390,
+        "scrollHeight": 760,
+        "viewport": [
+          390,
+          760
+        ]
+      }
+    },
+    {
+      "name": "phone-live-390-dark",
+      "geometry": {
+        "width": 390,
+        "height": 760,
+        "scrollWidth": 390,
+        "scrollHeight": 760,
+        "viewport": [
+          390,
+          760
+        ]
+      }
+    },
+    {
+      "name": "phone-ended-390-dark",
+      "geometry": {
+        "width": 390,
+        "height": 760,
+        "scrollWidth": 390,
+        "scrollHeight": 760,
+        "viewport": [
+          390,
+          760
+        ]
+      }
+    },
+    {
+      "name": "phone-start-320-dark",
+      "geometry": {
+        "width": 320,
+        "height": 568,
+        "scrollWidth": 320,
+        "scrollHeight": 568,
+        "viewport": [
+          320,
+          568
+        ]
+      }
+    },
+    {
+      "name": "phone-awake-320-dark",
+      "geometry": {
+        "width": 320,
+        "height": 568,
+        "scrollWidth": 320,
+        "scrollHeight": 568,
+        "viewport": [
+          320,
+          568
+        ]
+      }
+    },
+    {
+      "name": "phone-live-320-dark",
+      "geometry": {
+        "width": 320,
+        "height": 568,
+        "scrollWidth": 320,
+        "scrollHeight": 568,
+        "viewport": [
+          320,
+          568
+        ]
+      }
+    },
+    {
+      "name": "phone-ended-320-dark",
+      "geometry": {
+        "width": 320,
+        "height": 568,
+        "scrollWidth": 320,
+        "scrollHeight": 568,
+        "viewport": [
+          320,
+          568
+        ]
+      }
+    },
+    {
+      "name": "phone-wake-denied-320-dark",
+      "geometry": {
+        "width": 320,
+        "height": 568,
+        "scrollWidth": 320,
+        "scrollHeight": 568,
+        "viewport": [
+          320,
+          568
+        ]
+      }
+    },
+    {
+      "name": "receiver-qr-dark",
+      "geometry": {
+        "width": 638,
+        "height": 533,
+        "scrollWidth": 638,
+        "scrollHeight": 533,
+        "viewport": [
+          773,
+          601
+        ]
+      }
+    },
+    {
+      "name": "alignment-dark",
+      "leftEdges": [
+        142,
+        142,
+        142,
+        142
+      ]
+    },
+    {
+      "name": "receiver-live-dark",
+      "geometry": {
+        "width": 638,
+        "height": 561,
+        "scrollWidth": 638,
+        "scrollHeight": 561,
+        "viewport": [
+          773,
+          601
+        ]
+      }
+    },
+    {
+      "name": "receiver-delayed-dark",
+      "geometry": {
+        "width": 638,
+        "height": 567,
+        "scrollWidth": 638,
+        "scrollHeight": 609,
+        "viewport": [
+          773,
+          601
+        ]
+      }
+    },
+    {
+      "name": "receiver-wake-lost-dark",
+      "geometry": {
+        "width": 638,
+        "height": 567,
+        "scrollWidth": 638,
+        "scrollHeight": 581,
+        "viewport": [
+          773,
+          601
+        ]
+      }
+    },
+    {
+      "name": "receiver-ended-dark",
+      "geometry": {
+        "width": 638,
+        "height": 526,
+        "scrollWidth": 638,
+        "scrollHeight": 526,
+        "viewport": [
+          773,
+          601
+        ]
+      }
+    },
+    {
+      "name": "receiver-details-dark",
+      "geometry": {
+        "width": 638,
+        "height": 567,
+        "scrollWidth": 638,
+        "scrollHeight": 984,
+        "viewport": [
+          773,
+          601
+        ]
+      }
+    }
+  ],
+  "errors": []
+}
