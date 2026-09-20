@@ -630,6 +630,12 @@ fresh road speed and actual phases of the acoustic gear model. Missing/aging
 GPS and paused audio retain truthful static states. A [silent development preview
 and evidence record](docs/qa/2026-09-19-engine-cells/README.md) explains the boundary.
 
+Phone companion ZERO accepts any stable orientation, including a flat or inclined
+console tray, portrait and landscape. Placement confirmation is separate from the
+optional **Use aligned car motion** declaration in sensor details. Without known
+car alignment, the phone shows relative motion and GPS retains vehicle response.
+Physical iPhone/Tesla acceptance remains separate from browser verification.
+
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
 

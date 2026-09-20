@@ -55,10 +55,10 @@ function surface() {
     emit(type,event={}){for(const fn of [...(listeners.get(type)??[])])fn({isTrusted:true,...event});},
   };
 }
-function sensorFixture() {
+function sensorFixture(autoWake = true) {
   let time=0;const host=surface(),doc=surface();host.DeviceMotionEvent={};host.DeviceOrientationEvent={};
-  const events=[]; const sensor=createPhoneSensors({host,doc,now:()=>time,onEvent:(...e)=>events.push(e)});
-  return {host,doc,sensor,events,time:(n)=>{time=n;},orient:()=>host.emit('deviceorientation',{alpha:0,beta:0,gamma:0}),
+  const events=[]; const sensor=createPhoneSensors({host,doc,autoWake,now:()=>time,onEvent:(...e)=>events.push(e)});
+  return {host,doc,sensor,events,time:(n)=>{time=n;},orient:(angles={})=>host.emit('deviceorientation',{alpha:0,beta:0,gamma:0,...angles}),
     motion:(extra={})=>host.emit('devicemotion',{acceleration:{x:0,y:0,z:0},accelerationIncludingGravity:{x:0,y:0,z:9.81},rotationRate:{alpha:0,beta:0,gamma:0},...extra})};
 }
 test('both permission requests originate synchronously in the enabling gesture',async()=>{
@@ -402,7 +402,7 @@ test('explicit local recovery guides ZERO without claiming a restored display co
 test('mounted sensor ZERO latches invalidation and needs explicit recalibration after handling',async()=>{
  const f=sensorFixture();await f.sensor.start();f.sensor.setMount(true);
  const mounted={accelerationIncludingGravity:{x:0,y:6.9367,z:6.9367}};
- f.orient();f.motion(mounted);assert.equal(f.sensor.tare(),'tared');
+ f.orient({beta:45});f.motion(mounted);assert.equal(f.sensor.tare(),'tared');
  assert.equal(f.sensor.summary().roadState,'calibrated');assert.ok(f.sensor.latest().road);
  f.time(20);f.motion();assert.equal(f.sensor.summary().roadState,'moved');assert.equal(f.sensor.latest().road,undefined);
  f.time(40);f.motion(mounted);assert.equal(f.sensor.latest().road,undefined);
@@ -411,12 +411,12 @@ test('mounted sensor ZERO latches invalidation and needs explicit recalibration 
  f.host.emit('offline');assert.equal(f.sensor.latest(),null);f.sensor.dispose();
 });
 
-test('guided remote onboarding requires placement, road ZERO and explicit acquired screen wake', async () => {
+test('guided remote onboarding requires placement, pose ZERO and explicit acquired screen wake', async () => {
  const {phoneSetup, receiverSetup, setupEvidence, motionLiveStatus} = await import('../src/motion/guided-setup.js');
  const live = {state:'connected', sensorState:'live', dataFresh:true, referenceReceived:true, receiverConfirmed:true, tared:true, tareState:'tared', roadState:'calibrated', mountSelected:true, wakeLock:true, wakeState:'active', received:5, rttMs:108};
  assert.equal(phoneSetup({hasPair:true,link:live,sensor:live}).ready,true);
  assert.equal(receiverSetup(live).ready,true);
- for (const changes of [{wakeLock:false,wakeState:'denied'}, {wakeLock:false,wakeState:'released'}, {wakeLock:false,wakeState:'unsupported'}, {mountSelected:false}, {roadState:'unsupported-pose'}, {tareState:'settling'}, {receiverConfirmed:false}]) {
+ for (const changes of [{wakeLock:false,wakeState:'denied'}, {wakeLock:false,wakeState:'released'}, {wakeLock:false,wakeState:'unsupported'}, {mountSelected:false}, {tareState:'settling'}, {receiverConfirmed:false}]) {
   assert.equal(phoneSetup({hasPair:true,link:{...live,...changes},sensor:{...live,...changes}}).ready,false);
   assert.equal(receiverSetup({...live,...changes}).ready,false);
  }
@@ -429,7 +429,7 @@ test('guided remote onboarding requires placement, road ZERO and explicit acquir
  assert.equal(motionLiveStatus(delayed).fresh,false);
  assert.equal(motionLiveStatus(delayed).quality,'Delayed');
  assert.equal(motionLiveStatus(delayed).rtt,null);
- assert.equal(motionLiveStatus({...live,roadState:'moved'}).fresh,false);
+ assert.equal(motionLiveStatus({...live,roadState:'moved'}).fresh,true, 'fresh relative motion is distinct from rejected car-axis motion');
  assert.equal(motionLiveStatus(live).rtt,108);
  assert.equal(motionLiveStatus(live,true).rtt,null, 'phone must not invent receiver RTT');
 });
@@ -460,4 +460,49 @@ test('connected setup is waiting for calibration, not a network delay', async ()
  assert.equal(motionLiveStatus(s).title,'Connected · Finish setup');
  assert.match(motionLiveStatus(s).hint,/On your phone/);
  assert.equal(motionLiveStatus({...s,dataFresh:false}).quality,'Delayed');
+});
+
+test('guided ZERO accepts every stable pose without requiring vehicle-axis calibration', async () => {
+ const {phoneSetup,receiverSetup,setupEvidence,motionLiveStatus}=await import('../src/motion/guided-setup.js');
+ for(const roadState of ['not-selected','unsupported-pose','moved','calibrated']) {
+  const sensor={sensorState:'live',placementConfirmed:true,mountSelected:false,tared:true,tareState:'tared',roadState,wakeLock:false,wakeState:'idle'};
+  assert.equal(phoneSetup({sensor,link:{state:'connected'},hasPair:true}).action,'awake');
+  const remote={...sensor,state:'connected',dataFresh:true,referenceReceived:true,receiverConfirmed:true};
+  assert.equal(receiverSetup(remote).active,4);
+  assert.deepEqual(setupEvidence(remote),[true,true,true,true,false]);
+  const ready={...remote,wakeLock:true,wakeState:'active'};
+  assert.equal(receiverSetup(ready).ready,true);assert.equal(motionLiveStatus(ready).fresh,true);
+ }
+});
+
+test('receiver setup waits at the current step during a transport gap without redoing connection',async()=>{
+ const {receiverSetup}=await import('../src/motion/guided-setup.js');
+ for(const active of [0,2,3,4]) {
+  const pending=receiverSetup({state:'connected',dataFresh:false},active);
+  assert.equal(pending.active,active);assert.equal(pending.ready,false);assert.match(pending.title,/Waiting/);
+ }
+});
+
+test('real sensor ZERO accepts flat, upright, landscape, inclined and inverted poses with either gravity sign',async()=>{
+ const {phoneSetup,receiverSetup}=await import('../src/motion/guided-setup.js');
+ for(const angles of [{beta:0,gamma:0},{beta:90,gamma:0},{beta:0,gamma:90},{beta:40,gamma:0},{beta:-40,gamma:25},{beta:180,gamma:0}]) for(const sign of [1,-1]) {
+  const f=sensorFixture(false);f.host.navigator.wakeLock={request:async()=>({released:false,addEventListener(){},release:async()=>{}})};await f.sensor.start();f.sensor.confirmPlacement();
+  const pose={alpha:32,...angles}, matrix=orientationMatrix(pose), gravity=matrix.slice(6).map(v=>v*9.81*sign);
+  f.host.emit('deviceorientation',pose);
+  const event={accelerationIncludingGravity:{x:gravity[0],y:gravity[1],z:gravity[2]}};
+  f.motion(event);assert.equal(f.sensor.requestTare(),'settling');
+  for(let t=20;t<=540;t+=20){f.time(t);f.motion(event);}
+  const s=f.sensor.summary();assert.equal(s.tared,true);assert.equal(s.tareState,'tared');assert.equal(s.mountSelected,false);
+  assert.equal(phoneSetup({sensor:s,link:{state:'connected'},hasPair:true}).action,'awake');
+  assert.ok(f.sensor.latest());assert.equal(f.sensor.latest().road,undefined);
+  const receiver=createMotionProtocol({role:'receiver',now:()=>540});
+  const phone=createMotionProtocol({role:'phone',now:()=>540,getPhone:()=>({summary:f.sensor.summary(),values:f.sensor.latest()})});
+  for(let i=0;i<3;i++)receiver.receive(phone.receive(receiver.poll()));
+  assert.equal(receiverSetup({...receiver.summary(),state:'connected'}).active,4);
+  await f.sensor.requestWake();
+  for(let i=0;i<3;i++)receiver.receive(phone.receive(receiver.poll()));
+  assert.equal(receiverSetup({...receiver.summary(),state:'connected'}).ready,true);
+  assert.equal(phoneSetup({sensor:f.sensor.summary(),link:{...phone.summary(),state:'connected'},hasPair:true}).ready,true);
+  f.sensor.dispose();
+ }
 });

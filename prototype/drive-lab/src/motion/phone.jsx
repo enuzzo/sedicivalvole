@@ -3,7 +3,7 @@ import { createPhoneSensors } from "./sensors.js";
 import { createMotionSession } from "./session.js";
 import { getFluxTheme } from "../flux-themes.js";
 import { resolveSemanticTheme } from "../semantic-theme.js";
-import { MotionQuality, MotionSteps, MotionReadings, MotionLiveStatus, SetupDisclosure, SetupMark } from "./motion-ui.jsx";
+import { MotionQuality, MotionSteps, MotionReadings, MotionLiveStatus, SetupDisclosure, SetupMark, MountChoice } from "./motion-ui.jsx";
 import { MotionTrace } from "./trace-view.jsx";
 import { motionPresentationFromSearch } from "./presentation.js";
 import { phoneSetup, setupEvidence, ended } from "./guided-setup.js";
@@ -44,7 +44,7 @@ export function MotionPhone({ createSensors = createPhoneSensors, createSession 
   const guide = phoneSetup({ link: snapshot, sensor, hasPair: Boolean(pair), attempted: attemptedRef.current });
   const summary = { ...snapshot, ...sensor };
   useEffect(() => { if (guide.ready && !completed) { setCompleted(true); setReview(false); } }, [guide.ready, completed]);
-  const requiresAction = sensor.sensorState !== "live" || !sensor.mountSelected || !sensor.tared || sensor.roadState !== "calibrated" || !sensor.wakeLock;
+  const requiresAction = sensor.sensorState !== "live" || !(sensor.placementConfirmed ?? sensor.mountSelected) || !sensor.tared || !sensor.wakeLock;
   const showSetup = !completed || review || requiresAction;
   const refresh = () => setSensor(sensorsRef.current?.summary() ?? {});
   const start = () => {
@@ -56,10 +56,10 @@ export function MotionPhone({ createSensors = createPhoneSensors, createSession 
     attemptedRef.current = true; void sessionRef.current?.start(pair);
   };
   const stop = () => { sensorsRef.current?.stop(); sessionRef.current?.stop(); setCompleted(false); setReview(false); setTrace(false); refresh(); setValues(null); };
-  const restart = () => { sensorsRef.current?.stop(); sensorsRef.current?.setMount(false); setCompleted(false); setReview(false); setTrace(false); setDetail(false); refresh(); setValues(null); };
+  const restart = () => { sensorsRef.current?.stop(); sensorsRef.current?.resetPlacement(); setCompleted(false); setReview(false); setTrace(false); setDetail(false); refresh(); setValues(null); };
   const actions = {
     sensors: start, connect,
-    position: () => { sensorsRef.current?.setMount(true); refresh(); },
+    position: () => { sensorsRef.current?.confirmPlacement(); refresh(); },
     zero: () => { sensorsRef.current?.requestTare(); refresh(); },
     awake: () => { void sensorsRef.current?.requestWake(); refresh(); },
   };
@@ -76,7 +76,7 @@ export function MotionPhone({ createSensors = createPhoneSensors, createSession 
       {showSetup ? <>
         <MotionSteps active={guide.active} done={setupEvidence(summary, true)}/>
         <div className="motion-focus-copy" role="status"><h1>{guide.title}</h1><p>{guide.hint}</p></div>
-        <div className="motion-focus-art"><img src={`/brand/phone-guide/${guide.active === 4 ? "awake" : guide.active >= 2 ? "zero" : guide.active === 1 ? "connect" : "scan"}.png`} alt=""/></div>
+        <div className="motion-focus-art"><img src={`/brand/phone-guide/${guide.active === 4 ? "awake" : guide.active >= 2 ? "zero-console" : guide.active === 1 ? "connect" : "scan"}.png`} alt=""/></div>
         <div className="motion-focus-action">
           {guide.action && <button className="motion-primary" onClick={actions[guide.action]}>{labels[guide.action]}</button>}
           {guide.active === 4 && !sensor.wakeLock && <p>{sensor.wakeState === "requesting" ? "Requesting screen wake…" : "Screen-awake lock not acquired"}</p>}
@@ -94,6 +94,8 @@ export function MotionPhone({ createSensors = createPhoneSensors, createSession 
     </div>
     {detail && <section className="motion-extra-details">
       <MotionQuality summary={summary}/>
+      <MountChoice selected={sensor.mountSelected} onChange={selected => { sensorsRef.current?.setMount(selected); refresh(); }}/>
+      <p>ZERO works in any orientation. Car-axis motion is optional: enable it only when the screen faces the cabin and the phone is aligned straight ahead, then set ZERO again. Otherwise GPS controls vehicle acceleration.</p>
       <p>{snapshot.state === "connected" ? "Display link open. Only fresh calibrated readings are live." : "This phone is not connected to the display."} GPS remains the speed source.</p>
       <p>Keep this page visible. Hiding or locking either screen ends this session. On the display, create a new QR to restart.</p>
       <button onClick={stop}>STOP SENSORS & CONNECTION</button><button onClick={download}>DOWNLOAD PHONE REPORT</button>

@@ -6,6 +6,7 @@ const vector = (value, keys) => keys.every((key) => finite(value?.[key])) ? keys
 
 export function createPhoneSensors({ host = window, doc = document, now = () => performance.now(), onEvent = () => {}, autoWake = true } = {}) {
   const pose = createPoseReference();
+  let placementConfirmed = false;
   let mountSelected = false, roadBasis = null, roadState = "not-selected";
   let state = "idle";
   let sample = null;
@@ -44,7 +45,7 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
     tareState = pose.tare(poseSample(), now());
     if (tareState === "tared") {
       counts.tareCount += 1;
-      roadBasis = mountSelected ? mountedBasis(sample.gravity) : null;
+      roadBasis = mountSelected ? mountedBasis(sample.gravity, orientation) : null;
       roadState = !mountSelected ? "not-selected" : roadBasis ? "calibrated" : "unsupported-pose";
     }
     onEvent("tare", summary());
@@ -118,7 +119,7 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
     const complete = Boolean(sample?.acceleration && sample?.rotation && orientation && orientationFresh);
     if (pose.tared && (!fresh || !complete)) { roadBasis = null; roadState = mountSelected ? "needs-zero" : "not-selected"; pose.clear(); tareState = "required"; }
     const mean = intervals.length ? intervals.reduce((sum, n) => sum + n, 0) / intervals.length : null;
-    return { mountSelected, roadState, sensorState: state === "live" ? !fresh ? "stale" : !complete ? "incomplete" : "live" : state,
+    return { placementConfirmed, mountSelected, roadState, sensorState: state === "live" ? !fresh ? "stale" : !complete ? "incomplete" : "live" : state,
       accelerometer: Boolean(sample?.acceleration), gyroscope: Boolean(sample?.rotation), orientation: Boolean(orientation && orientationFresh),
       tared: pose.tared, tareState: zeroDeadline === null ? tareState : "settling", tareReason, orientationEstimated, cadenceHz: mean ? 1000 / mean : 0,
       jitterMs: mean ? Math.sqrt(intervals.reduce((sum, n) => sum + (n - mean) ** 2, 0) / intervals.length) : 0,
@@ -153,6 +154,8 @@ export function createPhoneSensors({ host = window, doc = document, now = () => 
         if (autoWake) wake.start();
       } catch { if (token === generation) { state = "error"; onEvent("permission", summary()); } }
     },
+    confirmPlacement() { placementConfirmed = true; },
+    resetPlacement() { placementConfirmed = false; mountSelected = false; invalidate(); zeroDeadline = null; stableSince = null; },
     setMount(selected) { mountSelected = selected === true; invalidate(); zeroDeadline = null; stableSince = null; },
     tare: captureZero,
     requestTare() {

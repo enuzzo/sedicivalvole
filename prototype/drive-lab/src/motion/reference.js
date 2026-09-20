@@ -71,7 +71,10 @@ export function createPoseReference() {
       if (readiness === "unavailable") return "unavailable";
       if (readiness !== "ready") return "hold-still";
       reference = [...sample.orientation];
-      up = sample.gravity.map((n) => n / norm(sample.gravity));
+      // Core Motion may report downward gravity. Use orientation only to choose
+      // its polarity; retain the measured vertical, without guessing car heading.
+      const polarity = dot(sample.gravity, sample.orientation.slice(6)) < 0 ? -1 : 1;
+      up = sample.gravity.map((n) => polarity * n / norm(sample.gravity));
       generation += 1;
       return "tared";
     },

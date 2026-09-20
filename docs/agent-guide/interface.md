@@ -152,3 +152,16 @@ desktop Intro heading grows to 64 px; running chrome retains its fixed height.
 ## Mounted phone response — September 19
 
 The existing phone cell shows LIVE only for effective mounted road input, otherwise GPS/DEMO, at unchanged navbar dimensions. The existing panels explain connection/calibration/fallback. Phone adds explicit portrait-holder selection beside ZERO; TRACE stays available for other poses. See [the implementation contract](../PHONE-ROAD-INPUT-2026-09-19.md).
+
+## Any-pose companion and console artwork — September 20
+
+The owner clarified that ZERO must accept flat, upright, inclined, portrait and
+landscape placement, without a holder requirement. The existing wizard stays;
+placement confirmation no longer opts into vehicle axes. Optional aligned car
+motion lives in sensor details and requires its own explicit declaration and ZERO.
+The default placement/ZERO PNG now illustrates the inclined double-phone console
+tray shown in owner references, in the already-selected illustration style.
+The original clamp illustration remains available as zero.png; zero-console.png
+is the new default on both surfaces. This is an explicitly requested asset
+correction, not a new pending direction-selection gate. Reference photographs stay
+external; see [prompt and provenance](../design/phone-onboarding-2026-09-20/CONSOLE-PROMPT.md).

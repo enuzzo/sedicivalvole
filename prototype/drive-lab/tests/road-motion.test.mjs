@@ -28,7 +28,7 @@ test('declared portrait mount preserves acceleration/braking signs through incli
  }
 });
 test('unsupported mounting and tilt/shock reject road input',()=>{
- for(const gravity of [[0,0,9.81],[0,9.81,0],[9.81,0,0],[0,-7,7],[0,7,-7],null]) assert.equal(mountedBasis(gravity),null);
+ for(const gravity of [[0,0,9.81],[0,7,-7],null]) assert.equal(mountedBasis(gravity),null);
  const basis=mountedBasis([0,7,7]);
  for(const overrides of [{gravity:[0,0,9.81]},{rotation:[90,0,0]},{acceleration:[16,0,0]}]) assert.equal(mountedReading(basis,{gravity:[0,7,7],acceleration:[0,0,0],rotation:[0,0,0],...overrides}),null);
 });
@@ -66,4 +66,20 @@ test('source UI never treats connected or Demo as usable road sensors',()=>{
  assert.match(roadSourceLabel({source:'Demo',active:true,sample:sample()}),/phone excluded/);
  assert.match(roadSourceLabel({source:'GPS',active:true,link:{state:'connected'}}),/unavailable/);
  assert.equal(roadSourceLabel({source:'GPS',active:true,sample:sample()}),'Phone motion + GPS speed');
+});
+
+test('declared aligned mounts accept upright and landscape inclines with W3C or Core Motion gravity',()=>{
+ for(const pose of [{alpha:25,beta:90,gamma:0},{alpha:25,beta:40,gamma:0},{alpha:0,beta:0,gamma:50},{alpha:0,beta:0,gamma:-50}]) for(const sign of [1,-1]) {
+  const matrix=orientationMatrix(pose), up=matrix.slice(6), gravity=up.map(v=>v*9.81*sign);
+  const basis=mountedBasis(gravity,matrix);assert.ok(basis);
+  const expectedForward=applyRotation(matrix,basis.forward);
+  near(expectedForward[2],0);
+  const a=basis.forward.map(v=>v*3), rotation=up.map(v=>v*-12);
+  const result=mountedReading(basis,{gravity,acceleration:a,rotation});
+  near(result.longitudinalMps2,3);near(result.yawRate,-12);
+  assert.equal(mountedReading(basis,{gravity:gravity.map(v=>-v),acceleration:a,rotation}),null);
+ }
+ for(const pose of [{alpha:0,beta:0,gamma:0},{alpha:0,beta:180,gamma:0}]) {
+  const m=orientationMatrix(pose);assert.equal(mountedBasis(m.slice(6).map(v=>v*-9.81),m),null);
+ }
 });

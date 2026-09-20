@@ -34,6 +34,14 @@
       "width": 1254,
       "height": 1254,
       "pngColorType": 6
+    },
+    {
+      "file": "zero-console.png",
+      "bytes": 885477,
+      "sha256": "9241fc95e22ca7b51890d355006a6341cc047c4643ee760def9486de20b45d25",
+      "width": 1254,
+      "height": 1254,
+      "pngColorType": 6
     }
   ]
 }

@@ -3,19 +3,26 @@ const dot = (a, b) => a.reduce((s, x, i) => s + x * b[i], 0);
 const unit = v => v.map(x => x / Math.hypot(...v));
 const valid = v => Array.isArray(v) && v.length === 3 && v.every(Number.isFinite);
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-export function mountedBasis(gravity) {
+export function mountedBasis(gravity, orientation) {
   if (!valid(gravity) || Math.hypot(...gravity) < 7 || Math.hypot(...gravity) > 12) return null;
-  const up = unit(gravity);
-  // Portrait, top up, screen facing the cabin and tilted back. Flat/upright,
-  // landscape and inverted poses cannot establish this declared mount reliably.
-  if (Math.abs(up[0]) > 0.2 || up[1] < 0.25 || up[2] < 0.15) return null;
+  const measured = unit(gravity);
+  // Orientation disambiguates Core Motion's downward gravity from W3C proper
+  // acceleration. Never infer vehicle alignment from gravity: this is opt-in.
+  const vertical = Array.isArray(orientation) && orientation.length === 9 && orientation.every(Number.isFinite) ? orientation.slice(6) : measured;
+  const alignment = dot(measured, vertical);
+  if (Math.abs(alignment) < Math.cos(12 * Math.PI / 180)) return null;
+  const gravitySign = alignment < 0 ? -1 : 1;
+  const up = measured.map(v => v * gravitySign);
+  // Portrait/landscape and vertical are valid. A flat screen has no horizontal
+  // screen-normal direction; it still supports ordinary pose ZERO and TRACE.
+  if (up[2] < -0.05 || Math.hypot(up[0], up[1]) < 0.15) return null;
   const forward = unit([0, 0, -1].map((v, i) => v + up[2] * up[i]));
-  return { up, forward };
+  return { up, forward, gravitySign };
 }
 export function mountedReading(basis, sample) {
   if (!basis || !valid(sample?.gravity) || !valid(sample.acceleration) || !valid(sample.rotation)) return null;
   const g = Math.hypot(...sample.gravity);
-  if (g < 7 || g > 12 || dot(unit(sample.gravity), basis.up) < Math.cos(12 * Math.PI / 180)
+  if (g < 7 || g > 12 || dot(unit(sample.gravity).map(v => v * basis.gravitySign), basis.up) < Math.cos(12 * Math.PI / 180)
     || Math.hypot(...sample.rotation) > 80 || Math.hypot(...sample.acceleration) > 15) return null;
   return { longitudinalMps2: dot(sample.acceleration, basis.forward), yawRate: dot(sample.rotation, basis.up) };
 }

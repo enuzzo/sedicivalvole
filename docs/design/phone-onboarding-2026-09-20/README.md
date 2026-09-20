@@ -109,3 +109,14 @@ still open. The agent's visual/functional verification does not close that decis
 The repair and real-App gesture/focus correction are published as
 `20260920-1757.eb5eb91`: 38 browser checkpoints, 833 package hashes and sixteen
 canonical HTTPS checks pass. See the revision evidence linked above.
+
+## Owner correction: any-pose ZERO and console tray
+
+The owner reported physical setup blocked at ZERO, then explicitly required any
+stable orientation. Pose ZERO now advances independently of optional car-axis
+calibration; aligned car motion is an explicit choice in details. During a data
+gap the receiver keeps its pending step without claiming stale completion.
+The new original zero-console.png replaces the clamp as the default placement/ZERO
+illustration; zero.png is preserved. The owner photographs informed only geometry
+and are not distributed. See [generation prompt](CONSOLE-PROMPT.md) and
+[calibration contract](../../PHONE-ROAD-INPUT-2026-09-19.md).

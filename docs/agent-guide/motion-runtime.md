@@ -110,7 +110,7 @@ server, provider or clock synchronization is introduced. See
 ## Guided remote companion setup — September 20
 
 The selected remote phone flow separates sensor permission, explicit connection,
-confirmed portrait placement, calibrated mounted ZERO and an explicit screen-wake
+confirmed placement in any orientation, pose ZERO and an explicit screen-wake
 gesture. The local sensor owner keeps its existing wake-on-start default; only
 the remote companion defers wake to the final action. Actual wake acquisition,
 calibration and reciprocal fresh receipt are required for setup completion.
@@ -122,3 +122,16 @@ Receiver RTT is request/reply time, not synchronized one-way delay; stale RTT is
 not displayed as current. Phone telemetry renders only after setup; receiver live
 rows exist only while the drawer is mounted. The optional TRACE cube mounts only
 after setup and deliberate disclosure. No raw samples enter diagnostic reports.
+
+## Any-pose ZERO correction — September 20
+
+The owner's explicit correction supersedes portrait/holder gating for companion
+setup. ZERO accepts any stable pose with complete fresh sensors; it does not require
+car-axis calibration. Placement confirmation is separate from optional, default-off
+aligned car motion in details. Relative magnitude and vertical rotation are labeled
+as phone motion; forward/braking labels require actual admitted road values. GPS
+retains vehicle acceleration fallback when car alignment is unknown. Keep the
+500 ms settling window, eight-second deadline, 250 ms freshness, real wake lock
+and reciprocal receipt. Receiver delays retain only the current pending step index,
+never stale success checks or values. See the updated
+[calibration contract](../PHONE-ROAD-INPUT-2026-09-19.md).

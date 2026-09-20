@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
 import { SETUP_LABELS, receiverSetup, motionLiveStatus, setupEvidence, ended } from "./guided-setup.js";
 
@@ -24,10 +24,12 @@ export function MotionSteps({ active, done = [], labels = SETUP_LABELS }) {
 export function MotionReadings({ summary, values, phone = false }) {
   const live = motionLiveStatus(summary, phone);
   const road = live.fresh ? values?.road : null;
+  const relative = live.fresh && values ? values : null;
+  const magnitude = Array.isArray(relative?.acceleration) ? Math.hypot(...relative.acceleration) : null;
   const number = (n, digits) => Number.isFinite(n) ? `${n > 0 ? "+" : ""}${n.toFixed(digits)}` : "—";
   return <section className="motion-live-readings" aria-label="Live phone telemetry">
-    <div className="motion-live-row"><span className="motion-reading-icon motion-reading-acceleration" aria-hidden="true"/><span>Acceleration<small>Forward / braking</small></span><strong>{number(road?.longitudinalMps2, 2)} <small>m/s²</small></strong></div>
-    <div className="motion-live-row"><span className="motion-reading-icon motion-reading-rotation" aria-hidden="true"/><span>Rotation<small>Turn rate</small></span><strong>{number(road?.yawRate, 1)} <small>°/s</small></strong></div>
+    <div className="motion-live-row"><span className="motion-reading-icon motion-reading-acceleration" aria-hidden="true"/><span>Acceleration<small>{road ? "Forward / braking" : "Motion magnitude"}</small></span><strong>{number(road ? road.longitudinalMps2 : magnitude, 2)} <small>m/s²</small></strong></div>
+    <div className="motion-live-row"><span className="motion-reading-icon motion-reading-rotation" aria-hidden="true"/><span>Rotation<small>About vertical</small></span><strong>{number(road ? road.yawRate : relative?.turnRate, 1)} <small>°/s</small></strong></div>
     <dl className="motion-live-metrics">{!phone && <div><dt>ROUND TRIP</dt><dd>{live.rtt ?? "—"} <small>ms</small></dd></div>}<div><dt>DATA QUALITY</dt><dd>{live.quality}</dd></div>{phone && <div><dt>SCREEN</dt><dd>{summary.wakeLock ? "Awake" : "May sleep"}</dd></div>}</dl>
   </section>;
 }
@@ -46,7 +48,12 @@ export function MotionPanel({ snapshot, onStart, onStop, onClose, responseLabel,
   const [qr, setQr] = useState(null), [qrError, setQrError] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false), [review, setReview] = useState(false);
   const [completed, setCompleted] = useState(false);
-  const guide = receiverSetup(snapshot);
+  const pendingStep = useRef(1);
+  const guide = receiverSetup(snapshot, pendingStep.current);
+  useEffect(() => {
+    if (snapshot.dataFresh === true && guide.active >= 0 && guide.active < 5) pendingStep.current = guide.active;
+    if (["idle", "preparing", "pairing"].includes(snapshot.state) || ended(snapshot.state)) pendingStep.current = 1;
+  }, [snapshot.dataFresh, snapshot.state, guide.active]);
   useEffect(() => {
     if (guide.ready && !completed) { setCompleted(true); setReview(false); }
     else if (["idle", "preparing", "pairing"].includes(snapshot.state) || ended(snapshot.state)) setCompleted(false);
@@ -64,12 +71,12 @@ export function MotionPanel({ snapshot, onStart, onStop, onClose, responseLabel,
       } catch { setQrError(true); }
     }
   }, [snapshot.qrUrl]);
-  const needsAction = snapshot.dataFresh === true && (!snapshot.mountSelected || !snapshot.tared || snapshot.roadState !== "calibrated" || !snapshot.wakeLock);
+  const needsAction = snapshot.dataFresh === true && (!(snapshot.placementConfirmed ?? snapshot.mountSelected) || !snapshot.tared || !snapshot.wakeLock);
   const showSetup = !completed || review || needsAction;
   const restart = () => { setCompleted(false); setReview(false); onStop(); onStart(); };
   return <div className="motion-panel-content motion-guided-panel">
     <header><h2 id="motion-title">Connect your phone</h2><button className="motion-close" data-dialog-initial-focus onClick={onClose}><SetupMark kind="close"/>CLOSE</button></header>
-    <p className="motion-setup-intro">GPS for speed. Phone for acceleration + rotation.</p>
+    <p className="motion-setup-intro">GPS for driving. Phone for motion + rotation.</p>
     {completed && !needsAction && <SetupDisclosure expanded={review} onClick={() => setReview(v => !v)}/>}
     {showSetup ? <>
       <MotionSteps active={guide.active} done={setupEvidence(snapshot)}/>
@@ -78,7 +85,7 @@ export function MotionPanel({ snapshot, onStart, onStop, onClose, responseLabel,
           {(guide.restart || qrError) && <button className="motion-primary" onClick={restart}>CREATE NEW QR</button>}
         </div>
         {qr && snapshot.state === "pairing" ? <svg className="motion-qr" viewBox={`0 0 ${qr.size} ${qr.size}`} role="img" aria-label="Scan to pair this session with your phone" shapeRendering="crispEdges"><rect width={qr.size} height={qr.size} fill="#fff"/><path d={qr.path} fill="#000"/></svg>
-          : (!completed || needsAction) && <img className="motion-setup-art" src={`/brand/phone-guide/${guide.active < 1 ? "scan" : guide.active < 3 ? "connect" : guide.active === 3 ? "zero" : "awake"}.png`} alt=""/>}
+          : (!completed || needsAction) && <img className="motion-setup-art" src={`/brand/phone-guide/${guide.active < 1 ? "scan" : guide.active === 1 ? "connect" : guide.active < 4 ? "zero-console" : "awake"}.png`} alt=""/>}
       </div>
       {qrError && <p role="alert">QR could not be drawn. Create a new QR.</p>}
       {review && <ol className="motion-review-list"><li>On your phone: enable local sensors and allow access.</li><li>On your phone: tap CONNECT TO DISPLAY.</li><li>While parked: secure the phone, then confirm placement.</li><li>On your phone: tap ZERO and keep still.</li><li>On your phone: tap KEEP SCREEN AWAKE and wait for confirmation.</li></ol>}
@@ -97,6 +104,7 @@ export function MotionQuality({ summary = {} }) {
     {summary.role === "receiver" && <div><dt>Sensor data</dt><dd>{summary.dataFresh ? "FRESH" : "WAITING / DELAYED"}<small>Only fresh calibrated motion can control response.</small></dd></div>}
     <div><dt>Acceleration / Gyro</dt><dd>{summary.accelerometer ? "YES" : "—"} / {summary.gyroscope ? "YES" : "—"}<small>{summary.sensorState ?? "not connected"}</small></dd></div>
     <div><dt>Zero</dt><dd>{summary.tared ? "SET" : "REQUIRED"}</dd></div>
+    <div><dt>Car motion</dt><dd>{summary.mountSelected && summary.tared && summary.sensorState === "live" && summary.dataFresh !== false && summary.roadState === "calibrated" ? "ALIGNED" : summary.mountSelected ? "GPS · alignment unavailable" : "GPS · not enabled"}</dd></div>
     <div><dt>Cadence</dt><dd>{summary.cadenceHz > 0 ? `${summary.cadenceHz.toFixed(1)} Hz` : "—"}</dd></div>
     <div><dt>Transport</dt><dd>{summary.transport === "https" ? "HTTPS · ENCRYPTED" : summary.transport === "direct" ? "LOCAL · WEBRTC" : "THIS DEVICE"}</dd></div>
     <div><dt>Round trip</dt><dd>{summary.received > 0 ? `${summary.rttMs?.toFixed(1)} ms` : "—"}</dd></div>
@@ -104,7 +112,7 @@ export function MotionQuality({ summary = {} }) {
 }
 
 export function MountChoice({ selected, onChange }) {
-  return <label className="motion-mount-choice"><input type="checkbox" checked={selected === true} onChange={event => onChange(event.target.checked)}/><span>Portrait in car holder<small>Top up · screen toward cabin · aligned straight ahead. Park, then ZERO. Uncheck when handheld.</small></span></label>;
+  return <label className="motion-mount-choice"><input type="checkbox" checked={selected === true} onChange={event => onChange(event.target.checked)}/><span>Use aligned car motion<small>Optional: screen toward cabin, aligned straight ahead, fixed in place. Portrait or landscape; upright or inclined. Enable, then ZERO.</small></span></label>;
 }
 export function MotionSourceStatus({ label }) {
   return <p className="local-source-status motion-effective-source" role="status">{label}</p>;
