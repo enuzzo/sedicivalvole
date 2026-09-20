@@ -15,7 +15,7 @@ import { useLaunchPreload } from "./use-launch-preload.js";
 import { preloadLaunchEngine, preloadLaunchVisual } from "./launch-preload.js";
 import { MediaGlyph } from "./media-glyph.jsx";
 import { RecoveringArtwork, useRecoveringArtwork } from "./recovering-artwork.jsx";
-import { createAutomaticDiagnosticClock, readDiagnosticPreferences, diagnosticDeliveryControl, selectDiagnosticMode, DIAGNOSTIC_PREFERENCES_KEY, DIAGNOSTIC_CLOCK_KEY } from "./automatic-diagnostics.js";
+import { createAutomaticDiagnosticClock, readDiagnosticPreferences, diagnosticDeliveryControl, selectDiagnosticMode, DIAGNOSTIC_PREFERENCES_KEY } from "./automatic-diagnostics.js";
 import { PhoneRotationNotice, usePhoneLayout } from "./phone-cockpit.jsx";
 import { observeSessionStats } from "./environments/atlas/session-stats.js";
 import { createSessionExperience, observeSessionExperience, sessionExperienceSnapshot } from "./reports/session-experience.js";
@@ -3742,6 +3742,7 @@ export function App() {
 
   const resetSavedState = useCallback(() => {
     setDiagnosticPreferences({ mode: "dev", automatic: true });
+    automaticClockRef.current.forget();
     setLaunchExperienceId(null);
     transportActionQueueRef.current.invalidate();
     musicModeRevisionRef.current += 1;
@@ -3750,7 +3751,6 @@ export function App() {
       localStorage.removeItem(PREFERENCES_KEY);
       localStorage.removeItem(LEGACY_PREFERENCES_KEY);
       localStorage.removeItem(DIAGNOSTIC_PREFERENCES_KEY);
-      localStorage.removeItem(DIAGNOSTIC_CLOCK_KEY);
       localStorage.removeItem("sedicivalvole.session-report-recipient.v1");
     } catch {
       // Reset remains useful even when storage access is unavailable.

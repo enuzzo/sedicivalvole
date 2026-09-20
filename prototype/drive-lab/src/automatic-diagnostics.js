@@ -91,6 +91,14 @@ export function createAutomaticDiagnosticClock({ storage = null } = {}) {
       busy = true; status = 'sending'; reason = 'hide-flush';
     },
     abortFlush() { busy = false; reason = null; status = 'waiting'; },
+    /** Reset Saved State reaches this clock while the session runs, so dropping the stored record is not enough:
+     *  the unsent progress must go too, or the next tick would simply write the same counters back. */
+    forget() {
+      clearStore(); try { storage?.removeItem(DIAGNOSTIC_CLOCK_KEY); } catch {}
+      activeMs = 0; ownMs = 0; attempts = 0; retryAt = 0; restored = false;
+      anchorWall = lastWall; lastPersistWall = lastWall ?? 0;
+      if (status !== 'off') status = 'waiting';
+    },
     /** Optimistic: a keepalive request cannot report back, and the server's own floor prevents duplicates. */
     completeFlush() { busy = false; reason = null; flushes++; activeMs = 0; ownMs = 0; attempts = 0; retryAt = 0; status = 'flushed'; anchorWall = lastWall; clearStore(); },
     persist,

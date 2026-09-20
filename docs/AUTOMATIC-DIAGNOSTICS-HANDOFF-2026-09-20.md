@@ -1,6 +1,13 @@
 # Automatic diagnostics catch-up — verification handoff, September 20, 2026
 
-**Status: implemented and committed locally, NOT pushed, NOT built, NOT published.**
+> **Superseded on September 20 by the verification pass this document asked for.**
+> The work was reviewed adversarially, two defects were fixed test-first, and the full suite,
+> production build and browser end-to-end all ran. Read the
+> [implementation and verification handoff](VERIFICATION-HANDOFF-2026-09-20.md) and the
+> [QA evidence](qa/2026-09-20-automatic-catch-up/README.md) instead. This document is kept for the
+> investigation record and the review checklist it contains; its status line below is historical.
+
+**Status at the time of writing: implemented and committed locally, NOT pushed, NOT built, NOT published.**
 Focused tests pass (27/27 across the clock and endpoint suites). The full native suite,
 a production build and a real-browser end-to-end check were **not** run in the session
 that wrote this (see [Why the full suite did not run](#why-the-full-suite-did-not-run)).

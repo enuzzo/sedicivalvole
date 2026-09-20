@@ -1,0 +1,33 @@
+Full native suite, isolated Intel copy, node v24.14.0, php 8.5.10
+Commands: npm run build:native (first, dist/ is read by two suites), then
+          npm run test:native and npm run test:sites
+Run against the final tree, with both review fixes in place.
+
+Per group (tests / pass / fail):
+ℹ tests 13	ℹ pass 13	ℹ fail 0
+ℹ tests 16	ℹ pass 16	ℹ fail 0
+ℹ tests 14	ℹ pass 14	ℹ fail 0
+ℹ tests 18	ℹ pass 18	ℹ fail 0
+ℹ tests 10	ℹ pass 10	ℹ fail 0
+ℹ tests 8	ℹ pass 8	ℹ fail 0
+ℹ tests 4	ℹ pass 4	ℹ fail 0
+ℹ tests 11	ℹ pass 11	ℹ fail 0
+ℹ tests 30	ℹ pass 30	ℹ fail 0
+ℹ tests 892	ℹ pass 891	ℹ fail 1
+
+test:native subtotal   tests 1016  pass 1015  fail 1
+test:sites             tests    9  pass    9  fail 0
+TOTAL                  tests 1025  pass 1024  fail 1
+
+The single failure is a host gate, unrelated to the change under review:
+  tests/deploy-audio-identity.test.mjs
+    'an invalid configured FTP port never appears in deployment output'
+  scripts/deploy_drive_lab_ftp.py returns
+    configuration=FAIL reason=python_3_11_or_newer_is_required
+  before it ever evaluates the port. This host has Python 3.9.6 only, and commit 7fec6ff
+  touches neither that script nor that test. The same limit means canonical publication
+  cannot run from this Mac.
+
+The shared Dropbox checkout cannot run this suite at all: npm test stops at
+test:engine-road with "Cannot find package 'esbuild'", because the ignored node_modules
+symlink points at the Apple-silicon cache. The symlink was not repointed or recreated.

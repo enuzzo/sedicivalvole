@@ -1,0 +1,78 @@
+{
+  "capturedAt": "2026-09-20T14:30:00Z",
+  "note": "Delivery and transport blocks of the requests the running production build actually issued. Bodies were recorded in-page; no request reached any server and no mail was possible (the static host serves the PHP file as text).",
+  "build": "20260920-1412.7fec6ff",
+  "packets": [
+    {
+      "file": "01-catch-up.json",
+      "schema": "sedicivalvole.tesla-diagnostic.v4",
+      "actualBodyBytes": 54382,
+      "diagnosticDelivery": {
+        "mode": "dev",
+        "automaticEnabled": true,
+        "timeBasis": "active-visible-session",
+        "intervalActiveMs": 900000,
+        "activeMs": 148304,
+        "totalActiveMs": 327508,
+        "unobservedMs": 1018246,
+        "wallElapsedMs": 1166549,
+        "deliveryReason": "catch-up",
+        "restored": true,
+        "flushes": 0,
+        "attempts": 0,
+        "accepted": 0,
+        "status": "sending",
+        "trigger": "automatic"
+      },
+      "transport": {
+        "maximumRequestBodyBytes": 1966080,
+        "trimmingTargetBytes": 1957888,
+        "originalSamples": 96,
+        "originalEvents": 18,
+        "originalRuntimeIssues": 0,
+        "requestBodyBytes": 54382,
+        "transmittedSamples": 96,
+        "transmittedEvents": 18,
+        "transmittedRuntimeIssues": 0
+      },
+      "phpValidDiagnosticDelivery": "accepted",
+      "phpContainsForbiddenCoordinateKey": false
+    },
+    {
+      "file": "02-hide-flush.json",
+      "schema": "sedicivalvole.tesla-diagnostic.v4",
+      "actualBodyBytes": 43625,
+      "diagnosticDelivery": {
+        "mode": "dev",
+        "automaticEnabled": true,
+        "timeBasis": "active-visible-session",
+        "intervalActiveMs": 900000,
+        "activeMs": 155000,
+        "totalActiveMs": 482508,
+        "unobservedMs": 1018246,
+        "wallElapsedMs": 515904,
+        "deliveryReason": "hide-flush",
+        "restored": true,
+        "flushes": 0,
+        "attempts": 0,
+        "accepted": 1,
+        "status": "sending",
+        "trigger": "automatic"
+      },
+      "transport": {
+        "maximumRequestBodyBytes": 60000,
+        "trimmingTargetBytes": 51808,
+        "originalSamples": 174,
+        "originalEvents": 26,
+        "originalRuntimeIssues": 0,
+        "requestBodyBytes": 43604,
+        "transmittedSamples": 30,
+        "transmittedEvents": 26,
+        "transmittedRuntimeIssues": 0,
+        "compactClose": true
+      },
+      "phpValidDiagnosticDelivery": "accepted",
+      "phpContainsForbiddenCoordinateKey": false
+    }
+  ]
+}

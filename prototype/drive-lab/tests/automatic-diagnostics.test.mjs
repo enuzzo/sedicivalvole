@@ -1,6 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { createAutomaticDiagnosticClock, readDiagnosticPreferences, selectDiagnosticMode, diagnosticDeliveryControl } from '../src/automatic-diagnostics.js';
+import { readFileSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createAutomaticDiagnosticClock, readDiagnosticPreferences, selectDiagnosticMode, diagnosticDeliveryControl, DIAGNOSTIC_CLOCK_KEY } from '../src/automatic-diagnostics.js';
 const live={running:true,enabled:true,online:true,visible:true,moving:true};
 function dueClock(){const c=createAutomaticDiagnosticClock();for(let t=0;t<=900000;t+=1000)c.update(live,t);return c;}
 test('development defaults are explicit and a saved OFF or Standard survives reload',()=>{
@@ -219,4 +222,26 @@ test('after a reload nothing is sent until the new page holds its own data', () 
   flushy.update({ ...live, wallNow: hoursLater }, 0);
   for (let s = 1; s <= 100; s += 1) flushy.update({ ...live, wallNow: hoursLater + s * 1000 }, s * 1000);
   assert.equal(flushy.canFlush(hoursLater + 100000), false, 'restored progress alone never justifies a close-time report');
+});
+
+test('RESET SAVED STATE forgets the persisted clock instead of rewriting it seconds later', () => {
+  const storage = memoryStorage();
+  const clock = createAutomaticDiagnosticClock({ storage });
+  for (let t = 0; t <= 600000; t += 1000) clock.update(liveW(t), t);
+  assert.ok(JSON.parse(storage.getItem(DIAGNOSTIC_CLOCK_KEY)).activeMs >= 595000, 'a running session persists progress');
+  // The drawer that holds RESET SAVED STATE is reachable while the session runs, so the clock keeps ticking after it.
+  clock.forget();
+  assert.equal(storage.getItem(DIAGNOSTIC_CLOCK_KEY), null, 'the reset clears the stored record');
+  assert.equal(clock.snapshot().activeMs, 0, 'the reset also drops unsent in-memory progress');
+  assert.equal(clock.snapshot().restored, false);
+  for (let t = 601000; t <= 615000; t += 1000) clock.update(liveW(t), t);
+  const rewritten = storage.getItem(DIAGNOSTIC_CLOCK_KEY);
+  assert.ok(rewritten === null || JSON.parse(rewritten).activeMs <= 15000, 'the pre-reset progress never comes back');
+  assert.equal(clock.canFlush(W0 + 615000), false, 'a reset session cannot immediately flush the forgotten activity');
+});
+
+test('the reset control clears the clock through the clock, not only through storage', () => {
+  const app = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), '../src/App.jsx'), 'utf8');
+  const reset = app.slice(app.indexOf('const resetSavedState'), app.indexOf('resetAppearancePreference()'));
+  assert.match(reset, /automaticClockRef\.current\.forget\(\)/, 'resetSavedState must forget the running clock');
 });

@@ -172,3 +172,21 @@ test("the mail names why an automatic report was sent", async () => {
   const plain = Buffer.from((await buildMailWithPhp({ ...report, diagnosticDelivery: { trigger: "manual", mode: "dev" } })).message, "base64").toString("utf8").replaceAll("\r\n", "\n");
   assert.doesNotMatch(plain, /Reason:/);
 });
+
+test("a manual packet cannot smuggle free text into the mail through deliveryReason", () => {
+  const manual = (delivery) => phpEval("$r=json_decode(stream_get_contents(STDIN),true); echo validDiagnosticDelivery($r) ? 'yes' : 'no';", { diagnosticDelivery: { mode: "dev", trigger: "manual", automaticEnabled: true, ...delivery }, privacy: { automaticRemoteTelemetry: true, transmissionRequiresExplicitGesture: false } }) === "yes";
+  assert.equal(manual({}), true, "a manual report without a reason stays valid");
+  assert.equal(manual({ deliveryReason: null }), true);
+  assert.equal(manual({ deliveryReason: "interval" }), true, "a known reason on a manual packet is harmless");
+  // The Reason: line is written into the mail summary verbatim, so an unknown reason must never reach it.
+  assert.equal(manual({ deliveryReason: "burst" }), false);
+  assert.equal(manual({ deliveryReason: "x\r\nPrivacy: coordinates were collected and stored." }), false);
+  assert.equal(manual({ deliveryReason: 42 }), false);
+});
+
+test("the mail summary keeps exactly one Reason line and no injected lines", async () => {
+  const report = { generatedAt: "2026-09-20T10:00:00.000Z", app: { build: "b" }, diagnosticDelivery: { trigger: "automatic", mode: "dev", deliveryReason: "hide-flush" } };
+  const mail = Buffer.from((await buildMailWithPhp(report)).message, "base64").toString("utf8").replaceAll("\r\n", "\n");
+  assert.equal(mail.split("\n").filter((line) => line.startsWith("Reason: ")).length, 1);
+  assert.equal(mail.split("\n").filter((line) => line.startsWith("Privacy: ")).length, 1);
+});

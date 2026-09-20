@@ -1,0 +1,13 @@
+Production build, isolated Intel copy, run against the final tree
+Command: GIT_DIR=<repo>/.git npm run build:native
+GIT_DIR points read-only at the checkout so the build key carries the real commit;
+the isolated tree deliberately has no .git of its own, and without this the key would
+become <stamp>.unknown and fail BUILD_KEY in verify-session-release.mjs.
+
+✓ 354 modules transformed.
+✓ built in 7.70s
+✓ 187 modules transformed.
+✓ built in 3.44s
+Packaged protected inline LAB with 2 audio runtime assets
+Prepared Sites build: dist/server/index.js and dist/.openai/hosting.json
+PASS release 20260920-1431.7fec6ff: 827 exact static hashes; VERSION and HTML identity match

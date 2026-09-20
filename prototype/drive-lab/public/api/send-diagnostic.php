@@ -47,9 +47,11 @@ function validDiagnosticDelivery(array $report): bool
     if (!is_array($delivery) || !in_array($delivery['mode'] ?? null, ['standard', 'dev'], true)
         || !in_array($delivery['trigger'] ?? null, ['manual', 'automatic'], true)
         || !is_bool($delivery['automaticEnabled'] ?? null)) return false;
-    if ($delivery['trigger'] === 'manual') return true;
+    // The reason is copied verbatim into the mail summary, so it is whitelisted for every trigger,
+    // before manual packets take their shortcut.
     $reason = $delivery['deliveryReason'] ?? null;
     if ($reason !== null && !in_array($reason, ['interval', 'catch-up', 'hide-flush'], true)) return false;
+    if ($delivery['trigger'] === 'manual') return true;
     if ($reason === 'catch-up' || $reason === 'hide-flush') {
         // A frozen page delivers late (catch-up) or a closing page delivers what it has (hide-flush).
         // Both still name the active-session basis and prove unsent activity plus enough wall time.
