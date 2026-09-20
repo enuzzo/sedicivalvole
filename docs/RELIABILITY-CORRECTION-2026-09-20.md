@@ -56,7 +56,7 @@ official `python3.11` deployment command. The shared dependency symlink stays un
 
 Regression tests reproduced the original intermediate-latency status/cadence fault and
 the lost unconfirmed flush before the fixes. Focused clock/endpoint checks pass 34/34;
-motion protocol/companion checks pass 53/53. The final complete native suite passes
+motion protocol/companion checks pass 53/53. The initial complete native suite passes
 1,030/1,030, credits pass 189 entries, and the production package passes 827 exact static
 hashes. Public hygiene and whitespace checks pass.
 
@@ -100,5 +100,31 @@ A controlled 50 ms HTTP latency regression also exposed an avoidable fixed-delay
 this first correction. The follow-up removes the unconditional 22 ms wait and uses bounded
 HTTP 429 backoff instead, preserving the pending reply after rejection. Both the 50 ms
 continuity case and three consecutive rate refusals failed before this follow-up and pass
-afterward. Server limits, encrypted envelopes and 250 ms freshness remain unchanged. Final
-follow-up production/browser checks and publication are pending.
+afterward. Server limits, encrypted envelopes and 250 ms freshness remain unchanged. The final follow-up native suite passes 1,031/1,031 and production build
+`20260920-1540.2bf4cb6` passes 827 exact hashes. The real local PHP/browser path passes
+30/30 LIVE observations, mutual ZERO, Engine source, delayed-data fallback and STOP.
+The 50 ms controlled-latency regression and bounded rate-refusal recovery both pass.
+
+Two 60-second candidate-browser trials against the canonical PHP endpoint produce 110/120
+and 111/120 LIVE observations. They **do not meet the 95% continuity target**. In the second,
+1,533 receiver requests have median 36.6 ms, p95 39.4 ms, p99 84.6 ms and maximum 671.3 ms
+HTTP duration; four page long tasks include startup (maximum 361 ms). Receiver aggregate
+maximum request-to-sample RTT reaches 745.5 ms (1,410.1 ms in the first trial), exceeding the
+250 ms acceptance deadline. The channel stays connected and stale values are excluded.
+The final candidate is published for its verified protocol/delivery fixes and improved
+controlled-latency behavior; reliable physical-network continuity is explicitly **OPEN**,
+not inferred from successful pairing or occasional fresh samples. No benchmark threshold
+was lowered, no stale data was relabeled as fresh, and no synthetic diagnostic mail was sent.
+
+The next owner check is a refreshed iPhone and display, a new QR and mounted ZERO while
+parked, then actual acceleration/gyro reception and first automatic inbox receipt. Record
+this build and both peer summaries. If real-network continuity still fails, investigate the
+transport path against these observed latency bounds before changing sensing or loosening
+freshness; the current HTTP relay has an unavoidable multi-hop latency cost. Canonical
+activation for `20260920-1540.2bf4cb6` passes official identity and completed-upload
+verification: 38 files / 6,503,904 bytes, 825 static files and 29 full-hash recordings reused,
+one previous entry asset retained, ROOT_UPLOAD_ONLY. Ten HTTPS checks verify bare,
+cache-busted and reloaded HTML, referenced bundles, cache policy and API boundaries.
+The public browser confirms the exact release, compact Engine, controlled reload and
+unpaired phone entry, without page exceptions or diagnostic requests. Continuity and
+first real automatic inbox acceptance remain open as stated above.

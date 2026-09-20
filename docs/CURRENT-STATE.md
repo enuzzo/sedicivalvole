@@ -1,13 +1,25 @@
 # Current Project State
 
-## Diagnostic and companion reliability correction — September 20 (verified locally; publication next)
+## Diagnostic and companion reliability correction — September 20 (published; continuity acceptance open)
 
-The owner authorized keeping verified September 20 work, correcting remaining defects, and
-canonical publication after gates. Diagnostics retain unconfirmed attempts and use bounded
-server receipts; HTTPS motion pipelines fresh requests and separates connection from usable
-data. No freshness deadline, speed authority or physical acceptance is relaxed. See
-[correction and evidence](RELIABILITY-CORRECTION-2026-09-20.md). The section below records the
-previous checkpoint; its optimistic flush and host-Python limitation are superseded.
+Canonical **20260920-1540.2bf4cb6** is published with the verified diagnostics correction and
+bounded HTTPS pacing/backpressure follow-up. Diagnostics preserve unconfirmed work across
+reloads, count only server acceptance, and deduplicate confirmed retries. The companion
+separates connection from fresh input, pipelines matching requests, and retains 250 ms
+freshness and GPS speed/fallback. Native **1,031/1,031**, production **827** hashes, real local
+PHP/browser recovery and motion flows, official publication and ten canonical HTTPS checks
+pass. No synthetic diagnostic mail was sent.
+
+**Sustained physical-network continuity is not closed.** Two one-minute candidate trials
+against the public relay reach 110/120 and 111/120 LIVE observations, below the 95% target,
+with significant latency outliers. The channel remains connected and stale motion falls
+back to GPS. Do not present pairing success as uninterrupted input or physical acceptance.
+The next check is refreshed iPhone/display, a new QR and mounted ZERO while parked, actual
+acceleration/gyro reception, then the first real automatic inbox receipt. See
+[correction, latency evidence and next steps](RELIABILITY-CORRECTION-2026-09-20.md).
+
+The following section is historical: its optimistic flush and host-Python limitation are
+superseded by this correction.
 
 ## Automatic diagnostics catch-up — September 20 (verified and pushed, not published)
 
