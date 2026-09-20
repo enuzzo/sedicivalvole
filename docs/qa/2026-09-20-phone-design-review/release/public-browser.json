@@ -1,0 +1,19 @@
+{
+  "release": "20260920-1757.eb5eb91",
+  "browser": "Codex integrated Chromium",
+  "viewport": [
+    1149,
+    1101
+  ],
+  "panelWidth": 640,
+  "checks": [
+    "canonical build identity",
+    "platform-neutral fresh QR instructions",
+    "details opens and closes",
+    "optional local-sensor action visible under capability gate",
+    "cancel revokes pairing and shows new QR recovery"
+  ],
+  "consoleWarningsOrErrors": 0,
+  "screenshots": "Only synthetic QR fixtures retained; no public QR capability saved",
+  "physicalAcceptance": "open"
+}

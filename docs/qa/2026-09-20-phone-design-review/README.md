@@ -76,3 +76,32 @@ App with external requests blocked and API failures simulated; it sends no mail,
 requests no GPS and does not acquire real sensors or wake lock. Re-run against the
 final compiled build before activation. This gate supplements, not replaces, the
 32-state visual comparison. The previous 1746 package was not published.
+
+## Final local release gate
+
+Source `eb5eb91`, package `20260920-1757.eb5eb91`: 833 exact static hashes, protected
+LAB and Sites package verified. Six real-App rendered checks pass on this compiled
+package, including the corrected SVG/disclosure, local mode, Escape and drag paths;
+zero page errors. [Compiled evidence](release/compiled-browser.json).
+Final docs 8/8, credits 189/189 and public hygiene 1,595 text files pass. The
+[read-only publisher preflight](release/preflight.txt) passes identity/directory gates
+with remote_writes=NONE. Official preserve-existing publication completed; its
+completion and canonical proof are recorded separately below.
+
+## Canonical publication
+
+**20260920-1757.eb5eb91** is published through the official preserve-existing FTP
+publisher: 38 files / 6,513,791 bytes, 831 static files and all 29 recordings verified
+and reused, two previous assets retained, ROOT_UPLOAD_ONLY. See
+[publication record](release/publication.txt). All sixteen
+[canonical HTTPS checks](release/canonical.json) pass: bare root, cache-busted root,
+controlled reload, exact local/live assets, no-store policy and motion API rejection
+boundaries. No diagnostic mail was sent.
+
+At the normal integrated preview size 1149 x 1101, the synthetic receiver panel is
+640 x 535 CSS pixels, centered vertically at the right rather than filling the window.
+The [public browser](release/public-browser.json) confirms the new build, 640 px drawer,
+platform-neutral fresh QR guidance, disclosure open/close, capability-gated local option
+and cancellation recovery, with zero observed console warnings/errors.
+Owner aesthetic approval, actual smartphone wake retention, mounted signs, sustained
+phone/Tesla continuity and first real automatic inbox receipt remain separate and open.

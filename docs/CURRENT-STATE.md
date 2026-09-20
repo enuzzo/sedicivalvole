@@ -1,6 +1,6 @@
 # Current Project State
 
-## Smartphone design refinement — September 20 (local verification complete)
+## Smartphone design refinement — September 20 (published; owner/physical acceptance open)
 
 The selected phone wizard and receiver layout have been repaired after owner review:
 compact intrinsic drawer, aligned controls/disclosure, clearer hierarchy, connected
@@ -13,7 +13,9 @@ Local regression covers 1,036 checks after correcting the Python QA environment;
 32 browser checkpoints cover LIGHT/DARK at 773 x 601, 390 x 760 and 320 x 568.
 Reference/render comparison is recorded in the [fidelity ledger](../design-qa.md)
 and [revision evidence](qa/2026-09-20-phone-design-review/README.md).
-Canonical publication is pending this checkpoint. Owner visual acceptance and actual
+Canonical **20260920-1757.eb5eb91** is published: 833 exact production hashes, six
+additional real-App gesture/focus checks, official preserve-existing FTP and sixteen
+canonical HTTPS identity/hash/cache/API checks pass. Owner visual acceptance and actual
 phone/Tesla wake/continuity remain open; previous publication is recorded below.
 
 ## Guided phone onboarding — September 20 (published; physical acceptance open)

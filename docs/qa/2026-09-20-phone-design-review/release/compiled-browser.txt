@@ -1,0 +1,6 @@
+PASS compiled phone entry exposes platform-neutral sensor action
+PASS pointer click on the disclosure SVG expands details
+PASS keyboard disclosure and preserved local-sensor handler work
+PASS Escape closes and restores the previous surface
+PASS pointer click on the close SVG closes the drawer
+PASS non-control drag still dismisses the drawer

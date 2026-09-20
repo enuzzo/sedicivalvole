@@ -1,0 +1,11 @@
+{
+  "checks": [
+    "compiled phone entry exposes platform-neutral sensor action",
+    "pointer click on the disclosure SVG expands details",
+    "keyboard disclosure and preserved local-sensor handler work",
+    "Escape closes and restores the previous surface",
+    "pointer click on the close SVG closes the drawer",
+    "non-control drag still dismisses the drawer"
+  ],
+  "pageErrors": []
+}

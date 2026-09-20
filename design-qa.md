@@ -96,3 +96,9 @@ Actual App QA caught the gesture surface intercepting Connection details, unlike
 isolated fixture. Fixed native summary/SVG target exclusion and refocused remote/local
 panel swaps. The final release gate includes a dedicated rendered regression covering
 real disclosure, local mode, keyboard Escape, close-icon and non-control drag paths.
+
+
+Current canonical publication is `20260920-1757.eb5eb91`. All sixteen HTTPS checks
+and the public browser smoke pass, with zero observed console warnings/errors.
+The selected layout was faithfully verified against the reference under the stated
+system/truth constraints; owner judgement and physical acceptance remain open.

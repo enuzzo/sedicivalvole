@@ -1,0 +1,3 @@
+Packaged protected inline LAB with 2 audio runtime assets
+Prepared Sites build: dist/server/index.js and dist/.openai/hosting.json
+PASS release 20260920-1757.eb5eb91: 833 exact static hashes; VERSION and HTML identity match

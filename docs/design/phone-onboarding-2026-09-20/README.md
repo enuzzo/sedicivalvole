@@ -105,3 +105,7 @@ accent-colored admitted telemetry icons. Generic instructions use phone/page/bro
 Alternative local sensing moves inside Connection details, keeping the same capability
 gate and handler. The selected arrangement remains; owner aesthetic acceptance is
 still open. The agent's visual/functional verification does not close that decision.
+
+The repair and real-App gesture/focus correction are published as
+`20260920-1757.eb5eb91`: 38 browser checkpoints, 833 package hashes and sixteen
+canonical HTTPS checks pass. See the revision evidence linked above.
