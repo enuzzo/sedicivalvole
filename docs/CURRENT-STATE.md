@@ -13,7 +13,7 @@ capability expiry remain strict. Browser QA passes sixteen checkpoints including
 both contexts offline for over thirty seconds and recovery without QR/ZERO/gestures.
 All 1,053 native tests, dependency credits and public hygiene pass.
 See [network contract and evidence](PHONE-NETWORK-RECOVERY-2026-09-20.md). Publication
-identity follows. Earlier canonical continuity and physical limits remain open.
+identity follows; implementation checkpoint `4e1f16b` is committed and pushed. Earlier canonical continuity and physical limits remain open.
 
 ## Phone integration repair — September 20 (candidate verified; publication pending)
 
