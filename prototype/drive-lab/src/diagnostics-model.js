@@ -1090,6 +1090,31 @@ function serializedRequestUtf8Bytes(report) {
   return new TextEncoder().encode(JSON.stringify({ schema: report.schema, report })).byteLength;
 }
 
+/** Browsers cap in-flight keepalive request bodies at 64 KiB; stay comfortably below it. */
+export const DIAGNOSTIC_KEEPALIVE_BODY_BYTES = 60000;
+
+/**
+ * Compact packet for a request that must leave while the page is being hidden or closed.
+ * Recent events and samples are pre-selected cheaply because this runs synchronously in a lifecycle handler.
+ * Returns null when even the trimmed packet cannot fit, so nothing oversized is ever attempted.
+ */
+export function fitDiagnosticReportForKeepalive(report) {
+  const events = report.events ?? [];
+  const samples = report.flightRecorder?.samples ?? [];
+  const compact = {
+    ...report,
+    events: events.filter((event) => event?.priority !== "sample").slice(-40),
+    runtimeIssues: (report.runtimeIssues ?? []).slice(-4),
+    flightRecorder: report.flightRecorder ? { ...report.flightRecorder, samples: samples.slice(-30) } : null,
+  };
+  const fitted = fitDiagnosticReportForTransport(compact, DIAGNOSTIC_KEEPALIVE_BODY_BYTES);
+  fitted.transport.compactClose = true;
+  fitted.transport.originalSamples = samples.length;
+  fitted.transport.originalEvents = events.length;
+  fitted.transport.originalRuntimeIssues = (report.runtimeIssues ?? []).length;
+  return fitted.transport.requestBodyBytes <= DIAGNOSTIC_KEEPALIVE_BODY_BYTES ? fitted : null;
+}
+
 export function fitDiagnosticReportForTransport(report, maximumBytes = DIAGNOSTIC_MAX_REQUEST_BODY_BYTES) {
   const trimmingTargetBytes = Math.max(0, maximumBytes - 8192);
   const originalSamples = report.flightRecorder?.samples?.length ?? 0;

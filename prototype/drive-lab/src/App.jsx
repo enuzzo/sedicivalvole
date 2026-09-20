@@ -15,7 +15,7 @@ import { useLaunchPreload } from "./use-launch-preload.js";
 import { preloadLaunchEngine, preloadLaunchVisual } from "./launch-preload.js";
 import { MediaGlyph } from "./media-glyph.jsx";
 import { RecoveringArtwork, useRecoveringArtwork } from "./recovering-artwork.jsx";
-import { createAutomaticDiagnosticClock, readDiagnosticPreferences, diagnosticDeliveryControl, selectDiagnosticMode, DIAGNOSTIC_PREFERENCES_KEY } from "./automatic-diagnostics.js";
+import { createAutomaticDiagnosticClock, readDiagnosticPreferences, diagnosticDeliveryControl, selectDiagnosticMode, DIAGNOSTIC_PREFERENCES_KEY, DIAGNOSTIC_CLOCK_KEY } from "./automatic-diagnostics.js";
 import { PhoneRotationNotice, usePhoneLayout } from "./phone-cockpit.jsx";
 import { observeSessionStats } from "./environments/atlas/session-stats.js";
 import { createSessionExperience, observeSessionExperience, sessionExperienceSnapshot } from "./reports/session-experience.js";
@@ -58,6 +58,7 @@ import {
   diagnosticMusicIdentity,
   DRIVE_TRACE_INTERVAL_MS,
   fitDiagnosticReportForTransport,
+  fitDiagnosticReportForKeepalive,
   inferViewportMode,
   finishAppNetworkTransfer,
   readAudioLatencySnapshot,
@@ -1358,7 +1359,7 @@ function DiagnosticReadme() {
           <li>No third-party analytics are enabled. Dev automatic reports are ON by default during this development phase; the visible switch turns them OFF.</li>
           <li>Coordinates are not collected, stored, copied, or included in a diagnostic.</li>
           <li>GPS evidence is limited to status, speed confidence, accuracy, and bounded counts.</li>
-          <li>Dev can automatically send coordinate-free reports every 15 minutes of active session time. Standard sends only with SEND DIAGNOSTIC. Automatic sending has a visible OFF switch.</li>
+          <li>Dev can automatically send coordinate-free reports every 15 minutes of active session time, late when the browser froze the page, and best-effort when the app is closed or hidden. Standard sends only with SEND DIAGNOSTIC. Automatic sending has a visible OFF switch.</li>
           <li>The accepted report is attached as compressed JSON; server acceptance is not inbox delivery.</li>
         </ul>
       </section>
@@ -2170,7 +2171,7 @@ export function App() {
   const diagnosticPreferencesRef = useRef(diagnosticPreferences);
   diagnosticPreferencesRef.current = diagnosticPreferences;
   const automaticClockRef = useRef(null);
-  automaticClockRef.current ??= createAutomaticDiagnosticClock();
+  automaticClockRef.current ??= createAutomaticDiagnosticClock({ storage: (() => { try { return localStorage; } catch { return null; } })() });
   const [automaticSnapshot, setAutomaticSnapshot] = useState(() => automaticClockRef.current.snapshot());
   const diagnosticTransferRef = useRef(null);
   const sendDiagnosticRef = useRef(null);
@@ -3749,6 +3750,7 @@ export function App() {
       localStorage.removeItem(PREFERENCES_KEY);
       localStorage.removeItem(LEGACY_PREFERENCES_KEY);
       localStorage.removeItem(DIAGNOSTIC_PREFERENCES_KEY);
+      localStorage.removeItem(DIAGNOSTIC_CLOCK_KEY);
       localStorage.removeItem("sedicivalvole.session-report-recipient.v1");
     } catch {
       // Reset remains useful even when storage access is unavailable.
@@ -5070,12 +5072,12 @@ export function App() {
       const now = performance.now();
       const prefs = diagnosticPreferencesRef.current;
       const due = clock.update({ running: true, enabled: prefs.mode === "dev" && prefs.automatic,
-        visible: document.visibilityState !== "hidden", online: navigator.onLine !== false,
+        visible: document.visibilityState !== "hidden", online: navigator.onLine !== false, wallNow: Date.now(),
       }, now);
       const snapshot = clock.snapshot();
-      const pending = snapshot.activeMs >= snapshot.intervalActiveMs;
+      const pending = clock.isPending();
       if (pending && !dueLogged) {
-        logDiagnosticEvent("diagnostic-send.due", { trigger: "automatic", timeBasis: snapshot.timeBasis, activeMs: snapshot.activeMs, online: navigator.onLine !== false });
+        logDiagnosticEvent("diagnostic-send.due", { trigger: "automatic", timeBasis: snapshot.timeBasis, activeMs: snapshot.activeMs, wallElapsedMs: snapshot.wallElapsedMs, unobservedMs: Math.round(snapshot.unobservedMs), restored: snapshot.restored, online: navigator.onLine !== false });
       }
       dueLogged = pending;
       if (due && !diagnosticTransferRef.current) {
@@ -5090,6 +5092,66 @@ export function App() {
     window.addEventListener("online", tick); document.addEventListener("visibilitychange", tick);
     return () => { disposed = true; window.clearInterval(timer); window.removeEventListener("online", tick); document.removeEventListener("visibilitychange", tick); if (diagnosticTransferRef.current?.trigger === "automatic") diagnosticTransferRef.current.controller.abort(); };
   }, [phase, logDiagnosticEvent]);
+
+  // Best-effort report as the app is hidden or closed (reverse gear, another app). The Tesla browser was observed to freeze the
+  // page without any lifecycle event, so this can only help where the events do fire; the wall-time catch-up covers the rest.
+  const flushDiagnosticOnClose = useCallback((source) => {
+    const clock = automaticClockRef.current;
+    const prefs = diagnosticPreferencesRef.current;
+    if (prefs.mode !== "dev" || !prefs.automatic || navigator.onLine === false || diagnosticTransferRef.current) return;
+    if (!clock.canFlush(Date.now())) return;
+    clock.beginFlush(Date.now());
+    try {
+      const freshReport = buildDiagnosticReport();
+      if (!freshReport) { clock.abortFlush(); return; }
+      logDiagnosticEvent("diagnostic-send.requested", { trigger: "automatic", reason: "hide-flush", source });
+      const eventReport = createDiagnosticEventReport(diagnosticEventsRef.current);
+      const compact = fitDiagnosticReportForKeepalive({
+        ...freshReport,
+        diagnosticDelivery: { ...freshReport.diagnosticDelivery, trigger: "automatic" },
+        generatedAt: new Date().toISOString(),
+        flightRecorder: createDriveTelemetryReport(driveTelemetryRef.current, performance.now()),
+        runtimeIssues: runtimeIssuesRef.current,
+        events: eventReport.events,
+        eventRetention: eventReport.retention,
+      });
+      if (!compact) { logDiagnosticEvent("diagnostic-send.failed", { code: "compact_too_large", trigger: "automatic", reason: "hide-flush" }); clock.abortFlush(); return; }
+      void fetch(`${import.meta.env.BASE_URL}api/send-diagnostic.php`, {
+        method: "POST", keepalive: true, credentials: "same-origin", cache: "no-store",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ schema: compact.schema, report: compact }),
+      }).catch(() => {});
+      clock.completeFlush();
+    } catch { clock.abortFlush(); }
+  }, [buildDiagnosticReport, logDiagnosticEvent]);
+  const flushDiagnosticRef = useRef(null);
+  flushDiagnosticRef.current = flushDiagnosticOnClose;
+  useEffect(() => {
+    if (phase !== "running") return undefined;
+    let handled = false;
+    const hide = (source) => {
+      if (handled) return;
+      handled = true;
+      automaticClockRef.current.persist();
+      flushDiagnosticRef.current?.(source);
+    };
+    const onVisibility = () => { if (document.visibilityState === "hidden") hide("visibilitychange"); else handled = false; };
+    const onPageHide = () => hide("pagehide");
+    const onFreeze = () => hide("freeze");
+    const onShow = () => { handled = false; };
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("pagehide", onPageHide);
+    document.addEventListener("freeze", onFreeze);
+    window.addEventListener("pageshow", onShow);
+    document.addEventListener("resume", onShow);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("pagehide", onPageHide);
+      document.removeEventListener("freeze", onFreeze);
+      window.removeEventListener("pageshow", onShow);
+      document.removeEventListener("resume", onShow);
+    };
+  }, [phase]);
 
   const handleEnvironmentError = useCallback((error) => {
     const message = String(error?.message || "Unknown visual runtime error").slice(0, 500);
@@ -5587,7 +5649,7 @@ export function App() {
                 <div className="diagnostic-auto-state" role="status" data-enabled={diagnosticControl.enabled}><strong>{diagnosticControl.state}</strong><small>{diagnosticControl.detail}</small></div>
                 <button type="button" onClick={() => setDiagnosticPreferences(diagnosticControl.next)}>{diagnosticControl.action}</button>
               </div>
-              <p>Dev automatically sends coordinate-free reports to the project mailbox every 15 minutes of active session time. Stops and GPS loss count. Offline reports wait for reconnection; hidden time is excluded. PAUSE SENDING stops automatic delivery. Choosing Dev enables it again.</p>
+              <p>Dev automatically sends coordinate-free reports to the project mailbox every 15 minutes of active session time. Stops and GPS loss count. If the browser froze the app, the report is sent when it wakes. Closing or hiding the app also sends what it has, when the browser allows it. Offline reports wait for reconnection; hidden time is excluded from the count. Progress is kept across reloads as counters only. PAUSE SENDING stops automatic delivery. Choosing Dev enables it again.</p>
               <small>{diagnosticControl.enabled ? `${Math.floor(automaticSnapshot.activeMs / 60000)} / 15 active min · ${automaticSnapshot.accepted} accepted · ${automaticSnapshot.status === "off" ? "WAITING" : automaticSnapshot.status.toUpperCase()}` : "Automatic delivery paused · manual reports remain available"}</small>
             </section>
             {diagnosticReadmeOpen ? <DiagnosticReadme /> : (
@@ -5710,7 +5772,7 @@ export function App() {
                 <section className="diagnostic-submit" aria-labelledby="diagnostic-submit-title">
                   <h3 id="diagnostic-submit-title">Submit evidence</h3>
                   <p>
-                    Coordinate-free technical reports go to the project diagnostic mailbox. Dev with AUTO ON sends every 15 minutes of active session time; Standard and AUTO OFF require SEND DIAGNOSTIC.
+                    Coordinate-free technical reports go to the project diagnostic mailbox. Dev with AUTO ON sends every 15 minutes of active session time, on wake-up after a freeze, and when the app is closed if the browser allows; Standard and AUTO OFF require SEND DIAGNOSTIC.
                     Keep this session open until the server responds; README explains the complete boundary.
                   </p>
                   <p className={`send-state send-state-${sendState}`} role="status" aria-live="polite">

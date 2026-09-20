@@ -1,5 +1,9 @@
 # Current Project State
 
+## Automatic diagnostics catch-up — September 20 (implemented, not published)
+
+After a day of driving with no automatic mail, decoded reports showed sessions of 9.8, 1.9 and 5.6 active minutes and a silent 32-minute page suspension with no lifecycle event, so the 15-active-minute timer never fired. The working tree adds wall-time **catch-up** on wake, reload-surviving progress counters and a best-effort compact **close-time flush**; the server validates each `deliveryReason` with its own proof and floor. The Travel Report stays manual. Focused tests pass 27/27; the full suite, build, browser check, push, publication and physical Tesla acceptance are **open**. See the [contract and evidence](AUTOMATIC-DIAGNOSTICS-2026-09-07.md#september-20-catch-up-persistence-and-close-time-flush) and the [verification handoff](AUTOMATIC-DIAGNOSTICS-HANDOFF-2026-09-20.md).
+
 ## Mounted phone road input — September 19
 
 Canonical **20260919-1722.ea8712b** is published and verified. Native **1006/1006**, relevant final checks, **827** production hashes and **21** canonical HTTPS checks pass. Browser proves actual Engine demand/deceleration at fixed synthetic GPS speed, truthful source/fallback/Demo states and final phone/rail geometry; no synthetic mail is sent. The explicitly selected portrait holder uses gravity-based ZERO for longitudinal Engine/Flux response, preserving GPS speed and the existing Aperture curve. The source indicator distinguishes effective input from connection status. [Contract and physical acceptance](PHONE-ROAD-INPUT-2026-09-19.md). Earlier no-audio-coupling notes describe the previous release. [Delivery and QA evidence](qa/2026-09-19-road-motion/README.md).

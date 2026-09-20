@@ -136,3 +136,39 @@ test("active-session automatic delivery validates its own time basis and keeps o
   for(const patch of [{timeBasis:"wall-clock"},{intervalActiveMs:600000},{activeMs:899999},{activeMs:null},{mode:"standard"},{automaticEnabled:false}]) assert.equal(validate({...report,diagnosticDelivery:{...report.diagnosticDelivery,...patch}}),false);
   assert.equal(validate({...report,diagnosticDelivery:{...report.diagnosticDelivery,timeBasis:"unknown",intervalDrivingMs:900000,drivingMs:900001}}),false);
 });
+
+
+const phpEval = (body, input) => {
+  const result = spawnSync("php", ["-r", `define('SEDICIVALVOLE_DIAGNOSTIC_LIBRARY_ONLY', true); require ${JSON.stringify(ENDPOINT)}; ${body}`], { input: input === undefined ? "" : JSON.stringify(input), encoding: "utf8" });
+  assert.equal(result.status, 0, result.stderr);
+  return result.stdout;
+};
+const deliveryValid = (delivery) => phpEval("$r=json_decode(stream_get_contents(STDIN),true); echo validDiagnosticDelivery($r) ? 'yes' : 'no';", { diagnosticDelivery: { mode: "dev", trigger: "automatic", automaticEnabled: true, timeBasis: "active-visible-session", intervalActiveMs: 900000, ...delivery }, privacy: { automaticRemoteTelemetry: true, transmissionRequiresExplicitGesture: false } }) === "yes";
+
+test("catch-up delivery needs fifteen wall minutes and a minute of unsent active time", () => {
+  const ok = { deliveryReason: "catch-up", activeMs: 588000, wallElapsedMs: 2520000 };
+  assert.equal(deliveryValid(ok), true);
+  for (const patch of [{ wallElapsedMs: 899999 }, { activeMs: 59999 }, { wallElapsedMs: null }, { wallElapsedMs: "2520000" }, { intervalActiveMs: 600000 }, { timeBasis: "wall-clock" }]) assert.equal(deliveryValid({ ...ok, ...patch }), false, JSON.stringify(patch));
+});
+
+test("hide-flush delivery needs five wall minutes and two active minutes; unknown reasons are refused", () => {
+  const ok = { deliveryReason: "hide-flush", activeMs: 150000, wallElapsedMs: 300000 };
+  assert.equal(deliveryValid(ok), true);
+  for (const patch of [{ activeMs: 119999 }, { wallElapsedMs: 299999 }, { wallElapsedMs: undefined }]) assert.equal(deliveryValid({ ...ok, ...patch }), false, JSON.stringify(patch));
+  assert.equal(deliveryValid({ ...ok, deliveryReason: "burst" }), false);
+  assert.equal(deliveryValid({ deliveryReason: "interval", activeMs: 900000 }), true);
+  assert.equal(deliveryValid({ activeMs: 900000 }), true, "clients without a reason stay compatible");
+});
+
+test("server floors: fifteen minutes for interval and catch-up, five for a close-time flush", () => {
+  const floors = JSON.parse(phpEval("echo json_encode(array_map('automaticFloorSeconds', ['interval','catch-up','hide-flush', null, 'unknown']));"));
+  assert.deepEqual(floors, [900, 900, 300, 900, 900]);
+});
+
+test("the mail names why an automatic report was sent", async () => {
+  const report = { generatedAt: "2026-09-20T10:00:00.000Z", app: { build: "20260920-1000", commit: "abc1234" }, diagnosticDelivery: { trigger: "automatic", mode: "dev", deliveryReason: "catch-up" } };
+  const mail = Buffer.from((await buildMailWithPhp(report)).message, "base64").toString("utf8").replaceAll("\r\n", "\n");
+  assert.match(mail, /Delivery: automatic \/ dev\nReason: catch-up\n/);
+  const plain = Buffer.from((await buildMailWithPhp({ ...report, diagnosticDelivery: { trigger: "manual", mode: "dev" } })).message, "base64").toString("utf8").replaceAll("\r\n", "\n");
+  assert.doesNotMatch(plain, /Reason:/);
+});

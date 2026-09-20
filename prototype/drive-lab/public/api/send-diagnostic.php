@@ -48,18 +48,37 @@ function validDiagnosticDelivery(array $report): bool
         || !in_array($delivery['trigger'] ?? null, ['manual', 'automatic'], true)
         || !is_bool($delivery['automaticEnabled'] ?? null)) return false;
     if ($delivery['trigger'] === 'manual') return true;
-    // Keep already-open driving-clock clients compatible without mislabelling new packets.
-    $activeClock = array_key_exists('timeBasis', $delivery);
-    $validInterval = $activeClock
-        ? ($delivery['timeBasis'] === 'active-visible-session'
+    $reason = $delivery['deliveryReason'] ?? null;
+    if ($reason !== null && !in_array($reason, ['interval', 'catch-up', 'hide-flush'], true)) return false;
+    if ($reason === 'catch-up' || $reason === 'hide-flush') {
+        // A frozen page delivers late (catch-up) or a closing page delivers what it has (hide-flush).
+        // Both still name the active-session basis and prove unsent activity plus enough wall time.
+        [$minActive, $minWall] = $reason === 'catch-up' ? [60000, 900000] : [120000, 300000];
+        $validInterval = ($delivery['timeBasis'] ?? null) === 'active-visible-session'
             && ($delivery['intervalActiveMs'] ?? null) === 900000
-            && is_numeric($delivery['activeMs'] ?? null) && $delivery['activeMs'] >= 900000)
-        : (($delivery['intervalDrivingMs'] ?? null) === 900000
-            && is_numeric($delivery['drivingMs'] ?? null) && $delivery['drivingMs'] >= 900000);
+            && is_numeric($delivery['activeMs'] ?? null) && $delivery['activeMs'] >= $minActive
+            && (is_int($delivery['wallElapsedMs'] ?? null) || is_float($delivery['wallElapsedMs'] ?? null))
+            && $delivery['wallElapsedMs'] >= $minWall;
+    } else {
+        // Keep already-open driving-clock clients compatible without mislabelling new packets.
+        $activeClock = array_key_exists('timeBasis', $delivery);
+        $validInterval = $activeClock
+            ? ($delivery['timeBasis'] === 'active-visible-session'
+                && ($delivery['intervalActiveMs'] ?? null) === 900000
+                && is_numeric($delivery['activeMs'] ?? null) && $delivery['activeMs'] >= 900000)
+            : (($delivery['intervalDrivingMs'] ?? null) === 900000
+                && is_numeric($delivery['drivingMs'] ?? null) && $delivery['drivingMs'] >= 900000);
+    }
     return $delivery['mode'] === 'dev' && $delivery['automaticEnabled'] === true
         && $validInterval
         && ($report['privacy']['automaticRemoteTelemetry'] ?? null) === true
         && ($report['privacy']['transmissionRequiresExplicitGesture'] ?? null) === false;
+}
+
+/** Successful automatic packets: fifteen minutes apart, except a close-time flush which waits five. */
+function automaticFloorSeconds($reason): int
+{
+    return $reason === 'hide-flush' ? 300 : 900;
 }
 
 function buildDiagnosticMail(array $report, string $receivedAt, string $recipient, ?string $fixedBoundary = null): array
@@ -95,6 +114,7 @@ function buildDiagnosticMail(array $report, string $receivedAt, string $recipien
         'Server accepted at: ' . $receivedAt,
         'Schema: sedicivalvole.tesla-diagnostic.v4',
         'Delivery: ' . ($report['diagnosticDelivery']['trigger'] ?? 'manual') . ' / ' . ($report['diagnosticDelivery']['mode'] ?? 'legacy'),
+        ...(is_string($report['diagnosticDelivery']['deliveryReason'] ?? null) ? ['Reason: ' . $report['diagnosticDelivery']['deliveryReason']] : []),
         'Privacy: the endpoint rejects coordinate fields and stores no report.',
         'Complete report: attached as gzip-compressed JSON.',
         'Attachment: ' . $attachmentName,
@@ -232,14 +252,14 @@ fflush($rateHandle);
 flock($rateHandle, LOCK_UN);
 fclose($rateHandle);
 
-// Successful automatic packets have a separate fifteen-minute server floor.
+// Successful automatic packets have a separate server floor (see automaticFloorSeconds).
 // Failed mail attempts never consume this floor; the shared 20-second limit remains.
 $autoRateHandle = null;
 if (($payload['report']['diagnosticDelivery']['trigger'] ?? 'manual') === 'automatic') {
     $autoRateHandle = @fopen($ratePath . '-auto', 'c+');
     if ($autoRateHandle === false || !flock($autoRateHandle, LOCK_EX)) respond(503, 'rate_limit_unavailable');
     $lastAutomatic = (int) trim((string) stream_get_contents($autoRateHandle));
-    if ($lastAutomatic > 0 && $currentTimestamp - $lastAutomatic < 900) respond(429, 'rate_limited');
+    if ($lastAutomatic > 0 && $currentTimestamp - $lastAutomatic < automaticFloorSeconds($payload['report']['diagnosticDelivery']['deliveryReason'] ?? null)) respond(429, 'rate_limited');
 }
 
 $receivedAt = gmdate('c');

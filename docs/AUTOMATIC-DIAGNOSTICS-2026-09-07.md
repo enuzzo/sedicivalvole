@@ -112,3 +112,25 @@ Physical Tesla acceptance and first real automatic inbox receipt remain open.
 
 Independent official postflight passes with 12 canonical root entries and
 `remote_writes=NONE`. Eight final documentation consistency checks pass.
+
+## September 20 catch-up, persistence and close-time flush
+
+Trigger: the owner drove for hours on September 19 and received no automatic mail and no Travel Report. Investigation (mailbox plus the decoded attachments of the 10:38, 13:10 and 15:42 UTC diagnostics):
+
+- Every September 19 mail was `Delivery: manual`; the last automatic mail was September 12 09:02 UTC. No Travel Report since September 11, and none is ever automatic: it needs a requested send and email verification.
+- The clock, endpoint and mail path were healthy (tests pass; automatic mails arrived September 10–12).
+- No session reached fifteen active minutes: 9.8 (of a 42-minute session), 1.9 and 5.6 minutes. In the 42-minute session all 296 flight samples say `visible`, yet a single 1,932 s gap follows a Media Session `pause` at 10:06:26; the page resumed at 10:38:37 with a viewport resize and stalled media, and no `document.freeze`, `document.pagehide`, `document.resume` or `document.visibility` event was logged. The browser suspends the page silently, so an in-page timer cannot fire and lifecycle events cannot be relied on.
+
+Owner decision (September 20): implement catch-up on wake and reload persistence; make diagnostics arrive even when the app is closed (for example reverse gear switching the car to the camera); in Dev more data is better; no automatic Travel Report.
+
+Contract (client `src/automatic-diagnostics.js`, endpoint `public/api/send-diagnostic.php`):
+
+| Reason | Sent when | Server proof | Floor |
+| --- | --- | --- | --- |
+| `interval` | 15 active minutes and 60 s of this page's own activity | `activeMs ≥ 900000` | 900 s |
+| `catch-up` | ≥ 900 s wall since the last accepted report and ≥ 60 s unsent activity observed by this page instance (restored counters alone never qualify), first tick that runs, hidden allowed | `activeMs ≥ 60000`, `wallElapsedMs ≥ 900000` | 900 s |
+| `hide-flush` | app hidden/closed with ≥ 120 s active (this page) and ≥ 300 s wall unsent, compact keepalive packet | `activeMs ≥ 120000`, `wallElapsedMs ≥ 300000` | 300 s |
+
+All still require Dev, explicit flags, `timeBasis: active-visible-session`, coordinate-free content and the existing destination. A failed or permanently rejected attempt restarts the wall anchor so a rejected report cannot loop. The flush packet keeps only the last 40 non-sample events, 4 runtime issues and 30 flight samples and is refused rather than sent above 60,000 bytes; browsers cap in-flight `keepalive` bodies at 64 KiB. Disclosure copy (Support, Session report, Submit evidence) states the new sending points. The Tesla may never emit a lifecycle event, so the flush is best-effort and catch-up is the dependable path; the new `deliveryReason`, `wallElapsedMs`, `unobservedMs` and `restored` fields in the next reports show which path fired. Physical Tesla acceptance and the first real automatic receipt remain open.
+
+Verification handoff for the next session: [automatic diagnostics handoff](AUTOMATIC-DIAGNOSTICS-HANDOFF-2026-09-20.md).
