@@ -169,6 +169,14 @@ QR-key encrypted, attempt-bound and bounded; no new ICE service or media permiss
 Only reciprocal evidence selects the direct path. Child failure wakes HTTPS without
 resetting sensors/ZERO, and both paths expire at the original admission lease.
 
+The owner reports that their Tesla drops the iPhone hotspot during poor phone
+cellular coverage, switches to its own network and does not automatically return.
+Treat shared Wi-Fi as optional; continuity must cover separate networks and
+automatic recovery. The current cross-network path is encrypted HTTPS, not
+Internet WebRTC. The owner requests testing the current release before changing
+transport; traversal/relay reliability and latency remain future investigation.
+See the [hotspot constraint](../PHONE-STABILITY-2026-09-20.md#owner-reported-hotspot-dropout-and-next-transport-investigation).
+
 The later owner refinement separates readable historical telemetry from current
 input: label the one-second display average explicitly, update at most 4 Hz,
 deduplicate samples, and clear on generation/explicit invalidation/offline/terminal

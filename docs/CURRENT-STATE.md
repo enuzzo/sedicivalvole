@@ -1,5 +1,16 @@
 # Current Project State
 
+## Hotspot continuity constraint — September 20 (owner report; test current build)
+
+The owner reports that their Tesla leaves the iPhone hotspot during poor phone
+cellular coverage, uses its own cellular network and does not automatically return
+to the hotspot. "Remain connected in Drive" is not assurance of this topology's
+continuity. Shared Wi-Fi is an optional fast path; recovery across separate networks
+is required. Keep **20260920-2231.b696bc4** unchanged for the first drive. Its current
+cross-network path is encrypted HTTPS; Internet WebRTC traversal/relay is a future
+investigation, with reliability and latency still to measure. See the
+[reported constraint and scope](PHONE-STABILITY-2026-09-20.md#owner-reported-hotspot-dropout-and-next-transport-investigation).
+
 ## Phone source icons — September 20 (published)
 
 Canonical **20260920-2231.b696bc4**, source **b696bc4**, removes the phone-cell

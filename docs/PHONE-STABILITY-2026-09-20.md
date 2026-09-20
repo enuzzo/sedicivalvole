@@ -274,3 +274,34 @@ Hardware, GPS and wake inputs remain fixtures; the owner tab was not interrupted
 Evidence: `/private/tmp/sv-phone-navbar-publish.log`,
 `/private/tmp/sv-phone-navbar-canonical-verify.json` and
 `/private/tmp/sv-phone-navbar-canonical-browser/evidence.json`.
+
+## Owner-reported hotspot dropout and next transport investigation
+
+On September 20, after accepting the shared-Wi-Fi desk trial, the owner reports
+that their Tesla abandons the iPhone hotspot when the phone's cellular coverage
+is insufficient for a while, switches to its own cellular connection and does not
+automatically reconnect to the hotspot. They expect this transition shortly after
+leaving home. This is reported behavior of their configuration; exact vehicle,
+browser and phone software versions and a captured reproduction are not recorded.
+The "remain connected in Drive" setting must not be treated as assurance that
+this hotspot connection will persist. The earlier suggested hotspot trial remains
+a test, not a solution to this reported failure mode.
+
+Treat shared Wi-Fi as an optional fast path. The continuity requirement includes
+the Tesla and iPhone moving onto separate networks, retaining admitted pairing
+and recovering automatically when connectivity returns. Current build
+**20260920-2231.b696bc4** has host-only WebRTC plus encrypted HTTPS fallback;
+Internet-traversing WebRTC with STUN/TURN is not implemented. The existing HTTPS
+fallback is the current cross-network path, whose physical handover behavior is
+still unaccepted. No transport can deliver current remote samples while every
+usable path is unavailable; retain the existing 250 ms expiry and truthful GPS
+fallback rather than reuse stale motion.
+
+The owner explicitly requests testing the current release first. A later scoped
+investigation should evaluate Internet WebRTC traversal/relay and network-change
+recovery against HTTPS, including latency and continuity through hotspot loss and
+return. Greater reliability or lower quality/higher latency are hypotheses to
+measure, not established properties of Internet WebRTC. This note does not add
+an ICE service/provider, spending commitment or product implementation. Valid
+local ZERO and admitted pairing should survive network-only gaps within their
+existing lifecycle/lease boundaries. Physical Tesla driving remains open.
