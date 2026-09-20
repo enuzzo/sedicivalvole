@@ -1,5 +1,18 @@
 # Current Project State
 
+## Phone integration owner trial — September 20 (repair open)
+
+After publication `20260920-1847.e82f181`, the owner reports that ZERO completes,
+the phone remains awake during the trial and local acceleration/rotation respond.
+Receiver onboarding checks still flicker, and its live values remain absent even
+while the UI says Fresh / Fresh motion received. Inspection confirms that App's
+receiver snapshot deliberately strips `values` before passing it to the drawer.
+This is not yet fixed; transport continuity and noise sensitivity also need work.
+Previous fixture and compiled gesture tests did not exercise changing readings
+through this real App path. The owner requested a fresh task with higher effort;
+see the [focused integration handoff](PHONE-INTEGRATION-HANDOFF-2026-09-20.md).
+This limited physical feedback does not close sustained iPhone/Tesla acceptance.
+
 ## Any-pose ZERO and console illustration — September 20 (published; physical retry open)
 
 The owner reported iPhone ZERO stuck at “Adjust the holder” and the display
