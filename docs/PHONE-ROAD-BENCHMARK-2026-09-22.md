@@ -101,3 +101,25 @@ one-way direct failure, fresh HTTPS fallback, restored direct transport, a
 and yaw, and STOP. These browsers run on one Mac with synthetic sensors; this
 does not test two mobile carriers or the real Tesla. Non-motion API delivery
 was blocked throughout. [Evidence](qa/2026-09-22-road-benchmark/README.md).
+
+## Reusable local analysis
+
+Run `python3 scripts/analyze_phone_benchmark.py REPORT.json REPORT.json.gz`
+from the repository root. The tool reads local packets only and emits an
+allowlisted numeric JSON summary plus the decoded input hash. It does not make
+network requests, send mail, copy raw reports or modify the app. Compressed and
+decoded inputs are each limited to 32 MiB. No filenames or arbitrary payload
+strings are included in its output.
+
+Reports remain separate: automatic and manual snapshots may overlap, and build
+identity alone cannot identify a session. Cumulative counters must not be added.
+Older reports expose snapshot ratios only; missing whole-session time stays null.
+For this drive the manual snapshot ratio is 27/187 = 14.44%, distinct from the
+12.9% time reconstruction above. Its median sampled RTT is 266.5 ms and all known
+mount states are disabled. The automatic report independently has 22 connected
+snapshots, zero fresh snapshots and a 254.45 ms median sampled RTT.
+
+Eight standard-library tests cover missing values, snapshot/time denominators,
+privacy allowlisting, invalid ratios, gzip equivalence, bounded decompression
+and malformed report structures. Both real packets were analyzed locally. The
+raw packets and generated private analysis output remain outside Git.

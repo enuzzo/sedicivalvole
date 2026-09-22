@@ -84,3 +84,8 @@ inbox delivery. See [implementation and verification](../RELIABILITY-CORRECTION-
 ## September 22 benchmark coverage
 
 `phoneMotion.coverage` adds bounded numeric whole-session duration/count aggregates, independent of the bounded history. It distinguishes connected, fresh, reciprocal receipt and road eligibility, with per-transport duration and named consumer-input request durations. Forward/slowing/turn counts classify only distinct admitted samples and never store vectors. Consumer input does not prove audible output. Freshness attribution is capped by the existing 250 ms sample deadline; intervals over five seconds are unobserved. Upgrade state/reason and candidate route category are strict enums; no SDP, IPs, keys or credentials enter reports.
+
+Local packet analysis: `scripts/analyze_phone_benchmark.py` accepts JSON/gzip and
+emits only allowlisted numeric summaries and decoded hashes. Compare reports
+independently; never sum overlapping cumulative snapshots or turn a snapshot
+ratio into a time percentage. Missing whole-session coverage remains unavailable.
