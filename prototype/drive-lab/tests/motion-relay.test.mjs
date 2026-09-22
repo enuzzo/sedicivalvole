@@ -24,21 +24,32 @@ test('pipelined HTTPS polls accept matching earlier replies without admitting ex
  assert.equal(receiver.sample(),null);assert.ok(receiver.summary().latencyDrops>0);
 });
 
-test('HTTPS remains connected before ZERO and supplies sustained fresh motion across realistic request latency', async () => {
- const cipher=await createMotionCipher(createRelayKey(webcrypto),webcrypto),slots={};let calibrated=false,delay=50;
+test('HTTPS remains connected before ZERO and supplies sustained fresh motion across controlled request latency', async t => {
+ // This checks protocol timing, not CPU scheduling or WebCrypto throughput.
+ // Real authenticated encryption is covered by the adjacent integration tests.
+ t.mock.timers.enable({apis:['setTimeout']});
+ let time=0;
+ const now=()=>time;
+ const advance=async ms=>{
+  for(let i=0;i<ms;i++){
+   time++;t.mock.timers.tick(1);
+   for(let j=0;j<8;j++)await Promise.resolve();
+  }
+ };
+ const cipher={seal:async text=>text,open:async text=>text},slots={};let calibrated=false,delay=50;
  const exchange=role=>async packet=>{
   await sleep(delay/2);if(packet)slots[role]={sequence:(slots[role]?.sequence??0)+1,packet};
   const reply={...(slots[role==='phone'?'receiver':'phone']??{})};await sleep(delay/2);return reply;
  };
- const receiver=createMotionRelay({role:'receiver',cipher,exchange:exchange('receiver')});
- const sender=createMotionRelay({role:'phone',cipher,exchange:exchange('phone'),getPhone:()=>calibrated?phone():{values:null,summary:{sensorState:'live',tared:false}}});
+ const receiver=createMotionRelay({role:'receiver',now,cipher,exchange:exchange('receiver')});
+ const sender=createMotionRelay({role:'phone',now,cipher,exchange:exchange('phone'),getPhone:()=>calibrated?phone():{values:null,summary:{sensorState:'live',tared:false}}});
  try {
-  await sleep(400);
-  for(let i=0;i<20;i++){assert.equal(receiver.summary().state,'connected');assert.equal(receiver.sample(),null);await sleep(20);}
-  calibrated=true;await sleep(600);let fresh=0,confirmed=0;
-  for(let i=0;i<60;i++){fresh+=Boolean(receiver.sample());confirmed+=Boolean(receiver.summary().receiverConfirmed);await sleep(20);}
+  await advance(400);
+  for(let i=0;i<20;i++){assert.equal(receiver.summary().state,'connected');assert.equal(receiver.sample(),null);await advance(20);}
+  calibrated=true;await advance(600);let fresh=0,confirmed=0;
+  for(let i=0;i<60;i++){fresh+=Boolean(receiver.sample());confirmed+=Boolean(receiver.summary().receiverConfirmed);await advance(20);}
   assert.ok(fresh>=57,`fresh at ${fresh}/60 observations`);assert.ok(confirmed>=54,`mutual receipt at ${confirmed}/60 observations`);
-  delay=180;await sleep(1000);
+  delay=180;await advance(1000);
   assert.equal(receiver.summary().state,'connected','slow data is not a transport disconnect');
   assert.equal(receiver.sample(),null);assert.equal(receiver.summary().receiverConfirmed,false);
  }finally{receiver.close();sender.close();}

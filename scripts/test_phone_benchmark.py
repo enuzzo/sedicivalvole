@@ -3,6 +3,8 @@ import importlib.util
 import json
 from pathlib import Path
 import tempfile
+import subprocess
+import sys
 import unittest
 
 spec = importlib.util.spec_from_file_location('benchmark', Path(__file__).with_name('analyze_phone_benchmark.py'))
@@ -67,6 +69,25 @@ class BenchmarkTests(unittest.TestCase):
     def test_malformed_history_and_missing_motion(self):
         self.assertEqual(benchmark.analyze({'phoneMotion': {'history': None}})['retainedSnapshots'],0)
         with self.assertRaises(ValueError): benchmark.analyze({})
+
+    def test_extreme_numbers_do_not_overflow_json_or_ratios(self):
+        self.assertFalse(benchmark.number(10**400))
+        self.assertEqual(benchmark.percent(1e308, 1e308), 100)
+        result = benchmark.analyze({'phoneMotion': {'history': [
+            {'state': 'connected', 'rttMs': 1e308},
+            {'state': 'connected', 'rttMs': 1e308}]}})
+        self.assertEqual(result['sampledMedianRoundTripMs'], 1e308)
+        json.dumps(result, allow_nan=False)
+
+    def test_cli_rejects_deep_or_corrupt_input_without_private_traceback(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder)/'private-report.json'
+            for data in [b'['*2000+b'0'+b']'*2000, b'\x1f\x8b'+b'broken-private-payload']:
+                path.write_bytes(data)
+                result = subprocess.run([sys.executable, str(Path(benchmark.__file__)), str(path)], capture_output=True, text=True)
+                self.assertEqual(result.returncode, 1)
+                self.assertEqual(result.stdout, '')
+                self.assertEqual(result.stderr, 'Cannot analyze input: invalid, missing or oversized diagnostic report.\n')
 
 
 if __name__ == '__main__':

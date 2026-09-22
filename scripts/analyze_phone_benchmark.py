@@ -10,7 +10,6 @@ import hashlib
 import json
 import math
 from pathlib import Path
-import statistics
 import sys
 import zlib
 
@@ -22,11 +21,26 @@ CONSUMERS = ('engine-demand', 'flux-braking', 'aperture-curve')
 
 
 def number(value):
-    return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value) and value >= 0
+    if not isinstance(value, (int, float)) or isinstance(value, bool) or value < 0:
+        return False
+    try:
+        return math.isfinite(value)
+    except OverflowError:
+        return False
 
 
 def percent(value, total):
-    return round(100 * value / total, 2) if number(value) and number(total) and total > 0 and value <= total else None
+    return round((value / total) * 100, 2) if number(value) and number(total) and total > 0 and value <= total else None
+
+
+def median(values):
+    if not values:
+        return None
+    ordered = sorted(values)
+    middle = len(ordered) // 2
+    # Inputs are nonnegative finite numbers. Halve before adding so that two
+    # valid large observations cannot produce an infinite JSON result.
+    return ordered[middle] if len(ordered) % 2 else ordered[middle - 1] / 2 + ordered[middle] / 2
 
 
 def analyze(payload):
@@ -40,6 +54,7 @@ def analyze(payload):
     measured = [row for row in connected if isinstance(row.get('dataFresh'), bool)]
     mount = [row for row in connected if isinstance(row.get('mountSelected'), bool)]
     rtts = [row['rttMs'] for row in connected if number(row.get('rttMs'))]
+    median_rtt = median(rtts)
     transports = {name: sum(row.get('transport') == name for row in rows) for name in ('https', 'direct')}
     coverage = motion.get('coverage')
     coverage = coverage if isinstance(coverage, dict) else {}
@@ -50,7 +65,7 @@ def analyze(payload):
     reasons = []
     if mount and not any(row['mountSelected'] for row in mount):
         reasons.append('Aligned car motion was off in every observed mounting state; calibrate after enabling it while parked.')
-    if rtts and statistics.median(rtts) > 250:
+    if median_rtt is not None and median_rtt > 250:
         reasons.append('Median sampled round trip exceeds the 250 ms sample lifetime; pairing alone does not establish usable input.')
     if transports['https'] and not transports['direct']:
         reasons.append('Only HTTPS appears in retained transport observations; no direct path was observed.')
@@ -63,7 +78,7 @@ def analyze(payload):
         'freshSnapshotPercent': percent(sum(row['dataFresh'] for row in measured), len(measured)),
         'mountKnownSnapshots': len(mount),
         'mountEnabledSnapshots': sum(row['mountSelected'] for row in mount),
-        'sampledMedianRoundTripMs': statistics.median(rtts) if rtts else None,
+        'sampledMedianRoundTripMs': median_rtt,
         'transportSnapshots': transports,
         'wholeSessionCoverage': totals or None,
         'freshObservedTimePercent': percent(totals.get('freshMs'), totals.get('observedMs')),
@@ -101,7 +116,7 @@ def main():
     args = parser.parse_args()
     try:
         results = [read_report(path) for path in args.reports]
-    except (OSError, ValueError, TypeError, AttributeError, EOFError, zlib.error):
+    except (OSError, ValueError, TypeError, AttributeError, EOFError, RecursionError, zlib.error):
         # Do not echo paths, JSON content or platform exception text.
         print('Cannot analyze input: invalid, missing or oversized diagnostic report.', file=sys.stderr)
         return 1
