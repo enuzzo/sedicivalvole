@@ -197,6 +197,10 @@ try {
   await phone.goto(qr);
   await phone.getByRole('button', { name: 'ENABLE LOCAL SENSORS', exact: true }).click();
   await phone.getByRole('button', { name: 'CONNECT TO DISPLAY', exact: true }).click();
+  await phone.getByRole('checkbox', { name: /Use aligned car motion/ }).waitFor();
+  assert.equal(await phone.getByRole('checkbox', { name: /Use aligned car motion/ }).isChecked(), false);
+  await phone.screenshot({ path: join(output, 'phone-position-choice.png') });
+  check('Position exposes car-response choice before ZERO without guessing alignment');
   await phone.getByRole('button', { name: 'PHONE IS SECURED', exact: true }).click();
   await receiver.getByText('Set ZERO on your phone.', { exact: true }).waitFor();
   const done = () => receiver.locator('.motion-setup-steps li').evaluateAll(items => items.map(item => item.dataset.done === 'true'));
@@ -239,7 +243,7 @@ try {
     await receiver.waitForFunction(read => {
       const fn = (0, eval)(`(${read})`); return fn()?.transport === 'direct';
     }, readState.toString());
-    check('same encrypted HTTPS pairing automatically selects a real host-only WebRTC data channel');
+    check('same encrypted HTTPS pairing automatically selects a real native WebRTC data channel');
     await receiver.evaluate(read => {
       const fn = (0, eval)(`(${read})`);
       window.motionContinuity = [];
@@ -382,6 +386,7 @@ try {
     for (const [width, height] of [[390, 844], [320, 568], [760, 390]]) {
       await phone.setViewportSize({ width, height });
       assert.ok(await phone.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
+      assert.equal(await phone.evaluate(() => { const stage=document.querySelector('.motion-guided-stage'), details=document.querySelector('.motion-extra-details'), toggle=document.querySelector('.motion-detail-toggle'); return stage.getBoundingClientRect().bottom >= toggle.getBoundingClientRect().bottom - 1 && (!details || details.getBoundingClientRect().top >= stage.getBoundingClientRect().bottom - 1); }), true, 'phone details never overlap the main controls');
       await phone.screenshot({ path: join(output, `phone-${width}-${appearance}.png`) });
     }
   }
@@ -414,7 +419,7 @@ try {
   await receiver.screenshot({ path:join(output,'navbar-paired.png') });
   check('paired phone has a checked icon without a subtitle and immediate road-use status in the drawer');
   await phone.evaluate(() => motionHardware.incline(true));
-  await phone.getByRole('button', { name:'Connection & sensor details', exact:true }).click();
+  await phone.getByRole('button', { name:'CHANGE CAR MOTION', exact:true }).click();
   await phone.getByRole('checkbox', { name:/Use aligned car motion/ }).check();
   await phone.getByRole('button', { name:'ZERO', exact:true }).click();
   await phone.locator('.motion-input-health[data-fresh="true"]').waitFor();
@@ -425,7 +430,14 @@ try {
   await receiver.screenshot({ path:join(output,'navbar-sensors.png') });
   await navbar.click();
   await receiver.getByText('Phone sensors active · GPS speed', {exact:true}).waitFor();
+  await phone.evaluate(() => motionHardware.set([0, -Math.SQRT2, Math.SQRT2], [0, -12 / Math.SQRT2, -12 / Math.SQRT2]));
+  await receiver.waitForFunction(() => document.querySelector('.motion-live-row strong')?.textContent.includes('-2.0'));
+  await receiver.waitForFunction(() => document.querySelectorAll('.motion-live-row strong')[1]?.textContent.includes('-12'));
+  assert.match(await receiver.locator('.motion-live-row').first().innerText(), /deceleration/);
   await receiver.screenshot({ path:join(output,'drawer-sensors.png') });
+  await phone.screenshot({ path:join(output,'phone-deceleration.png') });
+  await phone.evaluate(() => motionHardware.set([0, 0, 0], [0, 0, 0]));
+  check('calibrated phone braking stays signed and car yaw reaches the real receiver');
   await receiver.getByRole('button', { name:'CLOSE',exact:true }).click();
   await receiver.keyboard.press('Tab');
   check('real optional aligned ZERO selects the gyroscope icon with current sensor input and unchanged navbar geometry');

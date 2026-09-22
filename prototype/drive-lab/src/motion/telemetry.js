@@ -1,10 +1,11 @@
+import { createMotionCoverage } from './coverage.js';
 // Strict aggregate allowlist: never admit sensor vectors, signaling or bearer tokens.
 export const MOTION_STATES = ["idle", "preparing", "pairing", "connecting", "connected", "stale", "closed", "expired", "unavailable", "error", "suspended"];
 export const SENSOR_STATES = ["idle", "requesting", "granted", "denied", "unavailable", "waiting", "live", "incomplete", "stale", "suspended", "error", "stopped"];
 const numericKeys = ["iceCandidates", "received", "sent", "rejected", "expiredRequests", "backpressureDrops", "sendErrors", "rttMs", "rttMaxMs", "ageUpperMs", "cadenceHz", "jitterMs", "tareCount", "reconnects", "motionEvents", "orientationEvents", "missingAxes", "visibilityStops", "accelerationPeak", "angularRatePeak", "signalingStatus", "signalingRequests", "signalingErrors", "connectMs", "wakeRequests", "wakeReleases", "wakeFailures", "traceFps", "tracePoints", "traceRange", "traceContextLosses"];
-numericKeys.push("latencyDrops", "relayBackoffs", "transportAgeMs");
+numericKeys.push("latencyDrops", "relayBackoffs", "transportAgeMs", "upgradeAttempts", "upgradeFailures", "upgradeRecoveries");
 const booleanKeys = ["dataFresh", "placementConfirmed", "mountSelected", "iceComplete", "accelerometer", "gyroscope", "orientation", "orientationEstimated", "tared", "secureContext", "rtc", "wakeLock", "supportsUiContext", "supportsDirectUpgrade", "receiverConfirmed", "referenceReceived"];
-const eventTypes = new Set(["connection", "ice", "start", "offer-ready", "phone-joined", "channel-open", "permission", "tare", "retare-required", "stale", "recovered", "stop", "hidden", "expired", "error", "wake", "trace"]);
+const eventTypes = new Set(["connection", "ice", "upgrade", "start", "offer-ready", "phone-joined", "channel-open", "permission", "tare", "retare-required", "stale", "recovered", "stop", "hidden", "expired", "error", "wake", "trace"]);
 export function safeMotionSummary(value = {}) {
   const safe = {};
   if (!value || typeof value !== "object" || Array.isArray(value)) return safe;
@@ -12,6 +13,9 @@ export function safeMotionSummary(value = {}) {
   for (const key of booleanKeys) if (typeof value[key] === "boolean") safe[key] = value[key];
   if (["new", "checking", "connected", "completed", "failed", "disconnected", "closed"].includes(value.iceState)) safe.iceState = value.iceState;
   if (["new", "connecting", "connected", "disconnected", "failed", "closed"].includes(value.peerState)) safe.peerState = value.peerState;
+  if (['local', 'internet', 'relay', 'unknown'].includes(value.candidatePath)) safe.candidatePath = value.candidatePath;
+  if (['idle', 'unsupported', 'gathering', 'checking', 'active', 'backoff', 'closed'].includes(value.upgradeState)) safe.upgradeState = value.upgradeState;
+  if (['none', 'peer-ended', 'description-too-large', 'setup-failed', 'receipt-lost', 'timeout'].includes(value.upgradeReason)) safe.upgradeReason = value.upgradeReason;
   if (["direct", "https"].includes(value.transport)) safe.transport = value.transport;
   if (["online", "offline", "retrying"].includes(value.networkState)) safe.networkState = value.networkState;
   if (["ice_no_candidates", "rtc_unavailable", "rtc_setup_failed", "invalid_pairing", "signaling_unavailable"].includes(value.failureReason)) safe.failureReason = value.failureReason;
@@ -29,13 +33,16 @@ export function safeMotionSummary(value = {}) {
 
 export function createMotionTelemetry(now = () => performance.now()) {
   const start = now();
+  const coverage = createMotionCoverage(now);
   let latest = {};
   const events = [];
   const history = [];
   let lastHistory = -Infinity;
   let totalEvents = 0;
   return {
-    update(value) {
+    consumer: coverage.consumer,
+    update(value, values = null) {
+      coverage.update(value, values);
       latest = safeMotionSummary(value);
       if (now() - lastHistory >= 2000) {
         history.push({ elapsedMs: Math.max(0, Math.round(now() - start)), ...latest });
@@ -50,7 +57,7 @@ export function createMotionTelemetry(now = () => performance.now()) {
       if (events.length > 120) events.shift();
     },
     snapshot() {
-      return structuredClone({ schema: "sedicivalvole.motion-diagnostic.v1", latest, history, events, totalEvents,
+      return structuredClone({ schema: "sedicivalvole.motion-diagnostic.v1", latest, history, events, totalEvents, coverage: coverage.snapshot(),
         privacy: { rawSamplesIncluded: false, signalingIncluded: false, pairingTokensIncluded: false, coordinatesIncluded: false, storage: "bounded-session-memory" } });
     },
   };

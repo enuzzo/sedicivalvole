@@ -1,3 +1,4 @@
+import { MOTION_INTERNET_ICE } from './internet-path.js';
 import { createMotionPeer } from './channel.js';
 import { createMotionRelay } from './relay.js';
 
@@ -6,33 +7,40 @@ const validSignal = signal => signal && Number.isSafeInteger(signal.attempt) && 
   && ['offer', 'answer'].includes(signal.type) && typeof signal.sdp === 'string'
   && signal.sdp.startsWith('v=0') && signal.sdp.length <= 2600 && Object.keys(signal).length === 3;
 
-// One admitted HTTPS owner, with an optional authenticated, host-only data path.
-// SDP stays inside the QR-key ciphertext. No ICE/signaling provider is added.
+// One admitted HTTPS owner, with optional authenticated Internet ICE discovery.
+// SDP stays inside QR-key ciphertext; STUN never carries motion values.
 export function createAdaptiveMotionPeer({ role, host = globalThis, now = () => performance.now(), getPhone = () => ({}),
   getPresentation, cipher, exchange, expiresAt = now() + 3600000, onEvent = () => {}, onSummary,
-  directFactory = createMotionPeer, relayFactory = createMotionRelay }) {
+  directFactory = createMotionPeer, relayFactory = createMotionRelay, iceServers = MOTION_INTERNET_ICE }) {
   const capable = Boolean(host.isSecureContext && host.RTCPeerConnection);
   let closed = false, online = host.navigator?.onLine !== false, supported = false;
   let direct = null, selected = false, signal = null, attempt = 0, epoch = 0;
   let started = 0, retryAt = 0, progressAt = 0, confirmedAt = null, accepted = false;
-  let opened = false;
+  let opened = false, failures = 0, upgradeAttempts = 0, upgradeFailures = 0, upgradeRecoveries = 0;
+  let upgradeState = capable ? 'idle' : 'unsupported', upgradeReason = 'none';
+  const reportUpgrade = () => onEvent('upgrade', { upgradeState, upgradeReason, upgradeAttempts, upgradeFailures, upgradeRecoveries });
   const owner = () => selected && direct ? direct : relay;
-  function discard() {
+  function discard(reason = null) {
     epoch += 1;
     const previous = direct; direct = null; selected = false; signal = null;
-    accepted = false; confirmedAt = null; retryAt = now() + 10000;
+    accepted = false; confirmedAt = null;
+    if (reason) { failures++; upgradeFailures++; upgradeReason = reason; }
+    retryAt = now() + Math.min(60000, 10000 * 2 ** Math.min(3, Math.max(0, failures - 1)));
+    upgradeState = closed ? 'closed' : 'backoff';
+    if (reason) reportUpgrade();
     relay.setStandby(false);
     previous?.close();
   }
   function makeDirect() {
     const token = ++epoch;
     started = now(); progressAt = now(); confirmedAt = null; accepted = false;
-    direct = directFactory({ role, host, now, getPhone, getPresentation,
+    upgradeAttempts++; upgradeState = 'gathering'; upgradeReason = 'none'; reportUpgrade();
+    direct = directFactory({ role, host, now, getPhone, getPresentation, iceServers,
       onSummary: summary => { if (!closed && token === epoch && selected) onSummary?.(summary); },
       onEvent: (type, detail) => {
         if (closed || token !== epoch) return;
         // Child failure only abandons the optional path, never QR/ZERO ownership.
-        if (type === 'stop' || type === 'expired') discard();
+        if (type === 'stop' || type === 'expired') discard('peer-ended');
         else if (type === 'connection' || type === 'ice') onEvent(type, detail);
       },
     });
@@ -47,9 +55,9 @@ export function createAdaptiveMotionPeer({ role, host = globalThis, now = () => 
       const sdp = await peer.offer();
       if (closed || token !== epoch) return;
       const next = { attempt: id, type: 'offer', sdp };
-      if (!validSignal(next)) { discard(); return; }
-      signal = next;
-    } catch { if (!closed && token === epoch) discard(); }
+      if (!validSignal(next)) { discard('description-too-large'); return; }
+      signal = next; upgradeState = 'checking'; reportUpgrade();
+    } catch { if (!closed && token === epoch) discard('setup-failed'); }
   }
   async function receiveSignal(value) {
     if (closed || !online || !capable || !validSignal(value)) return;
@@ -61,14 +69,14 @@ export function createAdaptiveMotionPeer({ role, host = globalThis, now = () => 
         const sdp = await peer.answer(value.sdp);
         if (closed || token !== epoch) return;
         const next = { attempt, type: 'answer', sdp };
-        if (!validSignal(next)) { discard(); return; }
-        signal = next;
-      } catch { if (!closed && token === epoch) discard(); }
+        if (!validSignal(next)) { discard('description-too-large'); return; }
+        signal = next; upgradeState = 'checking'; reportUpgrade();
+      } catch { if (!closed && token === epoch) discard('setup-failed'); }
     } else if (role === 'receiver' && value.type === 'answer' && value.attempt === attempt && direct && !accepted) {
       accepted = true;
       const token = epoch;
       try { await direct.accept(value.sdp); }
-      catch { if (!closed && token === epoch) discard(); }
+      catch { if (!closed && token === epoch) discard('setup-failed'); }
     }
   }
   const relay = relayFactory({ role, host, now, cipher, exchange, expiresAt, getPresentation,
@@ -112,12 +120,14 @@ export function createAdaptiveMotionPeer({ role, host = globalThis, now = () => 
       const usable = summary.state === 'connected' && summary.networkState !== 'offline'
         && summary.networkState !== 'retrying' && confirmedAt !== null && now() - confirmedAt <= 1000;
       // Transport selection is independent of one sample/receipt expiring.
+      if (usable && !selected) { upgradeRecoveries++; failures = 0; upgradeState = 'active'; upgradeReason = 'none'; reportUpgrade(); }
+      if (!usable && selected) { upgradeState = 'checking'; upgradeReason = 'receipt-lost'; reportUpgrade(); }
       selected = usable;
       relay.setStandby(usable);
       if (usable) signal = null;
       const waitingForZero = summary.state === 'connected'
         && (role === 'phone' ? getPhone().summary?.tared !== true : relay.summary().tared !== true);
-      if (!usable && !waitingForZero && now() - started > 20000 && now() - progressAt > 1000) discard();
+      if (!usable && !waitingForZero && now() - started > 20000 && now() - progressAt > 1000) discard('timeout');
     } else if (role === 'receiver' && capable && supported && online && now() >= retryAt) void offer();
   }, 100);
   function close(reason = 'closed') {
@@ -133,12 +143,18 @@ export function createAdaptiveMotionPeer({ role, host = globalThis, now = () => 
       if (!value) { selected = false; relay.setStandby(false); }
       else retryAt = 0;
     },
+    networkChanged() {
+      if (closed) return;
+      // Keep a proven path. Failed/pending ICE gets a fresh attempt after a
+      // browser-observed network transition, without touching admission/ZERO.
+      if (!selected) { if (direct) discard(); retryAt = now() + 1000; failures = 0; }
+    },
     sample: () => closed || now() >= expiresAt ? null : owner().sample(),
     presentation: () => closed ? null : owner().presentation(),
     summary() {
       if (!closed && now() >= expiresAt) close('expired');
       const summary = owner().summary();
-      return { ...summary, transport: selected ? 'direct' : 'https',
+      return { ...summary, upgradeState, upgradeReason, upgradeAttempts, upgradeFailures, upgradeRecoveries, transport: selected ? 'direct' : 'https',
         // HTTP admission remains the lifetime authority even after an upgrade.
         state: closed ? 'closed' : opened ? 'connected' : summary.state };
     },

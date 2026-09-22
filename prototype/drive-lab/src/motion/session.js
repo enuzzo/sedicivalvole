@@ -42,7 +42,7 @@ export function createMotionSession({ role, host = window, doc = document, fetch
   }
   function notify() {
     const next = snapshot(), summary = safeMotionSummary(next);
-    telemetry.update(summary);
+    telemetry.update(summary, next.values);
     if (previousState !== summary.state || previousFresh !== summary.dataFresh) {
       if (summary.state === "connected" && summary.dataFresh === false && previousFresh === true) event("stale", summary);
       if (summary.state === "connected" && summary.dataFresh === true && previousFresh === false) event("recovered", summary);
@@ -201,10 +201,12 @@ export function createMotionSession({ role, host = window, doc = document, fetch
     if (peer && (state === "connected" || transport === "https")) { peer.setOnline(false); notify(); }
     else if (["preparing", "pairing", "connecting"].includes(state)) fail();
   };
-  const online = () => { peer?.setOnline?.(true); notify(); };
+  const online = () => { peer?.setOnline?.(true); peer?.networkChanged?.(); notify(); };
+  const networkChanged = () => { peer?.networkChanged?.(); notify(); };
+  host.navigator?.connection?.addEventListener?.("change", networkChanged);
   doc.addEventListener("visibilitychange", hidden); host.addEventListener("pagehide", pagehide);
   host.addEventListener("offline", offline);
   host.addEventListener("online", online);
-  return { sample: () => peer?.sample() ?? null, snapshot, start, stop: () => stop(), event, refresh: notify, report: () => telemetry.snapshot(),
-    dispose() { cleanup(); doc.removeEventListener("visibilitychange", hidden); host.removeEventListener("pagehide", pagehide); host.removeEventListener("offline", offline); host.removeEventListener("online", online); } };
+  return { sample: () => peer?.sample() ?? null, snapshot, start, stop: () => stop(), event, refresh: notify, report: () => telemetry.snapshot(), recordConsumer: (name, sample) => telemetry.consumer(name, sample),
+    dispose() { cleanup(); host.navigator?.connection?.removeEventListener?.("change", networkChanged); doc.removeEventListener("visibilitychange", hidden); host.removeEventListener("pagehide", pagehide); host.removeEventListener("offline", offline); host.removeEventListener("online", online); } };
 }

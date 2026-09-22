@@ -23,6 +23,7 @@ export function MotionPhone({ createSensors = createPhoneSensors, createSession 
   const [values, setValues] = useState(null), [completed, setCompleted] = useState(false);
   const [review, setReview] = useState(false), [detail, setDetail] = useState(false), [trace, setTrace] = useState(false);
   const [viewReset, setViewReset] = useState(0);
+  const [editCarMotion, setEditCarMotion] = useState(false);
   const getSample = useCallback(() => sensorsRef.current?.latest() ?? null, []);
   const traceTelemetry = useCallback(value => { traceRef.current = value; }, []);
   useEffect(() => {
@@ -44,7 +45,7 @@ export function MotionPhone({ createSensors = createPhoneSensors, createSession 
   const guide = phoneSetup({ link: snapshot, sensor, hasPair: Boolean(pair), attempted: attemptedRef.current });
   const summary = { ...snapshot, ...sensor };
   useEffect(() => { if (guide.ready && !completed) { setCompleted(true); setReview(false); } }, [guide.ready, completed]);
-  const requiresAction = sensor.sensorState !== "live" || !(sensor.placementConfirmed ?? sensor.mountSelected) || !sensor.tared || !sensor.wakeLock;
+  const requiresAction = sensor.mountSelected && sensor.roadState !== "calibrated" || sensor.sensorState !== "live" || !(sensor.placementConfirmed ?? sensor.mountSelected) || !sensor.tared || !sensor.wakeLock;
   const showSetup = !completed || review || requiresAction;
   const refresh = () => setSensor(sensorsRef.current?.summary() ?? {});
   const start = () => {
@@ -78,6 +79,7 @@ export function MotionPhone({ createSensors = createPhoneSensors, createSession 
         <div className="motion-focus-copy" role="status"><h1>{guide.title}</h1><p>{guide.hint}</p></div>
         <div className="motion-focus-art"><img src={`/brand/phone-guide/${guide.active === 4 ? "awake" : guide.active >= 2 ? "zero-console" : guide.active === 1 ? "connect" : "scan"}.png`} alt=""/></div>
         <div className="motion-focus-action">
+          {guide.active === 2 && <div className="motion-road-choice"><MountChoice selected={sensor.mountSelected} onChange={selected => { sensorsRef.current?.setMount(selected); refresh(); }}/><p>{sensor.mountSelected ? "Engine acceleration, braking and Aperture turns after ZERO. GPS still controls speed." : "Without this option, the phone shows motion only. Engine and Music use GPS; Aperture does not follow your turns."}</p></div>}
           {guide.action && <button className="motion-primary" onClick={actions[guide.action]}>{labels[guide.action]}</button>}
           {guide.active === 4 && !sensor.wakeLock && <p>{sensor.wakeState === "requesting" ? "Requesting screen wake…" : "Screen-awake lock not acquired"}</p>}
           {review && guide.ready && <button onClick={() => setReview(false)}>BACK TO LIVE DATA</button>}
@@ -86,6 +88,7 @@ export function MotionPhone({ createSensors = createPhoneSensors, createSession 
       </> : <>
         <SetupDisclosure expanded={false} onClick={() => setReview(true)}/>
         <h1 className="motion-live-title">Recent phone motion</h1>
+        <div className="motion-road-choice"><strong>{sensor.mountSelected ? sensor.roadState === "calibrated" ? "Car sensors calibrated" : "Car sensors need attention" : "Car response is off"}</strong><button aria-expanded={editCarMotion} onClick={() => setEditCarMotion(value => !value)}>CHANGE CAR MOTION</button>{editCarMotion && <MountChoice selected={sensor.mountSelected} onChange={selected => { sensorsRef.current?.setMount(selected); setEditCarMotion(false); refresh(); }}/>}</div>
         <MotionReadings summary={summary} values={values} phone/>
         <MotionLiveStatus summary={summary} phone/>
         <button className="motion-stop" onClick={stop}>STOP</button>
@@ -93,7 +96,7 @@ export function MotionPhone({ createSensors = createPhoneSensors, createSession 
       <button className="motion-detail-toggle" aria-expanded={detail} onClick={() => setDetail(v => !v)}>Connection & sensor details<SetupMark kind="chevron"/></button>
     </div>
     {detail && <section className="motion-extra-details">
-      <MotionQuality summary={summary}/>
+      <MotionQuality summary={summary}/><p>Automatic connection uses Cloudflare STUN to discover a direct route. It sees connection IP addresses, never motion values. Encrypted HTTPS remains available when a direct route cannot be established.</p>
       <MountChoice selected={sensor.mountSelected} onChange={selected => { sensorsRef.current?.setMount(selected); refresh(); }}/>
       <p>ZERO works in any orientation. Car-axis motion is optional: enable it only when the screen faces the cabin and the phone is aligned straight ahead, then set ZERO again. Otherwise GPS controls vehicle acceleration.</p>
       <p>Small vibrations can appear in the readings without affecting the driving response.</p>

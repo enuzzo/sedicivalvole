@@ -185,3 +185,11 @@ Current input still expires at 250 ms. Preserve accepted POSITION/ZERO instructi
 through gaps and fixed telemetry geometry; connection/wake copy must not alternate
 on every packet deadline. This supersedes instantaneous number presentation, not
 freshness, mutual receipt, GPS authority, Demo exclusion or physical acceptance.
+
+## Road benchmark correction — September 22
+
+The owner authorizes implementation of the September 22 benchmark recommendations. Preserve the selected five-step UI: expose aligned-car input during Position, before ZERO; a connected phone without declared alignment must visibly say its car response is off. Signed acceleration/deceleration and car yaw require actual road values. Ordinary arbitrary-pose ZERO remains supported. An explicitly selected but invalid car pose requires corrective guidance.
+
+This supersedes host-only automatic discovery: automatic pairing uses the documented public Cloudflare STUN service; manually requested local QR still has no external ICE service. No TURN relay is provisioned. Do not claim cellular NAT traversal or physical latency improvement. Preserve encrypted bounded SDP, the original admission lease, 250 ms freshness, current input versus historical presentation, and GPS/Demo ownership. Failed upgrades use bounded backoff, browser network changes wake a failed path, and an already proven path stays intact. Candidate diagnostics contain route categories only, never addresses.
+
+Receiver reports retain bounded whole-session coverage independently of ring-buffer history: observed connected/fresh/confirmed/road-eligible time, transport time, aggregate forward/slowing/turn sample counts, and per-consumer eligible-input request time. Fresh intervals end at their original age deadline; execution gaps are unobserved. Consumer requests are not audible-output or hardware acceptance evidence.

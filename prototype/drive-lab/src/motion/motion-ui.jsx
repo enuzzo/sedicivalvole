@@ -45,8 +45,8 @@ export function MotionReadings({ summary, values, phone = false }) {
   };
   return <section className="motion-live-readings" aria-label="Recent phone telemetry">
     <p className="motion-reading-window">{!phone && 'Recent motion · '}1 s average · display only</p>
-    <div className="motion-live-row"><span className="motion-reading-icon motion-reading-acceleration" aria-hidden="true"/><span>Acceleration<small>{recent.road ? "Forward / braking" : "Motion magnitude"}</small></span><strong>{number(recent.acceleration, 1)} <small>m/s²</small></strong></div>
-    <div className="motion-live-row"><span className="motion-reading-icon motion-reading-rotation" aria-hidden="true"/><span>Rotation<small>About vertical</small></span><strong>{number(recent.rotation, 0)} <small>°/s</small></strong></div>
+    <div className="motion-live-row"><span className="motion-reading-icon motion-reading-acceleration" aria-hidden="true"/><span>{recent.road ? "Acceleration / deceleration" : "Phone movement"}<small>{recent.road ? "+ accelerating · − slowing" : "Magnitude · direction unknown"}</small></span><strong>{number(recent.acceleration, 1)} <small>m/s²</small></strong></div>
+    <div className="motion-live-row"><span className="motion-reading-icon motion-reading-rotation" aria-hidden="true"/><span>{recent.road ? "Car turn" : "Phone rotation"}<small>About vertical</small></span><strong>{number(recent.rotation, 0)} <small>°/s</small></strong></div>
     <dl className="motion-live-metrics">{!phone && <div><dt>ROUND TRIP · AVG</dt><dd>{recent.rtt ?? "—"} <small>ms</small></dd></div>}<div><dt>CURRENT INPUT</dt><dd className="motion-input-health" data-fresh={live.fresh}><span aria-hidden="true"/>{live.quality}</dd></div>{phone && <div><dt>SCREEN</dt><dd>{summary.wakeLock ? "Awake" : "May sleep"}</dd></div>}</dl>
   </section>;
 }
@@ -56,7 +56,7 @@ export function MotionLiveStatus({ summary, phone = false, children }) {
   const title = connected ? summary.wakeLock ? 'Connected · Screen awake' : 'Connected · Screen may sleep' : live.title;
   const hint = connected ? summary.networkState === 'offline' ? 'Network unavailable. Pairing kept; recovery is automatic.'
     : summary.networkState === 'retrying' ? 'Link interrupted. Pairing kept; recovery is automatic.'
-      : 'GPS controls speed. Only current input controls motion.' : live.hint;
+      : !summary.mountSelected ? 'Car response is off. Enable aligned car motion on your phone to use its sensors.' : 'GPS controls speed. Only current calibrated input controls car motion.' : live.hint;
   return <div className="motion-live-status" data-good={connected && summary.wakeLock === true} role="status"><div><strong>{title}</strong><p>{hint}</p></div>{children}</div>;
 }
 
@@ -117,7 +117,7 @@ export function MotionPanel({ snapshot, onStart, onStop, onClose, responseLabel,
     </> : <MotionReadings summary={snapshot} values={snapshot.values}/>}
     <MotionLiveStatus summary={snapshot}>{!["idle", "closed", "expired"].includes(snapshot.state) && <button onClick={onStop}>{setupCompleted ? "DISCONNECT" : "CANCEL"}</button>}</MotionLiveStatus>
     <details className="motion-connection-details" open={detailsOpen} onToggle={e => setDetailsOpen(e.currentTarget.open)}><summary>Connection details<SetupMark kind="chevron"/></summary>
-      {detailsOpen && <><MotionSourceStatus label={responseLabel}/><MotionQuality summary={snapshot}/><button onClick={restart}>RESTART SETUP · NEW QR</button><button onClick={() => { onStop(); onStart("direct"); }}>CREATE LOCAL WEBRTC QR</button><p>Round trip measures the request and reply, not one-way latency. Data quality follows fresh, calibrated samples confirmed by both screens. Delayed samples are excluded; GPS remains the speed source.</p><p>Network gaps keep the pairing and retry automatically within this one-hour session. Keep both pages visible. Hiding a page ends this session; create a new QR to restart. CLOSE only closes this drawer. Motion automatically uses an encrypted direct connection when reachable, with the same-origin encrypted HTTPS relay as fallback. Reports contain quality summaries, never sensor streams or pairing keys.</p>{children}</>}
+      {detailsOpen && <><MotionSourceStatus label={responseLabel}/><MotionQuality summary={snapshot}/><button onClick={restart}>RESTART SETUP · NEW QR</button><button onClick={() => { onStop(); onStart("direct"); }}>CREATE LOCAL WEBRTC QR</button><p>Round trip measures the request and reply, not one-way latency. Data quality follows fresh, calibrated samples confirmed by both screens. Delayed samples are excluded; GPS remains the speed source.</p><p>Network gaps keep the pairing and retry automatically within this one-hour session. Keep both pages visible. Hiding a page ends this session; create a new QR to restart. CLOSE only closes this drawer. Automatic connection uses Cloudflare STUN to discover a direct route; that service sees connection IP addresses, never motion values. Motion uses an encrypted direct connection when reachable, with the same-origin encrypted HTTPS relay as fallback. Reports contain quality summaries, never sensor streams or pairing keys.</p>{children}</>}
     </details>
   </div>;
 }
@@ -130,7 +130,7 @@ export function MotionQuality({ summary = {} }) {
     <div><dt>Zero</dt><dd>{summary.tared ? "SET" : "REQUIRED"}</dd></div>
     <div><dt>Car motion</dt><dd>{summary.mountSelected && summary.tared && summary.sensorState === "live" && summary.dataFresh !== false && summary.roadState === "calibrated" ? "ALIGNED" : summary.mountSelected ? "GPS · alignment unavailable" : "GPS · not enabled"}</dd></div>
     <div><dt>Cadence</dt><dd>{summary.cadenceHz > 0 ? `${summary.cadenceHz.toFixed(1)} Hz` : "—"}</dd></div>
-    <div><dt>Transport</dt><dd>{summary.transport === "https" ? "HTTPS · ENCRYPTED" : summary.transport === "direct" ? "LOCAL · WEBRTC" : "THIS DEVICE"}</dd></div>
+    <div><dt>Direct path</dt><dd>{summary.upgradeState ?? "—"}{summary.candidatePath && summary.candidatePath !== "unknown" ? ` · ${summary.candidatePath}` : ""}</dd></div><div><dt>Transport</dt><dd>{summary.transport === "https" ? "HTTPS · ENCRYPTED" : summary.transport === "direct" ? "WEBRTC · ENCRYPTED" : "THIS DEVICE"}</dd></div>
     <div><dt>Round trip</dt><dd>{summary.received > 0 ? `${summary.rttMs?.toFixed(1)} ms` : "—"}</dd></div>
   </dl>;
 }

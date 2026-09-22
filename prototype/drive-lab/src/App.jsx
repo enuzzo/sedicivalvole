@@ -2423,7 +2423,7 @@ export function App() {
   const showLocalSensors = motionSourceChoice === "local" || motionSourceChoice !== "remote" && localSensors.preferred;
 
   const motionInputRef = useRef(null);
-  motionInputRef.current = { phase, showLocalSensors, sample: localSensors.sample };
+  motionInputRef.current = { phase, experienceMode, vehicleEffectsEnabled, reducedMotion, showLocalSensors, sample: localSensors.sample };
   const readPhoneMotion = useCallback(() => {
     const current = motionInputRef.current;
     if (current.phase !== "running" || sourceRef.current !== "GPS" || document.visibilityState !== "visible" || navigator.onLine === false) return null;
@@ -2433,15 +2433,29 @@ export function App() {
     const sample = readPhoneMotion();
     return usableRoadSample(sample) ? sample : null;
   }, [readPhoneMotion]);
-  useEffect(() => { engineMotionRef.current.setPhoneMotionProvider(getRoadMotion); }, [getRoadMotion]);
+  const recordRoadConsumer = useCallback((name, sample, enabled) => {
+    if (!motionInputRef.current.showLocalSensors) motionSessionRef.current?.recordConsumer(name, enabled ? sample : null);
+  }, []);
+  const getEngineRoadMotion = useCallback(() => {
+    const sample = getRoadMotion();
+    recordRoadConsumer("engine-demand", sample, motionInputRef.current.experienceMode === "engine");
+    return sample;
+  }, [getRoadMotion, recordRoadConsumer]);
+  useEffect(() => { engineMotionRef.current.setPhoneMotionProvider(getEngineRoadMotion); }, [getEngineRoadMotion]);
   const getAudioRoadMotion = useCallback(() => {
     const evidence = engineMotionRef.current.snapshot(performance.now());
     return evidence.source === "GPS" && evidence.freshness === "fresh" ? getRoadMotion() : null;
   }, [getRoadMotion]);
+  const getFluxRoadMotion = useCallback(() => {
+    const sample = getAudioRoadMotion();
+    recordRoadConsumer("flux-braking", sample, motionInputRef.current.experienceMode === "flux" && motionInputRef.current.vehicleEffectsEnabled);
+    return sample;
+  }, [getAudioRoadMotion, recordRoadConsumer]);
   const getApertureMotion = useCallback(() => {
     const sample = getAudioRoadMotion();
+    recordRoadConsumer("aperture-curve", sample, !motionInputRef.current.reducedMotion);
     return sample ? { ...sample, turnRate: sample.road.yawRate } : null;
-  }, [getAudioRoadMotion]);
+  }, [getAudioRoadMotion, recordRoadConsumer]);
   const [roadInputStatus, setRoadInputStatus] = useState(() => roadNavbarStatus({ source: "GPS", active: false }));
   const roadInputStatusRef = useRef(roadInputStatus);
   roadInputStatusRef.current = roadInputStatus;
@@ -3461,7 +3475,7 @@ export function App() {
         },
       );
       if (!audioRef.current) throw new Error("Web Audio is unavailable");
-      audioRef.current.setPhoneMotionProvider(getAudioRoadMotion);
+      audioRef.current.setPhoneMotionProvider(getFluxRoadMotion);
       audioRef.current.setSourceMode(launchEngine ? "engine" : "flux");
       await audioRef.current.resume();
       audioRef.current.setMuted(launchMuted || musicId === "soundtrack");

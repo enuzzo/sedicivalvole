@@ -305,3 +305,11 @@ measure, not established properties of Internet WebRTC. This note does not add
 an ICE service/provider, spending commitment or product implementation. Valid
 local ZERO and admitted pairing should survive network-only gaps within their
 existing lifecycle/lease boundaries. Physical Tesla driving remains open.
+
+## September 22 benchmark follow-up
+
+The owner authorizes the benchmark corrections after two real reports on build 20260920-2231. Overlapping reports cover 08:44–08:50 Europe/Rome (406.767 seconds), retain admission but show HTTPS only, approximately 12.9% receiver-observed fresh time, and car-axis input off throughout the available record. Aperture precedes pairing; the drive runs in Engine.
+
+The follow-up exposes car-axis choice during Position and its off/calibrated state after setup, labels signed slowing explicitly, adds bounded lifetime coverage, and adds public Cloudflare STUN discovery plus bounded retry/network-change recovery. Reports now distinguish upgrade failure reasons and selected route category. It does not change the 250 ms age rule, GPS ownership or sensor physics.
+
+The owner identifies SiteGround as the available host. Its published custom incoming-port policy does not support deploying an ordinary TURN listener there: https://www.siteground.com/kb/which_ports_are_open_on_siteground_shared_servers/ . This is a hosting constraint, not a measured TURN failure. Internet STUN is discovery only and cannot replace TURN for restrictive NAT. No external account, relay subscription or spending commitment is created. A TURN service and a real separate-network comparison remain outstanding.

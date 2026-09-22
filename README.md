@@ -655,6 +655,10 @@ ZERO survives network-only outages while local sensors continue; real sensor gap
 STOP and hidden pages retain their separate recovery requirements. See the
 [network recovery contract and evidence](docs/PHONE-NETWORK-RECOVERY-2026-09-20.md).
 
+### Phone road benchmark follow-up — September 22, 2026
+
+The phone placement step now exposes aligned-car input before ZERO; ordinary pose ZERO still works without vehicle alignment. Live readings distinguish signed acceleration/deceleration from unsigned phone movement. Coordinate-free diagnostic coverage records connected/fresh/calibrated observation time and active-consumer input requests. Automatic WebRTC adds Cloudflare STUN discovery, bounded failure backoff and network-change recovery; HTTPS remains the fallback. TURN is not provisioned, and cellular/Tesla acceptance remains open.
+
 <!-- COMMUNITY-CREDITS:START -->
 ## Community thanks — 2026-09-05
 
@@ -1029,5 +1033,7 @@ Study only; no new audio or runtime shipped. See the [research report](docs/ENGI
 - 🏔️ **Mapterhorn contributors and credited elevation-data producers** — [service](https://mapterhorn.com), [source/terms inventory](https://mapterhorn.com/attribution/), [project](https://github.com/mapterhorn/mapterhorn): public 512 px Terrarium elevation tiles for the aircraft nose camera, rendered at 1.25 exaggeration. Shipped service integration; no provider runtime, tile redistribution or licence substitution.
 
 - 🖼️ **Existing map, aviation and Wikipedia contributors** — Current-product Intro screenshots include their previously integrated surfaces; exact material, source links and capture hashes are recorded in [the preview inventory](docs/INTRO-PREVIEW-CAPTURES-2026-09-10.md). Underlying attribution/licences remain applicable.
+
+- 🌐 **Cloudflare** — [public STUN discovery](https://developers.cloudflare.com/realtime/turn/faq/) for the optional encrypted phone WebRTC path; service use only, without copied code.
 
 <!-- COMMUNITY-CREDITS:END -->

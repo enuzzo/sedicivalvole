@@ -47,7 +47,7 @@ test('authenticated capability gates upgrade; duplicate/stale answers never rene
     f.peers[0].options.onEvent('stop', {});
     assert.equal(f.owner.summary().state, 'connected'); assert.equal(f.owner.summary().transport, 'https');
     assert.equal(f.owner.sample().from, 'https'); assert.equal(f.standby.at(-1), false);
-    assert.equal(f.relay.closeCount, 0); assert.deepEqual(f.events, ['channel-open']);
+    assert.equal(f.relay.closeCount, 0); assert.deepEqual(f.events.filter(type => type !== 'upgrade'), ['channel-open']);
   } finally { f.owner.close(); }
 });
 
@@ -87,7 +87,7 @@ test('offline excludes direct immediately; original relay expiry closes both pat
   f.owner.setOnline(false); assert.equal(f.owner.summary().transport, 'https');
   f.options.onEvent('expired', { state: 'expired' }); f.owner.close();
   assert.equal(f.peers[0].closes, 1); assert.equal(f.relay.closeCount, 1);
-  assert.equal(f.owner.sample(), null); assert.deepEqual(f.events, ['expired']);
+  assert.equal(f.owner.sample(), null); assert.deepEqual(f.events.filter(type => type !== 'upgrade'), ['expired']);
   f.owner.setOnline(true); await f.advance(60000); assert.equal(f.peers.length, 1);
 });
 
@@ -132,4 +132,50 @@ test('recent display clears on new ZERO, actual invalidation, offline and stop',
   const s = { state: 'connected', dataFresh: true, referenceReceived: true, receiverConfirmed: true, sensorState: 'live', tared: true, received: 1 };
   display.update(s, { generation: 1, acceleration: [4, 0, 0], turnRate: 20 });
   assert.equal(display.update({ ...s, received: 2 }, { generation: 2, acceleration: [0, 0, 0], turnRate: 0 }).acceleration, 0);
+});
+
+test('network transitions retry failed ICE without resetting the HTTPS owner or a proven direct path', async t => {
+  const f = fixture(t);
+  try {
+    f.options.onSummary({ supportsDirectUpgrade: true }); await f.advance(100); await f.advance(100);
+    assert.equal(f.owner.summary().upgradeState, 'active');
+    assert.deepEqual(f.peers[0].options.iceServers, [{ urls: 'stun:stun.cloudflare.com:3478' }]);
+    f.owner.networkChanged(); await f.advance(1100); assert.equal(f.peers.length, 1);
+    f.peers[0].options.onEvent('stop', {});
+    assert.equal(f.owner.summary().upgradeFailures, 1);
+    assert.equal(f.owner.summary().upgradeReason, 'peer-ended');
+    f.owner.networkChanged(); await f.advance(1100);
+    assert.equal(f.peers.length, 2); assert.equal(f.relay.closeCount, 0);
+  } finally { f.owner.close(); }
+});
+
+test('selected ICE diagnostics expose route category without addresses or provider credentials', async () => {
+  const { selectedCandidateKind } = await import('../src/motion/internet-path.js');
+  for (const [a,b,expected] of [['host','host','local'],['host','srflx','internet'],['relay','host','relay']]) {
+    const stats = new Map([['transport',{type:'transport',selectedCandidatePairId:'pair'}],['pair',{localCandidateId:'a',remoteCandidateId:'b'}],
+      ['a',{candidateType:a,address:'private-address'}],['b',{candidateType:b,address:'private-address'}]]);
+    assert.equal(selectedCandidateKind(stats), expected);
+  }
+});
+
+test('coverage survives bounded history rotation, caps freshness and counts signed activity once per accepted sample', async () => {
+  const { createMotionCoverage } = await import('../src/motion/coverage.js');
+  let at = 0; const c = createMotionCoverage(() => at);
+  const s = { state:'connected', transport:'https', dataFresh:true, ageUpperMs:200, receiverConfirmed:true, tared:true, sensorState:'live', roadState:'calibrated',received:1 };
+  const v = {generation:1,ageMs:200,road:{longitudinalMps2:-2,yawRate:5}};
+  c.update(s,v); c.consumer('flux-braking',v); at=100; c.consumer('flux-braking',null); c.update({...s,dataFresh:false},null);
+  at=200; c.update({...s,received:2,ageUpperMs:0}, {...v,ageMs:0,road:{longitudinalMps2:1,yawRate:0}});
+  at=250; c.update({...s,received:2,ageUpperMs:50}, {...v,ageMs:50,road:{longitudinalMps2:1,yawRate:0}});
+  at=6000; c.update({state:'closed'});
+  const r=c.snapshot();
+  assert.equal(r.freshMs,100); assert.equal(r.roadEligibleMs,100); assert.equal(r.slowingSamples,1);assert.equal(r.forwardSamples,1);assert.equal(r.turnSamples,1);
+  assert.equal(r.consumerInputMs['flux-braking'],50);assert.equal(r.unobservedMs,5750);assert.equal(r.connectedMs,250);
+  assert.doesNotMatch(JSON.stringify(r),/longitudinal|yawRate|generation|sequence|private-address/);
+});
+
+test('calibrated recent readings preserve a negative deceleration rather than its magnitude', () => {
+  const d=createRecentMotionReadings(()=>0);
+  const s={state:'connected',sensorState:'live',tared:true,dataFresh:true,referenceReceived:true,receiverConfirmed:true,received:1};
+  const r=d.update(s,{generation:1,ageMs:0,road:{longitudinalMps2:-3,yawRate:-8},acceleration:[3,0,0],turnRate:8});
+  assert.equal(r.acceleration,-3);assert.equal(r.rotation,-8);assert.equal(r.road,true);
 });

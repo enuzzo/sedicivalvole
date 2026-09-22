@@ -1463,3 +1463,9 @@ The existing fixed-host adapter now uses viewport-centred `/v2/point/{lat}/{lon}
 ### Intro actual-preview captures — 2026-09-10
 
 Four current-product screenshots include the existing OpenFreeMap/OpenMapTiles/OpenStreetMap maps, ADSB.lol traffic with RexKramer1 shapes, and Wikipedia contributors’ Policlinico of Milan page (CC BY-SA). No new renderer or service is integrated. Exact capture/source/hash inventory: `docs/INTRO-PREVIEW-CAPTURES-2026-09-10.md`. Existing public contacts and unsent acknowledgement drafts remain applicable; no messages sent.
+
+## Cloudflare — public STUN discovery (September 22, 2026)
+
+Runtime service: https://developers.cloudflare.com/realtime/turn/faq/ ; provider Cloudflare, Inc. Public contact: https://community.cloudflare.com/ . No copied software/assets and no project relicensing.
+
+Unsent thank-you draft: “Thank you for documenting and providing public STUN discovery. Sedicivalvole uses it to explore a direct, encrypted phone-to-display connection while keeping its HTTPS recovery path. Your clear distinction between discovery and TURN relay helps us describe what is actually supported.”

@@ -545,3 +545,10 @@ size and dark-appearance treatment; upstream bytes remain unchanged.
 
 The original Image Gen companion illustrations are separate project artwork, not
 Tabler assets or MIT-licensed material. See the [asset inventory](docs/design/phone-onboarding-2026-09-20/assets.json).
+
+## Cloudflare STUN discovery service — September 22, 2026
+
+- Provider: Cloudflare, Inc.; public service `stun:stun.cloudflare.com:3478`.
+- Source and terms: https://developers.cloudflare.com/realtime/turn/faq/ and https://developers.cloudflare.com/realtime/turn/ (checked September 22, 2026). The provider documents free, unlimited STUN. Service terms apply; this is not a software-license grant.
+- Use: optional automatic WebRTC connectivity discovery after explicit phone pairing; the manually selected local-only QR retains empty ICE servers. Cloudflare receives network connection metadata/IP addresses, not sensor values, GPS coordinates, QR keys or diagnostic reports. Encrypted HTTPS remains the fallback.
+- No third-party code or asset is copied, modified or bundled. Remote service version/hash are not applicable. Project-authored integration: `prototype/drive-lab/src/motion/internet-path.js`. TURN is not provisioned or claimed operational.

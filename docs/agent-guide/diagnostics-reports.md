@@ -80,3 +80,7 @@ subsequent traffic and caps storage at 4,096 files. Legacy clients retain existi
 and server floors. SMTP handoff and receipt persistence are not a transactional queue: a
 server crash between them remains an ambiguous-delivery edge case. Never claim exactly-once
 inbox delivery. See [implementation and verification](../RELIABILITY-CORRECTION-2026-09-20.md).
+
+## September 22 benchmark coverage
+
+`phoneMotion.coverage` adds bounded numeric whole-session duration/count aggregates, independent of the bounded history. It distinguishes connected, fresh, reciprocal receipt and road eligibility, with per-transport duration and named consumer-input request durations. Forward/slowing/turn counts classify only distinct admitted samples and never store vectors. Consumer input does not prove audible output. Freshness attribution is capped by the existing 250 ms sample deadline; intervals over five seconds are unobserved. Upgrade state/reason and candidate route category are strict enums; no SDP, IPs, keys or credentials enter reports.

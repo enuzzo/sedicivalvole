@@ -338,3 +338,14 @@
   .motion-live-row { grid-template-columns: 22px minmax(0, 1fr) 102px; gap: 8px; }
   .motion-live-row strong { font-size: 24px; }
 }
+
+/* Car-axis choice remains inside the selected five-step companion layout. */
+.motion-road-choice { border: 1px solid var(--ui-line); padding: 12px; text-align: left; }
+.motion-road-choice p { font-size: 13px; line-height: 1.4; margin: 8px 0; }
+.motion-road-choice .motion-mount-choice { margin: 0; }
+.motion-road-choice button { width: 100%; min-height: 48px; }
+.motion-focus-action .motion-road-choice { margin-bottom: 12px; }
+
+.motion-guided-stage { height: auto; min-height: max(500px, calc(100dvh - max(12px, env(safe-area-inset-top)) - max(12px, env(safe-area-inset-bottom)))); }
+.motion-road-choice > button { margin-top: 8px; }
+.motion-focus-action .motion-road-choice p { text-align: left; }

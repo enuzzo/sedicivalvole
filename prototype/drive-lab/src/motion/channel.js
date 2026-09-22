@@ -1,3 +1,4 @@
+import { selectedCandidateKind } from './internet-path.js';
 import { waitForMotionIce } from "./ice-gathering.js";
 import { safeMotionSummary } from "./telemetry.js";
 import { vectorValid } from "./reference.js";
@@ -109,14 +110,14 @@ export function createMotionProtocol({ role, now = () => performance.now(), getP
   };
 }
 
-export function createMotionPeer({ role, host = window, now = () => performance.now(), getPhone, getPresentation, onEvent = () => {}, onSummary }) {
+export function createMotionPeer({ role, host = window, now = () => performance.now(), getPhone, getPresentation, onEvent = () => {}, onSummary, iceServers = [] }) {
   if (!host.isSecureContext || !host.RTCPeerConnection) throw new Error("rtc_unavailable");
-  const pc = new host.RTCPeerConnection({ iceServers: [] });
+  const pc = new host.RTCPeerConnection({ iceServers });
   const protocol = createMotionProtocol({ role, now, getPhone, getPresentation, onSummary });
   let channel = null, closed = false, tick = null;
   let online = host.navigator?.onLine !== false;
   const available = () => online && pc.connectionState !== "disconnected";
-  let backpressureDrops = 0, sendErrors = 0;
+  let backpressureDrops = 0, sendErrors = 0, candidatePath = "unknown", statsPending = false, statsAt = -Infinity;
   const started = now();
   const cleanups = new Set();
   function close(reason = "closed") {
@@ -150,6 +151,11 @@ export function createMotionPeer({ role, host = window, now = () => performance.
     catch { close(); throw new Error("rtc_unavailable"); }
   }
   tick = setInterval(() => {
+    if (channel?.readyState === "open" && pc.getStats && !statsPending && now() - statsAt >= 1000) {
+      statsPending = true; statsAt = now();
+      Promise.resolve().then(() => pc.getStats()).then(stats => { if (!closed) candidatePath = selectedCandidateKind(stats); })
+        .catch(() => { /* Missing stats never changes transport or input. */ }).finally(() => { statsPending = false; });
+    }
     if (now() - started >= 3600000) { close("expired"); return; }
     if (available() && channel?.readyState === "open" && role === "receiver") send(protocol.poll());
   }, 50);
@@ -169,7 +175,7 @@ export function createMotionPeer({ role, host = window, now = () => performance.
     setOnline(value) { if (online !== value) { online = value; protocol.resetTransport(); } },
     presentation: () => closed ? null : protocol.presentation(),
     sample: () => closed || !available() ? null : protocol.sample(),
-    summary: () => ({ ...protocol.summary(), role, backpressureDrops, sendErrors, rtc: true,
+    summary: () => ({ ...protocol.summary(), role, backpressureDrops, sendErrors, rtc: true, candidatePath,
       ...(!available() ? { dataFresh: false, receiverConfirmed: false, referenceReceived: false } : {}),
       networkState: !online ? "offline" : !available() ? "retrying" : "online",
       state: closed ? "closed" : channel?.readyState === "open" ? "connected" : "connecting" }),
