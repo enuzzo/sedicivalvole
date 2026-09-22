@@ -1,0 +1,93 @@
+[
+  {
+    "path": "/",
+    "bytes": 1445,
+    "sha256": "3e3389d4f2553d131c306ef50eac840709e45553a48f6c8c325ef307a8db640a",
+    "cacheControl": "no-store, no-cache, must-revalidate, max-age=0",
+    "proxyCache": "MISS"
+  },
+  {
+    "path": "/?release-check=1790064362",
+    "bytes": 1445,
+    "sha256": "3e3389d4f2553d131c306ef50eac840709e45553a48f6c8c325ef307a8db640a",
+    "cacheControl": "no-store, no-cache, must-revalidate, max-age=0",
+    "proxyCache": "MISS"
+  },
+  {
+    "path": "/",
+    "bytes": 1445,
+    "sha256": "3e3389d4f2553d131c306ef50eac840709e45553a48f6c8c325ef307a8db640a",
+    "cacheControl": "no-store, no-cache, must-revalidate, max-age=0",
+    "proxyCache": "MISS"
+  },
+  {
+    "path": "/assets/index-BEZZQ-sd.css",
+    "bytes": 296341,
+    "sha256": "6cab4b657153492e159c0a83c8935675ace403397ee6581d537230707d5577c5",
+    "cacheControl": null,
+    "proxyCache": "MISS"
+  },
+  {
+    "path": "/assets/index-ZezwcH5J.js",
+    "bytes": 1642586,
+    "sha256": "eeb299ee947a72e02c8d30840d709069ffaf84ad5a928537fbd18e8a4693aa0f",
+    "cacheControl": null,
+    "proxyCache": "MISS"
+  },
+  {
+    "path": "/brand/pistons-v1/favicon-transparent.ico",
+    "bytes": 8621,
+    "sha256": "401878610d0aa19fd88556b8e1402f68e5f2c8ca28ef2e9f2530030c6feb353a",
+    "cacheControl": null,
+    "proxyCache": "MISS"
+  },
+  {
+    "path": "/brand/pistons-v1/icon-180.png",
+    "bytes": 23958,
+    "sha256": "5859eb463db99f6ee28e8023571413ed7032ffcb1895867f4da0df1332bdee8b",
+    "cacheControl": null,
+    "proxyCache": "MISS"
+  },
+  {
+    "path": "/brand/pistons-v1/mark-32.png",
+    "bytes": 2782,
+    "sha256": "a4a6bf54f05d916c43d713a822d34393975f1eb7e0e359541aaafb5b5b72c6b8",
+    "cacheControl": null,
+    "proxyCache": "MISS"
+  },
+  {
+    "path": "/brand/pistons-v1/mark-48.png",
+    "bytes": 5072,
+    "sha256": "a9b0ee5a10148b277b2b9f0e1aa7a9e574ba3a937b3f1032c51b874e4b23d4e0",
+    "cacheControl": null,
+    "proxyCache": "MISS"
+  },
+  {
+    "path": "/fonts/orbitron-latin-variable.woff2",
+    "bytes": 11800,
+    "sha256": "c25a9f9da5d9f3db1bf2a01474722dc9b377675b7bbab6d0dfda6902794fd1ed",
+    "cacheControl": null,
+    "proxyCache": "HIT"
+  },
+  {
+    "path": "/fonts/space-grotesk-variable.ttf",
+    "bytes": 136676,
+    "sha256": "acad6de1fc93436f5c0f1f4137751ef04f1aea3063e7036535970ffcfbd79f72",
+    "cacheControl": null,
+    "proxyCache": "HIT"
+  },
+  {
+    "path": "/assets/session-report-panel-26UkmITM.js",
+    "bytes": 13674,
+    "sha256": "9f7fb6ae9b47ad381f05da4481ceb0d658cb1e9b276327489473958442582214",
+    "cacheControl": null,
+    "proxyCache": "MISS"
+  },
+  {
+    "path": "/assets/phone-Db-TPUj9.js",
+    "bytes": 8623,
+    "sha256": "0293cb4d32aa1fd2a13603541dc4dbfd0222d2845fc2c4358973b01116912d30",
+    "cacheControl": null,
+    "proxyCache": "MISS"
+  }
+]

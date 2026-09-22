@@ -136,3 +136,12 @@ cover both gravity polarities, all stable pose categories, explicit wake acquisi
 and actual protocol receipt, without copying third-party implementation code.
 This reproduces software failures; it does not prove the owner's exact sensor
 values, document reloads or physical iPhone/Tesla continuity.
+
+## September 22 setup and observability
+
+Aligned car motion is now visible in Position before ZERO and can be changed from
+the live phone screen, invalidating calibration. The default remains off. The
+live screen distinguishes positive magnitude from signed acceleration/deceleration
+and car yaw. Whole-session bounded diagnostics distinguish connected, fresh,
+road-eligible and consumer-requested input; they do not imply audible output.
+See the [road benchmark and delivery](PHONE-ROAD-BENCHMARK-2026-09-22.md).

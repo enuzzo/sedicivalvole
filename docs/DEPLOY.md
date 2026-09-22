@@ -5417,3 +5417,19 @@ Evidence: [logo/report QA](qa/2026-09-19-logo-report/README.md).
 ## 2026-09-19 17:29 — mounted iPhone road response
 
 Source `ea8712b`, build `20260919-1722.ea8712b`, VERSION from the official pipeline. Native 1006 cases and affected follow-ups pass; package validates 827 static hashes. Official `--publish --preserve-existing` gates pass: 38 files / 6,492,554 bytes, 825 static files and 29 recordings hash-verified/reused, two prior assets retained, ROOT_UPLOAD_ONLY, no legacy deletion. All 21 canonical HTTPS checks and live UI/reload checks pass without synthetic mail. Physical acceptance remains separate. [Complete evidence](qa/2026-09-19-road-motion/README.md).
+
+## September 22 phone road-benchmark release
+
+Build `20260922-0953.d6348cd`, source `d6348cd`, published through the official
+`--publish --preserve-existing` path. 38 files / 6,535,077 bytes uploaded,
+832 static files and 29 recordings hash-verified/reused, two prior assets retained,
+`ROOT_UPLOAD_ONLY`. Thirteen canonical HTTPS checks confirm byte-identical bare,
+cache-busted and no-cache root, referenced resources and the lazy phone chunk.
+All three HTML responses have no-store/no-cache headers and proxy-cache MISS.
+
+The public compiled application and actual motion PHP endpoint passed all
+27 browser checkpoints with zero page exceptions: 120/120 mutual-fresh
+observations and 1206/1206 usable high-rate observations. This includes
+one-way direct failure, fresh HTTPS fallback, restored direct transport, a
+30-second browser outage and automatic same-pairing/ZERO recovery, signed braking
+and yaw, and STOP. Physical iPhone/Tesla and cellular traversal remain distinct acceptance gates.

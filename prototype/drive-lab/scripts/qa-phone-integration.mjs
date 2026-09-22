@@ -420,7 +420,9 @@ try {
   check('paired phone has a checked icon without a subtitle and immediate road-use status in the drawer');
   await phone.evaluate(() => motionHardware.incline(true));
   await phone.getByRole('button', { name:'CHANGE CAR MOTION', exact:true }).click();
-  await phone.getByRole('checkbox', { name:/Use aligned car motion/ }).check();
+  await phone.getByRole('checkbox', { name:/Use aligned car motion/ }).click();
+  // Enabling car axes invalidates ZERO and unmounts this live-only checkbox.
+  await phone.getByRole('button', { name:'ZERO', exact:true }).waitFor();
   await phone.getByRole('button', { name:'ZERO', exact:true }).click();
   await phone.locator('.motion-input-health[data-fresh="true"]').waitFor();
   await receiver.locator('.motion-button[data-motion-state="active"]').waitFor();

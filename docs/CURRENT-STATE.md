@@ -2374,3 +2374,21 @@ estimate. Gravity at ZERO should measure the actual inclination.
 
 Piston/report refinement is live as **20260919-1649.a1db5bd**: 21 HTTPS
 identity/cache/hash checks and canonical Intro browser verification pass.
+
+## September 22 road benchmark and phone release
+
+Live build **20260922-0953.d6348cd** responds to the actual poor-reception commute:
+pairing persisted, but HTTPS latency frequently exceeded usable sample age and
+aligned car motion was disabled throughout the retained window. Position now
+exposes the choice before ZERO; signed braking/yaw and disabled car response are
+explicit. Public STUN discovery, bounded adaptive retries and network-change
+recovery improve direct-path opportunities; whole-session telemetry separates
+connected, fresh and consumer-requested input. The September 19 future-bridge
+notes above are historical; current car-axis consumers and gates are documented
+in the motion guide and road-input contract.
+
+Native 1,068 tests, 22 HTTPS and 27 automatic local browser checkpoints, 27
+canonical browser checkpoints, 13 public exact-byte checks and official publication
+pass. SiteGround has not supplied a TURN service; restrictive separate cellular
+networks and physical braking/curve response remain open acceptance boundaries.
+See [benchmark, implementation and delivery](PHONE-ROAD-BENCHMARK-2026-09-22.md).
