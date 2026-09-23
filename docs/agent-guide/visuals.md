@@ -4,7 +4,7 @@ Read the renderer section being changed, and Shared boundaries for new/cross-ren
 
 ## Shared boundaries
 
-Use [the three-direction gate](interface.md#design-decisions) for new design work. Preserve selected source fidelity; an archived mock is not the current product. Abstract original fields stay minimal/atmospheric without characters or illustrative decoration; explicitly selected road integrations and real geographic surfaces have their own source/data contracts. Keep WebGL2 rich-field rendering, reduced-motion and lightweight failure paths where specified; a fallback cannot substitute a previously rejected design.
+Use [the design-selection gate](interface.md#design-decisions) for new design work. Preserve selected source fidelity; an archived mock is not the current product. Abstract original fields stay minimal/atmospheric without characters or illustrative decoration; explicitly selected road integrations and real geographic surfaces have their own source/data contracts. Keep WebGL2 rich-field rendering, reduced-motion and lightweight failure paths where specified; a fallback cannot substitute a previously rejected design.
 
 Speed/energy, road motion and music remain distinct inputs. The shared fixed ceiling is [130 km/h](motion-runtime.md#energy-and-mode-boundary). Native braking UNDERWATER response belongs to each active renderer rather than a generic overlay. OPEN/BLOOM and their detectors/mappings are retired by [MUSIC-CRAFT 6.16](../MUSIC-CRAFT.md#616-a-reactive-effect-must-earn-its-runtime-cost-in-the-cabin); do not resurrect the old three-macro requirement. Renderers report actual frames/errors, clean up GPU/animation work, and follow the shell's bounded selected-renderer recovery; see [shared recovery](../VISUAL-SOURCE-ARCHITECTURE-2026-08-29.md#september-7-shared-recovery-boundary).
 
@@ -16,7 +16,8 @@ Modular Aperture is the selected Flux baseline: a sparse rectangular field, flat
 
 The active September 23 curve uses the display's GPS/Atlas direction of travel,
 superseding the September 19 phone-gyro input. A bounded shared depth warp bends
-all walls together; the near rim stays fixed and the terminus stays dark. Read
+all walls together. The later September 23 refinement moves the near rim modestly
+and increases mid-depth bending; the terminus stays dark. Read
 samples per frame, expire GPS heading after 1,500 ms, ease back to straight on
 loss, and disable the curve for reduced motion. GPS also owns speed; heading
 change is not integrated into steering or velocity. The bend opens above 8 km/h
@@ -31,6 +32,22 @@ Keep approved Modular Aperture/Laminar Product Design images in the ignored loca
 WAKE has no salvage path: ribbons, renderer, fallback, tests, current QA captures and active product documentation stay out until a new owner-selected direction. PLUMB was also retired; [the dated study](../FLUX-VISUAL-DIRECTIONS-2026-08-29.md) is historical. PRIMORDIAL and the later original Gradient are retired by owner decision in `PIANO.md` (PP1/PP2 and PRIMORDIAL / Gradient replacement); stored `primordial` maps to Aperture and legacy `gradient` to Japanese Mist. Do not revive historical recovery tasks for them.
 
 The August 29 INFINITE/PRIMORDIAL four-direction recovery list is not today's catalogue. INFINITE's source-admission study remains available for a future explicitly requested resumption; no active selection/implementation should be inferred from that recovery prompt. For such work read [Admission matrix](../SOURCE-ADMISSION-2026-08-29.md#admission-matrix): the original project-owned mechanics, excluded upstream JavaScript/assets and unverified galaxy/noise provenance still constrain reuse. Do not infer a revocation of a source/license restriction merely because the study is inactive.
+
+## MERIDIAN 03
+
+The September 23 scoped reinterpretation uses a repeating spatial phrase of open
+oblique blades, folded soffits and bridged galleries, darker palette-owned faces,
+analytic luminous seams and low shoulder planes. Instanced geometry and four
+passes retain the small original WebGL2 pipeline; no imported assets or bloom
+pipeline are added. Multisampling and derivative-aware bevels reduce hard-edge
+shimmer. Canvas2D remains an explicitly lighter degradation path.
+
+The shared trusted GPS curve displaces rails, architecture and travelling markers
+through one depth field, with the camera following its local slope. Near-ground
+pinning, bounded vertical travel, the 130 km/h energy ceiling, native UNDERWATER,
+stale-input neutralization and reduced-motion exclusion remain. Initialize a
+recovered renderer from the existing canvas size so a reused canvas cannot leave
+its internal viewport at 1 × 1.
 
 ## VERTIGO 02
 
@@ -54,6 +71,13 @@ Calibrate road travel to smoothed GPS using Vertigo's quadratic low-speed respon
 ## PRTCL
 
 Fractal and Axiom are active; Murmuration is parked until a new owner decision, superseding the old three-active-family recovery list. Preserve the directly authorized formula-adaptation boundary without importing the old runtime/UI/dependencies/assets. For source work read [Selected PRTCL effects](../SOURCE-ADMISSION-2026-08-29.md#selected-prtcl-effects), treating its older Murmuration-active statement as historical; the grant does not imply a wider public license.
+
+The September 23 owner-delegated curve treatment consumes the same trusted GPS
+signal as Aperture and Meridian: Fractal banks and twists through depth; Axiom
+banks as one particle landscape. Apply this in view space so signed direction
+remains consistent while the authored camera orbits. Translation scales with the
+complete form, preserving braking collapse. Stale input eases to neutral and
+reduced motion disables this added response. No curve-driven audio is added.
 
 UNDERWATER dramatically collapses both complete forms. Fractal holds at **22.5% natural form scale** and **27.5% natural point scale**, then surfaces quickly to the exact speed-owned scale as braking releases. Do not replace whole-form collapse with subtle glow or point-size-only effects. The shared controls keep label/value left-aligned, current dimensions and chrome-owned visibility.
 

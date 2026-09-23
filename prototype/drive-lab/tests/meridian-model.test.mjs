@@ -322,3 +322,20 @@ test("generates displacement GLSL from the same constants as the JavaScript fiel
   assert.ok(glsl.includes(MERIDIAN_FIELD_CONSTANTS.swayNearDamping.toFixed(5)));
   assert.ok(glsl.includes(MERIDIAN_FIELD_CONSTANTS.rollPhaseRate.toFixed(5)));
 });
+
+test("GPS curve bends every corridor depth coherently while preserving the near pin and height", () => {
+  const field = speedToDistortionField(70);
+  for (const sign of [-1, 1]) {
+    let previous = 0;
+    for (const depth of [MERIDIAN_PIN_PROGRESS, 0.1, 0.25, 0.5, 1]) {
+      const neutral = distortionAt(depth, 2, field);
+      const curved = distortionAt(depth, 2, { ...field, roadCurve: sign * 0.6 });
+      const amount = (curved.x - neutral.x) * sign;
+      assert.ok(amount >= previous);
+      assert.equal(curved.y, neutral.y);
+      if (depth === MERIDIAN_PIN_PROGRESS) assert.equal(Math.abs(amount), 0);
+      previous = amount;
+    }
+    assert.ok(previous > 25 && previous < 30);
+  }
+});

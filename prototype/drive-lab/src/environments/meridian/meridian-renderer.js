@@ -11,7 +11,7 @@
 // parallax, and a widening projection carrying acceleration.
 //
 // The corridor contents are original: longitudinal meridian rails, abstract
-// Euclidean portals and solids, high cloud slabs, and curved travelling wind. Glow is
+// folded light galleries, low shoulder planes, and travelling light. Glow is
 // produced analytically inside each primitive rather than by a bloom pass, which
 // keeps the frame cost predictable on the target vehicle.
 
@@ -27,6 +27,7 @@ import {
   speedToProjection,
   speedToTimeRate,
 } from "./meridian-model.js";
+import { visualCurveTarget, advanceApertureCurve } from "../../motion/aperture-curve.js";
 
 // Elements wrap past the camera rather than at it, so nothing pops out of
 // existence in front of the viewer.
@@ -53,7 +54,7 @@ const MARKER_SCROLL_MAX = 63;
 const KIND_POST = 0;
 const KIND_RULE = 1;
 const KIND_MARKER = 2;
-const ARCHITECTURE_PAIR_COUNT = 10;
+const ARCHITECTURE_PAIR_COUNT = 12;
 const CLOUD_PANEL_COUNT = 0;
 const ARCHITECTURE_SCROLL_RATE = 26;
 
@@ -389,19 +390,34 @@ const ARCHITECTURE_FRAGMENT = `#version 300 es
     float edgeDistance = min(min(v_uv.x, 1.0 - v_uv.x), min(v_uv.y, 1.0 - v_uv.y));
     float edge = 1.0 - smoothstep(0.0, 0.075, edgeDistance);
 
-    vec3 solid = mix(u_mid * 0.24, mix(u_mid, u_light, 0.5), diffuse);
-    vec3 glass = mix(u_base, u_secondary, 0.32 + diffuse * 0.26);
+    // Deep coloured faces and bright bevels give the blades thickness without
+    // turning every surface into the same pale slab.
+    vec3 solid = mix(u_mid * 0.38, mix(u_accent, u_light, 0.16), diffuse * 0.64);
+    vec3 glass = mix(u_base, u_secondary, 0.14 + diffuse * 0.24);
     vec3 accentSolid = mix(u_accent * 0.38, u_accent, 0.34 + diffuse * 0.42);
-    vec3 secondarySolid = mix(u_secondary * 0.32, u_secondary, 0.32 + diffuse * 0.38);
+    vec3 secondarySolid = mix(u_accent * 0.28, mix(u_accent, u_secondary, 0.42), 0.2 + diffuse * 0.48);
     vec3 material = v_material < 0.5
       ? solid
       : (v_material < 1.5 ? glass : (v_material < 2.5 ? accentSolid : secondarySolid));
     vec3 edgeTone = mix(u_light, u_accent, v_emissive);
-    material += edgeTone * edge * (0.34 + 1.6 * v_emissive) * u_volumeGlow;
+    float bevel = 1.0 - smoothstep(0.0, max(0.022, fwidth(edgeDistance) * 1.5), edgeDistance);
+    material += edgeTone * (edge * 0.45 + bevel * 1.1) * (0.3 + v_emissive) * u_volumeGlow;
+    // An inset light seam and a broad satin sweep make each face read as a
+    // crafted panel. Both are analytic, palette-owned and stable in local UVs.
+    float seamDistance = abs(v_uv.x - (0.18 + v_uv.y * 0.08));
+    float seam = exp(-seamDistance * 75.0) * smoothstep(0.0, 0.12, v_uv.y)
+      * (1.0 - smoothstep(0.86, 1.0, v_uv.y));
+    float satin = pow(max(0.0, 1.0 - abs(v_uv.x + v_uv.y * 0.26 - 0.65)), 8.0);
+    material += mix(u_accent, u_secondary, 0.65) * (seam * 0.9 + satin * 0.09) * v_emissive;
+    // Dark floor panels catch a restrained reflection of the two palette lights.
+    if (v_material > 3.5) {
+      float shoulderLight = pow(abs(v_uv.x * 2.0 - 1.0), 3.0);
+      material = mix(u_base, u_mid, 0.1) + mix(u_accent, u_secondary, v_uv.x) * shoulderLight * 0.09;
+    }
 
     float fog = exp(-v_progress * u_fogDensity) * (1.0 - smoothstep(0.62, 1.0, v_progress));
     vec3 colour = mix(u_base, material, fog);
-    float glassAlpha = v_material > 0.5 && v_material < 1.5 ? 0.62 : 0.94;
+    float glassAlpha = v_material > 0.5 && v_material < 1.5 ? 0.92 : 1.0;
     outColor = vec4(colour, v_alpha * glassAlpha * smoothstep(0.0, 0.04, v_progress));
   }
 `;
@@ -411,7 +427,7 @@ const BACKGROUND_VERTEX = `#version 300 es
   out vec2 v_uv;
   void main() {
     vec2 position = vec2((gl_VertexID << 1) & 2, gl_VertexID & 2);
-    v_uv = position * 0.5;
+    v_uv = position;
     gl_Position = vec4(position * 2.0 - 1.0, 0.999, 1.0);
   }
 `;
@@ -432,7 +448,7 @@ const BACKGROUND_FRAGMENT = `#version 300 es
     float upperFalloff = smoothstep(1.05, 0.12, v_uv.y);
     vec3 colour = u_base;
     colour += u_mid * horizon * (0.06 + u_atmosphere * 0.12);
-    colour += u_accent * convergence * horizon * u_atmosphere * 0.045;
+    colour += u_accent * convergence * horizon * u_atmosphere * 0.16;
     colour += u_mid * upperFalloff * 0.012;
 
     // Speed remains structural: projection, peripheral geometry and travelling
@@ -631,13 +647,40 @@ function buildArchitectureInstances() {
   const span = MERIDIAN_TRAVEL_LENGTH + CORRIDOR_OVERSHOOT;
   for (let index = 0; index < ARCHITECTURE_PAIR_COUNT; index += 1) {
     const z = (index / ARCHITECTURE_PAIR_COUNT) * span;
-    const visibility = 0.03 + (index % 7) * 0.105;
+    const visibility = 0.02 + (index % 4) * 0.065;
+    const passage = index % 4;
+    // Alternating open, folded and bridged stations form a deliberate spatial
+    // phrase. The same geometry travels continuously at every road speed.
+    push([0, -0.12, z], [18, 0.12, 24], [ARCHITECTURE_SCROLL_RATE, 0, 4, 0], [0, 0]);
+    if (passage === 1 || passage === 2) {
+      const side = passage === 1 ? -1 : 1;
+      push(
+        [side * 2.2, passage === 1 ? 11 : 13.5, z + 1.2],
+        [13.5, 0.38, 4.8],
+        [ARCHITECTURE_SCROLL_RATE, visibility, passage === 1 ? 2 : 3, 0.82],
+        [side * 0.08, side * 0.12],
+      );
+      // Folded soffits connect to the inner blades instead of floating in the
+      // sky. Their broad underside carries overhead parallax into the frame.
+      for (const wing of [-1, 1]) {
+        push(
+          [wing * 5.1, 10.8, z - 5.0], [6.8, 0.22, 15],
+          [ARCHITECTURE_SCROLL_RATE, visibility, wing < 0 ? 2 : 3, 0.72],
+          [wing * 0.08, -wing * 0.21],
+        );
+        push(
+          [wing * 10.3, 4.4, z - 3.5], [0.30, 8.8, 14],
+          [ARCHITECTURE_SCROLL_RATE, visibility, 1, 0.48],
+          [wing * 0.04, -wing * 0.13],
+        );
+      }
+    }
     for (const side of [-1, 1]) {
       const family = index % 3;
-      const x = side * between(random, 11.6, 16.8);
-      const height = between(random, 14, 28);
-      const lean = side * between(random, 0.16, 0.39);
-      const yaw = side * between(random, 0.12, 0.44);
+      const x = side * (passage === 0 ? 12.6 : passage === 3 ? 10.2 : 8.7);
+      const height = passage === 0 ? 16 : passage === 3 ? 18 : 15;
+      const lean = -side * (passage === 0 ? 0.12 : passage === 3 ? 0.28 : 0.36);
+      const yaw = side * (0.1 + (index % 3) * 0.1);
       const bladeMaterial = (index + (side > 0 ? 1 : 0)) % 4 === 0
         ? 2
         : family === 1 ? 0 : 3;
@@ -646,7 +689,7 @@ function buildArchitectureInstances() {
       // broad spacing keep these as Euclidean planes, never towers or balconies.
       push(
         [x, height * 0.46, z + (side > 0 ? (index % 3) * 5.5 : 0)],
-        [between(random, 0.58, 1.28), height, between(random, 3.4, 6.8)],
+        [passage === 3 ? 2.2 : 1.1, height, passage === 0 ? 7.2 : 4.8],
         [ARCHITECTURE_SCROLL_RATE, visibility, bladeMaterial, family === 0 ? 0.92 : 0.58],
         [yaw, lean],
       );
@@ -655,8 +698,8 @@ function buildArchitectureInstances() {
       // the large dark coloured mass in the visual contract; without it the
       // station collapses into a row of isolated letter-like posts.
       push(
-        [side * between(random, 15.5, 20.5), between(random, 1.2, 2.5), z + 0.9],
-        [between(random, 8.5, 15.5), between(random, 2.2, 4.6), between(random, 8, 16)],
+        [side * 13.5, 1.25, z + 0.9],
+        [7.2, 2.5, 16],
         [ARCHITECTURE_SCROLL_RATE, visibility + 0.025, 1, 0.46],
         [side * between(random, 0.03, 0.11), side * between(random, -0.025, 0.045)],
       );
@@ -666,8 +709,8 @@ function buildArchitectureInstances() {
       // scene-wide wireframe, and each uses one palette-owned material.
       for (let band = 0; band < 3; band += 1) {
         push(
-          [side * (10.7 + band * 3.0), 0.55 + band * 1.05, z - 1.0 - band * 1.4],
-          [between(random, 1.2, 2.8), 0.11 + band * 0.045, between(random, 22, 38)],
+          [side * (8.9 + band * 2.0), 0.45 + band * 0.8, z - 1.0 - band * 1.4],
+          [0.16 + band * 0.07, 0.10 + band * 0.025, 18 + band * 3],
           [ARCHITECTURE_SCROLL_RATE, visibility + 0.012 + band * 0.012, band === 0 ? 0 : band + 1, 0.98],
           [side * (0.04 + band * 0.026), 0],
         );
@@ -761,7 +804,7 @@ export function meridianWebglAvailable() {
 export function createMeridianRenderer(canvas, initialPalette) {
   const gl = canvas.getContext("webgl2", {
     alpha: false,
-    antialias: false,
+    antialias: true,
     depth: true,
     powerPreference: "high-performance",
     preserveDrawingBuffer: false,
@@ -786,7 +829,7 @@ export function createMeridianRenderer(canvas, initialPalette) {
   const distortionUniforms = [
     "u_viewProjection", "u_travelLength", "u_overshoot", "u_time", "u_swayAmplitude",
     "u_swayFrequency", "u_liftAmplitude", "u_rollAmplitude", "u_rollFrequency",
-    "u_depthCompression", "u_peripheralStretch", "u_peripheralParallax",
+    "u_depthCompression", "u_peripheralStretch", "u_peripheralParallax", "u_roadCurve",
   ];
   const railUniforms = uniformsOf(gl, railProgram, [
     ...distortionUniforms, "u_mid", "u_light", "u_accent", "u_secondary",
@@ -862,10 +905,12 @@ export function createMeridianRenderer(canvas, initialPalette) {
   gl.enable(gl.BLEND);
 
   let timeOffset = 0;
+  let roadCurve = 0;
   let railScroll = 0;
   let visualResponse = null;
-  let width = 1;
-  let height = 1;
+  // A recovered renderer may reuse a canvas whose backing size is already set.
+  let width = Math.max(1, canvas.width);
+  let height = Math.max(1, canvas.height);
   let disposed = false;
 
   const setDistortionUniforms = (uniforms, field, lens, viewProjection) => {
@@ -878,6 +923,7 @@ export function createMeridianRenderer(canvas, initialPalette) {
     gl.uniform1f(uniforms.u_liftAmplitude, field.liftAmplitude);
     gl.uniform1f(uniforms.u_rollAmplitude, field.rollAmplitude);
     gl.uniform1f(uniforms.u_rollFrequency, field.rollFrequency);
+    gl.uniform1f(uniforms.u_roadCurve, field.roadCurve);
     gl.uniform1f(uniforms.u_depthCompression, lens.depthCompression);
     gl.uniform1f(uniforms.u_peripheralStretch, lens.peripheralStretch);
     gl.uniform1f(uniforms.u_peripheralParallax, lens.peripheralParallax);
@@ -903,8 +949,9 @@ export function createMeridianRenderer(canvas, initialPalette) {
       gl.viewport(0, 0, width, height);
     },
 
-    render({ speedKmh, deltaSeconds, reducedMotion, effect }) {
+    render({ speedKmh, deltaSeconds, reducedMotion, effect, motionSample }) {
       if (disposed) return;
+      roadCurve = advanceApertureCurve(roadCurve, visualCurveTarget(motionSample, speedKmh, reducedMotion), deltaSeconds);
 
       visualResponse = advanceMeridianVisualResponse(
         visualResponse,
@@ -920,6 +967,7 @@ export function createMeridianRenderer(canvas, initialPalette) {
       const baseField = speedToDistortionField(speed);
       const field = {
         ...baseField,
+        roadCurve,
         swayAmplitude: baseField.swayAmplitude * effectProfile.swayScale,
         liftAmplitude: baseField.liftAmplitude * effectProfile.swayScale,
       };

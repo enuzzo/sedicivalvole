@@ -17,6 +17,7 @@ function surfaceSize(canvas) {
 }
 
 export function PrtclField({
+  getMotionSample,
   speed,
   audioLevel = 0,
   macroSnapshot = null,
@@ -35,6 +36,7 @@ export function PrtclField({
   callbacksRef.current = { onRenderer, onFrame, onRuntimeError };
   const type = normalizePrtclSettings(settings).type;
   const valuesRef = useRef({
+    getMotionSample,
     speed,
     audioLevel,
     macroSnapshot,
@@ -44,6 +46,7 @@ export function PrtclField({
     reducedMotion,
   });
   valuesRef.current = {
+    getMotionSample,
     speed,
     audioLevel,
     macroSnapshot,
@@ -105,6 +108,7 @@ export function PrtclField({
           reducedMotion: current.reducedMotion,
           deltaSeconds: elapsed,
           calibration: current.calibration,
+          motionSample: current.getMotionSample?.(),
         });
         callbacksRef.current.onFrame(now, 1000 / 60, "WebGL2", width, height);
         animationFrame = requestAnimationFrame(render);

@@ -5016,7 +5016,15 @@ export function App() {
     capabilities: diagnostics.capabilities,
     phoneMotion: null,
     phoneRemote: motionSessionRef.current?.report() ?? null,
-    roadMotion: { source: roadInputStatusRef.current.source, status: roadInputStatusRef.current.label, speedSource: sourceRef.current === "GPS" ? "GPS" : "Demo", headingConsumer: "aperture-curve", accelerationConsumers: "gps-speed-derivative" },
+    roadMotion: {
+      source: roadInputStatusRef.current.source,
+      status: roadInputStatusRef.current.label,
+      speedSource: sourceRef.current === "GPS" ? "GPS" : "Demo",
+      headingConsumer: experienceModeRef.current !== "engine"
+        && ["aperture", "meridian", "prtcl"].includes(environmentIdRef.current)
+        ? `${environmentIdRef.current}-curve` : "none",
+      accelerationConsumers: "gps-speed-derivative",
+    },
     environment: {
       ...diagnostics.environment,
       currentVisibility: document.visibilityState,
@@ -5338,6 +5346,7 @@ export function App() {
             />
           ) : environment.renderer === "meridian" ? (
             <MeridianField
+              getMotionSample={getGpsCurveMotion}
               speed={speed}
               theme={theme}
               reducedMotion={reducedMotion}
@@ -5386,6 +5395,7 @@ export function App() {
             />
           ) : environment.renderer === "prtcl" ? (
             <PrtclField
+              getMotionSample={getGpsCurveMotion}
               speed={speed}
               audioLevel={audioLevel}
               macroSnapshot={audioMacros}

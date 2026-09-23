@@ -261,7 +261,8 @@ const unpinned = (progress, time, field) => {
   const lift = field.liftAmplitude * p ** field.liftExponent
     - field.rollAmplitude
       * Math.sin(p * Math.PI * field.rollFrequency + time * FIELD.rollPhaseRate);
-  return { x: sway, y: lift };
+  const curve = (field.roadCurve || 0) * 48 * p * (0.22 + 0.78 * p);
+  return { x: sway + curve, y: lift };
 };
 
 /**
@@ -305,6 +306,7 @@ export function meridianDistortionGlsl() {
   uniform float u_liftAmplitude;
   uniform float u_rollAmplitude;
   uniform float u_rollFrequency;
+  uniform float u_roadCurve;
 
   const float PIN_PROGRESS = ${MERIDIAN_PIN_PROGRESS.toFixed(5)};
   const float SWAY_NEAR_DAMPING = ${FIELD.swayNearDamping.toFixed(5)};
@@ -319,7 +321,8 @@ export function meridianDistortionGlsl() {
       * (SWAY_NEAR_DAMPING + (1.0 - SWAY_NEAR_DAMPING) * p);
     float lift = u_liftAmplitude * pow(p, LIFT_EXPONENT)
       - u_rollAmplitude * sin(p * PI_ * u_rollFrequency + u_time * ROLL_PHASE_RATE);
-    return vec2(sway, lift);
+    float curve = u_roadCurve * 48.0 * p * (0.22 + 0.78 * p);
+    return vec2(sway + curve, lift);
   }
 
   vec2 getDistortion(float progress) {

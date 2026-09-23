@@ -7,6 +7,7 @@ import {
   prtclMacroTargets,
   prtclMotionProfile,
 } from "./prtcl-model.js";
+import { visualCurveTarget, advanceApertureCurve } from "../../motion/aperture-curve.js";
 
 const TYPE_INDEX = Object.freeze({ frequency: 0, axiom: 1 });
 
@@ -30,6 +31,7 @@ const VERTEX_SHADER = `#version 300 es
   uniform float u_brightness;
   uniform float u_spreadScale;
   uniform float u_underwater;
+  uniform float u_roadCurve;
   uniform int u_type;
   uniform vec3 u_mid;
   uniform vec3 u_light;
@@ -192,6 +194,15 @@ const VERTEX_SHADER = `#version 300 es
 
     position *= u_formScale;
     vec4 viewPosition = u_view * vec4(position, 1.0);
+    // Deform in view space so the direction stays readable while Fractal's
+    // authored camera orbits. Axiom banks as a whole landscape; Fractal twists
+    // through depth. Scaling with formScale preserves the braking collapse.
+    float depthWeight = clamp((-viewPosition.z - 1.0) / 7.0, 0.0, 1.0);
+    float bank = -u_roadCurve * (u_type == 0 ? 0.18 : 0.12);
+    float c = cos(bank), s = sin(bank);
+    viewPosition.xy = mat2(c, -s, s, c) * viewPosition.xy;
+    float torsion = u_type == 0 ? sin(position.y * 1.8 + depthWeight * 2.1) * 0.28 : depthWeight * 0.42;
+    viewPosition.x += u_roadCurve * (0.32 + torsion) * u_formScale;
     float perspectiveScale = 20.0 / max(0.35, -viewPosition.z);
     float audioPulse = 1.0 + u_pulse * (0.06 + 0.08 * sin(u_time * 2.7 + index * 0.013));
     gl_PointSize = clamp(pointSize * u_pixelRatio * u_pointScale * perspectiveScale * audioPulse, 1.0, 12.0 * u_pixelRatio);
@@ -356,6 +367,7 @@ export function createPrtclRenderer(canvas, initialPalette, initialTypeId = "fre
     brightness: uniform("u_brightness"),
     spreadScale: uniform("u_spreadScale"),
     underwater: uniform("u_underwater"),
+    roadCurve: uniform("u_roadCurve"),
     type: uniform("u_type"),
     mid: uniform("u_mid"),
     light: uniform("u_light"),
@@ -368,6 +380,7 @@ export function createPrtclRenderer(canvas, initialPalette, initialTypeId = "fre
   let height = 1;
   let pixelRatio = 1;
   let time = 0;
+  let roadCurve = 0;
   let transitionAtMs = 0;
   let macroState = createPrtclMacroTransitionState();
   let macroResponse = createPrtclMacroResponse();
@@ -409,6 +422,7 @@ export function createPrtclRenderer(canvas, initialPalette, initialTypeId = "fre
       reducedMotion,
       deltaSeconds,
       calibration = null,
+      motionSample = null,
     }) {
       if (disposed) return;
       const multiplier = (name, fallback = 1, minimum = 0, maximum = 3) => {
@@ -423,6 +437,7 @@ export function createPrtclRenderer(canvas, initialPalette, initialTypeId = "fre
         macroResponse = createPrtclMacroResponse({ attackSeconds, releaseSeconds });
       }
       const frameSeconds = Math.max(0, Math.min(0.1, deltaSeconds));
+      roadCurve = advanceApertureCurve(roadCurve, visualCurveTarget(motionSample, speedKmh, reducedMotion), frameSeconds);
       transitionAtMs += frameSeconds * 1000;
       macroState = advancePrtclMacroTransition(
         macroState,
@@ -460,6 +475,7 @@ export function createPrtclRenderer(canvas, initialPalette, initialTypeId = "fre
       gl.uniform1f(uniforms.brightness, profile.brightness);
       gl.uniform1f(uniforms.spreadScale, profile.spreadScale);
       gl.uniform1f(uniforms.underwater, profile.underwater);
+      gl.uniform1f(uniforms.roadCurve, roadCurve);
       gl.uniform1i(uniforms.type, TYPE_INDEX[typeId]);
       gl.uniform3fv(uniforms.mid, palette.mid);
       gl.uniform3fv(uniforms.light, palette.light);

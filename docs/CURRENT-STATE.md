@@ -1,5 +1,22 @@
 # Current Project State
 
+## Meridian, Aperture and PRTCL curve refinement — September 23
+
+The owner delegates a more immersive Meridian and PRTCL treatment, requests
+whole-tunnel Aperture curvature, and explicitly defers curve-driven audio.
+Meridian now alternates open and folded galleries with palette-owned surfaces,
+luminous seams and overhead parallax. Its entire depth field follows GPS curves.
+Aperture translates the near rim modestly and strengthens middle/far bending.
+PRTCL Fractal twists and banks; Axiom banks as one landscape, retaining complete
+UNDERWATER collapse. All three share the same trusted/fresh GPS gate and return
+to neutral on loss or reduced motion. No new assets, dependencies or audio
+mappings are introduced. The native aggregate passes 1,100 tests and the exact
+lockfile credits check passes 189 entries. Local app QA drives the actual
+geolocation callback at 100 ms through Meridian and PRTCL; local component QA
+covers both particle variants, palette changes, braking collapse and reduced
+motion. Real Tesla sensitivity and sustained GPU acceptance remain open.
+Publication evidence follows after verification.
+
 ## Aperture GPS curve cadence repair — September 23
 
 The owner requested a direction-of-travel trial on Aperture. The existing GPS

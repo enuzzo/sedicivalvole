@@ -6,6 +6,7 @@
 // describe the same world.
 
 import { useEffect, useRef } from "react";
+import { visualCurveTarget, advanceApertureCurve } from "../../motion/aperture-curve.js";
 import {
   advanceMeridianVisualResponse,
   advanceTimeOffset,
@@ -51,6 +52,7 @@ function startCanvasFallback(canvas, valuesRef, onRenderer, onFrame, onRuntimeEr
   let animationFrame = 0;
   let stopped = false;
   let timeOffset = 0;
+  let roadCurve = 0;
   let visualResponse = null;
   let lastFrameAt = performance.now();
   onRenderer("Canvas2D · Meridian");
@@ -70,7 +72,8 @@ function startCanvasFallback(canvas, valuesRef, onRenderer, onFrame, onRuntimeEr
       if (elapsed >= 1 / 32) {
         lastFrameAt = now;
 
-        const { speed, reducedMotion, palette, effect } = valuesRef.current;
+        const { speed, reducedMotion, palette, effect, getMotionSample } = valuesRef.current;
+        roadCurve = advanceApertureCurve(roadCurve, visualCurveTarget(getMotionSample?.(), speed, reducedMotion), elapsed);
         visualResponse = advanceMeridianVisualResponse(
           visualResponse,
           reducedMotion ? Math.min(speed, 20) : speed,
@@ -93,6 +96,7 @@ function startCanvasFallback(canvas, valuesRef, onRenderer, onFrame, onRuntimeEr
         const rawField = speedToDistortionField(effectiveSpeed);
         const field = {
           ...rawField,
+          roadCurve,
           swayAmplitude: rawField.swayAmplitude * effectProfile.swayScale,
           liftAmplitude: rawField.liftAmplitude * effectProfile.swayScale,
         };
@@ -170,6 +174,7 @@ function startCanvasFallback(canvas, valuesRef, onRenderer, onFrame, onRuntimeEr
 }
 
 export function MeridianField({
+  getMotionSample,
   speed,
   theme,
   reducedMotion,
@@ -180,8 +185,8 @@ export function MeridianField({
 }) {
   const canvasRef = useRef(null);
   const rendererRef = useRef(null);
-  const valuesRef = useRef({ speed, reducedMotion, effect, palette: theme.palette });
-  valuesRef.current = { speed, reducedMotion, effect, palette: theme.palette };
+  const valuesRef = useRef({ speed, reducedMotion, effect, palette: theme.palette, getMotionSample });
+  valuesRef.current = { speed, reducedMotion, effect, palette: theme.palette, getMotionSample };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -235,6 +240,7 @@ export function MeridianField({
           deltaSeconds: elapsed,
           reducedMotion: valuesRef.current.reducedMotion,
           effect: valuesRef.current.effect,
+          motionSample: valuesRef.current.getMotionSample?.(),
         });
 
         onFrame(now, WEBGL_TARGET_FRAME_MS, "WebGL2", width, height);

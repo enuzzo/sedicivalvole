@@ -1,4 +1,4 @@
-import { apertureCurveTarget, advanceApertureCurve } from "./motion/aperture-curve.js";
+import { apertureCurveTarget, apertureCurveOffset, advanceApertureCurve } from "./motion/aperture-curve.js";
 import { useEffect, useRef } from "react";
 import { aperturePressureToFlowRate, speedToVisualVelocity } from "./signal-model.js";
 import {
@@ -110,9 +110,9 @@ const FRAGMENT_SHADER = `#version 300 es
   void main() {
     vec2 uv_norm = v_uv * 2.0 - 1.0;
     // A shared depth warp bends all four walls together, preserving their seams.
-    // The near rim remains fixed; the dark terminus carries the greatest bend.
+    // The near field translates gently; the middle and far field bend further.
     float bendDepth = 1.0 - clamp(max(abs(uv_norm.x), abs(uv_norm.y)), 0.0, 1.0);
-    uv_norm.x -= u_curve * bendDepth * bendDepth;
+    uv_norm.x -= u_curve * (0.16 + 0.5 * bendDepth + 0.64 * bendDepth * bendDepth);
     // UNDERWATER presses the corridor inward instead of adding an overlay.
     uv_norm *= 1.0 + u_brake * 0.035;
 
@@ -219,7 +219,7 @@ function drawCanvasFallback(context, canvas, pressure, visualVelocity, speedKmh,
 
       context.strokeStyle = cssColor(ringColor, 0.7);
       context.lineWidth = terminalVelocity > 0.5 ? 2 : 4;
-      context.strokeRect(centerX + curve * width * 0.5 * (1 - s) ** 2 - ringW / 2, centerY - ringH / 2, ringW, ringH);
+      context.strokeRect(centerX + apertureCurveOffset(curve, 1 - s) * width * 0.5 - ringW / 2, centerY - ringH / 2, ringW, ringH);
     }
   }
 

@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createGpsCurveTracker } from "../src/motion/gps-curve.js";
-import { apertureCurveTarget, advanceApertureCurve } from "../src/motion/aperture-curve.js";
+import { apertureCurveTarget, apertureCurveOffset, visualCurveTarget, advanceApertureCurve } from "../src/motion/aperture-curve.js";
 
 const fix = (capturedAtMs, heading, overrides = {}) => ({ capturedAtMs, heading, speedKmh: 70, accuracyM: 2, ...overrides });
 const turning = (cadence = 100, direction = 1) => {
@@ -127,4 +127,33 @@ test("reset removes previous direction and increments the input generation", () 
   tracker.observe(fix(0, 180));
   assert.equal(tracker.sample(0).generation, generation + 1);
   assert.equal(tracker.sample(0).turnRate, 0);
+});
+
+test("all original visual consumers share the bounded direction and freshness gate", () => {
+  const sample = turning().sample(3000);
+  assert.ok(visualCurveTarget(sample, 70) > 0.5);
+  for (const rate of [-900, -12, 0, 12, 900]) {
+    const target = visualCurveTarget({ ...sample, turnRate: rate }, 70);
+    assert.ok(Math.abs(target) <= 1);
+    assert.equal(target, -visualCurveTarget({ ...sample, turnRate: -rate }, 70));
+  }
+  for (const changed of [null, { ...sample, ageMs: 1501 }, { ...sample, quality: 0.1 }]) {
+    assert.equal(visualCurveTarget(changed, 70), 0);
+  }
+  assert.equal(visualCurveTarget(sample, 70, true), 0);
+  assert.equal(visualCurveTarget(sample, 0), 0);
+});
+
+test("Aperture carries a curve from the near rim through the middle and far tunnel", () => {
+  const curve = apertureCurveTarget(turning().sample(3000), 70);
+  const near = apertureCurveOffset(curve, 0);
+  const middle = apertureCurveOffset(curve, 0.5);
+  const far = apertureCurveOffset(curve, 1);
+  assert.ok(near > 0.03, "the near field must move with the tunnel");
+  assert.ok(middle > 0.13, "the middle distance must carry a visible bend");
+  assert.ok(near < middle && middle < far && far < 0.6);
+  for (const depth of [0, 0.25, 0.5, 0.75, 1]) {
+    assert.equal(apertureCurveOffset(-curve, depth), -apertureCurveOffset(curve, depth));
+    assert.equal(apertureCurveOffset(0, depth), 0);
+  }
 });

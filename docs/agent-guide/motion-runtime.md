@@ -53,8 +53,8 @@ The active phone route is now a command-only passenger remote at
 `?remote=phone` (the old `?motion=phone` link aliases it for QR continuity).
 It does not request accelerometer, gyroscope, orientation or screen-wake
 permission. The display owns GPS speed and all road response. Engine demand and
-Flux vehicle effects use the display's accepted GPS speed derivative; Aperture
-uses a separate bounded `gps-heading` signal from trusted moving positions and
+Flux vehicle effects use the display's accepted GPS speed derivative. Aperture,
+Meridian and PRTCL use a separate bounded `gps-heading` signal from trusted moving positions and
 the Atlas heading resolver. A heading sample must have usable accuracy, moving
 speed, a short position gap and a bounded smoothed turn rate. It expires on its
 own and never pretends to be IMU data.
@@ -67,7 +67,9 @@ speed/accuracy/heading clears the baseline, duplicate or reversed receipts do
 not renew freshness, and a gap over 1,500 ms starts neutral. Implausible heading
 jumps over 90 degrees/second rebase without bending. The renderer eases back to
 straight on stale input and disables the bend for reduced motion. This only
-controls Aperture's bounded lateral warp, not steering or audio effects.
+controls bounded visual displacement in Aperture, Meridian and PRTCL. Steering
+and audio remain separate; the owner explicitly deferred curve-driven audio.
+Coordinate-free diagnostics name only the selected heading consumer.
 
 The passenger remote reuses the same-origin HTTPS mailbox and AES-GCM admission
 but has its own `sv-remote-1` allowlisted command protocol. Commands carry IDs,
