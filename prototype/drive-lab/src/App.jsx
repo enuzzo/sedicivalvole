@@ -1,9 +1,6 @@
-import { roadNavbarStatus, usableRoadSample } from "./motion/road-input.js";
-import { motionRecoveryNotice } from "./motion/guided-setup.js";
 import { useOutsideDismiss } from "./ui/use-outside-dismiss.js";
 import { createSoundtrackRecovery } from "./soundtrack/recovery.js";
 import { ContextualControlsContext } from "./contextual-controls.jsx";
-import { useLocalSensors, LocalSensorsPanel } from "./motion/local-sensors.jsx";
 import { CacheResetControl } from "./session/cache-reset-control.jsx";
 import {DriveyCycleControl, PrtclCycleControl, ShaderGradientCycleControl} from "./ui/visual-cycle-controls.jsx";
 import {radarDisplayFix} from './environments/radar/radar-location.js';
@@ -35,8 +32,9 @@ import { CURATED_EXPERIENCES, applyExperienceSettings, matchingExperience } from
 import { resolveSemanticTheme } from "./semantic-theme.js";
 import { RailIcon } from "./rail-icon.jsx";
 import { MotionIcon } from "./motion/motion-ui.jsx";
-import { MotionReceiverPanel } from "./motion/receiver-view.jsx";
-import { createMotionSession } from "./motion/session.js";
+import { RemoteReceiverPanel } from "./remote/receiver-panel.jsx";
+import { createRemoteSession } from "./remote/session.js";
+import { createGpsCurveTracker } from "./motion/gps-curve.js";
 import { Component, lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 // Keep the support QR inside the already-loaded application bundle so opening
 // the panel does not depend on a later image request over a weak connection.
@@ -2162,7 +2160,9 @@ export function App() {
   const [motionOpen, setMotionOpen] = useState(false);
   const [motionSnapshot, setMotionSnapshot] = useState({ state: "idle" });
   const motionSessionRef = useRef(null);
-  const readMotionSnapshot = useCallback(() => motionSessionRef.current?.snapshot() ?? { state: "idle" }, []);
+  const remoteStateRef = useRef(() => ({}));
+  const remoteCommandRef = useRef(async () => ({ ok: false, reason: "not-ready" }));
+  const readMotionSnapshot = useCallback(() => motionSessionRef.current?.snapshot() ?? { state: "idle", networkState: "offline" }, []);
   const motionPresentationRef = useRef(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [controlsAwake, setControlsAwake] = useState(true);
@@ -2329,6 +2329,7 @@ export function App() {
   const runtimeIssuesRef = useRef([]);
   const latestGpsObservationRef = useRef({ capturedAtMs: null, speedKmh: null });
   const atlasPositionSamplesRef = useRef([]);
+  const gpsCurveTrackerRef = useRef(createGpsCurveTracker());
   const atlasSessionJourneyRef = useRef({
     recentSamples: [],
     sessionSamples: [],
@@ -2419,76 +2420,64 @@ export function App() {
     }, { sample: type === "gps.sample", interaction });
   }, []);
 
-  const logLocalMotion = useCallback((type, detail) => logDiagnosticEvent(`motion.local.${type}`, detail), [logDiagnosticEvent]);
-  const localSensors = useLocalSensors(logLocalMotion);
-  const [motionSourceChoice, setMotionSourceChoice] = useState(null);
-  const showLocalSensors = motionSourceChoice === "local" || motionSourceChoice !== "remote" && localSensors.preferred;
-
-  const motionInputRef = useRef(null);
-  motionInputRef.current = { phase, experienceMode, vehicleEffectsEnabled, reducedMotion, showLocalSensors, sample: localSensors.sample };
-  const readPhoneMotion = useCallback(() => {
-    const current = motionInputRef.current;
-    if (current.phase !== "running" || sourceRef.current !== "GPS" || document.visibilityState !== "visible" || navigator.onLine === false) return null;
-    return current.showLocalSensors ? current.sample() : motionSessionRef.current?.sample() ?? null;
+  const getGpsCurveMotion = useCallback(() => {
+    if (sourceRef.current !== "GPS" || document.visibilityState !== "visible") return null;
+    const speedEvidence = engineMotionRef.current.snapshot(performance.now());
+    return speedEvidence.freshness === "fresh" ? gpsCurveTrackerRef.current.sample(performance.now()) : null;
   }, []);
-  const getRoadMotion = useCallback(() => {
-    const sample = readPhoneMotion();
-    return usableRoadSample(sample) ? sample : null;
-  }, [readPhoneMotion]);
-  const recordRoadConsumer = useCallback((name, sample, enabled) => {
-    if (!motionInputRef.current.showLocalSensors) motionSessionRef.current?.recordConsumer(name, enabled ? sample : null);
-  }, []);
-  const getEngineRoadMotion = useCallback(() => {
-    const sample = getRoadMotion();
-    recordRoadConsumer("engine-demand", sample, motionInputRef.current.experienceMode === "engine");
-    return sample;
-  }, [getRoadMotion, recordRoadConsumer]);
-  useEffect(() => { engineMotionRef.current.setPhoneMotionProvider(getEngineRoadMotion); }, [getEngineRoadMotion]);
-  const getAudioRoadMotion = useCallback(() => {
-    const evidence = engineMotionRef.current.snapshot(performance.now());
-    return evidence.source === "GPS" && evidence.freshness === "fresh" ? getRoadMotion() : null;
-  }, [getRoadMotion]);
-  const getFluxRoadMotion = useCallback(() => {
-    const sample = getAudioRoadMotion();
-    recordRoadConsumer("flux-braking", sample, motionInputRef.current.experienceMode === "flux" && motionInputRef.current.vehicleEffectsEnabled);
-    return sample;
-  }, [getAudioRoadMotion, recordRoadConsumer]);
-  const getApertureMotion = useCallback(() => {
-    const sample = getAudioRoadMotion();
-    recordRoadConsumer("aperture-curve", sample, !motionInputRef.current.reducedMotion);
-    return sample ? { ...sample, turnRate: sample.road.yawRate } : null;
-  }, [getAudioRoadMotion, recordRoadConsumer]);
-  const [roadInputStatus, setRoadInputStatus] = useState(() => roadNavbarStatus({ source: "GPS", active: false }));
+  // Phone acceleration and gyroscope are intentionally no longer a road input.
+  // Engine and audio response receive only the GPS speed derivative here.
+  useEffect(() => { engineMotionRef.current.setPhoneMotionProvider(null); }, []);
+  const [roadInputStatus, setRoadInputStatus] = useState(() => ({
+    label: "GPS road response",
+    summary: "GPS speed · GPS/Atlas heading for lateral visual response",
+    state: "gps",
+    connected: false,
+    source: "gps-motion",
+    notice: null,
+  }));
   const roadInputStatusRef = useRef(roadInputStatus);
   roadInputStatusRef.current = roadInputStatus;
+  const remoteVisualState = motionSnapshot.state === "connected"
+    ? "active"
+    : motionSnapshot.state === "pairing"
+      ? "pairing"
+      : ["preparing", "connecting"].includes(motionSnapshot.state)
+        ? "retrying"
+        : "local";
   useEffect(() => {
     const refresh = () => {
-      const sample = getAudioRoadMotion();
-      const link = showLocalSensors ? {} : readMotionSnapshot();
       const gpsFresh = engineMotionRef.current.snapshot(performance.now()).freshness === "fresh";
-      const status = roadNavbarStatus({ source: sourceRef.current, active: phase === "running", sample, gpsFresh,
-        sensor: showLocalSensors ? localSensors.summary : link, link, local: showLocalSensors });
-      const next = { ...status, notice: motionRecoveryNotice(link, sourceRef.current, gpsFresh) };
+      const link = readMotionSnapshot();
+      const next = {
+        label: gpsFresh ? "GPS road response" : "Waiting for fresh GPS",
+        summary: gpsFresh ? "GPS speed · GPS/Atlas heading for lateral visual response" : "GPS speed unavailable · lateral response paused",
+        state: gpsFresh ? "gps" : "retrying",
+        connected: link.state === "connected" && link.networkState === "online",
+        source: "gps-motion",
+        notice: link.state === "connected" && link.networkState !== "online" ? "Remote reconnecting · GPS remains in control" : null,
+      };
       setRoadInputStatus(previous => previous.label === next.label && previous.summary === next.summary && previous.notice === next.notice
         && previous.state === next.state && previous.connected === next.connected ? previous : next);
     };
     refresh(); const timer = window.setInterval(refresh, 100);
     return () => window.clearInterval(timer);
-  }, [phase, source, showLocalSensors, localSensors.summary, readMotionSnapshot, getAudioRoadMotion]);
+  }, [phase, source, motionSnapshot, readMotionSnapshot]);
 
   useEffect(() => {
     let lastUiAt = -Infinity;
     let previous = {};
-    const session = createMotionSession({ role: "receiver", getPresentation: () => motionPresentationRef.current, onChange: (next) => {
+    const session = createRemoteSession({ role: "receiver", getPresentation: () => motionPresentationRef.current,
+      getState: () => remoteStateRef.current(),
+      onCommand: (command) => remoteCommandRef.current(command),
+      onChange: (next) => {
       const at = performance.now();
-      // The root owns connection controls and slow diagnostic metadata. The
-      // mounted receiver panel reads live values/health at its own boundary.
-      if (previous.state === next.state && previous.qrUrl === next.qrUrl && at - lastUiAt < 1000) return;
+      if (previous.state === next.state && previous.qrUrl === next.qrUrl && previous.networkState === next.networkState && at - lastUiAt < 600) return;
       lastUiAt = at;
-      previous = { ...next, values: undefined };
+      previous = { ...next };
       setMotionSnapshot(previous);
     },
-      onEvent: (type, detail) => logDiagnosticEvent(`motion.${type}`, detail) });
+      onEvent: (type, detail) => logDiagnosticEvent(`remote.${type}`, detail) });
     motionSessionRef.current = session;
     return () => { session.dispose(); motionSessionRef.current = null; };
   }, [logDiagnosticEvent]);
@@ -2981,6 +2970,7 @@ export function App() {
     lastGpsEventAtRef.current = null;
     gpsSpeedLockedRef.current = false;
     atlasPositionSamplesRef.current = [];
+    gpsCurveTrackerRef.current.reset();
     atlasSessionJourneyRef.current = {
       recentSamples: [],
       sessionSamples: [],
@@ -3056,6 +3046,7 @@ export function App() {
             accuracyM,
             capturedAtMs,
           };
+          gpsCurveTrackerRef.current.observe(nextMapPosition);
           atlasPositionSamplesRef.current = appendAtlasPositionSample(
             atlasPositionSamplesRef.current,
             nextMapPosition,
@@ -3477,7 +3468,9 @@ export function App() {
         },
       );
       if (!audioRef.current) throw new Error("Web Audio is unavailable");
-      audioRef.current.setPhoneMotionProvider(getFluxRoadMotion);
+      // The phone companion is command-only. Audio vehicle response derives
+      // from the GPS speed stream and never consumes phone IMU samples.
+      audioRef.current.setPhoneMotionProvider(null);
       audioRef.current.setSourceMode(launchEngine ? "engine" : "flux");
       await audioRef.current.resume();
       audioRef.current.setMuted(launchMuted || musicId === "soundtrack");
@@ -3779,6 +3772,7 @@ export function App() {
       localStorage.removeItem(PREFERENCES_KEY);
       localStorage.removeItem(LEGACY_PREFERENCES_KEY);
       localStorage.removeItem(DIAGNOSTIC_PREFERENCES_KEY);
+      localStorage.removeItem("sedicivalvole.remote-pair.v1");
       localStorage.removeItem("sedicivalvole.session-report-recipient.v1");
     } catch {
       // Reset remains useful even when storage access is unavailable.
@@ -4131,6 +4125,60 @@ export function App() {
     return context.state;
   }, [logDiagnosticEvent]);
 
+  const currentTrackRef = useRef(null);
+  const applyRemoteCommand = useCallback(async (command) => {
+    if (!command || typeof command !== "object") return { ok: false, reason: "invalid-command" };
+    switch (command.type) {
+      case "mode":
+        if (["engine", "flux"].includes(command.value)) chooseExperienceMode(command.value);
+        break;
+      case "music-mode":
+        if (["play-road", "soundtrack"].includes(command.value)) await switchMusicMode(command.value);
+        break;
+      case "genre":
+        if (readyScoreGenres().some((genre) => genre.id === command.value)) {
+          if (sessionMusicModeRef.current !== "play-road") await switchMusicMode("play-road");
+          await selectScore(command.value);
+        }
+        break;
+      case "visual":
+        if (command.value === "discover") setDiscoverOpen(true);
+        else if (command.value === "stats") setStatsOpen(true);
+        else if (FLUX_VISUAL_CHOICES.some((choice) => choice.id === command.value)) {
+          if (experienceModeRef.current !== "flux") chooseExperienceMode("flux");
+          setEnvironmentId(command.value);
+        }
+        break;
+      case "engine-profile":
+        chooseEngineProfile(command.value);
+        break;
+      case "transport":
+        if (command.direction === "toggle") await toggleTransport(null, "phone-remote");
+        else if (["previous", "next"].includes(command.direction)) await moveTransport(command.direction, "phone-remote");
+        break;
+      case "mute":
+        if (typeof command.value === "boolean" && mutedRef.current !== command.value) await toggleMuted();
+        break;
+      case "vehicle-effects":
+        updateVehicleEffects(command.value === true);
+        break;
+      case "manual-effect":
+        updateManualEffect(command.effect, command.value);
+        break;
+      case "theme":
+        if (FLUX_THEMES.some((themeOption) => themeOption.id === command.value)) setThemeId(command.value);
+        break;
+      case "soundtrack":
+        await playSoundtrackTrack(command.value, "phone-remote");
+        break;
+      default:
+        return { ok: false, reason: "unsupported-command" };
+    }
+    logDiagnosticEvent("remote.command.applied", { type: command.type });
+    return { ok: true };
+  }, [chooseEngineProfile, chooseExperienceMode, logDiagnosticEvent, moveTransport, playSoundtrackTrack, selectScore, switchMusicMode, toggleMuted, toggleTransport, updateManualEffect, updateVehicleEffects]);
+  remoteCommandRef.current = applyRemoteCommand;
+
   const currentTrack = useMemo(() => {
     if (experienceMode === "engine") return {
       key: `engine:${geaps.snapshot.profileId || engineProfileId}`,
@@ -4188,6 +4236,25 @@ export function App() {
   const transportPlaying = !muted && (experienceMode === "engine" ? geaps.snapshot.playing === true : musicMode === "soundtrack"
     ? soundtrackMediaIsPlaying(soundtrackSnapshot)
     : !playRoadPaused);
+  currentTrackRef.current = currentTrack;
+  remoteStateRef.current = () => ({
+    mode: experienceModeRef.current,
+    musicMode: sessionMusicModeRef.current || musicMode,
+    genreId: genreIdRef.current,
+    environmentId: environmentIdRef.current,
+    engineProfileId: engineProfileId,
+    themeId: themeIdRef.current,
+    muted: mutedRef.current,
+    vehicleEffectsEnabled: vehicleEffectsEnabledRef.current,
+    playing: transportPlaying,
+    manualEffects: soundtrackManualEffects,
+    track: currentTrackRef.current ? {
+      title: currentTrackRef.current.title,
+      artist: currentTrackRef.current.artist,
+      album: currentTrackRef.current.album,
+      artwork: currentTrackRef.current.artwork,
+    } : null,
+  });
 
   mediaSessionActionsRef.current = { move: moveTransport, toggle: toggleTransport };
 
@@ -4955,8 +5022,9 @@ export function App() {
       telemetry: summarizeGpsTelemetry(gpsTelemetryRef.current),
     },
     capabilities: diagnostics.capabilities,
-    phoneMotion: motionSessionRef.current?.report() ?? null,
-    roadMotion: { source: roadInputStatusRef.current.source, status: roadInputStatusRef.current.label, speedSource: sourceRef.current === "GPS" ? "GPS" : "Demo", gyroConsumer: "aperture-curve", accelerationConsumers: "engine-demand,flux-braking" },
+    phoneMotion: null,
+    phoneRemote: motionSessionRef.current?.report() ?? null,
+    roadMotion: { source: roadInputStatusRef.current.source, status: roadInputStatusRef.current.label, speedSource: sourceRef.current === "GPS" ? "GPS" : "Demo", headingConsumer: "aperture-curve", accelerationConsumers: "gps-speed-derivative" },
     environment: {
       ...diagnostics.environment,
       currentVisibility: document.visibilityState,
@@ -5355,7 +5423,7 @@ export function App() {
             </Suspense>
           ) : (
             <FluxField
-              getMotionSample={getApertureMotion}
+              getMotionSample={getGpsCurveMotion}
               pressure={aperturePressure}
               speed={speed}
               theme={theme}
@@ -5491,11 +5559,11 @@ export function App() {
             <span className="visually-hidden">GPS</span>
             <small className="visually-hidden">{gpsPresentation.accuracy}</small>
           </button>
-          <button className="motion-button" type="button" aria-label={`Motion source: ${roadInputStatus.label}`} title={roadInputStatus.label} aria-haspopup="dialog"
-            data-connected={roadInputStatus.connected} data-motion-state={roadInputStatus.state} onClick={() => {
+          <button className="motion-button" type="button" aria-label={`Passenger remote: ${motionSnapshot.state}`} title="Passenger remote" aria-haspopup="dialog"
+            data-connected={motionSnapshot.state === "connected" && motionSnapshot.networkState === "online"} data-motion-state={remoteVisualState} onClick={() => {
               setMotionOpen(true);
-              if (!showLocalSensors && !["preparing", "pairing", "connecting", "connected", "stale"].includes(motionSnapshot.state)) void motionSessionRef.current?.start(null, "https");
-            }}><span className="rail-icon"><MotionIcon state={roadInputStatus.state}/></span></button>
+              if (!["preparing", "pairing", "connecting", "connected"].includes(motionSnapshot.state)) void motionSessionRef.current?.start();
+            }}><span className="rail-icon"><MotionIcon state={remoteVisualState}/></span></button>
           <button
             className="discover-button"
             type="button"
@@ -5608,8 +5676,8 @@ export function App() {
         </div>
       </section>
 
-      {motionOpen ? <DialogSurface className="diagnostic-drawer motion-dialog" labelledBy="motion-title" focusKey={showLocalSensors ? "local" : "remote"} onClose={() => setMotionOpen(false)}>
-        {showLocalSensors ? <LocalSensorsPanel responseLabel={roadInputStatus.label} sensors={localSensors} gpsState={gpsState} source={source} themeKey={`${themeId}:${appearanceResolution.appearance}`} onClose={() => setMotionOpen(false)} onRemote={() => { localSensors.stop(); setMotionSourceChoice("remote"); void motionSessionRef.current?.start(null, "https"); }}/> : <MotionReceiverPanel responseLabel={roadInputStatus.label} responseSummary={roadInputStatus.summary} readSnapshot={readMotionSnapshot} onStart={(transport = "https") => void motionSessionRef.current?.start(null, transport)} onStop={() => motionSessionRef.current?.stop()} onClose={() => setMotionOpen(false)}>{localSensors.capability.potential && <button className="motion-local-choice" onClick={() => { motionSessionRef.current?.stop(); setMotionSourceChoice("local"); }}>USE THIS DEVICE’S SENSORS</button>}</MotionReceiverPanel>}
+      {motionOpen ? <DialogSurface className="diagnostic-drawer motion-dialog" labelledBy="remote-title" onClose={() => setMotionOpen(false)}>
+        <RemoteReceiverPanel snapshot={motionSnapshot} onStart={() => void motionSessionRef.current?.start()} onStop={(next) => motionSessionRef.current?.stop(next)} onClose={() => setMotionOpen(false)} />
       </DialogSurface> : null}
       {supportOpen ? (
         <SupportPanel
@@ -5701,7 +5769,7 @@ export function App() {
                       <InstrumentMetric label="SPEED SOURCE" value={source} detail={`${Math.round(speed)} km/h current`} />
                       <InstrumentMetric label="GPS STATUS" value={gpsState} detail={accuracy == null ? "accuracy unavailable" : `accuracy ±${accuracy} m`} tone={gpsState === "live" ? "good" : "caution"} />
                       <InstrumentMetric label="MOTION STATE" value={scoreStateRef.current?.decelerationState ?? "cruise"} detail={`${Math.round(speed)} km/h · ${demoDriveInputRef.current}`} />
-                      <InstrumentMetric label="PHONE MOTION" value={motionSnapshot.state} detail={`${motionSnapshot.accelerometer ? "ACC" : "no ACC"} / ${motionSnapshot.gyroscope ? "GYRO" : "no GYRO"} · ${motionSnapshot.tared ? "tared" : "tare required"} · ${motionSnapshot.cadenceHz?.toFixed(1) ?? "—"} Hz`} tone={motionSnapshot.state === "connected" ? "good" : "caution"} />
+                      <InstrumentMetric label="PASSENGER REMOTE" value={motionSnapshot.state} detail={motionSnapshot.networkState === "retrying" ? "pairing retained · retrying" : "command channel · GPS remains the road source"} tone={motionSnapshot.state === "connected" ? "good" : "caution"} />
                       <InstrumentMetric label="RECORDED POSITION" value="NONE" detail="coordinates excluded" tone="good" />
                     </dl>
                   </section>

@@ -140,6 +140,24 @@ The selected Compact Cockpit keeps the Tesla organization, thin retracting bars,
 
 Landscape palette taps must survive Safari blur with no known next focus target; retain actual outside-pointer, known focus-departure and Escape dismissal. Installed webapp footer backgrounds extend to the bottom edge while contents respect the safe area. Use [road UI evidence](../ROAD-UI-REFINEMENT-2026-09-09.md#implemented) for this specific behavior. Browser emulation does not close physical touch, safe-area, cabin, native-media, network or sustained-GPU acceptance.
 
+## Passenger remote companion — September 23
+
+The selected direction is the compact A variant: a narrow Now Playing row with
+one cover and previous/play/next beside it, followed by four clear home targets
+for Mode, Music, Visual and Effects. Engine character and Palette remain in the
+same content hierarchy without adding vertical cover art. Each target opens a
+right-side page with an obvious title, Back control and close control. A
+horizontal swipe in either direction closes or steps back, so the phone behaves
+like a small native control surface rather than a long settings page.
+
+Effects are visible on Home as a low-friction play area, with the full list of
+manual effects in the Effects page. The remote mirrors the display's applied
+state after an acknowledged command. It never displays or requests IMU data;
+the only onboarding action is scanning the display QR once. A one-hour encrypted
+HTTPS pairing is retained through temporary outages and reloads, with a visible
+Forget action for revocation. This UI selection does not close real-device
+transport, Safari background, safe-area or passenger acceptance.
+
 ## Owner-supplied piston identity — September 11
 
 The owner replaced the Road mark with `logo/pistons-v1/source.png`. Use the

@@ -53,36 +53,31 @@ displayed `43` in both speed locations and `GPS SPEED` in the instrument, with
 zero page exceptions. No synthetic diagnostic was sent. Physical Tesla/iPhone
 presentation and real reception remain open.
 
-## Recommended next product milestone
+## Passenger remote milestone — implemented in the working release
 
-The owner proposes retiring vehicle response driven by phone accelerometer and
-gyroscope, including Engine demand, Flux braking and Aperture curve, and using
-the QR connection for a portrait passenger remote. This is a promising
-direction, pending selection of one of two visual concepts under the project
-design gate. The measured phone road-eligible fractions remain too low for a
-dependable continuously coupled effect in the available drives; GPS has remained
-independent. GPS-derived speed change can drive bounded acceleration/braking
-response; turn curvature cannot be promised from speed alone and needs a
-separately qualified GPS heading/position signal or a speed-only Aperture mode.
+The selected compact Direction A companion is now implemented as a separate
+command-only phone route. Phone accelerometer, gyroscope and orientation are no
+longer requested or consumed by Engine, Flux, braking effects or Aperture. GPS
+speed remains the road authority. A trusted moving GPS/Atlas heading is turned
+into a bounded, smoothed `gps-heading` sample for Aperture's lateral curve; it
+expires independently and is not presented as gyroscope precision. GPS speed
+derivatives continue to supply the vehicle response fallback.
 
-The current QR code grants one admission to an expiring, at most one-hour
-motion session. The HTTPS relay carries encrypted, latest-only samples; the
-optional direct path repeatedly timed out in these two sessions. Neither
-existing one-use admission nor latest-only semantics is a durable command
-channel. Reuse the cryptographic admission and same-origin transport mechanics,
-then create a separate allowlisted command protocol with command ID, bounded
-retry, receiver acknowledgement, applied-state feedback, replay protection and
-reconnect state. Initially pair one phone per drive. Remembering a phone across
-future drives requires an explicit persistent trust and revocation design;
-do not imply that a scan today gives permanent control. Commands can tolerate
-more delay than road samples but still require a live route between devices.
+The display QR now admits an encrypted HTTPS `sv-remote-1` command channel.
+Commands are allowlisted, IDed, replay-deduplicated and acknowledged through
+applied state. The portrait phone has a compact cover plus previous/play/next
+row, home Effects controls and right-side Mode, Music/genre, Visual, Engine,
+Palette and Effects pages with Back, close and swipe navigation. The final
+phone bearer capability can be retained for the original one-hour lease so a
+reload retries automatically; Forget removes local credentials and requests
+mailbox deletion. Certificate validation remains strict.
 
-Keep the current receiver and phone UI until the selected remote replaces it.
-The implementation order after selection is: remove all phone road consumers
-and sensor onboarding/diagnostics, retain GPS/Demo ownership, implement the
-command channel and receiver actions, implement the chosen portrait remote,
-then verify real iPhone/Tesla connection, music, visuals and reconnect behavior.
-Do not present visual concepts as an implemented companion.
+The relevant source/test gates pass locally, but this is still software
+evidence. Real iPhone/Tesla pairing, cellular/vehicle network recovery, Safari
+background behavior and passenger acceptance remain open. The next acceptance
+step is one physical drive with the new QR remote while recording command
+acknowledgements and GPS/heading response separately from the retired sensor
+metrics.
 
 ## Later drive: 08:40–08:56 UTC
 

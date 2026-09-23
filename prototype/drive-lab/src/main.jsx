@@ -8,8 +8,9 @@ import "./motion/motion.css";
 import "./contextual-rail.css";
 import "./engine/telemetry-metrics.css";
 
-const phoneCompanion = new URLSearchParams(window.location.search).get("motion") === "phone";
-const Surface = phoneCompanion ? React.lazy(() => import("./motion/phone.jsx").then((module) => ({ default: module.MotionPhone }))) : App;
+const phoneCompanion = ["phone"].includes(new URLSearchParams(window.location.search).get("remote"))
+  || new URLSearchParams(window.location.search).get("motion") === "phone";
+const Surface = phoneCompanion ? React.lazy(() => import("./remote/phone.jsx").then((module) => ({ default: module.MotionPhone }))) : App;
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>

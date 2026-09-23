@@ -152,6 +152,27 @@ The mode selector must remain reachable and clearly show the active mode at the 
 
 ## Phone motion companion
 
+The active iPhone surface is now the command-only passenger remote described in
+the September 23 [motion/runtime contract](agent-guide/motion-runtime.md#passenger-command-companion--september-23).
+The display no longer consumes phone acceleration or gyroscope input. Engine,
+Flux and the Aperture curve use GPS-owned signals; Aperture's lateral response
+accepts only the bounded `gps-heading` sample produced from trusted moving
+positions. The old TRACE sensor modules remain for historical feasibility tests,
+not as a live product source.
+
+The remote uses the same-origin encrypted HTTPS mailbox with a separate,
+allowlisted command protocol. Its QR carries a one-lease AES-GCM key; commands
+are IDed, replay-deduplicated and acknowledged through applied state. Phone
+reloads can resume a still-valid lease from local storage, while Forget removes
+the capability and requests server deletion. Network retry is serial and
+bounded by the original lease; certificate validation is never bypassed.
+
+`RemoteReceiverPanel` creates the QR only when the display panel opens. The
+portrait phone route provides compact transport and right-side Mode, Music,
+Genre, Visual, Engine, Palette and Effects pages with Back, close and swipe
+navigation. Transport delay is acceptable for commands; it must never be used
+as a road freshness signal. Physical iPhone/Tesla acceptance remains open.
+
 The selected [TRACE companion](PHONE-MOTION-COMPANION-2026-09-18.md) provides
 permission-gated sensing, any-stable-pose ZERO and encrypted HTTPS admission with
 automatic host-only WebRTC upgrade and retained HTTPS fallback. App owns the receiver session; the separate phone entry
