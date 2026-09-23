@@ -1,5 +1,10 @@
 # Automatic diagnostics — implementation and verification handoff, September 20, 2026
 
+> **September 23 evidence update:** The first real `catch-up` and `hide-flush`
+> emails have now arrived, and complete attached gzip/JSON digests match their
+> mail bodies. The open-inbox statements below describe the September 20
+> checkpoint. See [current log review](PHONE-ROAD-LOG-REVIEW-2026-09-23.md).
+
 > September 20 follow-up: the owner authorized corrections and canonical publication.
 > The earlier optimistic close-time reset is superseded by acknowledgement-based delivery
 > and bounded acceptance receipts. See [reliability correction](RELIABILITY-CORRECTION-2026-09-20.md).

@@ -1,5 +1,17 @@
 # Current Project State
 
+## Real diagnostic receipts and phone road evidence — September 23
+
+The owner's recent mailbox has real `interval`, `catch-up` and one `hide-flush`
+automatic delivery. Six complete attachments passed compressed/JSON digest
+checks. The latest independent mounted-phone report shows 625 s observed, 615 s
+connected, 47 s fresh, 39 s mutually confirmed and 20 s eligible for car-motion
+input; phone motion/orientation events were present with no missing axes. The
+September 23 mail carries essentially the same phone coverage after pairing
+expiry, not another independent drive. GPS and sensor reliability remain separate.
+No product source, build or deployment changed in this review. See the
+[bounded log review and open-milestone decision](PHONE-ROAD-LOG-REVIEW-2026-09-23.md).
+
 ## Hotspot continuity constraint — September 20 (owner report; test current build)
 
 The owner reports that their Tesla leaves the iPhone hotspot during poor phone

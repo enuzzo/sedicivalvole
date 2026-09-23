@@ -1,5 +1,15 @@
 # Milestone Checklist — 2026-08-31
 
+## September 23 evidence reconciliation
+
+Real automatic interval, catch-up and hide-flush mail has reached the owner's
+inbox; six complete attachments passed both gzip and JSON digest checks. This
+closes the first-receipt question left open in the September 20 diagnostics
+handoff. The mounted phone's latest independent report records only 47 s fresh
+and 20 s road eligible during 625 s observed, so N03/N04 physical reliability
+remains open. See the [bounded log review](PHONE-ROAD-LOG-REVIEW-2026-09-23.md).
+This evidence changes no application build or physical acceptance status.
+
 ## Next-work decisions — September 18
 
 [The consolidated owner direction](OWNER-DIRECTION-2026-09-18.md) is the current
