@@ -74,6 +74,10 @@
 .remote-effect-pills { grid-column: 1/-1; display: flex; flex-wrap: wrap; gap: 6px; }
 .remote-effect-pills button { min-height: 44px; flex: 1 1 auto; border: 1px solid var(--remote-line); background: transparent; color: var(--remote-muted); border-radius: 8px; padding: 8px; white-space: nowrap; font-size: 13px; }
 .remote-effect-pills button.is-active { color: var(--ui-accent-fill-text); background: var(--remote-accent); border-color: var(--remote-accent); }
+.remote-effects-note { grid-column: 1/-1; margin: 0; color: var(--remote-muted); font-size: 13px; line-height: 1.45; }
+.remote-manual-heading { grid-column: 1/-1; display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 14px; }
+.remote-manual-heading span { color: var(--remote-muted); font-size: 12px; }
+.remote-phone button:disabled, .remote-phone input:disabled { opacity: .45; cursor: default; }
 .remote-secondary-links { margin: 10px 0 16px; display: grid; }
 .remote-secondary-links button { display: flex; justify-content: space-between; align-items: center; gap: 8px; min-height: 52px; padding: 10px 2px; border: 0; border-bottom: 1px solid var(--remote-line); color: var(--remote-text); background: transparent; text-align: left; font-size: 15px; }
 .remote-secondary-links strong { margin-left: auto; color: var(--remote-muted); font-size: 14px; font-weight: 500; }

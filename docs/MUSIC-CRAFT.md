@@ -1732,6 +1732,34 @@ network service the gate to the visual experience**.
 
 ---
 
+### 6.18 A correct filter can still be hidden behind an ambiguous control
+
+The September 23 Soundtrack road report showed a running shared AudioContext,
+three attached media elements, an audible current track and no graph error.
+The passenger remote disabled the vehicle master at 18:32:33 UTC; it remained
+off in the report accepted at 18:35:35 UTC. The existing contract intentionally
+preserves Underwater visuals when braking audio is off. No coefficient change
+was justified: the home ON/OFF appeared beside Performance FX even though it
+controlled only automatic braking, and the badge did not explain visual-only
+operation. The corrected surface names Braking Underwater and Manual FX
+separately, labels the visual-only badge and makes Engine's dry boundary explicit.
+
+Continuous gestures also need latest-value delivery. A deterministic 100-position
+drag filled the old twelve-command queue at 12%, dropping all remaining positions.
+Pending values now coalesce per effect, without collapsing transport commands.
+Local slider previews are marked Sending until acknowledgement, and old replies
+cannot clear a newer request. Shared authored tap depths avoid different phone
+and display interpretations of the same effect.
+
+Real Web Audio renders and a live MediaElement/shared-context harness verify all
+eight effects, braking engage/release, independent manual effects with braking
+off, GPS-cadence braking and the Engine macro boundary. The live 4 kHz component
+falls by about 73 dB under a held brake and returns when the vehicle master is
+disabled, while the badge remains active. The simultaneous eight-effect plus
+braking fixture remains finite and non-silent (0.212 RMS, 0.839 peak). These are
+deterministic signal measurements, not a claim of physical cabin acceptance.
+Detailed evidence and limits: [September 23 audit](AUDIO-EFFECTS-AUDIT-2026-09-23.md).
+
 ## 7. Sources and material
 
 The product owner explicitly superseded the earlier no-inspection boundary for

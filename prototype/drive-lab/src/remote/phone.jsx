@@ -1,3 +1,4 @@
+import { MANUAL_EFFECT_CONTROLS } from "../manual-effects-controls.js";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ENGINE_CATALOGUE } from "../engine/catalogue.js";
 import { FLUX_THEMES, getFluxTheme } from "../flux-themes.js";
@@ -9,10 +10,6 @@ import { MediaGlyph } from "../media-glyph.jsx";
 import { REMOTE_PAIRING_STORAGE_KEY, createRemoteSession, selectRemotePair } from "./session.js";
 import "./remote.css";
 
-const MANUAL_EFFECTS = Object.freeze([
-  ["flanger", "Flanger"], ["reverb", "Reverb"], ["underwater", "Underwater"], ["phaser", "Phaser"],
-  ["bitcrush", "Bitcrush"], ["bassDrive", "Bass Drive"], ["radioCut", "Radio Cut"], ["highCut", "High Cut"],
-]);
 const EMPTY_STATE = Object.freeze({ mode: "flux", musicMode: "play-road", genreId: "junction", environmentId: "aperture", engineProfileId: "mono", themeId: "red", muted: false, vehicleEffectsEnabled: true, playing: false, manualEffects: {}, track: null });
 const makeId = () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 9)}`;
 
@@ -88,6 +85,7 @@ function Transport({ remoteState, onCommand }) {
 export function MotionPhone() {
   const presentation = useMemo(safePresentation, []);
   const [remoteState, setRemoteState] = useState(() => ({ ...EMPTY_STATE, themeId: presentation.palette, appearance: presentation.appearance }));
+  const [pendingManualEffects, setPendingManualEffects] = useState({});
   const [snapshot, setSnapshot] = useState({ state: "idle", networkState: "offline" });
   const [pair, setPair] = useState(null);
   const [drawer, setDrawer] = useState(null);
@@ -119,7 +117,10 @@ export function MotionPhone() {
           }
         }
       },
-      onState: (next) => setRemoteState((current) => ({ ...current, ...next, manualEffects: { ...current.manualEffects, ...(next.manualEffects || {}) } })),
+      onState: (next, { pending = [] } = {}) => {
+        setRemoteState((current) => ({ ...current, ...next, manualEffects: { ...current.manualEffects, ...(next.manualEffects || {}) } }));
+        setPendingManualEffects(Object.fromEntries(pending.filter((command) => command.type === "manual-effect").map((command) => [command.effect, command.value])));
+      },
       onEvent: (type) => {
         if (type === "error") setNotice(null);
         if (type === "channel-open") setNotice(null);
@@ -132,6 +133,7 @@ export function MotionPhone() {
 
   const send = (type, value = {}) => {
     const accepted = sessionRef.current?.command({ id: makeId(), type, ...value });
+    if (accepted && type === "manual-effect") setPendingManualEffects((current) => ({ ...current, [value.effect]: value.value }));
     if (!accepted) setNotice("Reconnecting… command will be available again shortly.");
   };
   useEffect(() => {
@@ -171,14 +173,17 @@ export function MotionPhone() {
     if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
   };
-  const forget = () => { sessionRef.current?.stop(); forgetSavedPair(); setPair(null); setRemoteState(EMPTY_STATE); setSnapshot({ state: "idle", networkState: "offline" }); close(); setShowGuide(false); };
+  const forget = () => { sessionRef.current?.stop(); forgetSavedPair(); setPair(null); setRemoteState(EMPTY_STATE); setPendingManualEffects({}); setSnapshot({ state: "idle", networkState: "offline" }); close(); setShowGuide(false); };
   const connected = snapshot.state === "connected";
   const ready = connected && snapshot.networkState === "online";
   const palette = pair ? remoteState.themeId : presentation.palette;
   const appearance = remoteState.appearance === "light" || remoteState.appearance === "dark" ? remoteState.appearance : presentation.appearance;
   const colors = resolveSemanticTheme(getFluxTheme(palette), appearance);
   const guideVisible = !pair || !connected || showGuide;
-  const activeEffectCount = Object.values(remoteState.manualEffects || {}).filter((value) => Number(value) > 0.01).length;
+  const musicEffectsAvailable = remoteState.mode !== "engine";
+  const displayedManualEffects = { ...remoteState.manualEffects, ...pendingManualEffects };
+  const sendingEffects = Object.keys(pendingManualEffects).length > 0;
+  const activeEffectCount = Object.values(displayedManualEffects).filter((value) => Number(value) > 0.01).length;
   const drawerTitle = drawer === "mode" ? "Mode" : drawer === "music" ? "Music" : drawer === "music/genre" ? "Genre" : drawer === "visual" ? "Visual" : drawer === "engine" ? "Engine sound" : drawer === "effects" ? "Effects" : drawer === "theme" ? "Palette" : "Remote";
 
   return <main className="remote-phone" style={colors.css} data-palette={palette} data-appearance={appearance} onPointerDown={handleSwipeStart} onPointerUp={handleSwipeEnd}>
@@ -192,9 +197,15 @@ export function MotionPhone() {
         <button type="button" onClick={() => open("mode")}><span className="remote-control-icon">◐</span><small>MODE</small><strong>{remoteState.mode === "engine" ? "Engine" : "Flux"}</strong></button>
         <button type="button" onClick={() => open("music")}><span className="remote-control-icon">♫</span><small>MUSIC</small><strong>{remoteState.musicMode === "soundtrack" ? "Soundtrack" : labelFor(genres, remoteState.genreId, "Play the Road")}</strong></button>
         <button type="button" onClick={() => open("visual")}><span className="remote-control-icon">✦</span><small>VISUAL</small><strong>{labelFor(visualChoices, remoteState.environmentId, "Aperture")}</strong></button>
-        <button type="button" onClick={() => open("effects")}><span className="remote-control-icon">⌁</span><small>EFFECTS</small><strong>{remoteState.vehicleEffectsEnabled ? `${activeEffectCount ? `${activeEffectCount} active` : "On"}` : "Off"}</strong></button>
+        <button type="button" onClick={() => open("effects")}><span className="remote-control-icon">⌁</span><small>EFFECTS</small><strong>{musicEffectsAvailable ? `${activeEffectCount} manual` : "Music only"}</strong></button>
       </section>
-      <section className="remote-home-effects"><div><small>PLAY WITH THE SOUND</small><h2>Performance FX</h2></div><button type="button" aria-label="Vehicle effects" aria-pressed={remoteState.vehicleEffectsEnabled} className={remoteState.vehicleEffectsEnabled ? "is-active" : ""} onClick={() => send("vehicle-effects", { value: !remoteState.vehicleEffectsEnabled })}>{remoteState.vehicleEffectsEnabled ? "ON" : "OFF"}</button><div className="remote-effect-pills">{MANUAL_EFFECTS.slice(0, 4).map(([id, label]) => <button key={id} type="button" aria-pressed={Number(remoteState.manualEffects?.[id]) > 0.01} className={Number(remoteState.manualEffects?.[id]) > 0.01 ? "is-active" : ""} onClick={() => send("manual-effect", { effect: id, value: Number(remoteState.manualEffects?.[id]) > 0.01 ? 0 : 0.72 })}>{label}</button>)}</div></section>
+      <section className="remote-home-effects">
+        <div><small>BRAKING RESPONSE</small><h2>Underwater</h2></div>
+        <button type="button" disabled={!musicEffectsAvailable} aria-label="Braking Underwater" aria-pressed={remoteState.vehicleEffectsEnabled} className={remoteState.vehicleEffectsEnabled && musicEffectsAvailable ? "is-active" : ""} onClick={() => send("vehicle-effects", { value: !remoteState.vehicleEffectsEnabled })}>{musicEffectsAvailable ? remoteState.vehicleEffectsEnabled ? "ON" : "OFF" : "DRY"}</button>
+        <p className="remote-effects-note">{musicEffectsAvailable ? remoteState.vehicleEffectsEnabled ? "Firm braking filters the music." : "Braking changes visuals only. Manual FX still work." : "Effects apply to Music. Engine stays dry."}</p>
+        <div className="remote-manual-heading"><strong>Manual FX</strong><span role="status">{sendingEffects ? "Sending…" : musicEffectsAvailable ? "Tap to play" : "Music only"}</span></div>
+        <div className="remote-effect-pills">{MANUAL_EFFECT_CONTROLS.slice(0, 4).map(({ id, displayLabel, performanceAmount }) => <button key={id} disabled={!musicEffectsAvailable} type="button" aria-pressed={Number(displayedManualEffects[id]) > 0.01} className={Number(displayedManualEffects[id]) > 0.01 ? "is-active" : ""} onClick={() => send("manual-effect", { effect: id, value: Number(displayedManualEffects[id]) > 0.01 ? 0 : performanceAmount })}>{displayLabel}</button>)}</div>
+      </section>
       <section className="remote-secondary-links"><button type="button" onClick={() => open("engine")}><span>Engine character</span><strong>{labelFor(ENGINE_CATALOGUE, remoteState.engineProfileId, "Mono")}</strong>›</button><button type="button" onClick={() => open("theme")}><span>Palette</span><strong>{labelFor(FLUX_THEMES, remoteState.themeId, "Red 03")}</strong>›</button></section>
     </>}
 
@@ -210,7 +221,13 @@ export function MotionPhone() {
             : drawer === "visual" ? <div className="remote-drawer-list">{visualChoices.map((choice) => <DrawerButton key={choice.id} label={`${choice.displayLabel} ${choice.number}`} value={choice.launchDescription} onClick={() => { send("visual", { value: choice.id }); close(); }}/>)}</div>
               : drawer === "engine" ? <div className="remote-drawer-list">{ENGINE_CATALOGUE.map((profile) => <DrawerButton key={profile.id} label={profile.label} value={profile.description} onClick={() => { send("engine-profile", { value: profile.id }); close(); }}/>)}</div>
                 : drawer === "theme" ? <div className="remote-drawer-list remote-theme-list">{FLUX_THEMES.map((theme) => <DrawerButton key={theme.id} label={theme.label} value={remoteState.themeId === theme.id ? "Selected" : ""} detail={theme.id} onClick={() => { send("theme", { value: theme.id }); close(); }}/>)}</div>
-                  : <div className="remote-drawer-effects"><button type="button" className={`remote-effects-master${remoteState.vehicleEffectsEnabled ? " is-active" : ""}`} aria-pressed={remoteState.vehicleEffectsEnabled} onClick={() => send("vehicle-effects", { value: !remoteState.vehicleEffectsEnabled })}><span>Vehicle effects</span><strong>{remoteState.vehicleEffectsEnabled ? "ON" : "OFF"}</strong></button>{MANUAL_EFFECTS.map(([id, label]) => <label key={id}><span>{label}</span><input type="range" min="0" max="1" step="0.01" value={Number(remoteState.manualEffects?.[id] || 0)} onChange={(event) => send("manual-effect", { effect: id, value: Number(event.target.value) })}/><output>{Math.round(Number(remoteState.manualEffects?.[id] || 0) * 100)}</output></label>)}</div>}
+                  : <div className="remote-drawer-effects">
+                    <button type="button" disabled={!musicEffectsAvailable} className={`remote-effects-master${remoteState.vehicleEffectsEnabled && musicEffectsAvailable ? " is-active" : ""}`} aria-pressed={remoteState.vehicleEffectsEnabled} onClick={() => send("vehicle-effects", { value: !remoteState.vehicleEffectsEnabled })}><span>Braking Underwater</span><strong>{musicEffectsAvailable ? remoteState.vehicleEffectsEnabled ? "ON" : "OFF" : "DRY"}</strong></button>
+                    <p className="remote-effects-note">{musicEffectsAvailable ? "Only this switch controls the automatic braking filter. Manual FX below work independently." : "Effects apply to Music. Engine stays dry."}</p>
+                    <div className="remote-manual-heading"><strong>Manual FX</strong><span role="status">{sendingEffects ? "Sending…" : musicEffectsAvailable ? "Applied on display" : "Saved for Music"}</span></div>
+                    {MANUAL_EFFECT_CONTROLS.map(({ id, displayLabel }) => <label key={id}><span>{displayLabel}</span><input disabled={!musicEffectsAvailable} type="range" min="0" max="1" step="0.01" value={Number(displayedManualEffects[id] || 0)} aria-valuetext={`${Math.round(Number(displayedManualEffects[id] || 0) * 100)}%${id in pendingManualEffects ? ", sending" : ""}`} onChange={(event) => send("manual-effect", { effect: id, value: Number(event.target.value) })}/><output>{Math.round(Number(displayedManualEffects[id] || 0) * 100)}</output></label>)}
+                  </div>}
+
     </aside> : null}
   </main>;
 }

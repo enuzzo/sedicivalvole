@@ -1,5 +1,19 @@
 # Current Project State
 
+## Soundtrack effects and passenger control audit — September 23
+
+The owner’s real Soundtrack report records the passenger remote disabling the
+vehicle-effects master at 18:32:33 UTC. The shared audio graph is running without
+errors; the captured state therefore explains visual-only Underwater. The fix
+clarifies Braking Underwater versus Manual FX, labels VISUAL ONLY on the display,
+and makes Engine’s dry boundary explicit. A separately reproduced queue defect
+lost the end of fast slider drags; pending positions now coalesce per effect and
+show temporary Sending feedback until acknowledged. Phone/display tap depths share
+one definition. Combined regression coverage passes 1,088 cases; 19 real-browser
+signal checks and paired phone/display interaction checks pass. Production and
+publication status are maintained in the [focused audit](AUDIO-EFFECTS-AUDIT-2026-09-23.md).
+
+
 ## Companion appearance synchronization — September 23
 
 Canonical **20260923-1953.b06b696** adds live light/dark synchronization to the

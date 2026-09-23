@@ -1,3 +1,4 @@
+import { MANUAL_EFFECT_CONTROLS as SOUNDTRACK_MANUAL_CONTROLS } from "./manual-effects-controls.js";
 import { useOutsideDismiss } from "./ui/use-outside-dismiss.js";
 import { createSoundtrackRecovery } from "./soundtrack/recovery.js";
 import { ContextualControlsContext } from "./contextual-controls.jsx";
@@ -228,16 +229,6 @@ const ILLOBO_FEATURED_MARK_URLS = Object.freeze([
 ]);
 const PREFERENCES_KEY = "sedicivalvole.preferences.v2";
 const LEGACY_PREFERENCES_KEY = "sedicivalvole.preferences.v1";
-const SOUNDTRACK_MANUAL_CONTROLS = Object.freeze([
-  Object.freeze({ id: "flanger", label: "FLANGER", displayLabel: "Flanger", note: "Jet comb sweep", performanceAmount: 0.78 }),
-  Object.freeze({ id: "reverb", label: "REVERB", displayLabel: "Reverb", note: "Long pressure chamber", performanceAmount: 0.72 }),
-  Object.freeze({ id: "underwater", label: "UNDERWATER", displayLabel: "Underwater", note: "Dive and surface", performanceAmount: 0.76 }),
-  Object.freeze({ id: "phaser", label: "PHASER", displayLabel: "Phaser", note: "Deep phase orbit", performanceAmount: 0.78 }),
-  Object.freeze({ id: "bitcrush", label: "BITCRUSH", displayLabel: "Bitcrush", note: "Digital fracture", performanceAmount: 0.72 }),
-  Object.freeze({ id: "bassDrive", label: "BASS DRIVE", displayLabel: "Bass Drive", note: "Driven low-end weight", performanceAmount: 0.74, family: "tone" }),
-  Object.freeze({ id: "radioCut", label: "RADIO CUT", displayLabel: "Radio Cut", note: "Hard mid-band focus", performanceAmount: 0.76, family: "tone" }),
-  Object.freeze({ id: "highCut", label: "HIGH CUT", displayLabel: "High Cut", note: "Clean top-end shave", performanceAmount: 0.76, family: "tone" }),
-]);
 const EMPTY_SOUNDTRACK_MANUAL_EFFECTS = Object.freeze(Object.fromEntries(
   SOUNDTRACK_MANUAL_CONTROLS.map(({ id }) => [id, 0]),
 ));
@@ -2741,7 +2732,7 @@ export function App() {
   const updateVehicleEffects = useCallback((nextEnabled) => {
     const enabled = nextEnabled === true;
     setVehicleEffectsEnabled(enabled);
-    showControlNotice("FX", enabled);
+    showControlNotice("BRAKING FX", enabled);
     logDiagnosticEvent("audio.vehicle-effects.changed", { enabled });
   }, [logDiagnosticEvent, showControlNotice]);
 
@@ -5532,7 +5523,7 @@ export function App() {
             <strong>{source === "GPS" && !["fresh", "degraded"].includes(speedFreshness) ? "—" : Math.round(speed)}</strong>
             <span className="readout-unit">km/h{source === "DEMO" ? " · SIM" : ""}</span>
           </div>
-          <div className={`effect-badge${experienceMode === "flux" && activeEffect ? " is-active" : ""}`} aria-hidden={experienceMode !== "flux" || !activeEffect}>{experienceMode === "flux" ? activeEffect || "UNDERWATER" : ""}</div>
+          <div className={`effect-badge${experienceMode === "flux" && activeEffect ? " is-active" : ""}`} aria-hidden={experienceMode !== "flux" || !activeEffect}>{experienceMode === "flux" ? <><span>{activeEffect || "UNDERWATER"}</span>{!vehicleEffectsEnabled ? <small>VISUAL ONLY</small> : null}</> : ""}</div>
           </div>
           <ModeSelector mode={experienceMode} onChange={chooseExperienceMode} />
           <NetworkControl

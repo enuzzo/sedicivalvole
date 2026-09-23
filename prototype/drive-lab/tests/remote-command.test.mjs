@@ -73,6 +73,48 @@ test("a lost acknowledgement is repeated without applying the command twice", ()
   assert.equal(phone.summary().pending, 0);
 });
 
+test("a rapid slider drag retains its final value without filling the command queue", () => {
+  const phone = createCommandProtocol({ role: "phone" });
+  for (let value = 1; value <= 100; value += 1) {
+    assert.equal(phone.enqueue({ id: `drag-${value}`, type: "manual-effect", effect: "underwater", value: value / 100 }), true);
+  }
+  const applied = [];
+  const receiver = createCommandProtocol({ role: "receiver", onCommand: command => applied.push(command) });
+  receiver.receive(phone.poll());
+  assert.equal(phone.summary().pending, 1);
+  assert.deepEqual(applied.map(({ effect, value }) => ({ effect, value })), [{ effect: "underwater", value: 1 }]);
+});
+
+test("slider replacement preserves other effects and ordered transport gestures at the queue limit", () => {
+  const phone = createCommandProtocol({ role: "phone" });
+  phone.enqueue({ id: "first", type: "manual-effect", effect: "flanger", value: 0.2 });
+  phone.enqueue({ id: "reverb", type: "manual-effect", effect: "reverb", value: 0.72 });
+  for (let index = 0; index < 10; index++) phone.enqueue({ id: `next-${index}`, type: "transport", direction: "next" });
+  assert.equal(phone.enqueue({ id: "latest", type: "manual-effect", effect: "flanger", value: 1 }), true);
+  assert.equal(phone.enqueue({ id: "overflow", type: "transport", direction: "next" }), false);
+  const commands = JSON.parse(phone.poll()).commands;
+  assert.equal(commands.length, 12);
+  assert.deepEqual(commands.filter(command => command.type === "transport").map(command => command.id), Array.from({ length: 10 }, (_, i) => `next-${i}`));
+  assert.deepEqual(commands.filter(command => command.type === "manual-effect").map(command => command.value), [0.72, 1]);
+});
+
+test("an old acknowledgement cannot clear a newer slider preview; rejection restores confirmed state", () => {
+  let preview;
+  const phone = createCommandProtocol({ role: "phone", onState: (state, pending) => { preview = { state, ...pending }; } });
+  const receiver = createCommandProtocol({ role: "receiver", getState: () => ({ manualEffects: { underwater: 0.2 } }), onCommand: command => ({ ok: command.value !== 1 }) });
+  phone.enqueue({ id: "old", type: "manual-effect", effect: "underwater", value: 0.2 });
+  receiver.receive(phone.poll());
+  phone.enqueue({ id: "new", type: "manual-effect", effect: "underwater", value: 1 });
+  phone.receive(receiver.poll());
+  assert.equal(preview.state.manualEffects.underwater, 0.2);
+  assert.equal(preview.pending[0].value, 1);
+  assert.equal(phone.summary().pending, 1);
+  receiver.receive(phone.poll());
+  phone.receive(receiver.poll());
+  assert.equal(preview.pending.length, 0);
+  assert.equal(preview.state.manualEffects.underwater, 0.2);
+});
+
 test("an async command is acknowledged only after its handler settles", async () => {
   let complete;
   const receiver = createCommandProtocol({ role: "receiver", onCommand: () => new Promise((resolve) => { complete = resolve; }) });

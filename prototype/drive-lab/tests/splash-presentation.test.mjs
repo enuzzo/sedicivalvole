@@ -158,7 +158,7 @@ test("the footer keeps a compact right palette and exposes one audio-effects mas
   assert.match(app, /<span>MUTE<\/span>[\s\S]*?<strong>\{muted \? "ON" : "OFF"\}<\/strong>/);
   assert.match(app, /<span>FX<\/span>/);
   assert.match(app, /showControlNotice\("VOLUME", !nextMuted\)/);
-  assert.match(app, /showControlNotice\("FX", enabled\)/);
+  assert.match(app, /showControlNotice\("BRAKING FX", enabled\)/);
   assert.match(app, /className="control-status-notice" role="status" aria-live="polite"/);
   assert.match(styles, /\.control-slab \{[\s\S]*?grid-template-columns: 79px 79px 190px 210px 79px minmax\(160px, 1fr\)/);
   assert.match(styles, /\.palette-control \{[\s\S]*?grid-column: 6;[\s\S]*?border-left: 1px solid var\(--line\)/);
@@ -173,6 +173,9 @@ test("the footer keeps a compact right palette and exposes one audio-effects mas
 
 test("the selected FX Deck is a global footer overlay with eight strong tap states", () => {
   const app = read("App.jsx");
+  const controls = read("manual-effects-controls.js");
+  assert.match(app, /MANUAL_EFFECT_CONTROLS as SOUNDTRACK_MANUAL_CONTROLS/);
+  assert.match(read("remote/phone.jsx"), /MANUAL_EFFECT_CONTROLS/);
   const styles = read("styles.css");
   assert.match(app, /id="manual-effects-deck"/);
   assert.match(app, /GLOBAL · PLAY THE ROAD \+ SOUNDTRACK/);
@@ -181,18 +184,18 @@ test("the selected FX Deck is a global footer overlay with eight strong tap stat
   assert.doesNotMatch(app, /const modalOpen =[^;]*manualEffectsDeckOpen/);
   assert.match(app, /<span>FX<\/span>[\s\S]*?<strong aria-hidden="true">↑<\/strong>/);
   assert.match(app, /active \? 0 : effect\.performanceAmount/);
-  assert.match(app, /performanceAmount: 0\.78/);
-  assert.match(app, /performanceAmount: 0\.72/);
-  assert.match(app, /performanceAmount: 0\.74/);
-  assert.match(app, /id: "underwater"[\s\S]*?performanceAmount: 0\.76/);
-  assert.match(app, /id: "phaser"[\s\S]*?performanceAmount: 0\.78/);
-  assert.match(app, /id: "bitcrush"[\s\S]*?performanceAmount: 0\.72/);
-  assert.match(app, /id: "bassDrive"[\s\S]*?performanceAmount: 0\.74/);
-  assert.match(app, /id: "radioCut"[\s\S]*?performanceAmount: 0\.76/);
-  assert.match(app, /id: "highCut"[\s\S]*?performanceAmount: 0\.76/);
-  assert.match(app, /id: "bassDrive"[\s\S]*?family: "tone"[\s\S]*?id: "radioCut"[\s\S]*?family: "tone"[\s\S]*?id: "highCut"[\s\S]*?family: "tone"/);
-  assert.doesNotMatch(app, /id: "echo"/);
-  assert.doesNotMatch(app, /id: "chorus"/);
+  assert.match(controls, /performanceAmount: 0\.78/);
+  assert.match(controls, /performanceAmount: 0\.72/);
+  assert.match(controls, /performanceAmount: 0\.74/);
+  assert.match(controls, /id: "underwater"[\s\S]*?performanceAmount: 0\.76/);
+  assert.match(controls, /id: "phaser"[\s\S]*?performanceAmount: 0\.78/);
+  assert.match(controls, /id: "bitcrush"[\s\S]*?performanceAmount: 0\.72/);
+  assert.match(controls, /id: "bassDrive"[\s\S]*?performanceAmount: 0\.74/);
+  assert.match(controls, /id: "radioCut"[\s\S]*?performanceAmount: 0\.76/);
+  assert.match(controls, /id: "highCut"[\s\S]*?performanceAmount: 0\.76/);
+  assert.match(controls, /id: "bassDrive"[\s\S]*?family: "tone"[\s\S]*?id: "radioCut"[\s\S]*?family: "tone"[\s\S]*?id: "highCut"[\s\S]*?family: "tone"/);
+  assert.doesNotMatch(controls, /id: "echo"/);
+  assert.doesNotMatch(controls, /id: "chorus"/);
   assert.match(styles, /\.manual-effects-deck \{[\s\S]*?bottom: 76px/);
   assert.match(styles, /\.manual-effects-grid \{[^}]*repeat\(4/);
   assert.match(styles, /article\.is-family-tone::before[\s\S]*?width: 3px[\s\S]*?background: #59d7ff/);

@@ -113,7 +113,16 @@ export function createCommandProtocol({ role, getState = () => ({}), onState = (
 
   function enqueue(command) {
     const normalized = normalizeRemoteCommand(command);
-    if (!normalized || role !== "phone" || pending.size >= MAX_COMMANDS) return false;
+    if (!normalized || role !== "phone") return false;
+    // A drag is one changing value, not a queue of historical positions.
+    // Keep transport gestures ordered, but replace this slider's pending value
+    // even when the queue is full. Old acknowledgements cannot clear its new ID.
+    if (normalized.type === "manual-effect") {
+      for (const [id, previous] of pending) {
+        if (previous.type === "manual-effect" && previous.effect === normalized.effect) pending.delete(id);
+      }
+    }
+    if (pending.size >= MAX_COMMANDS) return false;
     pending.set(normalized.id, normalized);
     return true;
   }
@@ -156,11 +165,13 @@ export function createCommandProtocol({ role, getState = () => ({}), onState = (
     }
     if (role === "phone" && packet.kind === "state") {
       state = cleanState(packet.state);
-      onState(state);
       for (const acknowledgement of Array.isArray(packet.acknowledgements) ? packet.acknowledgements : []) {
         const id = cleanText(acknowledgement?.id, 48);
         if (id) pending.delete(id);
       }
+      // The UI may preview a pending slider position, but state() remains the
+      // display's confirmed state and a rejected command removes that preview.
+      onState(state, { pending: [...pending.values()] });
       return true;
     }
     return null;

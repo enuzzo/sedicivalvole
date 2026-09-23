@@ -193,6 +193,16 @@ Use 44 px minimum touch targets and safe-area-aware vertical scrolling. Modal pa
 isolate background controls, trap/restore keyboard focus and support Escape;
 horizontal slider gestures must not trigger page dismissal.
 
+The September 23 road audit separates **Braking Underwater** (the automatic
+vehicle master) from **Manual FX**, which remain independent. Do not place an
+unqualified ON/OFF beside a manual-effects heading. With braking audio disabled,
+the display's Underwater badge says **VISUAL ONLY**. Engine exposes the dry-audio
+boundary and disables musical effect controls. Both surfaces share authored tap
+depths. A phone slider may preview its requested position with **Sending…**;
+an acknowledgement restores the display's authoritative state. Coalesce pending
+positions per effect so a fast drag cannot drop its final value; preserve ordered
+transport gestures. See [audio audit](../AUDIO-EFFECTS-AUDIT-2026-09-23.md).
+
 ## Owner-supplied piston identity — September 11
 
 The owner replaced the Road mark with `logo/pistons-v1/source.png`. Use the
