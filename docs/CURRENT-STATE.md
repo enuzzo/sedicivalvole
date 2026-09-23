@@ -9,6 +9,12 @@ styles eagerly and reuses the approved sensor-onboarding composition. Its panel
 measures 640 × 517 px with a complete 240 × 240 px QR, no pairing scroll, shared
 48/56 px controls and explicit connected/retry/expired/error states.
 
+The accompanying iPhone quality pass adds the piston logo and wordmark, a clear
+three-step first-use guide, connection help, shared light/dark palette tokens,
+larger touch targets and accessible modal navigation. The selected compact home
+composition remains intact. Local paired browser checks cover command feedback,
+slider dragging, focus restoration, help, reload persistence and explicit Forget.
+
 The passenger command companion and GPS-only road response were already published
 in build 20260923-1534.05ad287; the older “pending direction” paragraph below is
 superseded. Local/compiled verification, exact source/build and canonical delivery

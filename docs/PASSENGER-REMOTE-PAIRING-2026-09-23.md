@@ -1,4 +1,4 @@
-# Passenger remote pairing repair — September 23, 2026
+# Passenger remote pairing and iPhone quality — September 23, 2026
 
 ## Observed failure and scoped correction
 
@@ -42,6 +42,36 @@ revokes it. No transport, audio or sensor consumer contract changes.
 - Public hygiene has only six pre-existing personal-path findings in the unrelated
   dirty historical recovery note; the repair introduces none. That note, root
   AGENTS.md and tools/jev-recovery-lab remain untouched.
+
+## iPhone quality pass
+
+The owner's follow-up retains the selected compact home and adds the piston
+identity and Orbitron wordmark above a truthful connection row. First use presents
+three concise steps, existing scan/connect artwork and expandable connection help.
+The guide replaces disconnected placeholder controls and can be reopened while
+paired. Terminal failures explain the new-QR recovery path.
+
+Shared semantic tokens support light/dark appearance and acknowledged palette
+changes. Controls have at least 44 px touch targets; page controls are 48 px.
+Modal pages isolate background content, trap and restore focus and close with
+Escape. Slider gestures are excluded from horizontal page dismissal.
+
+The full native aggregate also passed after the phone changes: 1,083 tests, zero
+failures. Browser QA at 390 × 844 shows the entire connected home without scroll
+or horizontal overflow. At 320 × 568 the guide scrolls to its final step, help and
+footer without horizontal clipping. Real local PHP pairing verifies a Flanger
+drag to 70 percent while the page remains open, acknowledged Blue palette, HELP
+and return, keyboard focus wrap/restore, saved pairing after reload and Forget
+returning to first use. The HELP target was widened to the same 44 px minimum.
+Light/dark onboarding and the light connected home were visually inspected.
+
+## Delivery progress
+
+Receiver source `744c3ec` was committed and pushed. Its candidate build
+`20260923-1812.744c3ec` passed local checks. Official read-only preflight passed,
+but the subsequent publication timed out in read-only identity verification,
+before any remote writes. The combined phone/receiver release supersedes that
+unpublished candidate; its final publication evidence is recorded below.
 
 ## Acceptance limits
 

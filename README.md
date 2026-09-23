@@ -70,6 +70,10 @@ The display keeps GPS authority. Its top-bar phone icon opens a compact Scan /
 Connect / Ready panel with a complete 240 px QR and four-module white quiet zone.
 At the Tesla reference viewport (773 × 601), pairing needs no scrolling. Connection,
 recovery and expiry have explicit messages and a single relevant action.
+On iPhone, the piston logo and name lead a three-step first-use guide. Once paired,
+the compact remote offers music transport, Mode, Music, Visual and Effects, with
+connection help always reachable. Shared palettes, clear touch targets and
+accessible pages support the existing light/dark appearance.
 Physical scanning and iPhone/Tesla acceptance remain separate; see
 [current status](docs/CURRENT-STATE.md).
 

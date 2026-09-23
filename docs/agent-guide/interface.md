@@ -180,6 +180,17 @@ HTTPS pairing is retained through temporary outages and reloads, with a visible
 Forget action for revocation. This UI selection does not close real-device
 transport, Safari background, safe-area or passenger acceptance.
 
+The owner's quality pass retains that selected composition. A persistent header
+uses the transparent piston mark and Orbitron wordmark above connection status.
+Before admission, show a three-step guide (open the display phone panel, scan,
+control the drive), existing scan/connect artwork and expandable connection help;
+do not show placeholder remote controls as a connected session. HELP can reopen
+the guide without losing the pair. Terminal errors explain how to create a new QR.
+Use the shared semantic palette and the appearance carried by the pairing link,
+44 px minimum touch targets and safe-area-aware vertical scrolling. Modal pages
+isolate background controls, trap/restore keyboard focus and support Escape;
+horizontal slider gestures must not trigger page dismissal.
+
 ## Owner-supplied piston identity — September 11
 
 The owner replaced the Road mark with `logo/pistons-v1/source.png`. Use the
