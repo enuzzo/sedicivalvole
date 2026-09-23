@@ -2385,6 +2385,8 @@ export function App() {
   const environment = getFluxEnvironment(environmentId);
   const aperturePressure = speedToAperturePressure(speed);
   const gpsPresentation = atlasGpsPresentation(gpsState, accuracy, source);
+  // GPS evidence belongs to the location receiver, even when Engine audio is muted.
+  const speedFreshness = engineMotionRef.current.snapshot(performance.now()).freshness;
   const modalOpen = phonePortrait || drawerOpen || motionOpen
     || previewOpen
     || environmentPickerOpen
@@ -5261,7 +5263,7 @@ export function App() {
           onError={handleEnvironmentError}
         >
           {statsOpen || passengerAtlasOpen ? null : experienceMode === "engine" ? (
-            <EngineTelemetry state={geaps.snapshot} profileId={engineProfileId} onProfile={chooseEngineProfile} onRev={holdEngineRev} onRelease={releaseEngineRev} speed={speed} speedSource={source} onSpeedSource={toggleSource} onFrame={recordRenderedFrame} />
+            <EngineTelemetry state={geaps.snapshot} profileId={engineProfileId} onProfile={chooseEngineProfile} onRev={holdEngineRev} onRelease={releaseEngineRev} speed={speed} speedSource={source} speedFreshness={speedFreshness} onFrame={recordRenderedFrame} />
           ) : environmentRuntimeError ? (
             <FieldFailure label={environment.label} recovery={environmentRecovery} />
           ) : environment.renderer === "vertigo" ? (
@@ -5456,13 +5458,13 @@ export function App() {
               aria-hidden="true"
             />
           </button>
-          <button className={`source-readout${musicMode === "soundtrack" ? " is-soundtrack" : ""}`} type="button" onClick={toggleSource} aria-label={`Speed source ${source}. Tap to switch`}>
+          <div className={`source-readout${musicMode === "soundtrack" ? " is-soundtrack" : ""}`} role="group" aria-label={`Speed source ${source}`}>
           <div className="readout-group">
-            <strong>{experienceMode === "engine" && source === "GPS" && !["fresh", "degraded"].includes(geaps.snapshot.motion) ? "—" : Math.round(speed)}</strong>
-            <span className="readout-unit">km/h</span>
+            <strong>{source === "GPS" && !["fresh", "degraded"].includes(speedFreshness) ? "—" : Math.round(speed)}</strong>
+            <span className="readout-unit">km/h{source === "DEMO" ? " · SIM" : ""}</span>
           </div>
           <div className={`effect-badge${experienceMode === "flux" && activeEffect ? " is-active" : ""}`} aria-hidden={experienceMode !== "flux" || !activeEffect}>{experienceMode === "flux" ? activeEffect || "UNDERWATER" : ""}</div>
-          </button>
+          </div>
           <ModeSelector mode={experienceMode} onChange={chooseExperienceMode} />
           <NetworkControl
             notice={networkNotice}

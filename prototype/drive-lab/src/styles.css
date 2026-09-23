@@ -836,6 +836,7 @@ button { -webkit-tap-highlight-color: transparent; }
   border-radius: 0;
   box-sizing: border-box;
   background: #060808;
+  cursor: default;
   transition: transform 460ms cubic-bezier(.72, 0, .24, 1), border-radius 320ms ease;
 }
 .source-readout.is-soundtrack {

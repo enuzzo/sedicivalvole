@@ -5,7 +5,7 @@ import "./telemetry-field.css";
 import { telemetrySignals } from "./telemetry-signals.js";
 import { EngineSignals } from "./telemetry-signals.jsx";
 
-export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease, speed = 0, speedSource = "GPS", onSpeedSource, onFrame }) {
+export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease, speed = 0, speedSource = "GPS", speedFreshness = state.motion, onFrame }) {
   const contextual = useContextualControls();
   const [visible, setVisible] = useState(() => document.visibilityState !== "hidden");
   useEffect(() => {
@@ -13,7 +13,7 @@ export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease,
     document.addEventListener("visibilitychange", update);
     return () => document.removeEventListener("visibilitychange", update);
   }, []);
-  const signal = telemetrySignals(state, speed, speedSource);
+  const signal = telemetrySignals(state, speed, speedSource, speedFreshness);
   const historyRef = useRef([]);
   const fieldRef = useRef(null);
   useEffect(() => {
@@ -55,15 +55,15 @@ export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease,
       <div className="engine-metric">
         <small>VIRTUAL RPM</small>
         <strong>{Math.round(rpm).toLocaleString("en-US")}</strong>
-        <span>{state.enabled === false ? "AUDIO PAUSED" : state.revving ? "REVVING" : state.idleBlip ? "IDLE BLIP" : state.shift ? state.shift.toUpperCase() : Math.round(speed) === 0 ? state.trustedStationary ? "AUTO BLIPS ON" : state.motion === "lost" ? "NO SPEED SIGNAL" : "CONFIRMING STOP" : "ENGINE SPEED"}</span>
+        <span>{state.enabled === false ? "AUDIO PAUSED" : state.revving ? "REVVING" : state.idleBlip ? "IDLE BLIP" : state.shift ? state.shift.toUpperCase() : Math.round(speed) === 0 ? state.trustedStationary ? "AUTO BLIPS ON" : speedFreshness === "lost" ? "NO SPEED SIGNAL" : "CONFIRMING STOP" : "ENGINE SPEED"}</span>
         <EngineSignals kind="rpm" signal={signal} visible={visible} />
       </div>
-      <button className="engine-metric engine-speed-metric" type="button" onClick={onSpeedSource} aria-label={`Speed source ${speedSource}. Tap to switch`}>
+      <div className="engine-metric engine-speed-metric" aria-label={`Speed source ${speedSource}`}>
         <small>SPEED · KM/H</small>
         <strong>{speedKnown ? Math.round(speed) : "—"}</strong>
-        <span>{speedSource === "GPS" ? speedKnown ? state.motion === "degraded" ? "GPS · SIGNAL AGING" : "GPS SPEED" : "AWAITING GPS" : `${speedSource} SPEED`}</span>
+        <span>{speedSource === "GPS" ? speedKnown ? speedFreshness === "degraded" ? "GPS · SIGNAL AGING" : "GPS SPEED" : "AWAITING GPS" : `${speedSource} SPEED`}</span>
         <EngineSignals kind="speed" signal={signal} visible={visible} />
-      </button>
+      </div>
       <div className="engine-metric">
         <small>{state.singleSpeed ? "VIRTUAL SHAFT" : "VIRTUAL GEAR"}</small>
         <strong>{state.singleSpeed ? "—" : state.revving ? "N" : state.gear ?? 1}</strong>
@@ -75,7 +75,7 @@ export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease,
       <div><small>DRIVE RESPONSE <b>{Math.round((state.drive ?? 0) * 100)}%</b></small><svg viewBox="0 0 300 52" aria-label="Drive response history"><polyline points={trace("drive")} /></svg></div>
       <div><small>DECELERATION <b>{Math.round((state.deceleration ?? 0) * 100)}%</b></small><svg viewBox="0 0 300 52" aria-label="Deceleration history"><polyline points={trace("decel")} /></svg></div>
     </div>
-    <div className="engine-bottom"><span>{state.motion === "fresh" ? "LIVE MOTION" : state.motion === "degraded" ? "SIGNAL AGING" : "AWAITING MOTION"}</span></div>
+    <div className="engine-bottom"><span>{speedFreshness === "fresh" ? "LIVE MOTION" : speedFreshness === "degraded" ? "SIGNAL AGING" : "AWAITING MOTION"}</span></div>
     {Math.round(speed) === 0 ? ["left", "right"].map(side => <button key={side} className={`engine-rev is-${side}`} type="button" aria-label={`TAMARRO ${side}`} disabled={!state.canRev}
       onPointerDown={event => event.stopPropagation()} aria-pressed={Boolean(state.revving)}
       onClick={() => state.revving ? onRelease?.() : onRev?.()}><strong><span className="engine-rev-emoji" aria-hidden="true">🤘</span>TAMARRO</strong><small>{state.canRev ? state.revving ? "SHOW-OFF · STOP" : "SHOW-OFF" : state.enabled === false ? "AUDIO PAUSED" : "PREPARING AUDIO"}</small></button>) : null}

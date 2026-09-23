@@ -78,11 +78,10 @@
 .engine-primary > div, .engine-primary > .engine-speed-metric { min-width:0; padding:0; border:0; }
 .engine-primary > :nth-child(3) { padding-left:24px; border-left:1px solid var(--ui-line-soft); }
 .engine-primary strong, .engine-telemetry:has(.engine-rev) .engine-primary strong { font-size:clamp(48px,9vw,78px); }
-.engine-primary .engine-speed-metric { display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:4px; background:transparent; color:inherit; font:inherit; border-left:1px solid var(--ui-line-soft); border-radius:0; cursor:pointer; }
+.engine-primary .engine-speed-metric { display:flex; flex-direction:column; align-items:center; justify-content:flex-start; gap:4px; background:transparent; color:inherit; font:inherit; border-left:1px solid var(--ui-line-soft); border-radius:0; }
 .engine-primary .engine-speed-metric strong { font-size:clamp(64px,12vw,104px); line-height:.95; letter-spacing:-.065em; }
 .engine-speed-metric svg { width:80%; height:12px; margin-top:auto; padding-top:10px; overflow:visible; }
 .engine-speed-metric line { stroke:var(--ui-accent-text); stroke-width:2; vector-effect:non-scaling-stroke; transition:opacity 160ms linear; }
-.engine-speed-metric:focus-visible { outline:2px solid var(--ui-accent-text); outline-offset:4px; }
 .engine-telemetry { padding-top:84px; }
 .engine-primary span { letter-spacing:.035em; font-size:13px; }
 @media(max-width:620px) { .engine-primary { gap:12px; } .engine-primary > :nth-child(3) { padding-left:12px; } .engine-primary small { font-size:13px; letter-spacing:0; } .engine-primary strong,.engine-telemetry:has(.engine-rev) .engine-primary strong { font-size:48px; } .engine-primary .engine-speed-metric strong { font-size:70px; } }

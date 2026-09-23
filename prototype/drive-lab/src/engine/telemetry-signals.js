@@ -1,9 +1,9 @@
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
 /** Visual encodings of existing engine/road evidence, never additional telemetry. */
-export function telemetrySignals(state = {}, speed = 0, speedSource = 'GPS') {
-  const speedKnown = Number.isFinite(speed) && (speedSource !== 'GPS' || ['fresh', 'degraded'].includes(state.motion));
-  const speedLive = speedKnown && (speedSource !== 'GPS' || state.motion === 'fresh');
+export function telemetrySignals(state = {}, speed = 0, speedSource = 'GPS', speedFreshness = state.motion) {
+  const speedKnown = Number.isFinite(speed) && (speedSource !== 'GPS' || ['fresh', 'degraded'].includes(speedFreshness));
+  const speedLive = speedKnown && (speedSource !== 'GPS' || speedFreshness === 'fresh');
   const rpmKnown = Number.isFinite(state.rpm) && state.rpm >= 0;
   const engineLive = state.playing === true && state.enabled !== false && state.status === 'ready';
   const rpm = rpmKnown ? clamp(state.rpm, 0, 12000) : 0;

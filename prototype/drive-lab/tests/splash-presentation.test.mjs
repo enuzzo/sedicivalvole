@@ -390,7 +390,7 @@ test("Space Grotesk speed and unit share one compact centered axis", () => {
   assert.match(groups, /\.readout-group \{[\s\S]*?flex-direction: column/);
   assert.match(groups, /\.readout-group \{[\s\S]*?align-items: center/);
   assert.match(groups, /text-align: center/);
-  assert.match(app, /<span className="readout-unit">km\/h<\/span>/);
+  assert.match(app, /<span className="readout-unit">km\/h\{source === "DEMO" \? " · SIM" : ""\}<\/span>/);
   assert.doesNotMatch(app, /<small>\{source\}<\/small>/);
 });
 
@@ -476,7 +476,7 @@ test("the source module stays compact and network detail moves behind one status
   const app = read("App.jsx");
   const styles = read("styles.css");
 
-  assert.match(app, /<span className="readout-unit">km\/h<\/span>/);
+  assert.match(app, /<span className="readout-unit">km\/h\{source === "DEMO" \? " · SIM" : ""\}<\/span>/);
   assert.doesNotMatch(app, /<small>\{source\}<\/small>|className="active-mode-marker"/);
   assert.doesNotMatch(app, /<span>bpm<\/span>|<span>%<\/span>/);
   assert.match(app, /function NetworkControl\(\{ notice, history, open, onOpenChange \}\)/);

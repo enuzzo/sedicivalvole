@@ -24,6 +24,14 @@ test('muted, preparing or suspended engine cannot imply live combustion or shift
     assert.equal(signal.speedRunning,true,'fresh speed remains independent of audio');
   }
 });
+test('fresh GPS remains visible when muted Engine has no audio motion snapshot', () => {
+  const paused = { ...live, status: 'idle', playing: false, enabled: false, motion: 'lost' };
+  const fresh = telemetrySignals(paused, 43, 'GPS', 'fresh');
+  assert.equal(fresh.speedKnown, true);
+  assert.equal(fresh.speedRunning, true);
+  assert.equal(fresh.rpmRunning, false);
+  assert.equal(telemetrySignals(paused, 43, 'GPS', 'lost').speedKnown, false);
+});
 test('neutral, continuous shaft and invalid gears cannot select a fictitious ratio', () => {
   for(const patch of [{revving:true},{singleSpeed:true},{gear:0},{gear:7},{gear:NaN}]) assert.equal(telemetrySignals({...live,...patch},42).gear,null);
   for(const phase of ['release','synchronize','engage']) assert.equal(telemetrySignals({...live,shiftPhase:phase},42).phase,phase);

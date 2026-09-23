@@ -41,7 +41,7 @@ function Preview(){
   raf=requestAnimationFrame(frame);return()=>cancelAnimationFrame(raf);
  },[mode,profileId]);
  return <main className="app phase-running controls-resting engine-instrument-preview" data-phone-layout={innerHeight<=450?'landscape':undefined} data-appearance={appearance} style={resolveSemanticTheme(getFluxTheme('red'),appearance).css}>
-  <EngineTelemetry {...sample} speedSource="GPS" profileId={profileId} onProfile={setProfileId} onSpeedSource={()=>setMode(v=>v==='lost'?'drive':'lost')} />
+  <EngineTelemetry {...sample} speedSource="GPS" profileId={profileId} onProfile={setProfileId} />
   <aside className="instrument-preview-controls" aria-label="Silent simulation controls"><strong>SIMULATED INPUT · NO AUDIO</strong><div>
    <button onClick={()=>setPaused(v=>!v)}>{paused?'Resume':'Pause'}</button>
    <button onClick={()=>{clock.current=0;setMode('drive')}}>Drive sequence</button>
