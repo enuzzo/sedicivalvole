@@ -4,7 +4,7 @@ import { FLUX_THEMES } from "../flux-themes.js";
 import { FLUX_VISUAL_CHOICES } from "../flux-environments.js";
 import { readyScoreGenres } from "../score/genres.js";
 import { MediaGlyph } from "../media-glyph.jsx";
-import { REMOTE_PAIRING_STORAGE_KEY, createRemoteSession, parseRemotePair } from "./session.js";
+import { REMOTE_PAIRING_STORAGE_KEY, createRemoteSession, selectRemotePair } from "./session.js";
 import "./remote.css";
 
 const MANUAL_EFFECTS = Object.freeze([
@@ -78,8 +78,7 @@ export function MotionPhone() {
   const genres = useMemo(() => readyScoreGenres(), []);
 
   useEffect(() => {
-    const fromHash = parseRemotePair(window.location.hash.slice(1));
-    const saved = fromHash || readSavedPair();
+    const saved = selectRemotePair(window.location.hash.slice(1), readSavedPair());
     if (saved) setPair(saved);
     const session = createRemoteSession({
       role: "phone",
@@ -88,7 +87,13 @@ export function MotionPhone() {
         setSnapshot(next);
         if (next.credentials) {
           const savedPair = { ...saved, ...next.credentials, key: saved?.key, paired: true, expiresAt: next.credentials.expiresAt || Date.now() + 3600000 };
-          if (savedPair.key) { setPair(savedPair); writeSavedPair(savedPair); }
+          if (savedPair.key) {
+            setPair(savedPair);
+            writeSavedPair(savedPair);
+            if (window.location.hash.startsWith("#pair=")) {
+              window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+            }
+          }
         }
       },
       onState: (next) => setRemoteState((current) => ({ ...current, ...next, manualEffects: { ...current.manualEffects, ...(next.manualEffects || {}) } })),

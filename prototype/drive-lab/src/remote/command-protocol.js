@@ -99,9 +99,16 @@ export function createCommandProtocol({ role, getState = () => ({}), onState = (
   let nextSequence = 0;
   let lastSequence = -1;
   const pending = new Map();
-  const seen = new Set();
+  const seen = new Map();
   const acknowledgements = [];
   let state = {};
+
+  function acknowledge(id, result) {
+    const reply = { ok: result?.ok !== false };
+    seen.set(id, reply);
+    acknowledgements.push({ id, ...reply });
+    while (acknowledgements.length > 32) acknowledgements.shift();
+  }
 
   function enqueue(command) {
     const normalized = normalizeRemoteCommand(command);
@@ -124,17 +131,25 @@ export function createCommandProtocol({ role, getState = () => ({}), onState = (
     if (role === "receiver" && packet.kind === "commands" && Array.isArray(packet.commands)) {
       for (const raw of packet.commands.slice(0, MAX_COMMANDS)) {
         const command = normalizeRemoteCommand(raw);
-        if (!command || seen.has(command.id)) continue;
-        seen.add(command.id);
-        while (seen.size > 32) seen.delete(seen.values().next().value);
-        let result = { ok: true };
+        if (!command) continue;
+        if (seen.has(command.id)) {
+          const prior = seen.get(command.id);
+          if (prior) acknowledge(command.id, prior);
+          continue;
+        }
+        seen.set(command.id, null);
+        while (seen.size > 32) seen.delete(seen.keys().next().value);
         try {
           const outcome = onCommand(command);
-          if (outcome && typeof outcome.then === "function") outcome.catch(() => {});
+          if (outcome && typeof outcome.then === "function") {
+            Promise.resolve(outcome).then(
+              (result) => acknowledge(command.id, result),
+              () => acknowledge(command.id, { ok: false }),
+            );
+          } else acknowledge(command.id, outcome);
         } catch {
-          result = { ok: false };
+          acknowledge(command.id, { ok: false });
         }
-        acknowledgements.push({ id: command.id, ...result });
       }
       return true;
     }

@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { webcrypto } from "node:crypto";
-import { createRemoteSession, parseRemotePair } from "../src/remote/session.js";
+import { createRemoteSession, parseRemotePair, selectRemotePair } from "../src/remote/session.js";
 
 function fakeSurface() {
   const listeners = new Map();
@@ -25,6 +25,13 @@ test("remote pair fragments accept only the bounded bearer shape", () => {
   const value = `pair=${"a".repeat(32)}.${"b".repeat(64)}.${"c".repeat(64)}`;
   assert.deepEqual(parseRemotePair(value), { id: "a".repeat(32), token: "b".repeat(64), key: "c".repeat(64) });
   assert.equal(parseRemotePair("pair=short"), null);
+});
+
+test("reload prefers the admitted token over the consumed QR fragment", () => {
+  const scanned = `pair=${"a".repeat(32)}.${"b".repeat(64)}.${"c".repeat(64)}`;
+  const admitted = { id: "a".repeat(32), token: "d".repeat(64), key: "c".repeat(64), paired: true, expiresAt: 10_000 };
+  assert.deepEqual(selectRemotePair(scanned, admitted, 1_000), admitted);
+  assert.equal(selectRemotePair(`pair=${"e".repeat(32)}.${"f".repeat(64)}.${"1".repeat(64)}`, admitted, 1_000)?.id, "e".repeat(32));
 });
 
 test("a saved phone pairing restores the relay without joining again", async () => {
@@ -56,6 +63,7 @@ test("a saved phone pairing restores the relay without joining again", async () 
     assert.equal(actions.includes("join"), false);
     assert.equal(session.snapshot().role, "phone");
   } finally {
-    session.stop();
+    session.dispose();
+    assert.equal(actions.includes("delete"), false);
   }
 });

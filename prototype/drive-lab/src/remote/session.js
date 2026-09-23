@@ -27,6 +27,14 @@ export function parseRemotePair(value) {
   return match ? { id: match[1], token: match[2], key: match[3] } : null;
 }
 
+export function selectRemotePair(fragment, saved, wallNow = Date.now()) {
+  const scanned = parseRemotePair(fragment);
+  const admitted = safePair(saved);
+  if (admitted?.paired && admitted.expiresAt > wallNow
+    && (!scanned || scanned.id === admitted.id && scanned.key === admitted.key)) return admitted;
+  return scanned;
+}
+
 export function createRemoteSession({ role, host = window, doc = document, fetcher = fetch, now = () => performance.now(), getPresentation = () => DEFAULT_MOTION_PRESENTATION, getState = () => ({}), onState = () => {}, onCommand = () => {}, onChange = () => {}, onEvent = () => {} } = {}) {
   let state = "idle";
   let stage = "idle";
@@ -151,6 +159,14 @@ export function createRemoteSession({ role, host = window, doc = document, fetch
     state = "connecting";
     stage = "relay";
     notify();
+    let lastNetworkState = snapshot().networkState;
+    refresh = setInterval(() => {
+      const nextNetworkState = snapshot().networkState;
+      if (nextNetworkState !== lastNetworkState) {
+        lastNetworkState = nextNetworkState;
+        notify();
+      }
+    }, 1000);
   }
 
   async function start(nextPair = null) {
@@ -248,7 +264,9 @@ export function createRemoteSession({ role, host = window, doc = document, fetch
     state: () => relay?.state?.() ?? {},
     report: () => ({ schema: "sedicivalvole.remote-report.v1", state: snapshot(), generatedAt: new Date().toISOString() }),
     dispose() {
-      cleanup("closed");
+      // A phone reload keeps the admitted server lease available for restore.
+      // Explicit STOP or FORGET still revokes the bearer capability.
+      cleanup("closed", { revoke: role !== "phone" });
       host.removeEventListener("online", online);
       host.removeEventListener("offline", offline);
       doc.removeEventListener("visibilitychange", visibility);

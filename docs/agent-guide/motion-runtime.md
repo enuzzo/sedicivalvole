@@ -64,9 +64,13 @@ but has its own `sv-remote-1` allowlisted command protocol. Commands carry IDs,
 are deduplicated at the receiver, receive applied-state acknowledgements and
 retry with serial bounded backoff until the original one-hour lease expires.
 The phone may retain the final bearer capability in local storage for that lease
-so a reload can reconnect; `FORGET THIS DISPLAY` removes it and revokes the
-mailbox. A certificate is never bypassed and a network outage never makes an
-invalid certificate acceptable. Pairing is one display per lease.
+so a reload can reconnect without consuming the QR admission again. Successful
+admission removes the QR token from the browser URL. A lost acknowledgement is
+replayed on command retry without applying the command twice; asynchronous
+commands are acknowledged after their handler settles. `FORGET THIS DISPLAY`
+removes the saved capability and revokes the mailbox. A certificate is never
+bypassed and a network outage never makes an invalid certificate acceptable.
+Pairing is one display per lease.
 
 The portrait UI keeps a compact cover row with previous/play/next, then opens
 right-hand pages for Mode, Music/genre, Visual, Engine character, Palette and
