@@ -72,6 +72,11 @@ and the owner's aesthetic judgement remain separate from the agent's fidelity pa
 
 ## Shared geometry and palette
 
+The compact speed numeral is a read-only value. The September 23 drive showed
+that tapping it could silently change GPS to Demo; source selection now uses
+the report's explicit action, and Demo adds `SIM` beside the speed unit. Keep
+GPS status distinct from the speed source and from Engine audio state.
+
 The maintained [interface system](../DESIGN-SYSTEM.md) links the exact shared
 control module, production styles and runnable HTML/CSS reference. Use it for
 label/control consistency; specimen layout does not own production geometry.

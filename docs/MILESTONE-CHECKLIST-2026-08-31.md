@@ -1,5 +1,19 @@
 # Milestone Checklist — 2026-08-31
 
+## September 23 GPS repair and passenger remote proposal
+
+The two latest short-drive reports prove that geolocation continued in Engine:
+the apparent absence came from muted-audio speed masking and a logged GPS-to-Demo
+touch. Published build `20260923-1008.fd3d148` repairs the display and moves
+source selection to an explicit report action; native/package/local and public
+browser checks pass. See the
+[focused evidence](GPS-ENGINE-REPORT-2026-09-23.md). Physical GPS presentation
+on the Tesla remains to be checked on the new build. The owner's GPS-only input
+and passenger-remote proposal is the next product decision; the remote visual
+direction awaits the required two-concept selection. Existing N03/N04 sensor
+reliability is historical evidence, not a requirement to continue sensor R&D
+if the new direction is selected.
+
 ## September 23 evidence reconciliation
 
 Real automatic interval, catch-up and hide-flush mail has reached the owner's

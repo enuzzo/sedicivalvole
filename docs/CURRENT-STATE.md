@@ -1,5 +1,20 @@
 # Current Project State
 
+## GPS/Engine display repair and remote direction — September 23
+
+Two new independent short drive reports show live GPS throughout. The first
+received 683 numeric speed samples and selected GPS at 43.1 km/h, while muted
+Engine's idle audio snapshot caused both speed displays to show a dash. In the
+second, a touch on the speed readout switched to Demo even as 940 numeric GPS
+samples continued. Source checkpoint `fd3d148` separates GPS freshness from
+Engine audio and makes speed readouts non-interactive; Demo/GPS remains in the
+report. Native tests, package and synthetic local browser QA pass. Canonical
+`20260923-1008.fd3d148` is published with matching HTML/assets and a passing
+synthetic public browser check. Physical confirmation is recorded separately in
+[the focused report](GPS-ENGINE-REPORT-2026-09-23.md). The proposed GPS-only
+road response/passenger remote is a pending product direction and new visual
+selection, not an implemented companion.
+
 ## Real diagnostic receipts and phone road evidence — September 23
 
 The owner's recent mailbox has real `interval`, `catch-up` and one `hide-flush`

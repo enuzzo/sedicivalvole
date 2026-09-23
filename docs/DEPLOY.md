@@ -1,5 +1,28 @@
 # Deployment
 
+## GPS speed presentation repair — 2026-09-23
+
+Canonical `20260923-1008.fd3d148` is published from source `fd3d148` at
+https://sedicivalvole.app/. Muted Engine now presents live GPS speed independently
+of its audio snapshot; both speed numerals are read-only and Demo is marked
+`SIM` in the compact readout. The exact release passed the native suite, 834
+production hashes, focused engine/presentation checks, 189 community credits
+and synthetic local browser behavior. Full public hygiene has zero new findings;
+six pre-existing references remain in an unrelated dirty historical note.
+
+Official preflight/postflight were read-only and passed network/login/canonical
+directory/root identity. Preserve-existing publication uploaded 38 files /
+6,534,771 bytes, verified/reused 832 static files and 29 Illobo recordings,
+retained two prior assets and activated the dynamic root. Bare, query-busted
+and explicit reloaded canonical HTML all return HTTP 200, no-store/no-cache,
+proxy MISS and the exact local SHA-256
+`07d1c853fe4b6e227e01174f1c343e6f5c92cf071504617568db46231127ddff`
+at 1,445 bytes. Main JS, main CSS and lazy phone chunk match local size and
+SHA-256. Canonical Chrome with synthetic GPS at 43 km/h and muted Engine shows
+43 in both readouts and `GPS SPEED`, with zero page exceptions and no synthetic
+mail. Physical Tesla/iPhone acceptance remains open. See the
+[focused report](GPS-ENGINE-REPORT-2026-09-23.md).
+
 ## Icon-only phone source status — 2026-09-20
 
 Canonical **20260920-2231.b696bc4**, source **b696bc4**, is published at
