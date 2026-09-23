@@ -109,3 +109,22 @@ Browser screenshots and software QR decoding establish geometry and payload, not
 physical camera acquisition from the Tesla display. Physical Tesla/iPhone scanning,
 touch, background suspension, weak-network recovery and road use remain to verify.
 Canonical publication is verified above; it does not close physical acceptance.
+
+## Live appearance synchronization follow-up
+
+The owner requested matching light/dark and themes throughout the paired session.
+The previous release already synchronized palette changes, but appearance stayed
+at the value captured by the QR. The receiver now includes its resolved light/dark
+appearance in each existing state heartbeat; both protocol boundaries accept only
+those two values. Auto uses the display's resolved result. Older peers that omit
+appearance retain the QR fallback. Initial phone state also starts with the QR's
+palette, avoiding the default-red flash while awaiting the first state packet.
+
+Fifty-three focused regression checks pass for commands, pairing, receiver UI,
+appearance resolution/runtime, semantic colours, all ten themes and phone layout.
+New protocol tests cover every palette in both appearances, unsolicited display
+changes, older state packets and rejected arbitrary/unresolved appearances.
+Local paired IAB confirms Dark to Light and back without rescanning, Blue to Neon
+applied on both peers, Auto agreement and current-state recovery after reload.
+Phone console has no warnings/errors. An initially stale Vite module was detected
+and the local server restarted before the successful browser evidence.

@@ -74,6 +74,8 @@ On iPhone, the piston logo and name lead a three-step first-use guide. Once pair
 the compact remote offers music transport, Mode, Music, Visual and Effects, with
 connection help always reachable. Shared palettes, clear touch targets and
 accessible pages support the existing light/dark appearance.
+The paired phone follows live palette and light/dark changes on the display,
+including its effective appearance when Auto is selected.
 Physical scanning and iPhone/Tesla acceptance remain separate; see
 [current status](docs/CURRENT-STATE.md).
 

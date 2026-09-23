@@ -4244,6 +4244,7 @@ export function App() {
     environmentId: environmentIdRef.current,
     engineProfileId: engineProfileId,
     themeId: themeIdRef.current,
+    appearance: appearanceResolutionRef.current.appearance,
     muted: mutedRef.current,
     vehicleEffectsEnabled: vehicleEffectsEnabledRef.current,
     playing: transportPlaying,

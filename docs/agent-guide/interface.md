@@ -186,8 +186,10 @@ Before admission, show a three-step guide (open the display phone panel, scan,
 control the drive), existing scan/connect artwork and expandable connection help;
 do not show placeholder remote controls as a connected session. HELP can reopen
 the guide without losing the pair. Terminal errors explain how to create a new QR.
-Use the shared semantic palette and the appearance carried by the pairing link,
-44 px minimum touch targets and safe-area-aware vertical scrolling. Modal pages
+Use the pairing link's palette and appearance while connecting, then follow the
+display's current theme and resolved light/dark appearance in every state heartbeat.
+Auto follows the display's effective result, not the phone's system preference.
+Use 44 px minimum touch targets and safe-area-aware vertical scrolling. Modal pages
 isolate background controls, trap/restore keyboard focus and support Escape;
 horizontal slider gestures must not trigger page dismissal.
 

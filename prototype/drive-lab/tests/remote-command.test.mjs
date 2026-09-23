@@ -4,6 +4,7 @@ import { createCommandProtocol, normalizeRemoteCommand } from "../src/remote/com
 import { createCommandRelay } from "../src/remote/command-relay.js";
 import { createMotionCipher, createRelayKey } from "../src/motion/relay.js";
 import { webcrypto } from "node:crypto";
+import { FLUX_THEMES } from "../src/flux-themes.js";
 
 test("remote commands are allowlisted and bounded", () => {
   assert.deepEqual(normalizeRemoteCommand({ id: "one", type: "mode", value: "flux" }), { v: "sv-remote-1", id: "one", type: "mode", value: "flux" });
@@ -25,6 +26,38 @@ test("receiver applies each command once and acknowledges it in a state heartbea
   const statePacket = receiver.poll();
   phone.receive(statePacket);
   assert.equal(phone.summary().pending, 0);
+});
+
+test("state heartbeats mirror every palette and resolved appearance without a phone command", () => {
+  let displayState = {};
+  let phoneState = {};
+  const receiver = createCommandProtocol({ role: "receiver", getState: () => displayState });
+  const phone = createCommandProtocol({ role: "phone", onState: (state) => { phoneState = state; } });
+  for (const theme of FLUX_THEMES) {
+    for (const appearance of ["light", "dark"]) {
+      displayState = { themeId: theme.id, appearance };
+      phone.receive(receiver.poll());
+      assert.deepEqual(phoneState, displayState);
+      assert.equal(phone.summary().pending, 0);
+    }
+  }
+});
+
+test("appearance is optional for older peers and rejects unresolved or arbitrary values", () => {
+  let displayState = { themeId: "blue" };
+  const receiver = createCommandProtocol({ role: "receiver", getState: () => displayState });
+  const phone = createCommandProtocol({ role: "phone" });
+  phone.receive(receiver.poll());
+  assert.deepEqual(phone.state(), { themeId: "blue" });
+  for (const appearance of ["auto", "sepia", "", null, {}, true]) {
+    displayState = { themeId: "blue", appearance };
+    const outbound = JSON.parse(receiver.poll());
+    assert.equal(Object.hasOwn(outbound.state, "appearance"), false);
+    // Receiving peers enforce the same allowlist independently of the sender.
+    outbound.state.appearance = appearance;
+    phone.receive(JSON.stringify(outbound));
+    assert.deepEqual(phone.state(), { themeId: "blue" });
+  }
 });
 
 test("a lost acknowledgement is repeated without applying the command twice", () => {

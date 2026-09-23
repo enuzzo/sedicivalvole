@@ -86,7 +86,8 @@ function Transport({ remoteState, onCommand }) {
 }
 
 export function MotionPhone() {
-  const [remoteState, setRemoteState] = useState(EMPTY_STATE);
+  const presentation = useMemo(safePresentation, []);
+  const [remoteState, setRemoteState] = useState(() => ({ ...EMPTY_STATE, themeId: presentation.palette, appearance: presentation.appearance }));
   const [snapshot, setSnapshot] = useState({ state: "idle", networkState: "offline" });
   const [pair, setPair] = useState(null);
   const [drawer, setDrawer] = useState(null);
@@ -96,7 +97,6 @@ export function MotionPhone() {
   const [notice, setNotice] = useState(null);
   const sessionRef = useRef(null);
   const swipeRef = useRef(null);
-  const presentation = useMemo(safePresentation, []);
   const visualChoices = useMemo(() => FLUX_VISUAL_CHOICES.filter((choice) => choice.kind !== "destination" || ["discover", "stats"].includes(choice.id)), []);
   const genres = useMemo(() => readyScoreGenres(), []);
 

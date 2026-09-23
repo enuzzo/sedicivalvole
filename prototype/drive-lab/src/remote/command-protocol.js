@@ -72,6 +72,7 @@ function cleanState(value) {
   for (const key of ["muted", "vehicleEffectsEnabled", "playing"]) {
     if (typeof value[key] === "boolean") state[key] = value[key];
   }
+  if (value.appearance === "light" || value.appearance === "dark") state.appearance = value.appearance;
   if (value.track && typeof value.track === "object") {
     const track = {};
     for (const key of ["title", "artist", "album", "artwork"]) {
