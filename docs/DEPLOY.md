@@ -1,5 +1,32 @@
 # Deployment
 
+## Passenger remote and GPS heading — 2026-09-23
+
+Canonical `20260923-1534.05ad287` is published from source `05ad287` at
+https://sedicivalvole.app/. The active iPhone companion is a passenger command
+remote; Engine, Flux and Aperture no longer consume phone IMU input. Aperture
+uses bounded GPS/Atlas heading response, while display GPS remains speed
+authority. The release includes reload-safe pairing and repeatable command
+acknowledgements within the original one-hour lease.
+
+The aggregate test command passed, including 946 unit cases and 9 Sites checks;
+the production package verified 835 exact hashes and 189 community credits.
+Official read-only preflight and postflight passed network, login, exact
+canonical directory and remote identity with no writes. Preserve-existing
+publication uploaded 39 files / 6,487,886 bytes, verified and reused 832
+static files and 29 recordings, retained one previous fingerprinted asset and
+activated the dynamic root without legacy deletion.
+
+Bare, cache-busted and reloaded canonical HTML each return HTTP 200, no-store
+and proxy MISS, and equal the local 1,445-byte file at SHA-256
+`aeda3024be8aad9fac120c479d328c234d6348003a7d1705195750fc4726dc88`.
+Main JS/CSS and lazy phone JS/CSS match the local build byte-for-byte. The
+public browser displayed the phone onboarding and the car's QR pairing panel;
+the test QR was stopped. A direct GET to the POST-only pairing API returned
+403 and was not treated as a failed pairing. Real iPhone/Tesla admission,
+reconnection, background behavior and road heading response remain physical
+acceptance gates. No synthetic diagnostic mail was sent.
+
 ## GPS speed presentation repair — 2026-09-23
 
 Canonical `20260923-1008.fd3d148` is published from source `fd3d148` at
