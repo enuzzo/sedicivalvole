@@ -15,7 +15,13 @@ lockfile credits check passes 189 entries. Local app QA drives the actual
 geolocation callback at 100 ms through Meridian and PRTCL; local component QA
 covers both particle variants, palette changes, braking collapse and reduced
 motion. Real Tesla sensitivity and sustained GPU acceptance remain open.
-Publication evidence follows after verification.
+Canonical **20260923-2255.0ddd3ce** is published: 835 package hashes, 15 public
+identity/cache checks, and public Meridian/PRTCL launch/variant checks pass.
+The official preserve-existing release uploads 39 files / 6,502,957 bytes,
+reuses 832 static files and 29 verified recordings, and retains one previous
+asset. Local/compiled turn uniforms are ±0.560 for Meridian/PRTCL and ±0.258
+for Aperture, returning to zero on loss. Public GPS is unavailable; browser
+launch proof does not replace a moving Tesla trial. See [focused evidence](VISUAL-CURVES-2026-09-23.md).
 
 ## Aperture GPS curve cadence repair — September 23
 
@@ -939,8 +945,9 @@ old pending/publication labels; they are not a second current task list.
   The live audio meter drives only the disposable test signal and returns the
   manual AUDIO control immediately when muted.
   Physical-Tesla acceptance remains open.
-- Meridian keeps one deterministic low corridor beneath sparse, large oblique
-  blades and longitudinal shoulder planes. Its shared travel field has tightly
+- Meridian keeps one deterministic low corridor with open oblique blades,
+  folded/bridged light galleries and longitudinal shoulder planes. Trusted GPS
+  curves bend its shared geometry/camera field; palette seams enrich the faces. Its shared travel field has tightly
   bounded vertical motion; FOV, depth compression, peripheral stretch,
   parallax and flow rise monotonically with speed. Conventional buildings,
   stacked towers, high cloud slabs and scene-wide particles are absent.

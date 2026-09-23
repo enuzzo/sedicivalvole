@@ -56,6 +56,14 @@ The atmosphere summary observes visible session time and confirmed advancing aud
 The September 19 owner refinement removes the redundant Open Stats for Nerds
 button from Session report. The existing Visuals entry owns navigation to Stats.
 
+## GPS visual consumers — September 23
+
+`roadMotion.headingConsumer` names the selected supported visual as
+`aperture-curve`, `meridian-curve` or `prtcl-curve`, and reports `none` for other
+visuals and Engine. This is an input-route label, not proof of a usable sample or
+visible deformation; source/status retain that distinction. No raw heading,
+coordinate or motion vector is included.
+
 ## Mounted phone response — September 19
 
 Coordinate-free roadMotion records effective source/status and named consumers. Engine records responseSource. The motion summary allowlist admits only mountSelected and roadState (strict enum), never the road vector payload or raw histories. Synthetic QA still blocks automatic mail. See [the implementation contract](../PHONE-ROAD-INPUT-2026-09-19.md).

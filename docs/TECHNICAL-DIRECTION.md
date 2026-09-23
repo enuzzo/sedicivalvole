@@ -521,11 +521,21 @@ renderer, QA harness and tests. Aperture remains the safe accepted default.
 
 **Meridian** is an original low architectural corridor. One
 depth-parameterized displacement field controls geometry and camera aim while a
-monotonic travel clock moves sparse large oblique blades, broad shoulder screens
-and three solid longitudinal bands without coupling motion to frame rate. Speed
+monotonic travel clock moves oblique blades, folded/bridged light galleries,
+broad shoulder screens and three longitudinal light bands without coupling
+motion to frame rate. Analytic face seams and bevels use the active palette;
+the WebGL2 context uses multisampling and retains four instanced/background passes. Speed
 raises FOV, depth compression, peripheral stretch, parallax and optical flow;
 vertical excursion stays tightly bounded. Conventional buildings, stacked
 towers, high cloud slabs, scene-wide particles and wireframe grids are absent.
+
+Aperture, Meridian and PRTCL read the same trusted GPS curve sample per frame.
+`visualCurveTarget` enforces quality, freshness, low-speed and reduced-motion
+boundaries; each renderer smooths its own bounded response without app-wide
+per-frame React updates. Meridian applies the signed curve in its shared
+geometry/camera field; PRTCL applies banking/torsion in view space and scales the
+translation with the braking form. Aperture includes modest near translation and
+a stronger middle-depth warp. Curve input does not enter the audio graph.
 
 **Atlas** is a lazy-loaded OpenFreeMap/MapLibre city field. It owns a minimal
 vector style rather than inheriting a generic street-map skin, extrudes building

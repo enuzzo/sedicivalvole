@@ -292,6 +292,7 @@ depth, curve Meridian's complete corridor, and bank/twist PRTCL's two forms.
 The response is bounded, fades back to neutral on signal loss, and is disabled
 with reduced motion. GPS curves do not control audio effects. Real-car sensitivity
 and sustained GPU acceptance remain separate from desktop browser verification.
+See [visual changes and verification](docs/VISUAL-CURVES-2026-09-23.md).
 
 The speed source is an explicit abstraction. GPS and the desktop simulator produce the same normalized stream. Hold `ArrowUp` as an accelerator; releasing it enters a progressive nominal Model 3 AWD regenerative slowdown instead of dropping to zero. `ArrowDown` explicitly requests that lift-off state. Holding `Space` applies the stronger estimated service-brake curve from the exact current speed. Reference acceleration, lift-off, and braking dynamics define soft GPS plausibility bands without creating or replacing real motion samples. Keyboard handling never steals input from focused controls.
 
