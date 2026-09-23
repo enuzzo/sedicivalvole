@@ -128,3 +128,23 @@ Local paired IAB confirms Dark to Light and back without rescanning, Blue to Neo
 applied on both peers, Auto agreement and current-state recovery after reload.
 Phone console has no warnings/errors. An initially stale Vite module was detected
 and the local server restarted before the successful browser evidence.
+
+Source `b06b696` is committed/pushed. Build `20260923-1953.b06b696` passes the
+835-hash App/LAB/Sites package and 189-credit gate. Its actual compiled pairing
+starts from a Light QR and follows the display's subsequent Dark state, with no
+phone console warnings/errors. The focused checks supplement the preceding
+1,083-test aggregate; that full aggregate was not repeated for this additive field.
+
+Canonical build `20260923-1953.b06b696` is published. The official command passes
+its read-only identity gate and complete post-upload verification before activating
+the entry: 39 files / 6,496,802 bytes uploaded, 832 static files and 29 recordings
+verified/reused, one previous asset retained and no legacy deletion. Fifteen HTTPS
+checks match local HTML/assets on bare root, cache-busted root and controlled
+reload. HTML is 1,445 bytes at SHA-256
+`db0da35a9b02ee85119515c87e51e942c078b17b6e5c9f8c3487024272592e7a`.
+Public paired IAB at 773 × 601 / 390 × 844 confirms Dark to Light and back without
+phone reload, matching Acid to Blue selection on both peers, actual phone surface
+colours `rgb(244, 244, 244)` / `rgb(26, 26, 26)`, and zero warnings/errors on both
+pages. The test pair was revoked and reports remained OFF. Physical Safari/Tesla
+acceptance remains separate. Existing open clients must load the new build to
+transmit the additional appearance field.

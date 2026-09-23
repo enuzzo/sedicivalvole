@@ -1,5 +1,16 @@
 # Current Project State
 
+## Companion appearance synchronization — September 23
+
+Canonical **20260923-1953.b06b696** adds live light/dark synchronization to the
+passenger remote's existing theme synchronization. The phone uses QR colours
+while connecting, then follows every display state update, including the effective
+appearance of Auto. Fifty-three focused checks, eight documentation checks, 835
+package hashes and 15 canonical identity/cache checks pass. Local/compiled/public
+paired browser checks verify appearance and theme changes without a new QR;
+local reload recovers current colours. Existing clients need the updated build.
+Details and physical limits are in the [focused record](PASSENGER-REMOTE-PAIRING-2026-09-23.md#live-appearance-synchronization-follow-up).
+
 ## Passenger remote pairing repair — September 23
 
 The owner found the published passenger QR unusable on Tesla. The browser reproduced
