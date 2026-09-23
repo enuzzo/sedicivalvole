@@ -83,3 +83,41 @@ and sensor onboarding/diagnostics, retain GPS/Demo ownership, implement the
 command channel and receiver actions, implement the chosen portrait remote,
 then verify real iPhone/Tesla connection, music, visuals and reconnect behavior.
 Do not present visual concepts as an implemented companion.
+
+## Later drive: 08:40–08:56 UTC
+
+Four more coordinate-free diagnostic mails arrived from the released
+`20260923-1008.fd3d148` build. Their gzip and JSON SHA-256 values matched the
+mail bodies. The reports at 08:40 (automatic catch-up), 08:51 (manual), 08:55
+(automatic interval) and 08:56 (manual) are cumulative snapshots of **one**
+session, not four independent trials. The last report was generated at
+08:56:12 UTC; its gzip SHA-256 is
+`a51b990f4f40473b1e1b3fb05320ef4a532c2cd258549f62118ed6e2cb3f7309`.
+Raw attachments remain outside Git.
+
+| Last cumulative report | Observed | HTTPS connected | Phone fresh | Road eligible | GPS numeric samples |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 08:51 UTC | 676.010 s | 642.054 s | 53.385 s (7.9%) | 37.160 s (5.5%) | 7,062 / 7,062 |
+| 08:55 UTC | 941.909 s | 907.953 s | 62.928 s (6.7%) | 40.697 s (4.3%) | 9,807 / 9,807 |
+| 08:56 UTC | 996.367 s | 962.411 s (96.6%) | 64.174 s (6.4%) | 41.943 s (4.2%) | 10,220 / 10,220 |
+
+The final snapshot happened to say `dataFresh: true`. It describes that
+instant, while the cumulative coverage captures how rarely the 250 ms
+freshness requirement was met. The full event recorder counted 315 `stale`
+and 315 `recovered` transitions. The phone reported 57,372 motion events,
+57,379 orientation events, no missing axes and no visibility stops, so the
+recorded bottleneck is delivery/age of the samples at the receiver, not an
+observed absence of sensor events. The HTTPS protocol recorded 4,150 expired
+poll requests, 1,199 latency drops and 1,652 rejected packets. No direct
+transport time was recorded; 19 of 23 upgrade attempts had failed by the
+final snapshot, and the remainder were not confirmed as recovered.
+
+Browser network hints changed between `4g`, `slow-2g` and `3g`, with some
+reported RTT hints up to 3,000 ms; these are hints rather than a measured
+cellular signal or proof of a single root cause. During the same journey the
+app stayed on the GPS speed source, and its geolocation telemetry reported
+10,220 numeric speed samples. This supports the GPS-only product direction
+for continuous road response. It does not establish that GPS is perfect in
+every location or that speed alone provides a turn signal. Keeping the phone
+for lower-frequency passenger commands remains a design proposal until its
+separate acknowledged command channel and real-device acceptance exist.
