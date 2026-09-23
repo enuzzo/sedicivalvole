@@ -14,8 +14,20 @@ invalid/duplicate receipts, signal loss, low speed and reduced motion. Full-app
 browser QA at 773 × 601 passes through the actual GPS callback and WebGL Aperture
 renderer: right/left turns produce +0.179/-0.179 warp and signal loss returns
 zero, with a stationary near rim and dark terminus. No inspected console
-warnings/errors or synthetic diagnostic sends. Production delivery is pending;
-real Tesla response and preferred sensitivity remain physical acceptance.
+warnings/errors or synthetic diagnostic sends. The compiled build repeats all
+three directions/stale outcomes. The complete aggregate passes 1,097 tests,
+documentation checks 8, credits 189 and production package hashes 835.
+
+Canonical **20260923-2221.cbc7db7** is published through the official
+preserve-existing path: 39 uploads / 6,498,487 bytes, 832 unchanged static files,
+29 fully verified recordings and one retained previous fingerprinted asset.
+All 15 public identity/cache checks pass; bare, cache-busted and controlled-reload
+HTML match the 1,445-byte local file at SHA-256
+`13394bb7f26e7653aa99415419d76380806523ed5da7cb4ee0509829a91b480c`.
+Public IAB confirms build identity and Aperture launch, reports off, with no
+inspected console warnings/errors. That public check has no moving GPS fix;
+the curve proof uses synthetic GPS through the real local/compiled app pipeline.
+Real Tesla response and preferred sensitivity remain physical acceptance.
 
 ## Soundtrack effects and passenger control audit — September 23
 

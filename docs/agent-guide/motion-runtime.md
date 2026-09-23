@@ -62,7 +62,7 @@ own and never pretends to be IMU data.
 The curve tracker retains a heading anchor until at least 250 ms has elapsed;
 the Tesla's 100 ms callbacks must accumulate rather than continually replace
 that anchor. Filtering uses elapsed time so 100 ms, 250 ms and one-second fixes
-agree. Native heading must be numeric; missing values are not north. Invalid
+agree. Supplied heading must be numeric; missing values are not north. Invalid
 speed/accuracy/heading clears the baseline, duplicate or reversed receipts do
 not renew freshness, and a gap over 1,500 ms starts neutral. Implausible heading
 jumps over 90 degrees/second rebase without bending. The renderer eases back to
