@@ -10,8 +10,10 @@ and makes Engine’s dry boundary explicit. A separately reproduced queue defect
 lost the end of fast slider drags; pending positions now coalesce per effect and
 show temporary Sending feedback until acknowledged. Phone/display tap depths share
 one definition. Combined regression coverage passes 1,088 cases; 19 real-browser
-signal checks and paired phone/display interaction checks pass. Production and
-publication status are maintained in the [focused audit](AUDIO-EFFECTS-AUDIT-2026-09-23.md).
+signal checks and paired phone/display interaction checks pass. Canonical **20260923-2059.5967df1** is published with 835 package hashes and
+15 public HTTP identity/cache checks passing. A public paired browser confirms
+Soundtrack, manual effects and phone pause with no inspected console errors.
+Evidence and physical limits are in the [focused audit](AUDIO-EFFECTS-AUDIT-2026-09-23.md).
 
 
 ## Companion appearance synchronization — September 23

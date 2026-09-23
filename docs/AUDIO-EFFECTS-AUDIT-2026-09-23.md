@@ -81,8 +81,24 @@ media proof separately covers the real MediaElement source path.
 
 ## Delivery and limits
 
-Source checkpoint, production package and canonical publication are recorded below
-when verified. Existing moving sessions are not forcibly reloaded.
+**Published: 20260923-2059.5967df1**, from source checkpoint `5967df1` on `main`.
+The production App/LAB/Sites package passes 835 exact static hashes; eight
+documentation checks and all 189 community credits pass. The compiled browser
+also confirms Music → Engine → Music and an acknowledged 76% tap / 100% slider.
+
+Official preserve-existing publication uploads 39 files / 6,498,536 bytes,
+verifies/reuses 832 static files and 29 recordings, and retains two previous assets.
+All **15 canonical HTTP checks** pass on bare, cache-busted and controlled-reload
+requests. The 1,445-byte HTML has SHA-256
+`ca7dee91377ad5d33fde6dd06c5ec3e5273d4db8183529910aa68ca1e0b4aa6e`;
+referenced assets, phone bundles, release metadata and cache worker match locally.
+
+Public IAB at 773 × 601 and 390 × 844 starts an actual Soundtrack recording,
+pairs the companion, applies manual Underwater at 76% then 100% with braking off,
+and confirms the 100% display value. Dark/Blue presentation, explicit braking
+copy, RESET, braking re-enable and phone pause pass with no inspected console
+warnings/errors. The temporary pairing is revoked and both tabs are closed.
+Automatic mail stays off. Existing moving sessions are not forcibly reloaded.
 
 The audit covers active audio/effects/control ownership and the repository's full
 regression/package gates. It does not certify every visual, geographic service,
