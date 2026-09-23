@@ -11,6 +11,7 @@ const finite = (value) => Number.isFinite(value);
 export function createGpsCurveTracker({ now = () => performance.now() } = {}) {
   let generation = 0;
   let previous = null;
+  let lastReceiptAt = null;
   let turnRate = 0;
   let observedAt = null;
   let quality = 0;
@@ -18,51 +19,57 @@ export function createGpsCurveTracker({ now = () => performance.now() } = {}) {
   function reset() {
     generation += 1;
     previous = null;
+    lastReceiptAt = null;
     turnRate = 0;
     observedAt = null;
     quality = 0;
   }
 
   function observe(reading) {
-    const capturedAtMs = Number(reading?.capturedAtMs);
-    const heading = Number(reading?.heading);
-    const speedKmh = Number(reading?.speedKmh);
-    const accuracyM = Number(reading?.accuracyM);
-    if (!finite(capturedAtMs) || !finite(heading) || !finite(speedKmh)
+    const { capturedAtMs, heading, speedKmh, accuracyM } = reading ?? {};
+    if (!finite(capturedAtMs) || capturedAtMs < 0
+      || (lastReceiptAt != null && capturedAtMs <= lastReceiptAt)) return null;
+    lastReceiptAt = capturedAtMs;
+    if (!finite(heading) || heading < 0 || heading >= 360 || !finite(speedKmh)
       || speedKmh < 4 || !finite(accuracyM) || accuracyM < 0 || accuracyM > 50) {
-      if (finite(capturedAtMs) && previous && capturedAtMs > previous.capturedAtMs
-        && capturedAtMs - previous.capturedAtMs <= 2500) {
-        turnRate += (0 - turnRate) * 0.22;
-        observedAt = capturedAtMs;
-      }
+      previous = null;
+      turnRate = 0;
+      observedAt = null;
+      quality = 0;
       return null;
     }
     const last = previous;
-    previous = { capturedAtMs, heading, speedKmh, accuracyM };
-    if (!last) {
-      observedAt = capturedAtMs;
-      quality = clamp(1 - accuracyM / 50, 0, 1);
-      return null;
-    }
-    const deltaMs = capturedAtMs - last.capturedAtMs;
-    if (!(deltaMs >= 250 && deltaMs <= 2500)) {
+    const deltaMs = last ? capturedAtMs - last.capturedAtMs : null;
+    // Keep the measurement anchor through fast callbacks. Replacing it on every
+    // 100 ms Tesla fix prevented the old 250 ms gate from ever opening.
+    if (last && deltaMs < 250) return null;
+    previous = { capturedAtMs, heading, accuracyM };
+    if (!last || deltaMs > 1500) {
       observedAt = capturedAtMs;
       turnRate = 0;
       quality = clamp(1 - accuracyM / 50, 0, 1);
       return null;
     }
     const delta = ((heading - last.heading + 540) % 360) - 180;
-    const measuredRate = clamp(delta / (deltaMs / 1000), -90, 90);
-    const alpha = measuredRate === 0 ? 0.16 : 0.28;
+    const measuredRate = delta / (deltaMs / 1000);
+    if (Math.abs(measuredRate) > 90) {
+      // Rebase after an implausible heading jump without bending the tunnel.
+      turnRate = 0;
+      observedAt = null;
+      quality = 0;
+      return null;
+    }
+    // Preserve the 250 ms response while making it independent of GPS cadence.
+    const alpha = 1 - Math.pow(1 - (measuredRate === 0 ? 0.16 : 0.28), deltaMs / 250);
     turnRate += (measuredRate - turnRate) * alpha;
     observedAt = capturedAtMs;
     quality = clamp(1 - Math.max(accuracyM, last.accuracyM) / 50, 0, 1);
-      return sample(capturedAtMs);
+    return sample(capturedAtMs);
   }
 
   function sample(at = now()) {
-    const ageMs = observedAt == null ? null : Math.max(0, at - observedAt);
-    const fresh = finite(ageMs) && ageMs <= 1500 && quality >= 0.2;
+    const ageMs = observedAt == null ? null : at - observedAt;
+    const fresh = finite(at) && finite(ageMs) && ageMs >= 0 && ageMs <= 1500 && quality >= 0.2;
     return fresh ? {
       frame: "gps-heading",
       generation,

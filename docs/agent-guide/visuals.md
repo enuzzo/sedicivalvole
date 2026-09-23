@@ -14,7 +14,17 @@ Keep all upstream-integrity manifests, tests and attribution passing. **Never ed
 
 Modular Aperture is the selected Flux baseline: a sparse rectangular field, flat/calm at rest, forming a centered tunnel with energy and releasing coherently on deceleration. Terminus is a **dark void**, never a bright portal. Ceiling, floor and side walls use one exact longitudinal origin so perspective cuts meet at the corners. The rejected starburst/lens-flare cannot return; the retained qualities are central convergence, depth, speed response and a low control plane. The selection resolves the earlier request for three Swiss-influenced replacements; another direction still requires selection.
 
-The September 19 owner-requested gyro curve uses fresh, zeroed turn rate about the captured vertical. A bounded shared depth warp bends all walls together; the near rim stays fixed and the terminus stays dark. Read samples per frame, expire after 250 ms, ease back to straight on loss, and disable the curve for reduced motion. GPS still owns speed; no heading or velocity integration. See [HTTPS and Aperture refinement](../PHONE-MOTION-HTTPS-2026-09-19.md).
+The active September 23 curve uses the display's GPS/Atlas direction of travel,
+superseding the September 19 phone-gyro input. A bounded shared depth warp bends
+all walls together; the near rim stays fixed and the terminus stays dark. Read
+samples per frame, expire GPS heading after 1,500 ms, ease back to straight on
+loss, and disable the curve for reduced motion. GPS also owns speed; heading
+change is not integrated into steering or velocity. The bend opens above 8 km/h
+and reaches its full speed scaling at 50 km/h. Fast GPS callbacks accumulate
+through the minimum measurement window; see the active
+[GPS companion contract](motion-runtime.md#passenger-command-companion--september-23).
+The [September 19 gyro refinement](../PHONE-MOTION-HTTPS-2026-09-19.md) remains
+historical evidence, not an active phone sensor connection.
 
 Keep approved Modular Aperture/Laminar Product Design images in the ignored local reference library only. Laminar resembles Infinite Lights and requires independent reinterpretation before implementation. Unselected Laminar Switchback and Rolling Register stay in the ignored backlog, not implemented catalogue entries.
 

@@ -1,5 +1,22 @@
 # Current Project State
 
+## Aperture GPS curve cadence repair — September 23
+
+The owner requested a direction-of-travel trial on Aperture. The existing GPS
+connection was reproduced as ineffective at the Tesla report's 100 ms cadence:
+each callback replaced the heading anchor before the 250 ms measurement window
+could open. The tracker now accumulates fast fixes, filters by elapsed time,
+rejects absent/invalid values and implausible heading jumps, and starts neutral
+after stale input. No phone motion sensors or audio mappings are added.
+
+Eleven curve regression cases cover both signs, cadence equivalence, north wrap,
+invalid/duplicate receipts, signal loss, low speed and reduced motion. Full-app
+browser QA at 773 × 601 passes through the actual GPS callback and WebGL Aperture
+renderer: right/left turns produce +0.179/-0.179 warp and signal loss returns
+zero, with a stationary near rim and dark terminus. No inspected console
+warnings/errors or synthetic diagnostic sends. Production delivery is pending;
+real Tesla response and preferred sensitivity remain physical acceptance.
+
 ## Soundtrack effects and passenger control audit — September 23
 
 The owner’s real Soundtrack report records the passenger remote disabling the

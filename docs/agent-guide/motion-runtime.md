@@ -59,6 +59,16 @@ the Atlas heading resolver. A heading sample must have usable accuracy, moving
 speed, a short position gap and a bounded smoothed turn rate. It expires on its
 own and never pretends to be IMU data.
 
+The curve tracker retains a heading anchor until at least 250 ms has elapsed;
+the Tesla's 100 ms callbacks must accumulate rather than continually replace
+that anchor. Filtering uses elapsed time so 100 ms, 250 ms and one-second fixes
+agree. Native heading must be numeric; missing values are not north. Invalid
+speed/accuracy/heading clears the baseline, duplicate or reversed receipts do
+not renew freshness, and a gap over 1,500 ms starts neutral. Implausible heading
+jumps over 90 degrees/second rebase without bending. The renderer eases back to
+straight on stale input and disables the bend for reduced motion. This only
+controls Aperture's bounded lateral warp, not steering or audio effects.
+
 The passenger remote reuses the same-origin HTTPS mailbox and AES-GCM admission
 but has its own `sv-remote-1` allowlisted command protocol. Commands carry IDs,
 are deduplicated at the receiver, receive applied-state acknowledgements and
