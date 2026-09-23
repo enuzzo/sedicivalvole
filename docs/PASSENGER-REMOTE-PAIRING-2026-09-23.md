@@ -65,7 +65,7 @@ and return, keyboard focus wrap/restore, saved pairing after reload and Forget
 returning to first use. The HELP target was widened to the same 44 px minimum.
 Light/dark onboarding and the light connected home were visually inspected.
 
-## Delivery progress
+## Delivery
 
 Receiver source `744c3ec` was committed and pushed. Its candidate build
 `20260923-1812.744c3ec` passed local checks. Official read-only preflight passed,
@@ -73,9 +73,39 @@ but the subsequent publication timed out in read-only identity verification,
 before any remote writes. The combined phone/receiver release supersedes that
 unpublished candidate; its final publication evidence is recorded below.
 
+Combined source `675b2c9` is committed and pushed. Build
+`20260923-1933.675b2c9` passes App/LAB/Sites packaging, 835 exact hashes and 189
+credits. Its compiled 773 × 601 receiver retains the measured 640 × 516.6 px
+panel and 240 px QR, decoded from the screenshot; actual pairing and a Drivey to
+Aperture command succeed. The compiled phone confirms the corrected 44 × 44 px
+HELP target and the final dark onboarding. Official read-only preflight passes
+with 13 root entries and no remote writes.
+
+Official preserve-existing publication succeeds: 39 files / 6,496,638 bytes
+uploaded, 832 static files and 29 recordings verified/reused, two previous root
+assets retained for cache overlap, 13 root entries, no legacy deletion. The
+dynamic root was activated only after full verification.
+
+Fifteen canonical HTTPS checks pass for the bare root, cache-busted root,
+controlled no-cache reload, entry assets, phone JS/CSS, release manifest and cache
+worker. HTML is 1,445 bytes at SHA-256
+`81aa935a8ffd7f7f3310cda31a6a42b1a78fc2e2907075d9ed5b48a9965a2641`, identical
+to the local build with no-store/no-cache. The public browser transitions from
+`20260923-1534.05ad287` to `20260923-1933.675b2c9` on reload.
+
+Public IAB at exact 773 × 601 confirms the same 640 × 516.6 px panel, complete
+240 px QR and equal 515 px client/scroll height. Software decoding opens the actual
+public phone link; the receiver becomes Phone connected. At 390 × 844 the phone
+home has no overflow and no button below 44 × 44 px. A Flanger command receives
+applied-state confirmation, and reload retains the pairing and effect. Forget
+revokes the pair; the receiver returns to its new-QR recovery state. Both inspected
+public consoles have zero warnings/errors. Reports stayed OFF; no synthetic mail.
+Official read-only postflight also passes with 13 root entries and
+`remote_writes=NONE`.
+
 ## Acceptance limits
 
 Browser screenshots and software QR decoding establish geometry and payload, not
 physical camera acquisition from the Tesla display. Physical Tesla/iPhone scanning,
 touch, background suspension, weak-network recovery and road use remain to verify.
-Canonical publication and exact release identity are recorded below after delivery.
+Canonical publication is verified above; it does not close physical acceptance.

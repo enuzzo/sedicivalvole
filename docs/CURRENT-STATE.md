@@ -21,6 +21,12 @@ superseded. Local/compiled verification, exact source/build and canonical delive
 for this repair are recorded in [the focused record](PASSENGER-REMOTE-PAIRING-2026-09-23.md).
 Browser proof is separate from physical Tesla/iPhone scanning and road acceptance.
 
+Combined canonical release **20260923-1933.675b2c9** is published. Native tests
+pass 1,083/1,083; 835 package hashes and 15 canonical HTTP identity/cache checks
+pass. Public browser QA confirms exact Tesla geometry, successful QR pairing,
+applied effect feedback, reload persistence and revocation, plus the branded
+iPhone guide and connected home. Physical scanning and Safari/road use remain open.
+
 ## GPS/Engine display repair and remote direction — September 23
 
 Two new independent short drive reports show live GPS throughout. The first
