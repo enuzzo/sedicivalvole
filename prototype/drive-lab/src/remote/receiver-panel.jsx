@@ -1,58 +1,47 @@
-import { useEffect, useState } from "react";
-import QRCode from "qrcode";
+import { useMemo } from "react";
+import { MotionIcon, MotionSteps, SetupMark } from "../motion/motion-ui.jsx";
+import { createRemoteQr, remoteReceiverStatus } from "./receiver-presentation.js";
+import "./receiver.css";
 
-function remoteStatus(snapshot) {
-  if (snapshot.state === "pairing") return { label: "Scan to pair", tone: "pairing" };
-  if (snapshot.state === "connected") return snapshot.networkState === "online"
-    ? { label: "Remote connected", tone: "connected" }
-    : { label: "Reconnecting", tone: "retrying" };
-  if (snapshot.state === "connecting") return { label: "Connecting remote", tone: "connecting" };
-  if (snapshot.state === "preparing") return { label: "Preparing QR", tone: "preparing" };
-  if (snapshot.state === "expired") return { label: "Pairing expired", tone: "error" };
-  return { label: "No remote paired", tone: "idle" };
-}
+const STEPS = ["Scan", "Connect", "Ready"];
 
 export function RemoteReceiverPanel({ snapshot, onStart, onStop, onClose }) {
-  const [qr, setQr] = useState(null);
-  const [qrError, setQrError] = useState(false);
-  const status = remoteStatus(snapshot);
-  useEffect(() => {
-    setQr(null);
-    setQrError(false);
-    if (!snapshot.qrUrl) return;
-    try {
-      const { modules } = QRCode.create(snapshot.qrUrl, { errorCorrectionLevel: "M" });
-      const cells = [];
-      for (let y = 0; y < modules.size; y += 1) {
-        for (let x = 0; x < modules.size; x += 1) {
-          if (modules.data[y * modules.size + x]) cells.push(`M${x + 4} ${y + 4}h1v1h-1z`);
-        }
-      }
-      setQr({ size: modules.size + 8, path: cells.join("") });
-    } catch {
-      setQrError(true);
-    }
-  }, [snapshot.qrUrl]);
-
+  const qr = useMemo(() => createRemoteQr(snapshot.qrUrl), [snapshot.qrUrl]);
+  const qrError = snapshot.state === "pairing" && qr === null;
+  const status = remoteReceiverStatus(snapshot, { qrError });
+  const pairing = snapshot.state === "pairing" && !qrError;
+  const connected = snapshot.state === "connected";
+  const connecting = snapshot.state === "connecting";
+  const active = ["preparing", "pairing", "connecting", "connected"].includes(snapshot.state);
   const restart = () => { onStop(); onStart(); };
-  return <div className="remote-panel-content">
-    <header className="remote-panel-heading">
-      <div><small>PASSENGER REMOTE</small><h2 id="remote-title">Connect a phone</h2></div>
-      <button type="button" className="remote-close" data-dialog-initial-focus onClick={onClose} aria-label="Close remote pairing">CLOSE</button>
+
+  return <div className="remote-receiver">
+    <header className="remote-receiver-heading">
+      <div><small>PASSENGER REMOTE</small><h2 id="remote-title">Connect your phone</h2></div>
+      <button type="button" className="remote-receiver-close" data-dialog-initial-focus onClick={onClose} aria-label="Close remote pairing"><SetupMark kind="close"/>CLOSE</button>
     </header>
-    <p className="remote-panel-intro">One scan pairs a phone to this display. The phone controls music, mode, visual and effects; GPS stays on the car screen.</p>
-    <div className="remote-status" data-tone={status.tone} role="status"><span aria-hidden="true"/><strong>{status.label}</strong><small>{snapshot.networkState === "retrying" ? "Pairing is kept while the network recovers." : snapshot.state === "connected" ? "Commands are ready." : ""}</small></div>
-    {qr && snapshot.state === "pairing" ? <div className="remote-qr-wrap"><svg className="remote-qr" viewBox={`0 0 ${qr.size} ${qr.size}`} role="img" aria-label="Scan this QR with the passenger phone" shapeRendering="crispEdges"><rect width={qr.size} height={qr.size} fill="#fff"/><path d={qr.path} fill="#000"/></svg><p>Open the link after scanning. No sensor permission is needed.</p></div> : null}
-    {qrError && <p className="remote-error" role="alert">The QR could not be drawn. Create a new one.</p>}
-    <div className="remote-panel-actions">
-      {snapshot.state === "idle" || snapshot.state === "closed" || snapshot.state === "expired" || snapshot.state === "error" ? <button type="button" className="remote-primary" onClick={() => onStart()}>CREATE QR</button> : null}
-      {snapshot.state === "pairing" || snapshot.state === "connecting" || snapshot.state === "connected" ? <button type="button" onClick={() => onStop("closed")}>STOP PAIRING</button> : null}
-      {snapshot.state === "expired" || snapshot.state === "error" ? <button type="button" onClick={restart}>NEW QR</button> : null}
+    <p className="remote-receiver-intro">Music, visuals and effects from your phone.<br/>GPS stays on this display.</p>
+    <MotionSteps labels={STEPS} active={pairing ? 0 : connecting ? 1 : -1} done={[connecting || connected, connected, connected]}/>
+    <div className="remote-receiver-body" data-pairing={pairing}>
+      <div className="remote-receiver-instruction">
+        <div className="remote-receiver-status" data-tone={status.tone} role="status" aria-live="polite">
+          <strong><span aria-hidden="true"/>{status.label}</strong>
+          <p>{status.hint}</p>
+        </div>
+        <div className="remote-receiver-actions">
+          {status.retry ? <button type="button" className="remote-receiver-primary" onClick={restart}>CREATE NEW QR</button>
+            : !active ? <button type="button" className="remote-receiver-primary" onClick={() => onStart()}>CREATE QR</button>
+              : <button type="button" onClick={() => onStop("closed")}>{connected ? "DISCONNECT PHONE" : "CANCEL PAIRING"}</button>}
+        </div>
+        {pairing ? <p className="remote-receiver-note">No app or sensor permission needed.</p> : null}
+      </div>
+      {pairing ? <svg className="remote-receiver-qr" width="240" height="240" viewBox={`0 0 ${qr.size} ${qr.size}`} role="img" aria-label="Scan this QR with the passenger phone" shapeRendering="crispEdges"><rect width={qr.size} height={qr.size} fill="#fff"/><path d={qr.path} fill="#000"/></svg>
+        : <div className="remote-receiver-symbol" data-tone={status.tone} aria-hidden="true"><MotionIcon state={connected ? "paired" : "pairing"}/></div>}
     </div>
-    <details className="remote-details">
-      <summary>Connection details</summary>
-      <p>Transport: encrypted HTTPS mailbox. Browser certificate validation stays strict; the pairing token is scoped to this same-origin endpoint. Network interruptions retry until the one-hour lease expires.</p>
-      <p>No accelerometer, gyroscope, compass permission or high-frequency samples are requested by the companion.</p>
+    <details className="remote-receiver-details">
+      <summary><span>Connection details</span><SetupMark kind="chevron"/></summary>
+      <p>Keep both pages open and connected to the Internet. You can close this panel after pairing.</p>
+      <p>The encrypted connection retries automatically. Pairing lasts up to one hour; an unused QR expires after three minutes. No motion sensors are requested.</p>
     </details>
   </div>;
 }

@@ -5676,7 +5676,7 @@ export function App() {
         </div>
       </section>
 
-      {motionOpen ? <DialogSurface className="diagnostic-drawer motion-dialog" labelledBy="remote-title" onClose={() => setMotionOpen(false)}>
+      {motionOpen ? <DialogSurface className="diagnostic-drawer remote-dialog" labelledBy="remote-title" onClose={() => setMotionOpen(false)}>
         <RemoteReceiverPanel snapshot={motionSnapshot} onStart={() => void motionSessionRef.current?.start()} onStop={(next) => motionSessionRef.current?.stop(next)} onClose={() => setMotionOpen(false)} />
       </DialogSurface> : null}
       {supportOpen ? (

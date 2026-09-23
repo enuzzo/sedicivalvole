@@ -65,16 +65,24 @@ third-party work retains the credits and licences recorded below.
 
 Public development repository: [github.com/enuzzo/sedicivalvole](https://github.com/enuzzo/sedicivalvole).
 
-The phone companion now has a guided sensor / connect / position / ZERO / screen-awake
-setup, with compact live readings after completion. The receiver drawer distinguishes
-connection from fresh data and shows measured round-trip latency. Physical iPhone/Tesla
-acceptance remains separate; see [current status](docs/CURRENT-STATE.md).
+The active phone companion is a passenger remote for music, visuals and effects.
+The display keeps GPS authority. Its top-bar phone icon opens a compact Scan /
+Connect / Ready panel with a complete 240 px QR and four-module white quiet zone.
+At the Tesla reference viewport (773 × 601), pairing needs no scrolling. Connection,
+recovery and expiry have explicit messages and a single relevant action.
+Physical scanning and iPhone/Tesla acceptance remain separate; see
+[current status](docs/CURRENT-STATE.md).
 
 ## Development reports
 
 Dev is the default, with coordinate-free automatic reports every **15 minutes of observable active session time**. Selecting Dev enables sending; explicit pauses persist. Session report separates the current ON/OFF state from **PAUSE SENDING / ENABLE SENDING** actions. Stops, GPS loss and offline time count; hidden time does not. If the browser froze the app, the report is sent when it wakes (catch-up after 15 wall minutes); closing or hiding the app also sends a compact report when the browser allows it. Progress counters and a random pending-delivery identity, never reports, survive reloads. Unconfirmed attempts retain progress; bounded private server receipts suppress duplicate emails after a lost response. Server acceptance is not inbox receipt. At most one due report waits for reconnection, with no persistent outbox. Standard keeps manual reports. Travel Reports are never automatic.
 
-## Experimental phone motion
+## Archived phone-motion experiment
+
+The following describes the previous sensor experiment, superseded on September 23
+by the command-only passenger remote. It is retained as historical research, not
+the active phone route or a current Engine/Flux/Aperture input. See the
+[active companion contract](docs/agent-guide/motion-runtime.md#passenger-command-companion--september-23).
 
 The top-bar phone icon prepares an expiring QR and opens a compact connection
 panel. The smartphone follows five explicit steps: sensor permission, connection,

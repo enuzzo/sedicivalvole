@@ -70,6 +70,28 @@ browser; do not infer iOS or Safari from a missing capability. Use the
 and the owner's aesthetic judgement remain separate from the agent's fidelity pass.
 
 
+## Passenger remote pairing — September 23
+
+The command-only receiver reuses the approved companion geometry, typography,
+semantic palette, numbered progress rail and close/disclosure glyphs. Its own
+`remote/receiver.css` is imported by the receiver component into the eager App
+bundle; never rely on the lazy phone route to load display styles. Use the shared
+DialogSurface for focus, Escape, backdrop and drag handling.
+
+At 773 × 601, the right-hand panel is at most 640 px wide, intrinsically sized and
+bounded by 16 px viewport gutters. Instructions sit beside a 240 × 240 px QR;
+its SVG has explicit dimensions and an internal four-module white quiet zone.
+The complete QR, status, cancel action and closed disclosure fit without scrolling.
+Optional expanded details may scroll inside the panel. Below 550 px the QR precedes
+instructions; phone preview at 390 × 844 fits the entire panel. Controls retain
+48 px targets and 56 px primary recovery targets; copy uses the shared type ladder.
+
+Scan / Connect / Ready checks follow actual admission and channel confirmation.
+Network gaps retain the admitted pairing and say Reconnecting; expiry or errors
+offer one CREATE NEW QR action. Closing the panel preserves the pairing;
+CANCEL PAIRING / DISCONNECT PHONE revokes it. Physical camera readability,
+Tesla touch, phone backgrounding and sustained network quality remain device gates.
+
 ## Shared geometry and palette
 
 The compact speed numeral is a read-only value. The September 23 drive showed

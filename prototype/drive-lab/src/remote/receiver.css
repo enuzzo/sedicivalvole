@@ -1,0 +1,50 @@
+/* Eager receiver styles: the display must never depend on the lazy phone route. */
+.remote-dialog .drawer-panel {
+  align-self: center;
+  width: min(640px, calc(100vw - 32px));
+  height: auto;
+  max-height: calc(100dvh - 32px);
+  margin: 16px;
+  padding: 16px 24px 0;
+  box-sizing: border-box;
+  overflow: auto;
+  border: 1px solid var(--ui-line);
+  border-radius: 6px;
+  background: var(--ui-surface);
+  color: var(--ui-text);
+  box-shadow: -8px 0 24px rgb(0 0 0 / .18);
+}
+.remote-receiver { font-family: var(--font-ui); }
+.remote-receiver-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.remote-receiver-heading small { color: var(--ui-muted); font-size: 13px; letter-spacing: .08em; }
+.remote-receiver-heading h2 { margin: 4px 0 0; font-size: 22px; line-height: 1.2; letter-spacing: -.025em; font-weight: 650; }
+.remote-receiver button { min-height: 48px; padding: 10px 14px; border: 1px solid var(--ui-line); border-radius: var(--ui-radius); background: var(--ui-control); color: var(--ui-text); font: 500 15px/1.2 var(--font-ui); cursor: pointer; }
+.remote-receiver button:focus-visible, .remote-receiver summary:focus-visible { outline: 2px solid var(--ui-focus); outline-offset: 3px; }
+.remote-receiver button:hover { background: var(--ui-control-hover); }
+.remote-receiver .remote-receiver-close { display: flex; align-items: center; gap: 6px; padding: 0 0 0 12px; border: 0; background: transparent; color: var(--ui-muted); font-size: 13px; }
+.remote-receiver-intro { margin: 12px 0 16px; color: var(--ui-muted); font-size: 15px; line-height: 1.4; }
+.remote-receiver .motion-setup-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0 0 20px; }
+.remote-receiver-body { display: grid; grid-template-columns: minmax(0, 1fr) 96px; gap: 24px; align-items: center; padding: 0 0 20px; }
+.remote-receiver-body[data-pairing="true"] { grid-template-columns: minmax(0, 1fr) 240px; }
+.remote-receiver-status strong { display: flex; align-items: center; gap: 8px; font-size: 17px; line-height: 1.3; }
+.remote-receiver-status strong > span { width: 8px; height: 8px; flex-shrink: 0; border-radius: 50%; background: var(--ui-accent-text); }
+.remote-receiver-status[data-tone="connected"] strong > span { background: var(--ui-success); }
+.remote-receiver-status[data-tone="retrying"] strong > span { background: var(--ui-caution); }
+.remote-receiver-status[data-tone="error"] strong > span { background: var(--ui-alert); }
+.remote-receiver-status p { margin: 10px 0 16px; color: var(--ui-muted); font-size: 15px; line-height: 1.4; }
+.remote-receiver-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.remote-receiver .remote-receiver-primary { min-height: 56px; background: var(--ui-accent-text); color: var(--ui-accent-fill-text); border-color: var(--ui-accent-text); }
+.remote-receiver-note { margin: 12px 0 0; font-size: 13px; line-height: 1.4; color: var(--ui-muted); }
+.remote-receiver-qr { display: block; width: 240px; height: 240px; max-width: none; padding: 0; background: #fff; border-radius: 0; }
+.remote-receiver-symbol { display: grid; place-items: center; color: var(--ui-accent-text); }
+.remote-receiver-symbol svg { width: 64px; height: 64px; }
+.remote-receiver-details { border-top: 1px solid var(--ui-line); }
+.remote-receiver-details summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; color: var(--ui-muted); font-size: 14px; cursor: pointer; list-style: none; }
+.remote-receiver-details summary::-webkit-details-marker { display: none; }
+.remote-receiver-details[open] summary > svg { transform: rotate(180deg); }
+.remote-receiver-details p { margin: 0 0 16px; color: var(--ui-muted); font-size: 13px; line-height: 1.45; }
+@media (max-width: 550px) {
+  .remote-dialog .drawer-panel { width: calc(100vw - 16px); max-height: calc(100dvh - 16px); margin: 8px; padding: 16px 16px 0; }
+  .remote-receiver-body[data-pairing="true"] { grid-template-columns: 1fr; gap: 16px; }
+  .remote-receiver-qr { grid-row: 1; justify-self: center; }
+}

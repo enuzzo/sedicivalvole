@@ -1,5 +1,20 @@
 # Current Project State
 
+## Passenger remote pairing repair — September 23
+
+The owner found the published passenger QR unusable on Tesla. The browser reproduced
+a 710 × 710 px QR and 1,019 px content height in a 773 × 601 viewport: receiver
+styles existed only in the lazy phone bundle. The repair imports dedicated receiver
+styles eagerly and reuses the approved sensor-onboarding composition. Its panel
+measures 640 × 517 px with a complete 240 × 240 px QR, no pairing scroll, shared
+48/56 px controls and explicit connected/retry/expired/error states.
+
+The passenger command companion and GPS-only road response were already published
+in build 20260923-1534.05ad287; the older “pending direction” paragraph below is
+superseded. Local/compiled verification, exact source/build and canonical delivery
+for this repair are recorded in [the focused record](PASSENGER-REMOTE-PAIRING-2026-09-23.md).
+Browser proof is separate from physical Tesla/iPhone scanning and road acceptance.
+
 ## GPS/Engine display repair and remote direction — September 23
 
 Two new independent short drive reports show live GPS throughout. The first
