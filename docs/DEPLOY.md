@@ -119,6 +119,7 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 | Date | Record | Build |
 | --- | --- | --- |
+| 2026-09-24 20:10 | [START gate symmetry fix](#start-gate-symmetry-fix--2026-09-24-2004) | `20260924-2004.6d2f15b` |
 | 2026-09-24 19:45 | [Predictive, full-body Engine and race cluster](#predictive-full-body-engine-and-race-cluster--2026-09-24-1934) | `20260924-1934.e0764dd` |
 | 2026-09-24 18:24 | [Structure, curves and text fit](#structure-curves-and-text-fit--2026-09-24-1821) | `20260924-1821.97fe2a4` |
 | 2026-09-24 18:06 | [Structure, curves and remote Soundtrack (superseded at 18:24)](#structure-curves-and-text-fit--2026-09-24-1821) | `20260924-1804.d4ce645` |
@@ -327,6 +328,17 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 Earlier records, from [Night Instrument interface](archive/DEPLOY-HISTORY-2026-09-24.md#night-instrument-interface--2026-09-24)
 back, are kept verbatim in the archive.
+
+### START gate symmetry fix — 2026-09-24 20:04
+
+Canonical `20260924-2004.6d2f15b` fixes the owner-reported reveal after START
+(right half first, then left): the right door never matched its selector.
+Native tests 1,118/1,118, the visual gate 16/16 on the compiled build and a
+non-reduced-motion capture of both doors passed before publication. Read-only
+preflight and postflight `remote_writes=NONE`; 39 files / 6,583,965 bytes
+uploaded, 832 static files reused. Bare and cache-busted HTML and the main
+JS/CSS match the local build, and the public page opens both doors from the
+centre.
 
 ### Predictive, full-body Engine and race cluster — 2026-09-24 19:34
 

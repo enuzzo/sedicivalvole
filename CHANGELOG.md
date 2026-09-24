@@ -1126,3 +1126,5 @@ No dated releases exist yet.
 
 - 2026-09-24 20:04: Fix the START gate opening the right half first. The reveal markup ends with the seam `<b>`, so the right door selected with `i:last-child` never matched: it sat unpositioned over the left half until the reveal ended (1.3 s), leaving the right half visible at once — exactly the owner's report. Doors are now selected by type; frames at 250, 550 and 850 ms show both doors leaving the centre together, and a source test guards the selector. Earlier QA ran with reduced motion, where the reveal is off.
 
+- 2026-09-24 20:20 `[6d2f15b]` `build 20260924-2004.6d2f15b`: Publish the START gate symmetry fix. 1,118/1,118 native tests and the visual gate 16/16 on the compiled build; read-only preflight/postflight `remote_writes=NONE`; 39 files / 6,583,965 bytes uploaded with 832 static files reused; canonical HTML and main assets byte-identical; the public reveal opens both doors from the centre.
+
