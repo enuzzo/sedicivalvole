@@ -490,3 +490,14 @@ test("the source module stays compact and network detail moves behind one status
   assert.match(styles, /left: 232px;[\s\S]*?width: 104px/);
   assert.match(styles, /\.network-state\.is-caution \{ color: #f3a84c; \}/);
 });
+
+test("the START gate opens both doors from the centre", () => {
+  const app = readAppSurface();
+  const instrument = read("night-instrument.css");
+  // The markup ends with the seam <b>, so a door selected with :last-child
+  // never matched: the second door stayed over the left half for 1.3 s.
+  assert.match(app, /className="gate-reveal" aria-hidden="true"><i \/><i \/><b \/><\/div>/);
+  assert.doesNotMatch(instrument, /\.gate-reveal i:(first|last)-child/);
+  assert.match(instrument, /\.gate-reveal i:nth-of-type\(1\) \{ left: 0;[^}]*--gate-to: -100%; \}/);
+  assert.match(instrument, /\.gate-reveal i:nth-of-type\(2\) \{ right: 0;[^}]*--gate-to: 100%; \}/);
+});

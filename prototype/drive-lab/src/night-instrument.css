@@ -1291,8 +1291,9 @@
   background: #050506;
   animation: ni-gate-open 900ms cubic-bezier(.7, 0, .2, 1) 120ms both;
 }
-.gate-reveal i:first-child { left: 0; box-shadow: inset -2px 0 #ff5a3c, 12px 0 40px rgba(255, 90, 60, .35); --gate-to: -100%; }
-.gate-reveal i:last-child { right: 0; box-shadow: inset 2px 0 #8fd8ff, -12px 0 40px rgba(143, 216, 255, .35); --gate-to: 100%; }
+.gate-reveal i:nth-of-type(1) { left: 0; box-shadow: inset -2px 0 #ff5a3c, 12px 0 40px rgba(255, 90, 60, .35); --gate-to: -100%; }
+/* The seam <b> is the last child: doors are selected by type, not :last-child. */
+.gate-reveal i:nth-of-type(2) { right: 0; box-shadow: inset 2px 0 #8fd8ff, -12px 0 40px rgba(143, 216, 255, .35); --gate-to: 100%; }
 .gate-reveal b {
   position: absolute;
   top: 0;
