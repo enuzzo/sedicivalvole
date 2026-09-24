@@ -115,8 +115,9 @@ Browser and office evidence never closes a physical gate
   the report; real dark preview frames; one motion system; Soundtrack browsing
   and the XY filter on the remote; a stronger Aperture curve with a smooth
   receding wall; a portal-corridor Meridian that follows curves. Not now:
-  personal presets. Later: FX hits quantized to the score's beat. The
-  end-of-trip summary card waits for an agreed way to detect a trip's end.
+  personal presets and the end-of-trip summary card (owner, September 24,
+  after the stop/end detection proposal). Later: FX hits quantized to the
+  score's beat.
 
 ## Documentation map
 
