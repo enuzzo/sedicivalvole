@@ -151,6 +151,57 @@ for (const appearance of process.env.QA_MAIN === "0" ? [] : ["dark", "light"]) {
   }
 }
 
+// Secondary surfaces: report, support, Discover, Stats, Atlas and Air Atlas.
+for (const appearance of process.env.QA_SURFACES === "1" ? ["dark", "light"] : []) {
+  const { context, page } = await session({ appearance, speedKmh: 38 });
+  await startRunning(page, "play-road");
+  await page.waitForTimeout(1500);
+  const openFromGallery = async (name) => {
+    await wake(page);
+    await page.locator(".environment-control").click();
+    await page.locator(".visual-gallery .score-entry").filter({ has: page.locator("strong", { hasText: new RegExp(`^${name}$`) }) }).click();
+  };
+  await wake(page);
+  await page.locator(".report-button").click();
+  await page.waitForTimeout(900);
+  await shot(page, `${appearance}-surface-report`);
+  await page.locator(".diagnostic-report-drawer .coffee-support-button").click().catch(() => {});
+  await page.waitForTimeout(900);
+  await shot(page, `${appearance}-surface-support`);
+  await page.keyboard.press("Escape");
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(600);
+  await wake(page);
+  await page.locator(".discover-button").click();
+  await page.waitForTimeout(6000);
+  await shot(page, `${appearance}-surface-discover`);
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(600);
+  await openFromGallery("Stats for Nerds");
+  await page.waitForTimeout(3000);
+  await shot(page, `${appearance}-surface-stats`);
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(600);
+  await openFromGallery("Atlas");
+  await page.waitForTimeout(9000);
+  await page.locator(".topbar-mark").click();
+  await page.waitForTimeout(600);
+  await shot(page, `${appearance}-surface-atlas`);
+  // A map tap belongs to the map; the identity cell is the deliberate wake
+  // (when chrome is already awake the same cell opens the report instead).
+  const wakeMap = async () => {
+    if (await page.locator(".app.controls-resting").count()) await page.locator(".topbar-mark").click();
+    await page.waitForTimeout(600);
+  };
+  await wakeMap();
+  await page.locator(".environment-control").click({ timeout: 8000 });
+  await page.locator(".visual-gallery .score-entry").filter({ has: page.locator("strong", { hasText: /^Air Atlas$/ }) }).click();
+  await page.waitForTimeout(7000);
+  await wakeMap();
+  await shot(page, `${appearance}-surface-air-atlas`);
+  await context.close();
+}
+
 // Other supported display geometries: phone landscape and a narrow desktop window.
 for (const [name, viewport, mobile] of process.env.QA_GEOMETRY === "0" ? [] : [["phone-landscape", { width: 844, height: 390 }, true], ["narrow", { width: 702, height: 546 }, false]]) {
   const { context, page } = await session({ appearance: "dark", viewport, speedKmh: 0, mobile });
