@@ -14,8 +14,9 @@ import {
   SHADERGRADIENT_ENVIRONMENTS,
   SHADERGRADIENT_VISUAL_CHOICE,
 } from "../src/flux-environments.js";
+import { readAppSurface } from "./app-surface.mjs";
 
-const appSource = readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
+const appSource = readAppSurface();
 const qaSource = readFileSync(new URL("../qa/field-harness.jsx", import.meta.url), "utf8");
 const packageSource = readFileSync(new URL("../package.json", import.meta.url), "utf8");
 const apertureFieldSource = readFileSync(new URL("../src/flux-field.jsx", import.meta.url), "utf8");

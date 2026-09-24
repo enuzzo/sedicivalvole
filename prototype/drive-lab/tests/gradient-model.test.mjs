@@ -17,10 +17,11 @@ import {
   SHADERGRADIENT_ENVIRONMENTS,
   SHADERGRADIENT_VISUAL_CHOICE,
 } from "../src/flux-environments.js";
+import { readAppSurface } from "./app-surface.mjs";
 
 const read = (path) => readFile(new URL(path, import.meta.url), "utf8");
 const fieldSource = await read("../src/environments/shadergradient/shadergradient-field.jsx");
-const appSource = await read("../src/App.jsx");
+const appSource = readAppSurface();
 const packageSource = JSON.parse(await read("../package.json"));
 
 test("three owner-selected ShaderGradient studies power one Gradient 08 family", () => {

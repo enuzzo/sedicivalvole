@@ -33,6 +33,7 @@ import {
   createAudioMacroSnapshot,
   createResponseState,
 } from "../src/response-mapping.js";
+import { readAppSurface } from "./app-surface.mjs";
 
 const read = (path) => readFile(new URL(path, import.meta.url), "utf8");
 const fieldSource = await read("../src/environments/drivey/drivey-field.jsx");
@@ -41,7 +42,7 @@ const upstreamDriveySource = await read("../public/third-party/drivey/js/Drivey.
 const upstreamLicence = await read("../public/third-party/drivey/LICENSE");
 const dependencyLicences = await read("../public/third-party/drivey/THIRD_PARTY_LICENSES.md");
 const viteConfigSource = await read("../vite.config.mjs");
-const appSource = await read("../src/App.jsx");
+const appSource = readAppSurface();
 const cycleSource = await read("../src/ui/visual-cycle-controls.jsx");
 const stylesSource = await read("../src/styles.css");
 const harnessSource = await read("../qa/field-harness.jsx");

@@ -68,6 +68,7 @@ test('selecting Dev enables automatic reports; a deliberate pause remains explic
 
 // --- Catch-up after a frozen page, persistence across reloads, and best-effort flush on close ---
 import { fitDiagnosticReportForKeepalive, DIAGNOSTIC_KEEPALIVE_BODY_BYTES } from '../src/diagnostics-model.js';
+import { readAppSurface } from "./app-surface.mjs";
 const W0 = 1_800_000_000_000;
 const liveW = (t, extra = {}) => ({ ...live, wallNow: W0 + t, ...extra });
 const memoryStorage = () => { const m = new Map(); return { getItem: k => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, String(v)), removeItem: k => m.delete(k), size: () => m.size }; };
@@ -269,7 +270,7 @@ test('RESET SAVED STATE forgets the persisted clock instead of rewriting it seco
 });
 
 test('the reset control clears the clock through the clock, not only through storage', () => {
-  const app = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), '../src/App.jsx'), 'utf8');
+  const app = readAppSurface();
   const reset = app.slice(app.indexOf('const resetSavedState'), app.indexOf('resetAppearancePreference()'));
   assert.match(reset, /automaticClockRef\.current\.forget\(\)/, 'resetSavedState must forget the running clock');
 });

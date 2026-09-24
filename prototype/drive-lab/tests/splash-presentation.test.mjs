@@ -8,6 +8,7 @@ import {
   isControlLayerFocused,
   shouldReleaseControlFocus,
 } from "../src/control-visibility.js";
+import { readAppSurface } from "./app-surface.mjs";
 
 const TEST_DIR = dirname(fileURLToPath(import.meta.url));
 const SOURCE_ROOT = resolve(TEST_DIR, "../src");
@@ -18,7 +19,7 @@ function read(relativePath) {
 }
 
 test("keyboard focus cannot defeat the six-second inactivity deadline", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   assert.equal(isControlLayerFocused({ closest: (selector) => selector === ".control-layer" }), true);
   assert.equal(isControlLayerFocused({ closest: () => null }), false);
   assert.equal(isControlLayerFocused(null), false);
@@ -28,7 +29,7 @@ test("keyboard focus cannot defeat the six-second inactivity deadline", () => {
 });
 
 test("vehicle motion and pointer hover never wake resting controls", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const keyboardBrake = app.slice(
     app.indexOf("const startKeyboardBrake"),
     app.indexOf("const releaseKeyboardBrake"),
@@ -45,7 +46,7 @@ test("vehicle motion and pointer hover never wake resting controls", () => {
 });
 
 test("completed control actions and closed surfaces return focus to the experience", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const controlAction = {
     closest: (selector) => selector.includes(".control-layer button") ? {} : null,
   };
@@ -62,7 +63,7 @@ test("completed control actions and closed surfaces return focus to the experien
 });
 
 test("the Tesla Music drawer keeps the accepted paired Soundtrack layout", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const styles = read("styles.css");
   const tabletRules = styles.slice(
     styles.lastIndexOf("@media (max-width: 900px)"),
@@ -80,7 +81,7 @@ test("the Tesla Music drawer keeps the accepted paired Soundtrack layout", () =>
 });
 
 test("the running Visual library uses a complete two-column Tesla catalogue", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const styles = read("styles.css");
   assert.match(app, /<span>\{entry\.launchDescription\}<\/span>/);
   assert.match(read("ui/visual-cycle-controls.jsx"), /function ShaderGradientCycleControl/);
@@ -92,10 +93,10 @@ test("the running Visual library uses a complete two-column Tesla catalogue", ()
 });
 
 test("Buy Me a Coffee opens a real, accessible support panel", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const envExample = readFileSync(resolve(PROJECT_ROOT, ".env.example"), "utf8");
 
-  assert.match(app, /import buyMeCoffeeQr from "\.\/assets\/bmc_qr\.png\?inline"/);
+  assert.match(app, /import buyMeCoffeeQr from "\.\.\/assets\/bmc_qr\.png\?inline"/);
   assert.match(app, /const DEFAULT_SUPPORT_URL = "https:\/\/buymeacoffee\.com\/enuzzo"/);
   assert.match(app, /parseSupportUrl\(import\.meta\.env\.VITE_SUPPORT_URL\) \|\| DEFAULT_SUPPORT_URL/);
   assert.match(app, /url\.protocol === "https:"/);
@@ -117,7 +118,7 @@ test("Buy Me a Coffee opens a real, accessible support panel", () => {
 });
 
 test("closing the voice audition returns to diagnostics instead of losing focus", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   assert.match(app, /const closeVoicePreview = useCallback\(\(\) => \{\s*setPreviewOpen\(false\);\s*setDrawerOpen\(true\);/);
   assert.match(app, /labelledBy="preview-title"[\s\S]*?onClose=\{closeVoicePreview\}/);
   assert.match(app, /onClick=\{closeVoicePreview\} aria-label="Close voice preview"/);
@@ -134,7 +135,7 @@ test("launch surface stays above every preloaded experience overlay", () => {
 });
 
 test("local exact-viewport QA can keep the Web Audio graph inaudible", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   assert.match(app, /const QA_MUTED = import\.meta\.env\.DEV && QA_PARAMS\.get\("qaMute"\) === "1"/);
   assert.match(app, /flux: QA_MUTED \|\| initialPreferences\.muted, engine: QA_MUTED \|\| initialPreferences\.engineMuted === true/);
   assert.match(app, /const launchMuted = QA_MUTED \|\| mutedRef\.current \|\| \(!launchEngine && musicId === "mute"\)/);
@@ -142,7 +143,7 @@ test("local exact-viewport QA can keep the Web Audio graph inaudible", () => {
 });
 
 test("the footer keeps a compact right palette and exposes one audio-effects master", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const styles = read("styles.css");
 
   assert.match(app, /const \[vehicleEffectsEnabled, setVehicleEffectsEnabled\] = useState\(initialPreferences\.vehicleEffectsEnabled\)/);
@@ -172,7 +173,7 @@ test("the footer keeps a compact right palette and exposes one audio-effects mas
 });
 
 test("the selected FX Deck is a global footer overlay with eight strong tap states", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const controls = read("manual-effects-controls.js");
   assert.match(app, /MANUAL_EFFECT_CONTROLS as SOUNDTRACK_MANUAL_CONTROLS/);
   assert.match(read("remote/phone.jsx"), /MANUAL_EFFECT_CONTROLS/);
@@ -204,7 +205,7 @@ test("the selected FX Deck is a global footer overlay with eight strong tap stat
 });
 
 test("braking UNDERWATER and manual effects reach both audible engines", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   assert.match(app, /underwater: audioMacros\.values\.underwater/);
   assert.doesNotMatch(app, /audioMacros\.values\.(?:open|bloom)/);
   assert.doesNotMatch(app, /underwater: audioMacros\.underwater/);
@@ -214,7 +215,7 @@ test("braking UNDERWATER and manual effects reach both audible engines", () => {
 });
 
 test("the running Soundtrack badge identifies Illobo Featured separately from Jamendo", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   assert.match(app, /const featured = soundtrackSnapshot\?\.library\?\.selection\?\.kind === "featured"/);
   assert.match(app, /const providerMark = featured \? "LO" : "JM"/);
   assert.match(app, /`Loading \$\{featured \? "Illobo" : "Jamendo"\}`/);
@@ -222,7 +223,7 @@ test("the running Soundtrack badge identifies Illobo Featured separately from Ja
 });
 
 test("music source tabs switch immediately and ignore stale asynchronous loads", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const styles = read("styles.css");
   const switcher = app.slice(
     app.indexOf("const switchMusicMode = useCallback"),
@@ -241,7 +242,7 @@ test("music source tabs switch immediately and ignore stale asynchronous loads",
 });
 
 test("newer media selections cancel queued navigation without cancelling deliberate skip chains", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const selectScore = app.slice(
     app.indexOf("const selectScore = useCallback"),
     app.indexOf("const switchMusicMode = useCallback"),
@@ -265,7 +266,7 @@ test("newer media selections cancel queued navigation without cancelling deliber
 });
 
 test("Soundtrack path cards round-trip between Illobo and Jamendo without losing covers", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const styles = read("styles.css");
   const soundtrack = app.slice(
     app.indexOf("function SoundtrackLibraryContent"),
@@ -282,7 +283,7 @@ test("Soundtrack path cards round-trip between Illobo and Jamendo without losing
 });
 
 test("the Tesla Music drawer uses whole-surface controls and scrolls instead of shrinking type", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const styles = read("styles.css");
   const scoreLibrary = app.slice(
     app.indexOf("function ScoreLibraryContent"),
@@ -337,7 +338,7 @@ test("the Tesla Music drawer uses whole-surface controls and scrolls instead of 
 });
 
 test("catalog names use readable display labels and align their numbers on one baseline", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const styles = read("styles.css");
 
   assert.match(app, /function displayLabel\(entry\)/);
@@ -382,7 +383,7 @@ test("Space Grotesk remains the UI face while Orbitron is isolated to project wo
 });
 
 test("Space Grotesk speed and unit share one compact centered axis", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const styles = read("styles.css");
   const groups = styles.slice(
     styles.indexOf(".readout-group {"),
@@ -397,7 +398,7 @@ test("Space Grotesk speed and unit share one compact centered axis", () => {
 });
 
 test("safe product state persists locally and can be reset without storing GPS", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const styles = read("styles.css");
 
   assert.match(app, /localStorage\.setItem\(PREFERENCES_KEY, JSON\.stringify\(\{[\s\S]*?themeId/);
@@ -418,7 +419,7 @@ test("safe product state persists locally and can be reset without storing GPS",
 });
 
 test("Now Playing shares the footer lifecycle with stable Media Session actions and directional dismissal", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const styles = read("styles.css");
 
   assert.match(app, /className="now-playing-dock persistent-transport" aria-label="Now playing and music transport"/);
@@ -461,7 +462,7 @@ test("Now Playing shares the footer lifecycle with stable Media Session actions 
 });
 
 test("identity and speed share a stable grid before the contextual action lane", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const rail = read("contextual-rail.css");
   const header = app.slice(app.indexOf('<header className={`topbar'), app.indexOf('<GpsHelpPopover', app.indexOf('<header className={`topbar')));
   assert.ok(header.indexOf('className="topbar-mark"') < header.indexOf('className={`source-readout'));
@@ -474,7 +475,7 @@ test("identity and speed share a stable grid before the contextual action lane",
 });
 
 test("the source module stays compact and network detail moves behind one status icon", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const styles = read("styles.css");
 
   assert.match(app, /<span className="readout-unit">km\/h\{source === "DEMO" \? " · SIM" : ""\}<\/span>/);

@@ -7,6 +7,7 @@ import {
 } from "../src/soundtrack/effects-model.js";
 import { manualEffectParameters } from "../src/manual-effects-graph.js";
 import { UNDERWATER_BADGE_AMOUNT } from "../src/underwater-model.js";
+import { readAppSurface } from "./app-surface.mjs";
 
 function lowPassMagnitude(frequencyHz, cutoffHz, q, sampleRate = 48_000) {
   const omega = 2 * Math.PI * cutoffHz / sampleRate;
@@ -58,7 +59,7 @@ test("the Soundtrack graph uses no acceleration filters or reactive worklet", ()
 
 test("Soundtrack and the vehicle macro engine are wired to share one AudioContext", () => {
   const effectsSource = readFileSync(new URL("../src/soundtrack/effects-controller.js", import.meta.url), "utf8");
-  const appSource = readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
+  const appSource = readAppSurface();
   assert.match(effectsSource, /audioContext = null/);
   assert.match(effectsSource, /getAudioContext: \(\) => context/);
   assert.match(effectsSource, /if \(ownsContext\) void context\.close/);

@@ -17,8 +17,9 @@ import {
   normalizeDiscoverPages,
   quantizeDiscoverPosition,
 } from "../src/discover/discover-model.js";
+import { readAppSurface } from "./app-surface.mjs";
 
-const appSource = readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
+const appSource = readAppSurface();
 const styles = readFileSync(new URL("../src/styles.css", import.meta.url), "utf8");
 
 test("Discover follows the first supported browser language and keeps a safe fallback", () => {

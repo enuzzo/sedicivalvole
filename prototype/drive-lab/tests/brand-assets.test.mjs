@@ -4,6 +4,7 @@ import { readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import { readAppSurface } from "./app-surface.mjs";
 
 const TEST_DIR = dirname(fileURLToPath(import.meta.url));
 const DRIVE_LAB_ROOT = resolve(TEST_DIR, "..");
@@ -34,7 +35,7 @@ test("the owner-supplied piston artwork produces transparent UI marks and opaque
 
 test("browser icon metadata and every app mark point to the new packaged icon family", () => {
   const html = readFileSync(resolve(DRIVE_LAB_ROOT, "index.html"), "utf8");
-  const app = readFileSync(resolve(DRIVE_LAB_ROOT, "src/App.jsx"), "utf8");
+  const app = readAppSurface();
   for (const file of ["mark-32.png", "mark-48.png", "favicon-transparent.ico", "icon-180.png"])
     assert.ok(html.includes(`/brand/pistons-v1/${file}`));
   assert.match(html, /rel="apple-touch-icon"[^>]+sizes="180x180"/);
@@ -46,7 +47,7 @@ test("browser icon metadata and every app mark point to the new packaged icon fa
 });
 
 test("both owner-supplied Illobo marks remain byte-identical in a slow continuous dark-field crossfade", () => {
-  const app = readFileSync(resolve(DRIVE_LAB_ROOT, "src/App.jsx"), "utf8");
+  const app = readAppSurface();
   const styles = readFileSync(resolve(DRIVE_LAB_ROOT, "src/styles.css"), "utf8");
   const expected = [
     ["illobo-featured-solid.svg", "9973b53c96144d2971188d9ab71207163337e856ead11ff040008e40783626a0"],

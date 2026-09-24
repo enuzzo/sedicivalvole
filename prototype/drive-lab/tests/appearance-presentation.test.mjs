@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import { readAppSurface } from "./app-surface.mjs";
 
 const TEST_DIR = dirname(fileURLToPath(import.meta.url));
 const SOURCE_ROOT = resolve(TEST_DIR, "../src");
@@ -36,7 +37,7 @@ function propertyHex(styles, selector, property) {
 }
 
 test("the top rail exposes the selected icon-and-label appearance menu", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const control = read("appearance-control.jsx");
   const topbar = app.slice(app.indexOf('<header className={`topbar'), app.indexOf("</header>", app.indexOf('<header className={`topbar')));
 
@@ -58,7 +59,7 @@ test("the top rail exposes the selected icon-and-label appearance menu", () => {
 });
 
 test("appearance persistence, runtime resolution and diagnostics remain palette-independent", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const runtime = read("appearance-runtime.js");
 
   assert.match(app, /const initialAppearanceMode = useMemo\(readAppearancePreference, \[\]\)/);

@@ -37,6 +37,7 @@ import {
   JUNCTION_PARK_CROSSFADE_SECONDS,
   JUNCTION_PARK_HOLD_SECONDS,
 } from "../src/junction-low-speed-bed.js";
+import { readAppSurface } from "./app-surface.mjs";
 
 class BedParam {
   constructor() { this.activeCurveUntil = -Infinity; this.events = []; this.value = 0; }
@@ -407,7 +408,7 @@ test("FRACTURE-only startup does not construct the JUNCTION oscillator graph", a
 
 test("FRACTURE selection waits for a connected worklet and has an audible fallback", async () => {
   const source = await readFile(new URL("../src/audio-engine.js", import.meta.url), "utf8");
-  const app = await readFile(new URL("../src/App.jsx", import.meta.url), "utf8");
+  const app = readAppSurface();
   const readinessAt = source.indexOf("function prepareFracture()");
   const connectedAt = source.indexOf("node.connect(fractureGain)", readinessAt);
   const readyAt = source.indexOf('fractureReadyState = "ready"', readinessAt);
@@ -426,7 +427,7 @@ test("FRACTURE selection waits for a connected worklet and has an audible fallba
 });
 
 test("the persistent music control exposes loading and restored fallback states", async () => {
-  const source = await readFile(new URL("../src/App.jsx", import.meta.url), "utf8");
+  const source = readAppSurface();
   assert.match(source, /status: "loading", requestedScoreId/);
   assert.match(source, /aria-live="polite"/);
   assert.match(source, /const selectedName = displayLabel\(selected\)/);
@@ -437,7 +438,7 @@ test("the persistent music control exposes loading and restored fallback states"
 });
 
 test("music selection never reports a silent missing engine as ready", async () => {
-  const source = await readFile(new URL("../src/App.jsx", import.meta.url), "utf8");
+  const source = readAppSurface();
   assert.match(source, /const engine = audioRef\.current;/);
   assert.match(source, /if \(!engine\) \{[\s\S]*?status: "unavailable"/);
   assert.match(source, /await engine\.setScore\(requestedScoreId\)/);

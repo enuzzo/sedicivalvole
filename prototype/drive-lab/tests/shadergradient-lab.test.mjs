@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFile } from 'node:fs/promises'
 import test from 'node:test'
+import { readAppSurface } from './app-surface.mjs'
 
 const ROOT = new URL('../', import.meta.url)
 
@@ -14,7 +15,7 @@ test('ShaderGradient Lab is a reusable local and protected-LAB tool', async () =
     read('src/shadergradient-lab/main.jsx'),
     read('src/shadergradient-lab/workbench.jsx'),
     read('src/lab/main.jsx'),
-    read('src/App.jsx'),
+    readAppSurface(),
   ])
 
   assert.match(html, /noindex,nofollow/)
@@ -103,7 +104,7 @@ test('the public app admits only the selected lazy field while the LAB retains t
   const [manifest, labConfig, app, lab] = await Promise.all([
     read('package.json'),
     read('vite.lab.config.mjs'),
-    read('src/App.jsx'),
+    readAppSurface(),
     read('src/lab/main.jsx'),
   ])
 

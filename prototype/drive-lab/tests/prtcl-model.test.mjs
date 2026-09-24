@@ -14,11 +14,12 @@ import {
   prtclMacroTargets,
   prtclMotionProfile,
 } from "../src/environments/prtcl/prtcl-model.js";
+import { readAppSurface } from "./app-surface.mjs";
 
 const read = (path) => readFile(new URL(path, import.meta.url), "utf8");
 const rendererSource = await read("../src/environments/prtcl/prtcl-renderer.js");
 const fieldSource = await read("../src/environments/prtcl/prtcl-field.jsx");
-const appSource = await read("../src/App.jsx");
+const appSource = readAppSurface();
 const cycleSource = await read("../src/ui/visual-cycle-controls.jsx");
 const stylesSource = await read("../src/styles.css");
 const harnessSource = await read("../qa/field-harness.jsx");

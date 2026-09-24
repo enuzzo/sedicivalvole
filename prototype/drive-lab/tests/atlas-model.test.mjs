@@ -68,8 +68,9 @@ import {
   frameTelemetryIsDue,
   THIRTY_FPS_FRAME_INTERVAL_MS,
 } from "../src/render-telemetry.js";
+import { readAppSurface } from "./app-surface.mjs";
 
-const appSource = readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
+const appSource = readAppSurface();
 const atlasSource = readFileSync(new URL("../src/environments/atlas/atlas-field.jsx", import.meta.url), "utf8");
 const styles = readFileSync(new URL("../src/styles.css", import.meta.url), "utf8");
 const navigationIcon = readFileSync(

@@ -4,6 +4,7 @@ import { readFileSync, statSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import { readAppSurface } from "./app-surface.mjs";
 
 const TEST_DIR = dirname(fileURLToPath(import.meta.url));
 const SOURCE_ROOT = resolve(TEST_DIR, "../src");
@@ -14,7 +15,7 @@ function read(relativePath) {
 }
 
 test("the top bar exposes the selected REPORT control with the pinned Tabler icon", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const styles = read("styles.css");
   const markStart = app.indexOf('<button\n            className="topbar-mark"');
   const markEnd = app.indexOf("</button>", markStart);
@@ -52,7 +53,7 @@ test("the top bar exposes the selected REPORT control with the pinned Tabler ico
 });
 
 test("diagnostic submission keeps essential consent beside the action", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const submitStart = app.indexOf('<section className="diagnostic-submit"');
   const submitEnd = app.indexOf('<section className="raw-report"', submitStart);
   const submitMarkup = app.slice(submitStart, submitEnd);
@@ -77,7 +78,7 @@ test("Tesla diagnostic actions stay in flow instead of obscuring metrics", () =>
 });
 
 test("the operational surface is an aligned Space Grotesk instrument", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
   const styles = read("styles.css");
 
   assert.match(app, /diagnostic-health/);
@@ -95,7 +96,7 @@ test("the operational surface is an aligned Space Grotesk instrument", () => {
 });
 
 test("README carries privacy, provenance, licensing, and source details", () => {
-  const app = read("App.jsx");
+  const app = readAppSurface();
 
   assert.match(app, /aria-controls="diagnostic-readme"/);
   assert.match(app, /No third-party analytics are enabled/);

@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { readAppSurface } from "./app-surface.mjs";
 
-const appSource = readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
+const appSource = readAppSurface();
 const viteSource = readFileSync(new URL("../vite.config.mjs", import.meta.url), "utf8");
 
 test("the diagnostic report carries version, build stamp, and commit identity", () => {
