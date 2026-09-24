@@ -55,6 +55,23 @@ animation is transform/opacity only and stops with reduced motion; keyframes
 use the individual `translate`/`scale` properties so they never replace a
 component's own `transform`.
 
+### Cascade layers
+
+Every product stylesheet declares the same order,
+`@layer vendor, legacy, instrument;`, so precedence no longer depends on
+import order or selector weight between generations:
+
+| Layer | Contents | Rule |
+| --- | --- | --- |
+| `vendor` | MapLibre's stylesheet, imported only through `src/vendor-maplibre.css` | Never import third-party CSS unlayered: it would beat every product rule |
+| `legacy` | `styles.css`, `phone-cockpit.css`, `motion.css`, `contextual-rail.css`, the engine, cockpit, receiver and report sheets, and the standalone LAB/Gradient/showcase sheets | One shared layer keeps their relative order and specificity unchanged |
+| `instrument` | `night-instrument.css` and the passenger remote's `remote.css` | Wins over `legacy` without extra specificity |
+
+Legacy `!important` declarations (visually hidden text, reduced motion, inert
+pointer events) still win over `instrument`, which is intended. A new surface
+style goes into `instrument`; a rule for a class no component renders is
+removed rather than kept "in case".
+
 ## Roles and tokens
 
 | Role | Token | Size |

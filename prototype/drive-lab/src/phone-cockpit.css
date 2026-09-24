@@ -1,3 +1,7 @@
+@layer vendor, legacy, instrument;
+/* Legacy layer: every pre–Night Instrument stylesheet shares one cascade layer,
+   so their relative order and specificity are unchanged. */
+@layer legacy {
 /* Owner-selected compact phone cockpit. Desktop and Tesla keep their own shell. */
 .app[data-phone-layout] {
   --phone-left: max(12px, env(safe-area-inset-left, 0px));
@@ -22,7 +26,6 @@
 .app[data-phone-layout="landscape"] .mode-selector { grid-column: 2; }
 .app[data-phone-layout="landscape"] .mode-selector button { padding: 0 4px; min-height: 56px; min-width: 48px; font-size: 13px; letter-spacing: 0; }
 .app[data-phone-layout="landscape"] .mode-selector button.is-active::after { left: 6px; right: 6px; bottom: 5px; }
-.app[data-phone-layout="landscape"] .speed-spacer { grid-column: 3; min-width: 88px; }
 .app[data-phone-layout="landscape"] .network-control { display: block; grid-column: 4; }
 .app[data-phone-layout="landscape"] .appearance-control { grid-column: 5; }
 .app[data-phone-layout="landscape"] .gps-state { grid-column: 6; }
@@ -103,3 +106,4 @@
 .app[data-phone-layout="landscape"] .engine-bottom .engine-profiles { position:absolute; bottom:12px; left:50%; transform:translateX(-50%); }
 .app[data-phone-layout="landscape"].controls-resting .engine-telemetry { padding-top:calc(12px + var(--phone-top)); }
 .app[data-phone-layout="landscape"] .engine-telemetry:has(.engine-rev) { padding-bottom:calc(148px + var(--phone-bottom)); }
+}

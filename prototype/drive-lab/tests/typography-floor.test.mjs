@@ -11,6 +11,8 @@ const stylesheetUrls = {
 const stylesheets = Object.fromEntries(
   Object.entries(stylesheetUrls).map(([name, url]) => [name, readFileSync(url, "utf8")]),
 );
+// The launch cockpit inherits the product tokens; it is checked for geometry only.
+const launchCockpitStyles = readFileSync(new URL("../src/launch-cockpit.css", import.meta.url), "utf8");
 
 const semanticTypeTokens = {
   "--type-meta": 13,
@@ -174,8 +176,8 @@ test("the driving surface keeps chrome and touch targets larger than its type", 
     "--touch-primary",
   );
   assertGeometryAtLeast(
-    source,
-    ".launch-start-button",
+    launchCockpitStyles,
+    ".launch-cockpit .cockpit-start",
     "min-height",
     touchTokens["--touch-primary"],
     "--touch-primary",

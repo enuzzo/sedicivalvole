@@ -1,3 +1,7 @@
+@layer vendor, legacy, instrument;
+/* Legacy layer: every pre–Night Instrument stylesheet shares one cascade layer,
+   so their relative order and specificity are unchanged. */
+@layer legacy {
 /* Equal evidence cells: one typography, baseline and signal window for all three. */
 :is(.app,.lab-shell) .engine-primary { grid-template-columns: repeat(3,minmax(0,1fr)); gap: 0; padding: 8px 0; }
 :is(.app,.lab-shell) .engine-primary > .engine-metric {
@@ -51,3 +55,4 @@
 }
 
 .lab-shell .engine-telemetry { --ui-text: var(--lab-paper); --ui-accent-text: var(--lab-accent); --ui-line-soft: var(--lab-line); }
+}

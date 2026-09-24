@@ -1,3 +1,7 @@
+@layer vendor, legacy, instrument;
+/* Legacy layer: every pre–Night Instrument stylesheet shares one cascade layer,
+   so their relative order and specificity are unchanged. */
+@layer legacy {
 .report-scroll { min-height: 0; overflow: auto; padding: 16px 24px 24px; display: grid; gap: 14px; align-content: start; }
 .report-scroll p { margin: 0; line-height: 1.5; max-width: 80ch; }
 .report-scroll button, .report-downloads a { min-height: 48px; padding: 10px 16px; width: fit-content; color: inherit; border: 1px solid currentColor; background: transparent; border-radius: 6px; font: inherit; }
@@ -15,3 +19,4 @@
 .report-scroll :focus-visible { outline: 3px solid var(--stats-red, #d52120); outline-offset: 3px; }
 .report-scroll button:disabled { opacity: .55; cursor: default; }
 @media (max-width: 700px) { .report-scroll { padding: 12px; } }
+}

@@ -89,7 +89,6 @@ test("the running Visual library uses a complete two-column Tesla catalogue", ()
   assert.match(read("launch-cockpit.jsx"), /SHADERGRADIENT_ENVIRONMENTS\.map/);
   assert.match(styles, /\.environment-drawer \.score-list \{ grid-template-columns: repeat\(2, minmax\(0, 1fr\)\); gap: 8px; margin-top: 12px; \}/);
   assert.match(styles, /\.environment-drawer \.score-entry \{ min-height: 68px/);
-  assert.match(styles, /\.environment-drawer \.score-entry-number \{ font-size: var\(--type-meta\)/);
 });
 
 test("Buy Me a Coffee opens a real, accessible support panel", () => {
@@ -166,8 +165,6 @@ test("the footer keeps a compact right palette and exposes one audio-effects mas
   assert.match(styles, /\.stop-button,[\s\S]*?\.effects-button,[\s\S]*?\.mix-button \{[\s\S]*?place-content: center/);
   assert.match(styles, /\.stop-button::after,[\s\S]*?\.effects-button::after \{[\s\S]*?content: "GLOBAL"/);
   assert.match(styles, /\.palette-control \{[^}]*display: grid;[^}]*min-height: var\(--chrome-size\)/);
-  assert.match(styles, /\.swatch-housing \{[\s\S]*?grid-template-columns: repeat\(5, minmax\(0, 1fr\)\);[\s\S]*?grid-template-rows: repeat\(2, minmax\(0, 1fr\)\)/);
-  assert.match(styles, /\.swatch-housing button \{[^}]*width: 100%;[^}]*min-height: 0/);
   assert.match(styles, /\.control-status-notice \{[\s\S]*?top: 50%;[\s\S]*?left: 50%;[\s\S]*?border-radius: var\(--ui-radius\)/);
   const instrument = read("night-instrument.css");
   assert.match(instrument, /:not\(\[data-phone-layout\]\) \.footer-stack \.control-slab \{ grid-template-columns: 72px 92px minmax\(0, 1fr\) minmax\(0, 1fr\) 88px 112px; \}/);
@@ -351,7 +348,6 @@ test("catalog names use readable display labels and align their numbers on one b
   assert.match(app, /\{displayLabel\(genre\)\}/);
   assert.match(styles, /\.control-value \{[^}]*font-size: var\(--type-active\)/);
   assert.match(styles, /\.control-catalog-number \{[^}]*font: inherit/);
-  assert.match(styles, /\.score-entry-number,[\s\S]*?font-size: var\(--type-meta\)/);
 });
 
 test("Signal Gate phases every travelling gap independently", () => {
@@ -375,8 +371,7 @@ test("Space Grotesk remains the UI face while Orbitron is isolated to project wo
   assert.match(styles, /--font-ui: "Space Grotesk"/);
   assert.match(styles, /--font-data: "Space Grotesk"/);
   assert.match(styles, /--font-brand: "Orbitron"/);
-  assert.match(styles, /\.launch-brand \{[\s\S]*?font-family: var\(--font-brand\)/);
-  assert.match(styles, /\.launch-selector-heading h1 \{[\s\S]*?font-family: var\(--font-brand\)/);
+  assert.match(read("launch-cockpit.css"), /\.cockpit-heading h1\{font:600 26px var\(--font-brand\)/);
   assert.doesNotMatch(styles, /\.topbar-mark \{[\s\S]*?font-family: var\(--font-brand\)/);
   assert.match(styles, /\.diagnostic-report-drawer \.drawer-panel \{[\s\S]*?font-family: var\(--font-data\)/);
   assert.match(styles, /body \{[\s\S]*?font-family: var\(--font-ui\)/);
@@ -420,7 +415,6 @@ test("safe product state persists locally and can be reset without storing GPS",
   assert.match(app, /data-palette=\{themeId\}/);
   assert.doesNotMatch(app, /data-theme=\{themeId\}/);
   assert.match(styles, /\.app\[data-palette="red"\] \{ --accent: #ed2d24; \}/);
-  assert.match(styles, /\.splash-reset-state \{/);
 });
 
 test("Now Playing shares the footer lifecycle with stable Media Session actions and directional dismissal", () => {

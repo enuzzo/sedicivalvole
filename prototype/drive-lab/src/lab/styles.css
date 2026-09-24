@@ -1,3 +1,7 @@
+@layer vendor, legacy, instrument;
+/* Legacy layer: every pre–Night Instrument stylesheet shares one cascade layer,
+   so their relative order and specificity are unchanged. */
+@layer legacy {
 @font-face {
   font-family: "Space Grotesk";
   src: url("data:font/ttf;base64,__LAB_FONT_BASE64__") format("truetype");
@@ -280,3 +284,4 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
 /* Swiss Compact keeps the protected instrument dense without coupling type to
    hit area. The inspector and footer scroll before controls fall below 48 px. */
 .lab-inspector { overflow-y: auto; }
+}

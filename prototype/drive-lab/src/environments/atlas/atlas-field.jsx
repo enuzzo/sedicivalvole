@@ -2,7 +2,7 @@ import { ContextualRail, useContextualControls } from "../../contextual-controls
 import { AtlasCameraControls } from "./atlas-camera-controls.jsx";
 import AtlasPlaces from "./atlas-places.jsx";
 import { useEffect, useMemo, useRef, useState } from "react";
-import "maplibre-gl/dist/maplibre-gl.css";
+import "../../vendor-maplibre.css";
 import {
   advanceAtlasDemoPosition,
   advanceAtlasFollowCamera,

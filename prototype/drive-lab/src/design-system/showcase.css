@@ -1,3 +1,7 @@
+@layer vendor, legacy, instrument;
+/* Legacy layer: every pre–Night Instrument stylesheet shares one cascade layer,
+   so their relative order and specificity are unchanged. */
+@layer legacy {
 /* Documentation layout only. Control geometry, color and type come from styles.css. */
 html:has(.design-system), body:has(.design-system) {overflow:auto;height:auto;min-height:100%;}
 .design-system.app {position:relative;min-height:100vh;height:auto;overflow:visible;background:var(--ui-surface);color:var(--ui-text);padding:32px clamp(16px,4vw,64px);max-width:1400px;margin:auto;}
@@ -28,3 +32,4 @@ html:has(.design-system), body:has(.design-system) {overflow:auto;height:auto;mi
 .design-system .ds-map-stage .atlas-camera-controls {position:static;width:max-content;max-width:100%;}
 
 .ds-stage .contextual-rail { position:static; display:block; }
+}

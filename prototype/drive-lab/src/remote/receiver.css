@@ -1,3 +1,7 @@
+@layer vendor, legacy, instrument;
+/* Legacy layer: every pre–Night Instrument stylesheet shares one cascade layer,
+   so their relative order and specificity are unchanged. */
+@layer legacy {
 /* Eager receiver styles: the display must never depend on the lazy phone route. */
 .remote-dialog .drawer-panel {
   align-self: center;
@@ -47,4 +51,5 @@
   .remote-dialog .drawer-panel { width: calc(100vw - 16px); max-height: calc(100dvh - 16px); margin: 8px; padding: 16px 16px 0; }
   .remote-receiver-body[data-pairing="true"] { grid-template-columns: 1fr; gap: 16px; }
   .remote-receiver-qr { grid-row: 1; justify-self: center; }
+}
 }

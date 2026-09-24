@@ -1,0 +1,4 @@
+@layer vendor, legacy, instrument;
+/* MapLibre's own stylesheet sits beneath every project layer so the product
+   overrides keep winning once project CSS is layered. */
+@import "maplibre-gl/dist/maplibre-gl.css" layer(vendor);

@@ -1,3 +1,7 @@
+@layer vendor, legacy, instrument;
+/* Legacy layer: every pre–Night Instrument stylesheet shares one cascade layer,
+   so their relative order and specificity are unchanged. */
+@layer legacy {
 .shadergradient-lab,
 .shadergradient-lab * {
   box-sizing: border-box;
@@ -660,3 +664,4 @@
 
 /* Swiss Compact keeps the protected inspector editorial and dense while every
    interactive control retains a 48 px hit area (56 px for the primary action). */
+}

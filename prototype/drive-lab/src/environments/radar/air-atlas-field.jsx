@@ -5,7 +5,7 @@ import {createLoadRecovery} from '../../load-recovery.js';
 import {appendHomeObservation,homeTrailFeature} from './radar-home-trail.js';
 import {radarLocationPresentation} from './radar-location.js';
 import {useEffect,useMemo,useRef,useState} from 'react';
-import 'maplibre-gl/dist/maplibre-gl.css';
+import '../../vendor-maplibre.css';
 import {atlasMapPixelRatio,validAtlasPosition,paletteToAtlasCss} from '../atlas/atlas-model.js';
 import {normalizeRadarSnapshot,radarPointUrl,radarAircraftUrl,RADAR_LIMIT,RADAR_EXPIRE_MS,RADAR_FRESH_MS} from './radar-model.js';
 import {radarJson,createRadarPoller} from './radar-client.js';

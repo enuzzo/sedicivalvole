@@ -98,13 +98,9 @@ test("Road Sheet appearance tokens preserve Tesla geometry and visual colour own
   assert.match(styles, /\.appearance-option \{[\s\S]*?min-height: var\(--touch-target\)/);
   assert.match(styles, /\.app\[data-appearance\] :is\(\.stop-button > span, \.stop-button::after, \.effects-button::after, \.mix-button small\) \{ color: var\(--ui-muted\); \}/);
   assert.match(styles, /\.app\[data-appearance\] \.visual-render-toggle\[aria-pressed="true"\] \{[\s\S]*?color: var\(--ui-selected-text\);[\s\S]*?background: var\(--ui-selected-surface\);/);
-  assert.match(styles, /\.app\[data-appearance\] \.launch-button \{[\s\S]*?color: var\(--ui-text\);[\s\S]*?background: var\(--ui-surface\);/);
   assert.match(styles, /\.app\[data-appearance\] \.support-panel \{[\s\S]*?color: var\(--ui-text\);[\s\S]*?background: var\(--ui-surface\);/);
   assert.match(styles, /\.app\[data-appearance\] \.mode-selector button\.is-active::after \{ background: var\(--ui-accent-text\); \}/);
-  assert.match(styles, /\.app\[data-appearance\] \.launch-start-button:focus-visible \{[\s\S]*?box-shadow: inset 0 0 0 2px var\(--ui-accent-text\)/);
   assert.match(styles, /\.app\[data-appearance\] \.play-road-library \.score-entry\.is-active \.score-entry-title b \{ color: var\(--ui-accent-text\); \}/);
-  assert.match(styles, /\.app\[data-appearance\] \.diagnostic-grid small \{ color: var\(--ui-muted\); \}/);
-  assert.match(styles, /\.app\[data-appearance\] \.diagnostic-grid span \{ color: var\(--ui-subtle\); \}/);
   assert.match(styles, /\.app\[data-appearance\] \.appearance-menu \{[^}]*box-shadow: none/);
   assert.match(styles, /\.app\[data-appearance\] \.atlas-field \.maplibregl-ctrl\.maplibregl-ctrl-attrib \{[\s\S]*?color: var\(--ui-text\);[\s\S]*?opacity: 1/);
   assert.match(styles, /\.app\[data-appearance\] \.discover-navigation-trigger\[aria-expanded="true"\] \{ color: var\(--ui-selected-text\); background: var\(--ui-accent-text\); \}/);

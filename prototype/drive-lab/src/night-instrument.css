@@ -1,3 +1,5 @@
+@layer vendor, legacy, instrument;
+@layer instrument {
 /*
  * Night Instrument — owner-selected interface direction A (September 24).
  *
@@ -1164,4 +1166,5 @@
   .cockpit-starting-gate,
   .app.controls-awake .experience .topbar > *,
   .app[data-appearance] .palette-menu { animation: none !important; }
+}
 }

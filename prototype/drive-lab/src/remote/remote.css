@@ -1,3 +1,5 @@
+@layer vendor, legacy, instrument;
+@layer instrument {
 /*
  * Passenger remote — Night Instrument. A small native control surface: the
  * display mirrored at the top, one mode switch, four sections behind a tab
@@ -283,4 +285,5 @@
   .remote-scene-beam, .remote-scene-link-ring, .remote-panel { animation: none !important; }
   .remote-chip-row button, .remote-chip-grid button { transition: none !important; }
   .remote-phone .ni-switch-thumb, .remote-pad-level, .remote-transport button, .remote-visual-grid img, .remote-swatch { transition: none !important; }
+}
 }

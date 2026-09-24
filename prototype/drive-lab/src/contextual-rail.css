@@ -1,3 +1,7 @@
+@layer vendor, legacy, instrument;
+/* Legacy layer: every pre–Night Instrument stylesheet shares one cascade layer,
+   so their relative order and specificity are unchanged. */
+@layer legacy {
 /* Running layout contract: one fixed identity lane and one reflowing action lane.
    This file follows the legacy surface styles so every field shares these metrics. */
 .app {
@@ -197,3 +201,4 @@
 .app.phase-running[data-phone-layout="landscape"].controls-resting .engine-rev { bottom: calc(var(--phone-bottom) + 8px); }
 
 .app.phase-running[data-phone-layout="landscape"] .engine-primary .engine-speed-metric { gap: 2px; }
+}
