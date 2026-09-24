@@ -33,7 +33,7 @@ export const CURATED_EXPERIENCES = Object.freeze([
     title: "Mist Study",
     description: "Ambient recordings. A slow chromatic tide.",
     detail: "Japanese Mist · Mint · Ambient",
-    image: "/artwork/visuals/japanese-mist.png",
+    image: "/artwork/visuals/japanese-mist.webp",
     settings: Object.freeze({
       environmentId: "japanese-mist",
       themeId: "mint",
@@ -47,7 +47,7 @@ export const CURATED_EXPERIENCES = Object.freeze([
     title: "Blue Hour",
     description: "Jazz recordings. A low blue corridor.",
     detail: "Meridian · Blue · Jazz",
-    image: "/artwork/visuals/meridian.png",
+    image: "/artwork/visuals/meridian.webp",
     settings: Object.freeze({
       environmentId: "meridian",
       themeId: "blue",
@@ -61,7 +61,7 @@ export const CURATED_EXPERIENCES = Object.freeze([
     title: "Open Country",
     description: "Songwriter recordings. An open generative road.",
     detail: "Drivey · Pearl · Songwriter",
-    image: "/artwork/visuals/drivey.png",
+    image: "/artwork/visuals/drivey.webp",
     settings: Object.freeze({
       environmentId: "drivey",
       themeId: "pearl",
@@ -75,7 +75,7 @@ export const CURATED_EXPERIENCES = Object.freeze([
     title: "Electric Orchard",
     description: "Electronic recordings. Folding colour and motion.",
     detail: "Acid Orchard · Acid · Electronic",
-    image: "/artwork/visuals/acid-orchard.png",
+    image: "/artwork/visuals/acid-orchard.webp",
     settings: Object.freeze({
       environmentId: "acid-orchard",
       themeId: "acid",
@@ -89,7 +89,7 @@ export const CURATED_EXPERIENCES = Object.freeze([
     title: "Silk Cinema",
     description: "Soundtrack recordings. Sculptural colour in depth.",
     detail: "Chromatic Silk · Silver · Soundtrack",
-    image: "/artwork/visuals/chromatic-silk.png",
+    image: "/artwork/visuals/chromatic-silk.webp",
     settings: Object.freeze({
       environmentId: "chromatic-silk",
       themeId: "silver",
@@ -103,7 +103,7 @@ export const CURATED_EXPERIENCES = Object.freeze([
     title: "Particle Pop",
     description: "Pop recordings. A lively particle field.",
     detail: "Prtcl · Signal · Pop",
-    image: "/artwork/visuals/prtcl.png",
+    image: "/artwork/visuals/prtcl.webp",
     settings: Object.freeze({
       environmentId: "prtcl",
       themeId: "signal",
@@ -112,8 +112,8 @@ export const CURATED_EXPERIENCES = Object.freeze([
       soundtrackSelection: Object.freeze({ kind: "genre", id: "pop" }),
     }),
   }),
-  Object.freeze({id: "sky-radio", title: "Sky Radio", description: "Ambient recordings. A window onto the nearby sky.", detail: "Air Atlas · Blue · Ambient", image: "/artwork/visuals/air-atlas.png", settings: Object.freeze({environmentId: "air-atlas", themeId: "blue", appearanceMode: "dark", musicMode: "soundtrack", soundtrackSelection: Object.freeze({kind: "genre", id: "ambient"})})}),
-  Object.freeze({id: "city-jazz", title: "City Jazz", description: "Jazz recordings. Places along your journey.", detail: "Atlas · Graphite · Jazz", image: "/artwork/visuals/atlas.png", settings: Object.freeze({environmentId: "atlas", themeId: "graphite", appearanceMode: "dark", musicMode: "soundtrack", soundtrackSelection: Object.freeze({kind: "genre", id: "jazz"})})}),
+  Object.freeze({id: "sky-radio", title: "Sky Radio", description: "Ambient recordings. A window onto the nearby sky.", detail: "Air Atlas · Blue · Ambient", image: "/artwork/visuals/air-atlas.webp", settings: Object.freeze({environmentId: "air-atlas", themeId: "blue", appearanceMode: "dark", musicMode: "soundtrack", soundtrackSelection: Object.freeze({kind: "genre", id: "ambient"})})}),
+  Object.freeze({id: "city-jazz", title: "City Jazz", description: "Jazz recordings. Places along your journey.", detail: "Atlas · Graphite · Jazz", image: "/artwork/visuals/atlas.webp", settings: Object.freeze({environmentId: "atlas", themeId: "graphite", appearanceMode: "dark", musicMode: "soundtrack", soundtrackSelection: Object.freeze({kind: "genre", id: "jazz"})})}),
 ]);
 
 export function curatedExperience(id) {

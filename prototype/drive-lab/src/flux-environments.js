@@ -177,7 +177,7 @@ const VISUAL_THUMBNAIL_IDS = new Set([
 ]);
 export function visualThumbnailUrl(id) {
   const key = id === "shadergradient" ? "japanese-mist" : id;
-  return `/artwork/visuals/${VISUAL_THUMBNAIL_IDS.has(key) ? key : "aperture"}.png`;
+  return `/artwork/visuals/${VISUAL_THUMBNAIL_IDS.has(key) ? key : "aperture"}.webp`;
 }
 
 export function getFluxEnvironment(environmentId) {
