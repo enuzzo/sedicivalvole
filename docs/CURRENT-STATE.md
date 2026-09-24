@@ -11,11 +11,10 @@ the [DEPLOY release table](DEPLOY.md#release-table).
 ## Live release
 
 - Canonical [https://sedicivalvole.app/](https://sedicivalvole.app/) serves
-  **20260924-1430.1b20183**, the Night Instrument release
+  **20260924-1821.97fe2a4**: Night Instrument plus the September 24 structural,
+  curve and passenger-remote work listed under
+  [Direction and queue](#direction-and-queue)
   ([record](DEPLOY.md#latest-release-records)).
-- `main` also carries the September 24 structural and effects work listed under
-  [Direction and queue](#direction-and-queue); it is published only once its row
-  appears in the release table.
 - Rollback: `scripts/rollback-release.sh <tag-or-commit> [--publish]`, with the
   source tags `pre-night-instrument-20260924` and `pre-structural-20260924`
   ([DEPLOY / Rollback](DEPLOY.md#rollback)).

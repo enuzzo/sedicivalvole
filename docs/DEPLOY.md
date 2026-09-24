@@ -119,6 +119,8 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 | Date | Record | Build |
 | --- | --- | --- |
+| 2026-09-24 18:24 | [Structure, curves and text fit](#structure-curves-and-text-fit--2026-09-24-1821) | `20260924-1821.97fe2a4` |
+| 2026-09-24 18:06 | [Structure, curves and remote Soundtrack (superseded at 18:24)](#structure-curves-and-text-fit--2026-09-24-1821) | `20260924-1804.d4ce645` |
 | 2026-09-24 | [Night Instrument interface](archive/DEPLOY-HISTORY-2026-09-24.md#night-instrument-interface--2026-09-24) | `20260924-1430.1b20183` |
 | 2026-09-23 22:55 | [Meridian, Aperture and PRTCL curve refinement](VISUAL-CURVES-2026-09-23.md) | `20260923-2255.0ddd3ce` |
 | 2026-09-23 22:21 | [Aperture GPS curve cadence repair](archive/CURRENT-STATE-HISTORY-2026-09-24.md#aperture-gps-curve-cadence-repair--september-23) | `20260923-2221.cbc7db7` |
@@ -322,29 +324,48 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 ## Latest release records
 
-### Night Instrument interface — 2026-09-24
+The previous record, [Night Instrument interface](archive/DEPLOY-HISTORY-2026-09-24.md#night-instrument-interface--2026-09-24),
+is kept verbatim in the archive.
 
-Canonical `20260924-1430.1b20183` is published from source `1b20183` at
-https://sedicivalvole.app/. It carries the owner-selected Night Instrument
-interface for the display and passenger remote, and the clean Bass Cut /
-Mid Focus / High Cut filters. The previous release source is tagged
-`pre-night-instrument-20260924` (`138fa6a`, live build `20260923-2255`) and its
-local build is kept in `prototype/drive-lab/output/` for rollback.
+### Structure, curves and text fit — 2026-09-24 18:21
 
-The aggregate test command passed 1,102 cases; all test files pass 1,105. The
-production package verified 835 exact hashes and 189 community credits.
-Official read-only preflight and postflight passed network, login, exact
-canonical directory and remote identity with no writes. Preserve-existing
-publication uploaded 39 files / 6,572,363 bytes, verified and reused 832
-static files and 29 recordings, retained two previous fingerprinted assets and
-activated the dynamic root without legacy deletion.
+Canonical `20260924-1821.97fe2a4` is published from source `97fe2a4` at
+https://sedicivalvole.app/. Over the Night Instrument release it carries the
+fluid Aperture wall and stronger curve, the portal-corridor Meridian, Soundtrack
+browsing and the XY filter on the passenger remote, real dark preview frames,
+Night Instrument on the report, support, Discover and Stats surfaces, one motion
+system, cascade layers with dead rules removed, `src/app/` presentational
+modules with the solar-appearance crash fix, and a SOUND key that reads `Off`
+instead of a clipped `Muted`. Source tags `pre-night-instrument-20260924` and
+`pre-structural-20260924` remain the rollback points.
 
-Bare and cache-busted canonical HTML return HTTP/2 200, no-store and proxy
-MISS, and equal the local 1,445-byte file at SHA-256
-`d65067db59400ea2e0845aa2a62479bde60071419fbcb9150400d4898f7d0f37`.
-Main JS `index-uLBUPXWx.js`, main CSS `index-BcK2uj-v.css` and the lazy phone
-JS/CSS match the local build byte-for-byte. A public browser at 773 × 601
-showed build `20260924-1430`, the new Intro, the gate reveal and the running
-chrome with real Jamendo artwork. Tesla cabin legibility and touch, the GPU
-cost of the new transitions and iPhone Safari behaviour remain physical
-acceptance gates. No synthetic diagnostic mail was sent.
+An intermediate `20260924-1804.d4ce645` was published at 18:06. Its first
+read-only preflight failed closed with `unexpected_artwork_entry`: the live
+`artwork/visuals/` still held the twelve PNG previews of `1b20183` while the
+build ships WebP. Commit `d4ce645` admits exactly those SHA-256-pinned PNGs under
+`artwork/visuals/` during cache overlap; the corrected preflight passed with no
+writes. That release uploaded 51 files / 6,758,045 bytes, reused 820 static
+files and 29 recordings, retained two previous fingerprinted assets, and its
+HTML (1,445 bytes, SHA-256
+`f2cd697f61efa8b0e213d4337fc25cbb2ef4fe0f64ba6bfd05dd8b3a7c8fe858`) and assets
+matched the local build. Its public check at 773 × 601 showed the SOUND key
+clipping `Muted` to “Mut…”, which `97fe2a4` fixes and `npm run qa:text-fit` now
+guards.
+
+For `1821`: native tests 1,109/1,109; the visual gate 16/16 on the dev server
+and on the compiled build; text fit 14/14 on the compiled build and on the
+public site; community credits 189; package 835 exact hashes. Official
+read-only preflight and postflight passed with `remote_writes=NONE`.
+Preserve-existing publication uploaded 39 files / 6,558,179 bytes, reused 832
+static files and 29 fully verified recordings, retained one previous
+fingerprinted asset and activated the dynamic root without legacy deletion.
+Bare and cache-busted canonical HTML return HTTP/2 200, no-store and proxy MISS,
+and equal the local 1,445-byte file at SHA-256
+`4a329f805e37ecdf77fff2fa743326ec5f0b9c93adecfbb2bc8b438e6beeda07`. Main JS
+`index-L7d9wqRA.js`, main CSS `index-CU2QJ9Ko.css`, the phone, report and
+MapLibre chunks match byte-for-byte. A public browser at 773 × 601 showed build
+`20260924-1821`, the `@layer vendor, legacy, instrument` declaration and the
+muted SOUND key reading `Off` unclipped. Automatic reports were paused in the
+QA browser before START and QA routes abort the diagnostic endpoint, so no
+synthetic mail was sent. Tesla cabin legibility and touch, real-road curve
+sensitivity, GPU cost and iPhone Safari remain physical acceptance gates.
