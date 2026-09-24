@@ -76,8 +76,8 @@ const SOUNDTRACK_MANUAL_CONTROLS = Object.freeze([
   Object.freeze({ id: "underwater", label: "UNDERWATER" }),
   Object.freeze({ id: "phaser", label: "PHASER" }),
   Object.freeze({ id: "bitcrush", label: "BITCRUSH" }),
-  Object.freeze({ id: "bassDrive", label: "BASS DRIVE" }),
-  Object.freeze({ id: "radioCut", label: "RADIO CUT" }),
+  Object.freeze({ id: "bassDrive", label: "BASS CUT" }),
+  Object.freeze({ id: "radioCut", label: "MID FOCUS" }),
   Object.freeze({ id: "highCut", label: "HIGH CUT" }),
 ]);
 

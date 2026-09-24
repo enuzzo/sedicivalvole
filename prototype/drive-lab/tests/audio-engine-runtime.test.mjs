@@ -547,7 +547,7 @@ test("the shared manual chain is audible on every Play the Road score", async ()
     assert.ok(result.parameters.manualUnderwaterCutoffHz <= 500);
     assert.ok(result.parameters.phaserWet >= 0.9);
     assert.ok(result.parameters.bitcrushLevels <= 8);
-    assert.ok(result.parameters.bassDriveShelfDb >= 16);
+    assert.ok(result.parameters.bassCutHz >= 1_000);
     assert.ok(result.parameters.radioCutLowpassHz <= 3_300);
     assert.ok(result.parameters.highCutCutoffHz <= 1_200);
     assert.equal(context.gains[1].connections.has(context.gains[6]), true);

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  BUTTERWORTH_FOURTH_ORDER_Q,
   createManualEffectsGraph,
   MANUAL_EFFECT_IDS,
   manualEffectParameters,
@@ -131,22 +132,34 @@ test("zero depth is a neutral serial path and full depth reaches bounded extreme
   assert.equal(full.bitcrushDry, 0);
   assert.equal(full.bitcrushLevels, 4);
   assert.ok(full.bitcrushToneHz <= 1_100);
-  assert.ok(full.bassDriveDry <= 0.2);
-  assert.ok(full.bassDriveShelfDb >= 28);
-  assert.ok(full.bassDriveAmount >= 28);
-  assert.ok(full.bassDriveWet * full.bassDriveMakeup < 0.3);
-  assert.ok(full.bassDriveToneHz <= 600);
-  assert.ok(full.radioCutDry <= 0.001);
-  assert.ok(full.radioCutWet >= 0.619);
+  for (const id of ["bassDrive", "radioCut", "highCut"]) {
+    assert.equal(full[`${id}Dry`], 0, `${id} must not blend the unfiltered signal back in`);
+    assert.equal(full[`${id}Wet`], 1, `${id} must stay at unity instead of adding drive or makeup`);
+  }
+  assert.ok(full.bassCutHz >= 1_700, "full Bass Cut leaves only the upper band");
   assert.ok(full.radioCutHighpassHz >= 950);
-  assert.ok(full.radioCutLowpassHz <= 2_100);
-  assert.ok(full.radioCutPresenceDb >= 14);
-  assert.ok(full.radioCutDrive >= 9);
-  assert.equal(full.highCutDry, 0);
-  assert.ok(full.highCutWet >= 0.979);
-  assert.ok(full.highCutCutoffHz <= 1_160);
-  assert.ok(full.highCutSecondCutoffHz <= 2_100);
-  assert.ok(full.highCutResonance < 1.5);
+  assert.ok(full.radioCutLowpassHz <= 1_900);
+  assert.ok(full.radioCutPresenceDb <= 6, "Mid Focus presence stays a gentle linear EQ");
+  assert.ok(full.highCutCutoffHz <= 420, "full High Cut leaves only the low band");
+  for (const key of ["bassCutResonance", "radioCutResonance", "highCutResonance"]) {
+    assert.ok(full[key] <= BUTTERWORTH_FOURTH_ORDER_Q[1] + 4, `${key} resonance must stay within 4 dB of Butterworth`);
+  }
+});
+
+test("the three tone effects are clean serial fourth-order filters at the authored hit", () => {
+  const hit = manualEffectParameters(authoredHits);
+  for (const id of ["bassDrive", "radioCut", "highCut"]) {
+    assert.equal(hit[`${id}Dry`], 0);
+    assert.equal(hit[`${id}Wet`], 1);
+  }
+  assert.ok(hit.bassCutHz > 250 && hit.bassCutHz < 600, `Bass Cut hit was ${hit.bassCutHz}`);
+  assert.ok(hit.radioCutHighpassHz > 250 && hit.radioCutLowpassHz < 4_000);
+  assert.ok(hit.highCutCutoffHz > 1_000 && hit.highCutCutoffHz < 2_000, `High Cut hit was ${hit.highCutCutoffHz}`);
+  assert.equal(hit.bassCutResonance, BUTTERWORTH_FOURTH_ORDER_Q[1]);
+  assert.equal(hit.highCutResonance, BUTTERWORTH_FOURTH_ORDER_Q[1]);
+  const barely = manualEffectParameters({ highCut: 0.01 });
+  assert.ok(barely.highCutWet > 0 && barely.highCutWet < 1);
+  assert.ok(barely.highCutCutoffHz > 15_000, "the bypass crossfade completes while the cutoff is still out of band");
 });
 
 test("authored hits stay musical while the final slider segment unlocks the stunt zone", () => {
@@ -169,7 +182,7 @@ test("authored hits stay musical while the final slider segment unlocks the stun
   assert.ok(full.manualUnderwaterTextureDrive >= 4);
   assert.ok(full.phaserModulationHz > hit.phaserModulationHz * 2);
   assert.ok(full.bitcrushLevels < hit.bitcrushLevels / 3);
-  assert.ok(full.bassDriveAmount > hit.bassDriveAmount * 2.5);
+  assert.ok(full.bassCutHz > hit.bassCutHz * 2.5);
   assert.ok(full.radioCutHighpassHz > hit.radioCutHighpassHz * 1.5);
   assert.ok(full.highCutCutoffHz < hit.highCutCutoffHz * 0.4);
 });
@@ -184,7 +197,7 @@ test("the graph updates every processor, creates transfer curves, and tears down
   const result = graph.set(allAt(1));
   assert.deepEqual(result.values, allAt(1));
   const shapers = context.nodes.filter((node) => node.kind === "waveshaper");
-  assert.equal(shapers.length, 4);
+  assert.equal(shapers.length, 2, "only Underwater texture and Bitcrush use transfer curves");
   assert.equal(shapers.every((node) => node.curve instanceof Float32Array), true);
   assert.equal(shapers.every((node) => node.curve.length === 4_097), true);
 

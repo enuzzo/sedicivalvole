@@ -148,14 +148,13 @@ test("every manual effect has a plainly wet full-depth endpoint", () => {
   assert.ok(parameters.phaserFeedback >= 0.4);
   assert.ok(parameters.bitcrushDry <= 0.1);
   assert.ok(parameters.bitcrushLevels <= 8);
-  assert.ok(parameters.bassDriveShelfDb >= 16);
-  assert.ok(parameters.bassDriveAmount >= 10);
+  assert.ok(parameters.bassCutHz >= 1_000);
+  assert.equal(parameters.bassDriveDry, 0);
   assert.ok(parameters.radioCutDry <= 0.05);
   assert.ok(parameters.radioCutHighpassHz >= 650);
   assert.ok(parameters.radioCutLowpassHz <= 3_300);
   assert.ok(parameters.highCutDry <= 0.05);
   assert.ok(parameters.highCutCutoffHz <= 1_200);
-  assert.ok(parameters.highCutSecondCutoffHz <= 2_100);
 });
 
 test("the FX Deck performance taps land on unmistakable musical depths", () => {
@@ -176,7 +175,7 @@ test("the FX Deck performance taps land on unmistakable musical depths", () => {
   assert.ok(parameters.manualUnderwaterCutoffHz < 900);
   assert.ok(parameters.phaserWet > 0.8);
   assert.ok(parameters.bitcrushLevels <= 18);
-  assert.ok(parameters.bassDriveShelfDb > 14);
+  assert.ok(parameters.bassCutHz > 250);
   assert.ok(parameters.radioCutHighpassHz > 550);
   assert.ok(parameters.radioCutLowpassHz < 4_500);
   assert.ok(parameters.highCutDry < 0.25);

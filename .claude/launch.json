@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "drive-lab",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "prototype/drive-lab", "--", "--port", "5183", "--strictPort"],
+      "runtimeExecutable": "env",
+      "runtimeArgs": ["SEDICIVALVOLE_NO_LOCAL_ENV=1", "npm", "run", "dev", "--prefix", "prototype/drive-lab", "--", "--port", "5183", "--strictPort"],
       "port": 5183
     }
   ]

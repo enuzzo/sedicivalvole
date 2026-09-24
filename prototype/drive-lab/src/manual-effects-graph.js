@@ -18,6 +18,18 @@ export const normalizeManualEffects = (values = {}) => Object.freeze(Object.from
 ));
 
 const performanceCurve = (value) => Math.pow(value, 0.58);
+// The three tone effects are clean fourth-order Butterworth filters: two
+// cascaded biquads at the same cutoff with linear Q 0.5412 and 1.3066. They
+// replace the earlier parallel dry/wet blend and waveshaper drive, which smeared
+// phase and crackled instead of cutting a band. Web Audio interprets lowpass and
+// highpass Q in decibels, so the values below are 20·log10 of those linear Qs.
+export const BUTTERWORTH_FOURTH_ORDER_Q = Object.freeze([-5.3329, 2.3226]);
+// Tone filters are serial. The dry path only exists as a bypass for exact zero,
+// crossfaded over the first two slider percent while the cutoff is still out of band.
+const toneEngage = (value) => {
+  const normalized = clamp01(value / 0.02);
+  return normalized * normalized * (3 - 2 * normalized);
+};
 const exponentialRange = (start, end, amount) => start * Math.pow(end / start, amount);
 const stuntCurve = (value) => {
   const normalized = clamp01((value - 0.82) / 0.18);
@@ -65,23 +77,20 @@ export function manualEffectParameters(values = {}) {
     bitcrushWet: bitcrush,
     bitcrushLevels: Math.max(4, Math.round(64 - bitcrush * 56 - stunt.bitcrush * 4)),
     bitcrushToneHz: exponentialRange(16_000, 3_400, bitcrush) * (1 - stunt.bitcrush * 0.68),
-    bassDriveDry: Math.max(0.2, 1 - bassDrive * 0.34 - stunt.bassDrive * 0.46),
-    bassDriveWet: bassDrive * 0.72 + stunt.bassDrive * 0.23,
-    bassDriveShelfDb: bassDrive * 18 + stunt.bassDrive * 10,
-    bassDriveAmount: 1 + bassDrive * 10 + stunt.bassDrive * 17,
-    bassDriveMakeup: 0.58 - bassDrive * 0.18 - stunt.bassDrive * 0.1,
-    bassDriveToneHz: 1_100 - stunt.bassDrive * 500,
-    radioCutDry: Math.max(0, 1 - radioCut * 0.96 - stunt.radioCut * 0.04),
-    radioCutWet: radioCut * 0.52 + stunt.radioCut * 0.1,
-    radioCutHighpassHz: 30 + radioCut * 650 + stunt.radioCut * 270,
-    radioCutLowpassHz: exponentialRange(20_000, 3_200, radioCut) * (1 - stunt.radioCut * 0.35),
-    radioCutPresenceDb: radioCut * 10 + stunt.radioCut * 4,
-    radioCutDrive: 1 + radioCut * 3.2 + stunt.radioCut * 4.8,
-    highCutDry: Math.max(0, 1 - highCut * 0.94 - stunt.highCut * 0.07),
-    highCutWet: highCut * 0.9 + stunt.highCut * 0.08,
-    highCutCutoffHz: exponentialRange(20_000, 2_400, highCut) * (1 - stunt.highCut * 0.52),
-    highCutSecondCutoffHz: exponentialRange(22_000, 3_800, highCut) * (1 - stunt.highCut * 0.45),
-    highCutResonance: 0.72 + highCut * 0.3 + stunt.highCut * 0.4,
+    bassDriveDry: 1 - toneEngage(manual.bassDrive),
+    bassDriveWet: toneEngage(manual.bassDrive),
+    bassCutHz: exponentialRange(18, 720, bassDrive) * (1 + stunt.bassDrive * 1.5),
+    bassCutResonance: BUTTERWORTH_FOURTH_ORDER_Q[1] + stunt.bassDrive * 4,
+    radioCutDry: 1 - toneEngage(manual.radioCut),
+    radioCutWet: toneEngage(manual.radioCut),
+    radioCutHighpassHz: exponentialRange(18, 1_000, radioCut) * (1 + stunt.radioCut * 0.2),
+    radioCutLowpassHz: exponentialRange(20_000, 2_600, radioCut) * (1 - stunt.radioCut * 0.3),
+    radioCutPresenceDb: radioCut * 4 + stunt.radioCut * 2,
+    radioCutResonance: BUTTERWORTH_FOURTH_ORDER_Q[1] + stunt.radioCut * 2,
+    highCutDry: 1 - toneEngage(manual.highCut),
+    highCutWet: toneEngage(manual.highCut),
+    highCutCutoffHz: exponentialRange(20_000, 900, highCut) * (1 - stunt.highCut * 0.55),
+    highCutResonance: BUTTERWORTH_FOURTH_ORDER_Q[1] + stunt.highCut * 4,
   });
 }
 
@@ -178,17 +187,17 @@ export function createManualEffectsGraph(context) {
   const bitcrushSum = context.createGain();
 
   const bassDriveDry = context.createGain();
-  const bassDriveShelf = context.createBiquadFilter();
-  const bassDriveShaper = context.createWaveShaper();
-  const bassDriveTone = context.createBiquadFilter();
+  const bassCutOne = context.createBiquadFilter();
+  const bassCutTwo = context.createBiquadFilter();
   const bassDriveWet = context.createGain();
   const bassDriveSum = context.createGain();
 
   const radioCutDry = context.createGain();
   const radioCutHighpass = context.createBiquadFilter();
+  const radioCutHighpassTwo = context.createBiquadFilter();
   const radioCutLowpass = context.createBiquadFilter();
+  const radioCutLowpassTwo = context.createBiquadFilter();
   const radioCutPresence = context.createBiquadFilter();
-  const radioCutShaper = context.createWaveShaper();
   const radioCutWet = context.createGain();
   const radioCutSum = context.createGain();
 
@@ -220,23 +229,22 @@ export function createManualEffectsGraph(context) {
   });
   bitcrushShaper.oversample = "none";
   bitcrushTone.type = "lowpass";
-  bassDriveShelf.type = "lowshelf";
-  bassDriveShelf.frequency.value = 180;
-  bassDriveShaper.oversample = "4x";
-  bassDriveTone.type = "lowpass";
-  bassDriveTone.frequency.value = 1_100;
-  radioCutHighpass.type = "highpass";
-  radioCutHighpass.Q.value = 0.9;
-  radioCutLowpass.type = "lowpass";
-  radioCutLowpass.Q.value = 0.85;
+  for (const [one, two, type, frequency] of [
+    [bassCutOne, bassCutTwo, "highpass", 18],
+    [radioCutHighpass, radioCutHighpassTwo, "highpass", 18],
+    [radioCutLowpass, radioCutLowpassTwo, "lowpass", 20_000],
+    [highCutOne, highCutTwo, "lowpass", 20_000],
+  ]) {
+    one.type = type;
+    two.type = type;
+    one.frequency.value = frequency;
+    two.frequency.value = frequency;
+    one.Q.value = BUTTERWORTH_FOURTH_ORDER_Q[0];
+    two.Q.value = BUTTERWORTH_FOURTH_ORDER_Q[1];
+  }
   radioCutPresence.type = "peaking";
-  radioCutPresence.frequency.value = 1_650;
-  radioCutPresence.Q.value = 1.2;
-  radioCutShaper.oversample = "2x";
-  highCutOne.type = "lowpass";
-  highCutTwo.type = "lowpass";
-  highCutOne.frequency.value = 20_000;
-  highCutTwo.frequency.value = 22_000;
+  radioCutPresence.frequency.value = 1_400;
+  radioCutPresence.Q.value = 0.8;
   flangerLfo.type = "sine";
   flangerLfo.frequency.value = 0.23;
   phaserLfo.type = "sine";
@@ -279,10 +287,10 @@ export function createManualEffectsGraph(context) {
   phaserSum.connect(bitcrushShaper).connect(bitcrushTone).connect(bitcrushWet).connect(bitcrushSum);
 
   bitcrushSum.connect(bassDriveDry).connect(bassDriveSum);
-  bitcrushSum.connect(bassDriveShelf).connect(bassDriveShaper).connect(bassDriveTone).connect(bassDriveWet).connect(bassDriveSum);
+  bitcrushSum.connect(bassCutOne).connect(bassCutTwo).connect(bassDriveWet).connect(bassDriveSum);
 
   bassDriveSum.connect(radioCutDry).connect(radioCutSum);
-  bassDriveSum.connect(radioCutHighpass).connect(radioCutLowpass).connect(radioCutPresence).connect(radioCutShaper).connect(radioCutWet).connect(radioCutSum);
+  bassDriveSum.connect(radioCutHighpass).connect(radioCutHighpassTwo).connect(radioCutLowpass).connect(radioCutLowpassTwo).connect(radioCutPresence).connect(radioCutWet).connect(radioCutSum);
   radioCutSum.connect(highCutDry).connect(highCutSum);
   radioCutSum.connect(highCutOne).connect(highCutTwo).connect(highCutWet).connect(highCutSum);
   highCutSum.connect(limiter).connect(output);
@@ -324,22 +332,24 @@ export function createManualEffectsGraph(context) {
     setParam(bitcrushTone.frequency, parameters.bitcrushToneHz, context);
     bitcrushShaper.curve = makeQuantizedCurve(parameters.bitcrushLevels);
     setParam(bassDriveDry.gain, parameters.bassDriveDry, context);
-    setParam(bassDriveWet.gain, parameters.bassDriveWet * parameters.bassDriveMakeup, context);
-    setParam(bassDriveShelf.gain, parameters.bassDriveShelfDb, context);
-    setParam(bassDriveTone.frequency, parameters.bassDriveToneHz, context);
-    bassDriveShaper.curve = makeDriveCurve(parameters.bassDriveAmount);
+    setParam(bassDriveWet.gain, parameters.bassDriveWet, context);
+    setParam(bassCutOne.frequency, parameters.bassCutHz, context, 0.05);
+    setParam(bassCutTwo.frequency, parameters.bassCutHz, context, 0.05);
+    setParam(bassCutTwo.Q, parameters.bassCutResonance, context);
     setParam(radioCutDry.gain, parameters.radioCutDry, context);
     setParam(radioCutWet.gain, parameters.radioCutWet, context);
-    setParam(radioCutHighpass.frequency, parameters.radioCutHighpassHz, context);
-    setParam(radioCutLowpass.frequency, parameters.radioCutLowpassHz, context);
+    setParam(radioCutHighpass.frequency, parameters.radioCutHighpassHz, context, 0.05);
+    setParam(radioCutHighpassTwo.frequency, parameters.radioCutHighpassHz, context, 0.05);
+    setParam(radioCutLowpass.frequency, parameters.radioCutLowpassHz, context, 0.05);
+    setParam(radioCutLowpassTwo.frequency, parameters.radioCutLowpassHz, context, 0.05);
+    setParam(radioCutHighpassTwo.Q, parameters.radioCutResonance, context);
+    setParam(radioCutLowpassTwo.Q, parameters.radioCutResonance, context);
     setParam(radioCutPresence.gain, parameters.radioCutPresenceDb, context);
-    radioCutShaper.curve = makeDriveCurve(parameters.radioCutDrive);
     setParam(highCutDry.gain, parameters.highCutDry, context);
     setParam(highCutWet.gain, parameters.highCutWet, context);
-    setParam(highCutOne.frequency, parameters.highCutCutoffHz, context);
-    setParam(highCutTwo.frequency, parameters.highCutSecondCutoffHz, context);
-    setParam(highCutOne.Q, parameters.highCutResonance, context);
-    setParam(highCutTwo.Q, parameters.highCutResonance * 0.82, context);
+    setParam(highCutOne.frequency, parameters.highCutCutoffHz, context, 0.05);
+    setParam(highCutTwo.frequency, parameters.highCutCutoffHz, context, 0.05);
+    setParam(highCutTwo.Q, parameters.highCutResonance, context);
     return Object.freeze({ values: current, parameters });
   };
   apply();
@@ -351,9 +361,9 @@ export function createManualEffectsGraph(context) {
     underwaterPressure, underwaterTexture, underwaterWet, underwaterSum, phaserDry, ...phaserStages,
     phaserWet, phaserFeedback, phaserSum, phaserLfo, ...phaserDepths, bitcrushDry,
     bitcrushShaper, bitcrushTone, bitcrushWet, bitcrushSum, bassDriveDry,
-    bassDriveShelf, bassDriveShaper, bassDriveTone, bassDriveWet, bassDriveSum,
-    radioCutDry, radioCutHighpass, radioCutLowpass, radioCutPresence,
-    radioCutShaper, radioCutWet, radioCutSum, highCutDry, highCutOne, highCutTwo,
+    bassCutOne, bassCutTwo, bassDriveWet, bassDriveSum,
+    radioCutDry, radioCutHighpass, radioCutHighpassTwo, radioCutLowpass, radioCutLowpassTwo,
+    radioCutPresence, radioCutWet, radioCutSum, highCutDry, highCutOne, highCutTwo,
     highCutWet, highCutSum, limiter, output,
   ];
 

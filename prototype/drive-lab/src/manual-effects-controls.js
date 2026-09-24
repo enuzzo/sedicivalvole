@@ -4,7 +4,7 @@ export const MANUAL_EFFECT_CONTROLS = Object.freeze([
   Object.freeze({ id: "underwater", label: "UNDERWATER", displayLabel: "Underwater", note: "Dive and surface", performanceAmount: 0.76 }),
   Object.freeze({ id: "phaser", label: "PHASER", displayLabel: "Phaser", note: "Deep phase orbit", performanceAmount: 0.78 }),
   Object.freeze({ id: "bitcrush", label: "BITCRUSH", displayLabel: "Bitcrush", note: "Digital fracture", performanceAmount: 0.72 }),
-  Object.freeze({ id: "bassDrive", label: "BASS DRIVE", displayLabel: "Bass Drive", note: "Driven low-end weight", performanceAmount: 0.74, family: "tone" }),
-  Object.freeze({ id: "radioCut", label: "RADIO CUT", displayLabel: "Radio Cut", note: "Hard mid-band focus", performanceAmount: 0.76, family: "tone" }),
-  Object.freeze({ id: "highCut", label: "HIGH CUT", displayLabel: "High Cut", note: "Clean top-end shave", performanceAmount: 0.76, family: "tone" }),
+  Object.freeze({ id: "bassDrive", label: "BASS CUT", displayLabel: "Bass Cut", note: "Removes the low end", performanceAmount: 0.74, family: "tone" }),
+  Object.freeze({ id: "radioCut", label: "MID FOCUS", displayLabel: "Mid Focus", note: "Only the mids, radio-style", performanceAmount: 0.76, family: "tone" }),
+  Object.freeze({ id: "highCut", label: "HIGH CUT", displayLabel: "High Cut", note: "Removes the top end", performanceAmount: 0.76, family: "tone" }),
 ]);
