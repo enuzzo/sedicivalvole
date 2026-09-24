@@ -81,7 +81,7 @@ Public Chrome verifies actual Jazz and Lobo playback, shared context and direct
 Rosso Engine startup; no page exception or diagnostic transmission. Six inherited
 pre-gesture AudioContext warnings remain recorded. The browser test explicitly
 observes detached media elements and non-empty playback-rate evidence.
-[Publication details](DEPLOY.md#launch-cockpit--2026-09-07-1249).
+[Publication details](archive/DEPLOY-HISTORY-2026-09-24.md#launch-cockpit--2026-09-07-1249).
 
 ## Compact Round Instruments refinement — 2026-09-07
 
