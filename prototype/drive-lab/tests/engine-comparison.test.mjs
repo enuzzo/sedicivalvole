@@ -10,13 +10,13 @@ test('the shared listening route visits city, 80–130 and standstill without sp
  for(let tick=0;tick<=680;tick++){const speed=comparisonSpeed(tick/10);assert.ok(speed>=0&&speed<=130);assert.ok(Math.abs(speed-previous)<=1.31);previous=speed;}
  for(const invalid of [NaN,Infinity,-1]) assert.equal(comparisonSpeed(invalid),0);
 });
-test('reference and refined calibrations preserve source assets and physical ratios but expose both urban schedules',()=>{
+test('the refined and full-body calibrations share assets, ratios and schedules and differ only in voicing',()=>{
  for(const id of ['mono','rosso','touring','otto','cinque','turbine']){
   const a=comparisonProfile(id,'A'),b=comparisonProfile(id,'B');
   assert.equal(a.assets,b.assets);assert.equal(a.configuration,b.configuration);
-  if(!a.singleSpeed){assert.ok(a.upshiftKmh[1]<30);assert.ok(b.upshiftKmh[1]>=36);}
-  if(a.voice){assert.ok(a.voice.acoustics.pipeFeedback>.5);assert.equal(b.voice.acoustics,undefined);}
-  assert.equal(a.sampleBlend,'reference');assert.equal(b.sampleBlend,undefined);
+  assert.equal(a.upshiftKmh,b.upshiftKmh);assert.equal(a.voice,b.voice);
+  assert.equal(a.voicing,null);
+  if(['mono','rosso','touring'].includes(id)) assert.ok(b.voicing.body>0&&b.voicing.air>0);
  }
  assert.throws(()=>comparisonProfile('mono','bad'));
 });

@@ -17,10 +17,20 @@ const ROAD_TRANSMISSIONS = Object.freeze({
   otto: road([3.6, 2.5, 1.82, 1.38, 1.2, 1.05], 3.4, [16, 36, 54, 94, 121], [10, 29, 43, 81, 105], [4, 2, 12, 14, 9]),
   cinque: road([3.7, 2.6, 1.92, 1.46, 1.29, 1.11], 3.9, [17, 38, 56, 96, 123], [11, 31, 45, 83, 107], [4, 2, 12, 14, 7]),
 });
+// September 24 voicing: measured against the donor loops' narrow spectra
+// (see voicing.js). Retired profiles stay neutral.
+const VOICINGS = Object.freeze({
+  mono: Object.freeze({ lowShelfHz: 100, lowShelfDb: 2, midHz: 320, midQ: 0.9, midDb: -1.5, presenceHz: 2600, presenceQ: 0.8, presenceDb: 2,
+    air: 0.12, body: 0.18, bodyOrders: Object.freeze({ 1: 0.06, 2: 0.35, 4: 1, 8: 0.3 }), trimDb: 3 }),
+  rosso: Object.freeze({ lowShelfHz: 120, lowShelfDb: 4, midHz: 520, midQ: 0.9, midDb: -2, presenceHz: 2500, presenceQ: 0.8, presenceDb: 1,
+    air: 0.12, body: 0.14, bodyOrders: Object.freeze({ 2: 0.06, 4: 0.35, 8: 1, 16: 0.25 }), trimDb: 2 }),
+  touring: Object.freeze({ lowShelfHz: 120, lowShelfDb: 3, midHz: 460, midQ: 1, midDb: -3.5, presenceHz: 3000, presenceQ: 0.8, presenceDb: 3,
+    air: 0.12, body: 0.15, bodyOrders: Object.freeze({ 2: 0.05, 3: 0.3, 6: 1, 12: 0.25 }), trimDb: 3 }),
+});
 const make = (id, label, configuration, shifts, voice = null) => {
   const transmission = ROAD_TRANSMISSIONS[id] ?? ROAD_TRANSMISSIONS.mono;
   return Object.freeze({
-    id, label, ...shifts, voice, textureLevel: 1,
+    id, label, ...shifts, voice, textureLevel: 1, voicing: VOICINGS[id] ?? null,
     crossover: id === "touring" ? [2600, 5700] : id === "rosso" ? [3900, 7300] : [2600, 5900],
     upshiftKmh: transmission.upshiftKmh, downshiftKmh: transmission.downshiftKmh, loadHoldKmh: transmission.loadHoldKmh,
     configuration: { ...configuration, drivetrain: { ...configuration.drivetrain,

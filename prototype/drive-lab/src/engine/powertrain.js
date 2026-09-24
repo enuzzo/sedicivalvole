@@ -171,3 +171,36 @@ export function createEngineBoost(profile = {}) {
     },
   };
 }
+
+/**
+ * Road speed as the acoustic RPM sees it: a critically damped spring on the
+ * tracker's predicted speed, so a correction at a new GPS sample becomes a
+ * short glide instead of a pitch step. The spring settles in about 0.4 s.
+ */
+export const ROAD_SPEED_SPRING = 9;
+export function followRoadSpeed(state, target, seconds, omega = ROAD_SPEED_SPRING) {
+  const goal = finite(target, 0);
+  if (!state || !Number.isFinite(state.value)) return { value: goal, velocity: 0 };
+  const dt = clamp(finite(seconds, 0), 0, 0.1);
+  const offset = state.value - goal;
+  const impulse = (finite(state.velocity, 0) + omega * offset) * dt;
+  const decay = Math.exp(-omega * dt);
+  return { value: Math.max(0, goal + (offset + impulse) * decay), velocity: (finite(state.velocity, 0) - omega * impulse) * decay };
+}
+
+/**
+ * Pulling away in first gear, a clutch slips: crank speed holds at a
+ * demand-dependent launch RPM until the road ratio catches up and carries it,
+ * so the pitch never dips as the clutch bites. Only first gear, only moving,
+ * and it ends where first gear alone would exceed it.
+ */
+export function launchSlipRpm({ gear, speedKmh, load, stationary = false } = {}, profile = {}) {
+  if (stationary || profile.singleSpeed || gear !== 1) return 0;
+  const speed = finite(speedKmh, 0);
+  const endKmh = clamp(finite(tuning(profile).launchEndKmh, 25), 8, 40);
+  if (speed <= 0.3 || speed >= endKmh) return 0;
+  const demand = clamp((finite(load, 0) - 0.2) / 0.7);
+  // A short ramp-in over the first 2 km/h, so the flare starts with motion.
+  const engage = clamp(speed / 2);
+  return 1000 + (50 + clamp(finite(tuning(profile).launchSlipRpm, 1500), 0, 3500) * demand) * engage;
+}

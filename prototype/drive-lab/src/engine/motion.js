@@ -1,4 +1,5 @@
 import { createRoadResponse } from "../motion/road-input.js";
+import { createSpeedTracker } from "./speed-tracker.js";
 const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
 export const ENGINE_MOTION_POLICY = Object.freeze({ freshMs: 1800, lostMs: 5000, positionAccuracyM: 250, smoothingSeconds: 0.22, stationaryDwellMs: 350, stationaryWatchHoldMs: 12000 });
 
@@ -6,18 +7,18 @@ export const ENGINE_MOTION_POLICY = Object.freeze({ freshMs: 1800, lostMs: 5000,
 export function createEngineMotion() {
   let getPhoneMotion = () => null;
   const response = createRoadResponse();
+  const tracker = createSpeedTracker();
   let generation = 0;
   let last = null;
   let raw = null;
   let filtered = null;
-  let acceleration = 0;
   let zeroSince = null;
   let zeros = 0;
   let reason = "awaiting-motion";
   let invalidated = true;
   const reset = (nextReason = "lifecycle") => {
-    generation++; response.reset();
-    last = null; raw = null; filtered = null; acceleration = 0;
+    generation++; response.reset(); tracker.reset();
+    last = null; raw = null; filtered = null;
     zeroSince = null; zeros = 0; reason = nextReason; invalidated = true;
   };
   return {
@@ -56,15 +57,16 @@ export function createEngineMotion() {
       }
       const measuredMs = receivedMs - Math.max(0, acquisitionAgeMs);
       const dt = last ? (sourceTime - last.sourceTime) / 1000 : 0;
+      // A provider that repeats values between updates is judged over its own
+      // update interval, so an ordinary step is never mistaken for an outlier.
       if (last && dt > 0 && dt < 5 && Number.isFinite(raw)
-        && Math.abs(rawSpeedKmh - raw) / (3.6 * dt) > 12) {
+        && Math.abs(rawSpeedKmh - raw) / (3.6 * tracker.outlierSeconds(measuredMs, dt)) > 12) {
         zeroSince = null; zeros = 0; invalidated = true; reason = "speed-outlier";
         return false;
       }
       const reacquired = invalidated || !last || receivedMs - last.receivedMs > ENGINE_MOTION_POLICY.lostMs;
-      const targetAcceleration = !reacquired && dt > 0 ? clamp((rawSpeedKmh - raw) / (3.6 * dt), -10, 6) : 0;
       const alpha = dt > 0 ? 1 - Math.exp(-dt / ENGINE_MOTION_POLICY.smoothingSeconds) : 1;
-      acceleration = reacquired ? 0 : acceleration + alpha * (targetAcceleration - acceleration);
+      tracker.observe(rawSpeedKmh, measuredMs, reacquired);
       filtered = reacquired || filtered == null ? rawSpeedKmh : filtered + alpha * (rawSpeedKmh - filtered);
       if (rawSpeedKmh === 0) { zeroSince ??= measuredMs; zeros++; } else { zeroSince = null; zeros = 0; }
       raw = rawSpeedKmh;
@@ -82,14 +84,16 @@ export function createEngineMotion() {
         : invalidated || ageMs > Math.max(freshMs, ENGINE_MOTION_POLICY.lostMs) ? "lost"
         : ageMs > freshMs ? "degraded" : "fresh";
       const trusted = freshness === "fresh";
-      const selected = response.resolve(trusted && last?.source === "GPS" ? getPhoneMotion() : null, trusted ? acceleration : 0, nowMs);
+      const selected = response.resolve(trusted && last?.source === "GPS" ? getPhoneMotion() : null, trusted ? tracker.accelerationMps2 : 0, nowMs);
       const effectiveAcceleration = selected.accelerationMps2;
       const brake = last?.brakeHeld === true;
       const drive = !trusted ? 0 : brake || last?.driveInput === "regen" ? 0
         : last?.driveInput === "accelerator" ? 1 : clamp(0.15 + effectiveAcceleration / 2.5, 0, 1);
       return {
         generation, timestampPolicy: last?.liveWatch ? "live-watch-receipt" : "acquisition", source: last?.source ?? "unavailable", freshness, reason, ageMs: Number.isFinite(ageMs) ? ageMs : null,
-        rawSpeedKmh: Number.isFinite(raw) ? raw : null, speedKmh: filtered, accelerationMps2: effectiveAcceleration, responseSource: last?.source === "GPS" ? selected.responseSource : last?.source === "Demo" ? "demo-motion" : "unavailable",
+        rawSpeedKmh: Number.isFinite(raw) ? raw : null, speedKmh: filtered,
+        // Acoustic RPM follows this continuous estimate; gears and standstill keep filtered/raw speed.
+        predictedSpeedKmh: trusted ? tracker.predict(nowMs) ?? filtered : filtered, accelerationMps2: effectiveAcceleration, responseSource: last?.source === "GPS" ? selected.responseSource : last?.source === "Demo" ? "demo-motion" : "unavailable",
         drive, deceleration: clamp(-effectiveAcceleration / 4, 0, 1),
         trustedStationary: trusted && raw === 0 && zeros >= (stationaryWatch ? 1 : 2) && zeroSince != null && nowMs - zeroSince >= ENGINE_MOTION_POLICY.stationaryDwellMs,
         canShift: trusted && !last?.reacquired,

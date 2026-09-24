@@ -1,0 +1,52 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Engine harness</title></head>
+<body>
+<script type="module">
+// Dev-only measurement harness: renders the real Engine runtime along a
+// scripted, Tesla-like GPS route (whole km/h at 10 Hz) and captures the output.
+import { createGeapsRuntime } from "/src/engine/runtime.js";
+import { createEngineMotion } from "/src/engine/motion.js";
+import { engineProfile } from "/src/engine/profiles.js";
+
+const recorderCode = `class Rec extends AudioWorkletProcessor { constructor(){super();this.on=false;this.port.onmessage=e=>{this.on=e.data==='start';if(e.data==='stop')this.port.postMessage('done');};}
+process(inputs){const i=inputs[0];if(this.on&&i&&i.length){this.port.postMessage([i[0].slice(0),(i[1]||i[0]).slice(0)]);}return true;}}
+registerProcessor('rec',Rec);`;
+
+window.renderEngine = async ({ profileId, voiced, route }) => {
+  const context = new AudioContext({ sampleRate: 48000 });
+  await context.audioWorklet.addModule(URL.createObjectURL(new Blob([recorderCode], { type: "text/javascript" })));
+  const rec = new AudioWorkletNode(context, "rec", { numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [2], channelCount: 2, channelCountMode: "explicit" });
+  const sink = context.createGain(); sink.gain.value = 0;
+  rec.connect(sink).connect(context.destination);
+  const motion = createEngineMotion();
+  const runtime = createGeapsRuntime({ context, destination: rec, motion, allowManual: true,
+    resolveProfile: (id) => ({ ...engineProfile(id), voicing: voiced ? engineProfile(id).voicing : null }) });
+  await context.resume();
+  runtime.setEnabled(true);
+  await runtime.load(profileId);
+  const chunks = [[], []];
+  rec.port.onmessage = (e) => { if (Array.isArray(e.data)) { chunks[0].push(e.data[0]); chunks[1].push(e.data[1]); } };
+  const t0 = performance.now();
+  const speedAt = (s) => { let v = 0; for (const [at, kmh] of route) { if (s >= at) v = kmh; } 
+    const i = route.findIndex(([at]) => at > s); if (i <= 0) return route[route.length - 1][1];
+    const [a, va] = route[i - 1], [b, vb] = route[i]; return va + (vb - va) * (s - a) / (b - a); };
+  const duration = route[route.length - 1][0];
+  const feed = setInterval(() => {
+    const s = (performance.now() - t0) / 1000;
+    motion.observe({ source: "GPS", rawSpeedKmh: Math.round(speedAt(s)), sourceTimestampMs: Date.now(), epochNowMs: Date.now(), receivedMs: performance.now(), accuracyM: 4, liveWatch: true });
+  }, 100);
+  rec.port.postMessage("start");
+  const trace = [];
+  await new Promise((resolve) => { const probe = setInterval(() => { const st = runtime.getState(); trace.push([Math.round(performance.now() - t0), st.rpm, st.gear, +(st.drive ?? 0).toFixed(3)]); if (performance.now() - t0 > duration * 1000) { clearInterval(probe); resolve(); } }, 50); });
+  rec.port.postMessage("stop"); clearInterval(feed);
+  runtime.destroy(); await context.close();
+  const join = (list) => { const n = list.reduce((a, c) => a + c.length, 0); const out = new Float32Array(n); let o = 0; for (const c of list) { out.set(c, o); o += c.length; } return out; };
+  const l = join(chunks[0]), r = join(chunks[1]);
+  const pcm = new Int16Array(l.length * 2);
+  for (let i = 0; i < l.length; i++) { pcm[2 * i] = Math.max(-1, Math.min(1, l[i])) * 32767; pcm[2 * i + 1] = Math.max(-1, Math.min(1, r[i])) * 32767; }
+  let bin = ""; const bytes = new Uint8Array(pcm.buffer); for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 0x8000));
+  return { pcm: btoa(bin), frames: l.length, trace };
+};
+window.harnessReady = true;
+</script>
+</body></html>

@@ -8,9 +8,10 @@ import { createIdleBlip } from "./idle-blip.js";
 import { drivelineAudibility } from "./driveline-audio.js";
 import { prepareEngineLoopSeam } from "./loop-seam.js";
 import { engineProfile } from "./profiles.js";
+import { createEngineVoicing } from "./voicing.js";
 import { boundedRpm, decideAutomaticGear, virtualRpm, engineRoadSpeed, selectRoadGear } from "./gearbox.js";
 import { engineSampleCents } from "./sample-pitch.js";
-import { advanceEngineDemand, planEngineShift, sampleEngineShift, transmissionCents, boostDemand } from "./powertrain.js";
+import { advanceEngineDemand, planEngineShift, sampleEngineShift, transmissionCents, boostDemand, followRoadSpeed, launchSlipRpm } from "./powertrain.js";
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const MAX_DECODED_BYTES = 64 * 1024 * 1024;
@@ -44,8 +45,12 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
   limiter.attack.value = 0.003; limiter.release.value = 0.15;
   master.gain.value = 0;
   master.connect(limiter).connect(destination);
+  // Every loop and the procedural voice enter the dry voicing chain before the master.
+  const voicing = typeof context.createBiquadFilter === "function" && typeof context.createOscillator === "function"
+    ? createEngineVoicing(context, master) : null;
+  const engineInput = voicing?.input ?? master;
   let nodes = [], voice = null, engine = null, drivetrain = null, profile = null;
-  let demandState = null, roadCoupled = false, motionGeneration = null;
+  let demandState = null, roadCoupled = false, motionGeneration = null, roadSpeed = null;
   const retiringVoices = new Set();
   const prepared = () => nodes.length > 0 || (voice != null && !voice.failed);
   let generation = 0, abort = null, disposed = false, enabled = false;
@@ -71,6 +76,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
     if (shift) {
       for (const node of nodes) { hold(node.gain.gain, at); hold(node.source.detune, at); }
       if (voice) for (const key of ["rpm", "load", "boost"]) hold(voice.params.get(key), at);
+      voicing?.hold(at);
       onEvent("engine.shift.cancelled", { fromGear: shift.fromGear, toGear: shift.toGear, contextTime: at });
     }
     shift = null; state.shift = null; state.shiftPhase = null;
@@ -102,7 +108,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
     return nodes.map(node => ({ node,
       gain: (gains[node.asset.role] ?? 0) * (node.levelGain ?? node.asset.volume ?? 1) * (voice && !voice.failed && /^(on|off)_/.test(node.asset.role) ? profile.textureLevel : 1),
       cents: node.asset.role === "limiter" ? 0 : node.asset.role.startsWith("tranny")
-        ? transmissionCents(state.motionSpeedKmh ?? 0, profile)
+        ? transmissionCents(state.roadSpeedKmh ?? state.motionSpeedKmh ?? 0, profile)
         : engineSampleCents(rpm, node.asset, profile),
     }));
   }
@@ -117,16 +123,19 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
         const param = voice.params.get(key); hold(param, at); param.setTargetAtTime(value, at, .035);
       }
     }
+    voicing?.follow(rpm, drive, at);
   }
   function scheduleShift(decision, evidence, at) {
     const fromGear = state.gear;
-    const nextRpm = boundedRpm(virtualRpm(evidence.speedKmh ?? 0, decision.gear, drivetrain), profile);
+    const nextRpm = boundedRpm(virtualRpm(roadSpeed?.value ?? evidence.speedKmh ?? 0, decision.gear, drivetrain), profile);
     const effective = at + 0.015;
     const plan = planEngineShift({ at: effective, fromGear, toGear: decision.gear, fromRpm: engine.rpm,
       toRpm: nextRpm, fromLoad: state.drive, toLoad: demandState?.load ?? evidence.drive, reason: decision.reason, profile, duration: profile.duration });
     for (const node of nodes) { hold(node.gain.gain, effective); hold(node.source.detune, effective); }
     if (voice) for (const key of ["rpm", "load", "boost"]) hold(voice.params.get(key), effective);
+    voicing?.hold(effective);
     for (const point of plan.points) {
+      voicing?.rampTo(point.rpm, point.load, point.at);
       for (const { node, gain, cents } of targets(point.rpm, point.load)) {
         node.source.detune.linearRampToValueAtTime(cents, point.at);
         node.gain.gain.linearRampToValueAtTime(gain, point.at);
@@ -210,7 +219,12 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
         drivetrain.gear = state.gear; selectedAt = at;
       }
       roadCoupled = true;
+      roadSpeed = null;
     }
+    // Continuous acoustic road speed: the tracker's prediction through a spring.
+    const predicted = Number.isFinite(activeEvidence.predictedSpeedKmh) ? activeEvidence.predictedSpeedKmh : activeEvidence.speedKmh;
+    roadSpeed = activeEvidence.freshness === "lost" || !Number.isFinite(predicted) ? null : followRoadSpeed(roadSpeed, predicted, elapsed);
+    state.roadSpeedKmh = roadSpeed?.value ?? null;
     const gesture = heldSince != null && state.canRev ? showOff.sample(at) : null;
     if (heldSince != null && !gesture) releaseRev();
     const revving = Boolean(gesture);
@@ -224,8 +238,10 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
     state.drive = demand; state.throttle = demandState.throttle; state.roadLoad = demandState.roadLoad; state.coast = demandState.coast;
     engine.throttle = demand;
     engine.integrate(drivetrain.inertia, at * 1000, dt);
+    const acousticSpeed = roadSpeed?.value ?? activeEvidence.speedKmh ?? 0;
+    const slipRpm = launchSlipRpm({ gear: state.gear, speedKmh: acousticSpeed, load: demand, stationary: state.trustedStationary }, profile);
     const coupledRpm = activeEvidence.freshness === "lost" ? (quietStop ? 600 : 1000)
-      : boundedRpm(profile.singleSpeed ? 1000 + engineRoadSpeed(activeEvidence.speedKmh) / 130 * 7000 : virtualRpm(activeEvidence.speedKmh ?? 0, state.gear, drivetrain), profile);
+      : boundedRpm(Math.max(slipRpm, profile.singleSpeed ? 1000 + engineRoadSpeed(acousticSpeed) / 130 * 7000 : virtualRpm(acousticSpeed, state.gear, drivetrain)), profile);
     if (!revving) {
       drivetrain.omega = coupledRpm * 2 * Math.PI / 60;
       engine.solveVel(drivetrain, dt);
@@ -310,7 +326,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
             controller.signal.addEventListener("abort", cancelled, { once: true });
             import("./procedural-voice.js").then(value => { controller.signal.removeEventListener("abort", cancelled); resolve(value); }, error => { controller.signal.removeEventListener("abort", cancelled); reject(error); });
           });
-          freshVoice = await module.prepareProceduralVoice(context, { ...next.voice, limiter: next.configuration.engine.limiter }, master, controller.signal);
+          freshVoice = await module.prepareProceduralVoice(context, { ...next.voice, limiter: next.configuration.engine.limiter }, engineInput, controller.signal);
         } else if (!assets.length) throw new Error("Engine synthesis requires AudioWorklet");
       }
       if (disposed || revision !== generation || controller.signal.aborted) { freshVoice?.stop(); return false; }
@@ -323,7 +339,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
         const source = context.createBufferSource(); source.buffer = buffer; source.loop = true;
         if (seam?.applied) { source.loopStart = seam.loopStart; source.loopEnd = seam.loopEnd; }
         const gain = context.createGain(); gain.gain.value = 0;
-        source.connect(gain).connect(master); source.start(at);
+        source.connect(gain).connect(engineInput); source.start(at);
         freshNodes.push({ source, gain, asset, decodedBytes: buffer.length * buffer.numberOfChannels * 4, levelGain: levelGains.get(asset.role) });
       }
       for (const old of nodes) {
@@ -355,10 +371,10 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
         voice.params.get("active").setValueAtTime(enabled ? 1 : 0, at);
         voice.gain.gain.setValueAtTime(0, at); voice.gain.gain.linearRampToValueAtTime(next.voice.mix ?? 1, at + .08);
       }
-      profile = next; engine = new Engine(); engine.init(next.configuration.engine);
+      profile = next; voicing?.setVoicing(next.voicing, at); engine = new Engine(); engine.init(next.configuration.engine);
       engine.rpm = 1000; engine.omega = 1000 * 2 * Math.PI / 60;
       drivetrain = new Drivetrain(); drivetrain.init(next.configuration.drivetrain); drivetrain.gear = 1;
-      shift = null; demandState = null; roadCoupled = false; motionGeneration = null; selectedAt = context.currentTime; previousTime = context.currentTime;
+      shift = null; demandState = null; roadCoupled = false; roadSpeed = null; motionGeneration = null; selectedAt = context.currentTime; previousTime = context.currentTime;
       releaseGestures(); state = { ...state, status: "ready", profileId, decodedBytes, peakUnionBytes, transferMs: Math.round(transferMs), decodeMs: Math.round(decodeMs), bankBytes: next.assets.reduce((sum, asset) => sum + asset.bytes, 0), gear: 1, shift: null, shiftPhase: null, singleSpeed: Boolean(profile.singleSpeed), error: null };
       retryStarted = null; retryCount = 0;
       onEvent("engine.bank.ready", { profileId, decodedBytes, peakUnionBytes, transferMs: state.transferMs, decodeMs: state.decodeMs, clips: nodes.length, renderer: voice ? nodes.length ? "hybrid" : "procedural" : "sample", loadMs: Math.round(now() - loadStartedAt),
@@ -440,7 +456,7 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
     destroy() {
       if (disposed) return;
       setEnabled(false); disposed = true; clearInterval(timer); clearRetry(); abort?.abort(); stopNodes(nodes); stopNodes([...retiringNodes]); retiringNodes.clear(); nodes = []; stopVoices();
-      master.disconnect(); limiter.disconnect();
+      voicing?.dispose(); master.disconnect(); limiter.disconnect();
       globalThis.window?.removeEventListener("online", wake);
       globalThis.window?.removeEventListener("blur", releaseGestures);
       globalThis.document?.removeEventListener("visibilitychange", lifecycle);

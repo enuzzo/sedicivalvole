@@ -128,7 +128,7 @@ export function EngineLab({ audioRef, prepareAudio }) {
     <div className="engine-comparison-buttons">{["A", "B"].map(key => <button key={key} type="button" disabled={busy} aria-pressed={replay && calibration === key} onClick={() => void play(key)}>PLAY {key}<small>{COMPARISON_CALIBRATIONS[key]}</small></button>)}</div>
     <p>Listened: A {listened.A}s · B {listened.B}s / {COMPARISON_SECONDS}s each. Replaying starts that take again.</p>
     <details className="engine-listening-notes"><summary>Preference & notes · {notes.length} saved</summary>
-      <label>Preference <select aria-label="Listening preference" value={preference} onChange={event => setPreference(event.target.value)}><option value="">Choose…</option><option value="A">A · Reference</option><option value="B">B · Refined</option><option value="tie">No preference</option></select></label>
+      <label>Preference <select aria-label="Listening preference" value={preference} onChange={event => setPreference(event.target.value)}><option value="">Choose…</option><option value="A">A · Refined</option><option value="B">B · Full body</option><option value="tie">No preference</option></select></label>
       <label>What sounds better? <textarea aria-label="Listening note" maxLength={4000} value={note} onChange={event => setNote(event.target.value)} placeholder="Body, clarity, whistle, shifts…" /></label>
       <button type="button" onClick={save}>SAVE PREFERENCE</button>
       <button type="button" onClick={download} disabled={!notes.length}>EXPORT NOTES ({notes.length})</button>
