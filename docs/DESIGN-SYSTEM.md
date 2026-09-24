@@ -44,6 +44,11 @@ lives in `src/night-instrument.css` (loaded last) and the primitives in
 | `NiGlyph` | Original monochrome glyphs (speaker, brake, mix, visual, music, engine, palette, phone, scan) |
 | `.ni-switch` | Sliding two/three-position switches with one thumb |
 
+Motion tokens (September 24): `--ni-signal` 90 ms for values that follow live
+data, `--ni-quick` 140 ms for press feedback and colour, `--ni-base` 220 ms for
+surfaces arriving, `--ni-slow` 280 ms for switch thumbs, all on `--ni-ease`.
+The passenger remote uses the same tokens.
+
 Rules: one housing per group and no divider lines; keys use `--ni-key` with
 10 px corners; footer keys share a 16 px label row and a 20 px value row;
 animation is transform/opacity only and stops with reduced motion; keyframes

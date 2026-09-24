@@ -12,7 +12,6 @@
   --remote-text: var(--ui-text);
   --remote-accent: var(--ui-accent-text);
   --remote-gutter: max(16px, env(safe-area-inset-left));
-  --remote-ease: cubic-bezier(.2, .75, .2, 1);
   height: 100dvh;
   max-width: 520px;
   margin: 0 auto;
@@ -66,7 +65,7 @@
 .remote-scene-phone > rect:first-child { fill: color-mix(in srgb, var(--remote-text) 88%, transparent); }
 .remote-scene-screen { fill: var(--ni-display, #050506); }
 .remote-scene-corners path { fill: none; stroke: var(--ui-indicator); stroke-width: 3; stroke-linecap: round; }
-.remote-scene-beam { animation: remote-scan 2.4s var(--remote-ease) infinite; }
+.remote-scene-beam { animation: remote-scan 2.4s var(--ni-ease) infinite; }
 .remote-scene-link circle { fill: var(--ui-success); }
 .remote-scene-link-ring { fill: none !important; stroke: var(--ui-success); stroke-width: 2; opacity: 0; transform-origin: center; transform-box: fill-box; }
 .remote-scene[data-waiting="true"] .remote-scene-beam { display: none; }
@@ -123,30 +122,30 @@
 .remote-track strong { font-size: 19px; font-weight: 650; letter-spacing: -.015em; }
 .remote-track span { color: rgba(244, 244, 244, .72); font-size: 14px; }
 .remote-transport { display: grid; grid-template-columns: 1fr 1.25fr 1fr; gap: 8px; }
-.remote-transport button { display: grid; place-items: center; height: 52px; padding: 0; border: 0; border-radius: 14px; background: rgba(255, 255, 255, .12); color: #f4f4f4; transition: transform 140ms var(--remote-ease), background-color 140ms ease; }
+.remote-transport button { display: grid; place-items: center; height: 52px; padding: 0; border: 0; border-radius: 14px; background: rgba(255, 255, 255, .12); color: #f4f4f4; transition: transform var(--ni-quick) var(--ni-ease), background-color var(--ni-quick) ease; }
 .remote-transport button:active { transform: scale(.95); }
 .remote-transport .media-glyph, .remote-transport svg { width: 22px; height: 22px; }
 .remote-transport .remote-play { background: #f4f4f4; color: #111114; }
 
 /* ——— Mode and section switches ——— */
 .remote-phone .ni-switch { position: relative; flex: none; display: grid; grid-template-columns: repeat(var(--switch-count, 2), minmax(0, 1fr)); margin: 12px 0 10px; padding: 4px; border-radius: 16px; background: var(--remote-key); }
-.remote-phone .ni-switch-thumb { position: absolute; top: 4px; bottom: 4px; left: 4px; width: calc((100% - 8px) / var(--switch-count, 2)); border-radius: 12px; background: var(--ui-selected-surface); transition: transform 280ms var(--remote-ease); }
+.remote-phone .ni-switch-thumb { position: absolute; top: 4px; bottom: 4px; left: 4px; width: calc((100% - 8px) / var(--switch-count, 2)); border-radius: 12px; background: var(--ui-selected-surface); transition: transform var(--ni-slow) var(--ni-ease); }
 .remote-phone .ni-switch[data-index="1"] .ni-switch-thumb { transform: translateX(100%); }
-.remote-phone .ni-switch > button { position: relative; z-index: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; border: 0; background: transparent; color: var(--remote-muted); font-size: 15px; font-weight: 650; transition: color 200ms ease; }
+.remote-phone .ni-switch > button { position: relative; z-index: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 46px; border: 0; background: transparent; color: var(--remote-muted); font-size: 15px; font-weight: 650; transition: color var(--ni-base) ease; }
 .remote-phone .ni-switch > button[aria-pressed="true"] { color: var(--ui-selected-text); }
 .remote-phone .ni-switch > button .ni-glyph { width: 20px; height: 20px; }
 .remote-phone .ni-switch.is-compact { margin: 0 0 12px; }
 .remote-phone .ni-switch.is-compact > button { min-height: 44px; font-size: 14px; }
 
 /* ——— Section panel ——— */
-.remote-panel { flex: 1 1 auto; min-height: 0; margin: 0 calc(var(--remote-gutter) * -1); padding: 2px var(--remote-gutter) 12px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; animation: remote-panel-in 220ms var(--remote-ease) both; }
+.remote-panel { flex: 1 1 auto; min-height: 0; margin: 0 calc(var(--remote-gutter) * -1); padding: 2px var(--remote-gutter) 12px; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; animation: remote-panel-in var(--ni-base) var(--ni-ease) both; }
 .remote-panel::-webkit-scrollbar { display: none; }
 @keyframes remote-panel-in { from { opacity: 0; translate: 0 6px; } to { opacity: 1; translate: 0 0; } }
 .remote-hint { margin: 0 0 12px; color: var(--remote-muted); font-size: 13px; line-height: 1.45; }
 
 .remote-visual-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 8px; }
 .remote-visual-grid button { display: grid; gap: 6px; min-width: 0; padding: 0; border: 0; background: transparent; color: var(--remote-text); text-align: left; }
-.remote-visual-grid img { width: 100%; height: auto; aspect-ratio: 192 / 149; border-radius: 12px; object-fit: cover; background: var(--remote-key); transition: box-shadow 200ms ease, transform 140ms var(--remote-ease); }
+.remote-visual-grid img { width: 100%; height: auto; aspect-ratio: 192 / 149; border-radius: 12px; object-fit: cover; background: var(--remote-key); transition: box-shadow var(--ni-base) ease, transform var(--ni-quick) var(--ni-ease); }
 .remote-visual-grid button:active img { transform: scale(.96); }
 .remote-visual-grid button.is-active img { box-shadow: 0 0 0 2px var(--remote-bg), 0 0 0 4px var(--ui-indicator); }
 .remote-visual-grid span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 13px; font-weight: 600; }
@@ -181,10 +180,10 @@
   touch-action: none;
   -webkit-user-select: none;
   user-select: none;
-  transition: transform 140ms var(--remote-ease), box-shadow 160ms ease;
+  transition: transform var(--ni-quick) var(--ni-ease), box-shadow var(--ni-quick) ease;
 }
 .remote-pad:active { transform: scale(.96); }
-.remote-pad-level { position: absolute; inset: 0; background: linear-gradient(to top, color-mix(in srgb, var(--ui-indicator) 42%, transparent) 0%, color-mix(in srgb, var(--ui-indicator) 16%, transparent) 72%, transparent 100%); transform-origin: bottom; transform: scaleY(var(--depth, 0)); transition: transform 120ms var(--remote-ease); pointer-events: none; }
+.remote-pad-level { position: absolute; inset: 0; background: linear-gradient(to top, color-mix(in srgb, var(--ui-indicator) 42%, transparent) 0%, color-mix(in srgb, var(--ui-indicator) 16%, transparent) 72%, transparent 100%); transform-origin: bottom; transform: scaleY(var(--depth, 0)); transition: transform var(--ni-signal) var(--ni-ease); pointer-events: none; }
 .remote-pad.is-active { box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ui-indicator) 60%, transparent), 0 0 16px color-mix(in srgb, var(--ui-indicator) 20%, transparent); }
 .remote-pad strong { position: relative; font-size: 12px; font-weight: 700; line-height: 1.2; letter-spacing: 0; overflow-wrap: normal; hyphens: manual; }
 .remote-pad-value { position: relative; justify-self: end; color: var(--remote-muted); font-size: 15px; font-weight: 650; font-variant-numeric: tabular-nums; }
@@ -200,7 +199,7 @@
 
 .remote-palette-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px 6px; }
 .remote-palette-grid button { display: grid; justify-items: center; gap: 6px; min-height: 64px; padding: 4px 0; border: 0; background: transparent; color: var(--remote-text); font-size: 12px; font-weight: 600; }
-.remote-swatch { width: 44px; height: 44px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .2); transition: box-shadow 200ms ease, transform 140ms var(--remote-ease); }
+.remote-swatch { width: 44px; height: 44px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .2); transition: box-shadow var(--ni-base) ease, transform var(--ni-quick) var(--ni-ease); }
 .remote-palette-grid button:active .remote-swatch { transform: scale(.92); }
 .remote-palette-grid button.is-active .remote-swatch { box-shadow: 0 0 0 3px var(--remote-bg), 0 0 0 5px var(--ui-indicator); }
 
@@ -218,7 +217,7 @@
 .remote-chip-row, .remote-chip-grid { display: grid; gap: 6px; }
 .remote-chip-row { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .remote-chip-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.remote-chip-row button, .remote-chip-grid button { display: flex; justify-content: space-between; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border: 0; border-radius: 12px; background: var(--remote-key); color: var(--remote-text); font-size: 14px; font-weight: 600; text-align: left; transition: background-color 160ms ease, color 160ms ease; }
+.remote-chip-row button, .remote-chip-grid button { display: flex; justify-content: space-between; align-items: center; gap: 6px; min-height: 44px; padding: 0 12px; border: 0; border-radius: 12px; background: var(--remote-key); color: var(--remote-text); font-size: 14px; font-weight: 600; text-align: left; transition: background-color var(--ni-quick) ease, color var(--ni-quick) ease; }
 .remote-chip-row button.is-active, .remote-chip-grid button.is-active { background: var(--ui-selected-surface); color: var(--ui-selected-text); }
 .remote-chip-row button.is-active .ni-led, .remote-chip-grid button.is-active .ni-led { background: var(--ui-selected-accent); box-shadow: 0 0 8px color-mix(in srgb, var(--ui-selected-accent) 70%, transparent); }
 .remote-track-list { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
@@ -263,7 +262,7 @@
 
 /* ——— Tab bar ——— */
 .remote-tabbar { flex: none; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 4px; padding: 6px; border-radius: 20px; background: var(--remote-key); }
-.remote-tabbar button { display: grid; justify-items: center; gap: 3px; min-height: 52px; padding: 6px 0 4px; border: 0; border-radius: 14px; background: transparent; color: var(--remote-muted); font-size: 11px; font-weight: 700; letter-spacing: .04em; transition: background-color 160ms ease, color 160ms ease; }
+.remote-tabbar button { display: grid; justify-items: center; gap: 3px; min-height: 52px; padding: 6px 0 4px; border: 0; border-radius: 14px; background: transparent; color: var(--remote-muted); font-size: 11px; font-weight: 700; letter-spacing: .04em; transition: background-color var(--ni-quick) ease, color var(--ni-quick) ease; }
 .remote-tabbar button .ni-glyph { width: 22px; height: 22px; }
 .remote-tabbar button[aria-selected="true"] { background: var(--ui-selected-surface); color: var(--ui-selected-text); }
 
