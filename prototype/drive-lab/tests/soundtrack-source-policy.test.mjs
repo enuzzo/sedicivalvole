@@ -142,3 +142,18 @@ test("Illobo web masters are admitted only through the complete owner grant", ()
     filename: "../unsafe.mp3",
   }).admitted, false);
 });
+
+test("Jamendo display metadata arrives decoded, as text rather than markup", async () => {
+  const { decodeDisplayText } = await import("../src/soundtrack/source-policy.js");
+  const policy = evaluateJamendoTrack({
+    ...JAMENDO_TRACK,
+    name: "Des l&egrave;vres &quot;v&#233;n&#xE9;neuses&quot;",
+    artist_name: "FairyTale&amp;Ghosts [F. T. G]",
+    album_name: "Rock &amp; Roll &lt;live&gt;",
+  });
+  assert.equal(policy.admitted, true);
+  assert.equal(policy.item.artistName, "FairyTale&Ghosts [F. T. G]");
+  assert.equal(policy.item.albumName, "Rock & Roll <live>");
+  assert.equal(policy.item.title, "Des l&egrave;vres \"vénéneuses\"", "unknown named entities stay literal");
+  assert.equal(decodeDisplayText("&#0;&#x110000;"), "&#0;&#x110000;");
+});

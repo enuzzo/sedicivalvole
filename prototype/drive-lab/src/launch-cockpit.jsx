@@ -2,7 +2,7 @@ import { SupportButton } from "./support-button.jsx";
 import { ENGINE_CATALOGUE } from "./engine/catalogue.js";
 import { useState } from 'react';
 import { SOUNDTRACK_GENRE_OPTIONS, SOUNDTRACK_PACE_OPTIONS } from './soundtrack/library-model.js';
-import { FLUX_VISUAL_CHOICES, SHADERGRADIENT_ENVIRONMENTS, getFluxEnvironment, isShaderGradientEnvironmentId } from './flux-environments.js';
+import { FLUX_VISUAL_CHOICES, SHADERGRADIENT_ENVIRONMENTS, getFluxEnvironment, isShaderGradientEnvironmentId, visualThumbnailUrl } from './flux-environments.js';
 import { readyScoreGenres, getScoreGenre } from './score/genres.js';
 import { CURATED_EXPERIENCES, chooseCuratedRecommendations } from './curated-experiences.js';
 import './launch-cockpit.css';
@@ -54,7 +54,8 @@ export function LaunchCockpit({ mode, onMode, musicId, onMusic, selection, lucky
         <button type="button" onClick={() => setPicker('about')} aria-haspopup="dialog">About</button>
         <SupportButton onClick={onSupport} />
       </header>
-      <nav className="cockpit-modes" aria-label="Experience mode">
+      <nav className="cockpit-modes ni-switch" aria-label="Experience mode" data-index={engine ? 1 : 0} style={{ '--switch-count': 2 }}>
+        <span className="ni-switch-thumb" aria-hidden="true" />
         {button('music', <><ModeIcon name="music" />Music</>, !engine, () => onMode('flux'))}
         {button('engine', <><ModeIcon name="engine" />Engine</>, engine, () => onMode('engine'))}
       </nav>
@@ -65,7 +66,7 @@ export function LaunchCockpit({ mode, onMode, musicId, onMusic, selection, lucky
         </div>
         <div className="cockpit-engine-note"><span>{engineProfileId === 'turbine' ? 'Continuous shaft' : 'Automatic gears'}</span><span>Stationary revs</span><span>Pure engine sound</span></div>
       </div> : <div className="cockpit-music-body">
-        <nav className="cockpit-sources" aria-label="Music source">{SOURCES.map(([id, name]) => button(id, name, musicId === id, () => onMusic(id)))}</nav>
+        <nav className="cockpit-sources ni-switch" aria-label="Music source" data-index={Math.max(0, SOURCES.findIndex(([id]) => id === musicId))} style={{ '--switch-count': SOURCES.length }}><span className="ni-switch-thumb" aria-hidden="true" />{SOURCES.map(([id, name]) => button(id, name, musicId === id, () => onMusic(id)))}</nav>
         <div className="cockpit-choices">
           <div className="cockpit-selection">
             <div className="cockpit-selection-heading">
@@ -80,7 +81,7 @@ export function LaunchCockpit({ mode, onMode, musicId, onMusic, selection, lucky
           </div>
           <div className="cockpit-selection cockpit-visual">
             <div className="cockpit-selection-heading">
-              <Thumbnail src={`/artwork/visuals/${environmentId}.png`} fallback="/third-party/tabler-icons/palette.svg" />
+              <Thumbnail src={visualThumbnailUrl(environmentId)} fallback="/third-party/tabler-icons/palette.svg" />
               <div className="cockpit-value"><small>VISUAL</small><strong>{visualLabel}</strong></div>
             </div>
             <div className="cockpit-choice-actions">
@@ -97,6 +98,7 @@ export function LaunchCockpit({ mode, onMode, musicId, onMusic, selection, lucky
       <div className="cockpit-start-row">
         {muted && (engine || musicId !== 'mute') ? <button className="cockpit-unmute" type="button" onClick={onUnmute}>UNMUTE</button> : null}
         <button className="cockpit-start" type="button" aria-label={startLabel} disabled={!ready} onClick={onStart}>
+          <span className="cockpit-gate" aria-hidden="true"><i /><i /></span>
           <strong>{startLabel}</strong><span>{muted && (engine || musicId !== 'mute') ? 'Audio muted' : pending && !engine && musicId === 'soundtrack' ? 'Music joins when ready' : engine ? `${profile[1]} · ${engineProfileId === 'turbine' ? 'continuous' : 'automatic'}` : `${mixLabel} · ${visualLabel}`}</span>
         </button>
       </div>
@@ -112,8 +114,8 @@ export function LaunchCockpit({ mode, onMode, musicId, onMusic, selection, lucky
         <p>{mixTab === 'pace' ? 'Pace chooses recordings with that energy. Tracks play at their original speed.' : 'Pick a genre, or let Random choose one on the start screen.'}</p>
       </> : null}
       {picker === 'score' ? <div className="cockpit-picker-options is-scores">{readyScoreGenres().map(item=>button(item.id,label(item),scoreId === item.id,()=>choose(()=>onScore(item.id)),item.family))}</div> : null}
-      {picker === 'visual' ? <div className="cockpit-picker-options is-visuals">{FLUX_VISUAL_CHOICES.map(item=>button(item.id,label(item),item.kind === 'family' ? isShaderGradientEnvironmentId(environmentId) : environmentId === item.id,()=>item.kind === 'family' ? setPicker('gradient') : choose(()=>onVisual(item.id)),item.launchDescription))}</div> : null}
-      {picker === 'gradient' ? <div className="cockpit-picker-options is-scores">{SHADERGRADIENT_ENVIRONMENTS.map(item=>button(item.id,label(item),environmentId === item.id,()=>choose(()=>onVisual(item.id))))}</div> : null}
+      {picker === 'visual' ? <div className="cockpit-picker-options is-visuals is-gallery">{FLUX_VISUAL_CHOICES.map(item => <button type="button" key={item.id} aria-pressed={item.kind === 'family' ? isShaderGradientEnvironmentId(environmentId) : environmentId === item.id} onClick={() => item.kind === 'family' ? setPicker('gradient') : choose(() => onVisual(item.id))}><img className="cockpit-gallery-thumb" src={visualThumbnailUrl(item.id)} alt="" width="192" height="149" decoding="async" /><strong>{label(item)}</strong><small>{item.launchDescription}</small></button>)}</div> : null}
+      {picker === 'gradient' ? <div className="cockpit-picker-options is-visuals is-gallery">{SHADERGRADIENT_ENVIRONMENTS.map(item => <button type="button" key={item.id} aria-pressed={environmentId === item.id} onClick={() => choose(() => onVisual(item.id))}><img className="cockpit-gallery-thumb" src={visualThumbnailUrl(item.id)} alt="" width="192" height="149" decoding="async" /><strong>{label(item)}</strong></button>)}</div> : null}
       {picker === 'about' ? <div className="cockpit-about"><p>Music, light and engine sound shaped by your drive.</p><p>Audio, display, motion, and GPS are checked locally. Position stays in this session.</p><p>BUILD {build}</p><a href="https://github.com/enuzzo/sedicivalvole" target="_blank" rel="noreferrer">Source · github.com/enuzzo/sedicivalvole</a><button type="button" onClick={()=>choose(onReset)}>RESET SAVED STATE</button></div> : null}
     </Dialog> : null}
   </>;

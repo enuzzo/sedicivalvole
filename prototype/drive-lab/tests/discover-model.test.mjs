@@ -177,7 +177,8 @@ test("Discover is reachable from both Visual catalogue entry points", () => {
   assert.match(appSource, /selectedDiscover = selectedEnvironmentId === DISCOVER_VISUAL_CHOICE\.id/);
   assert.match(appSource, /setDiscoverOpen\(true\);[\s\S]*?source: "launch-selector"/);
   assert.match(appSource, /onOpenDiscover=\{\(\) => \{[\s\S]*?setDiscoverOpen\(true\);[\s\S]*?source: "visual-library"/);
-  assert.match(appSource, /active \? "ACTIVE" : <span aria-hidden="true">↗<\/span>/);
+  assert.match(appSource, /active \? <><Led on \/>ACTIVE<\/> : null/);
+  assert.match(appSource, /destination \? <span className="visual-gallery-destination" aria-hidden="true">↗<\/span> : null/);
 });
 
 

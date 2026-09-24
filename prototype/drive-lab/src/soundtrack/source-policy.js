@@ -25,6 +25,16 @@ const CREATIVE_COMMONS_CODES = new Set([
 const JAMENDO_DISCOVERY_PACES = new Set(["verylow", "low", "medium", "high", "veryhigh"]);
 
 const asText = (value) => typeof value === "string" ? value.trim() : "";
+// Jamendo returns HTML-escaped display metadata ("FairyTale&amp;Ghosts").
+// Decode only the entities it uses; the result is rendered as text, never markup.
+const NAMED_ENTITIES = Object.freeze({ amp: "&", lt: "<", gt: ">", quot: "\"", apos: "'", nbsp: "\u00a0" });
+export const decodeDisplayText = (value) => asText(value).replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (entity, body) => {
+  if (body[0] === "#") {
+    const code = body[1].toLowerCase() === "x" ? parseInt(body.slice(2), 16) : parseInt(body.slice(1), 10);
+    return Number.isInteger(code) && code > 0 && code <= 0x10ffff ? String.fromCodePoint(code) : entity;
+  }
+  return NAMED_ENTITIES[body.toLowerCase()] ?? entity;
+});
 
 const normalizedTags = (values) => Object.freeze([
   ...new Set((Array.isArray(values) ? values : [])
@@ -142,10 +152,10 @@ export function evaluateJamendoTrack(track) {
     directBacklinkRequired: true,
     item: Object.freeze({
       id: asText(track.id),
-      title: asText(track.name),
+      title: decodeDisplayText(track.name),
       artistId: asText(track.artist_id) || null,
-      artistName: asText(track.artist_name),
-      albumName: asText(track.album_name) || null,
+      artistName: decodeDisplayText(track.artist_name),
+      albumName: decodeDisplayText(track.album_name) || null,
       streamUrl: streamUrl.href,
       shareUrl: shareUrl.href,
       imageUrl: imageUrl?.href ?? null,

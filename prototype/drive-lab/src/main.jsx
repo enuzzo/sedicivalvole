@@ -7,6 +7,7 @@ import "./phone-cockpit.css";
 import "./motion/motion.css";
 import "./contextual-rail.css";
 import "./engine/telemetry-metrics.css";
+import "./night-instrument.css";
 
 const phoneCompanion = ["phone"].includes(new URLSearchParams(window.location.search).get("remote"))
   || new URLSearchParams(window.location.search).get("motion") === "phone";

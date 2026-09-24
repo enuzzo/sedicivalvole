@@ -167,6 +167,19 @@ export const FLUX_VISUAL_CHOICES = [
   { id: "stats", label: "STATS FOR NERDS", displayLabel: "Stats for Nerds", number: "09", rendererLabel: "Session observatory", launchDescription: "Journey, direction and system statistics", kind: "destination" },
 ].sort((a,b) => Number(a.number)-Number(b.number));
 
+/**
+ * Local preview artwork for a visual, catalogue family or destination. Gradient
+ * variants have their own frames; the family entry shows its first variant.
+ */
+const VISUAL_THUMBNAIL_IDS = new Set([
+  "aperture", "vertigo", "meridian", "atlas", "drivey", "prtcl", "discover",
+  "stats", "air-atlas", "japanese-mist", "acid-orchard", "chromatic-silk",
+]);
+export function visualThumbnailUrl(id) {
+  const key = id === "shadergradient" ? "japanese-mist" : id;
+  return `/artwork/visuals/${VISUAL_THUMBNAIL_IDS.has(key) ? key : "aperture"}.png`;
+}
+
 export function getFluxEnvironment(environmentId) {
   return FLUX_ENVIRONMENTS.find((environment) => environment.id === environmentId)
     ?? FLUX_ENVIRONMENTS.find((environment) => environment.id === DEFAULT_FLUX_ENVIRONMENT_ID);

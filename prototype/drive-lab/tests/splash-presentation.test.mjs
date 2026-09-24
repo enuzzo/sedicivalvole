@@ -151,12 +151,12 @@ test("the footer keeps a compact right palette and exposes one audio-effects mas
   assert.match(app, /audioRef\.current\.setVehicleEffectsEnabled\(launchVehicleEffects\)/);
   assert.match(app, /soundtrackRef\.current\?\.setVehicleMaster\(vehicleEffectsEnabled\)/);
   assert.doesNotMatch(app, /soundtrack-manual-disclosure/);
-  assert.match(app, /CHOOSE A SOUNDTRACK PATH/);
+  assert.match(app, /<span>SOURCE<\/span>/);
   assert.match(app, /Fresh mix · changes every 30 min/);
   assert.match(app, /className=\{`effects-button\$\{vehicleEffectsEnabled \? " is-active" : ""\}`\}/);
   assert.match(app, /className=\{`stop-button\$\{muted \? " is-active" : ""\}`\}/);
-  assert.match(app, /<span>MUTE<\/span>[\s\S]*?<strong>\{muted \? "ON" : "OFF"\}<\/strong>/);
-  assert.match(app, /<span>FX<\/span>/);
+  assert.match(app, /<span>SOUND<\/span>[\s\S]*?<strong>\{muted \? "Muted" : "On"\}<\/strong>/);
+  assert.match(app, /<Led on=\{vehicleEffectsEnabled\} \/>[\s\S]*?<span>BRAKE FX<\/span>/);
   assert.match(app, /showControlNotice\("VOLUME", !nextMuted\)/);
   assert.match(app, /showControlNotice\("BRAKING FX", enabled\)/);
   assert.match(app, /className="control-status-notice" role="status" aria-live="polite"/);
@@ -169,6 +169,9 @@ test("the footer keeps a compact right palette and exposes one audio-effects mas
   assert.match(styles, /\.swatch-housing \{[\s\S]*?grid-template-columns: repeat\(5, minmax\(0, 1fr\)\);[\s\S]*?grid-template-rows: repeat\(2, minmax\(0, 1fr\)\)/);
   assert.match(styles, /\.swatch-housing button \{[^}]*width: 100%;[^}]*min-height: 0/);
   assert.match(styles, /\.control-status-notice \{[\s\S]*?top: 50%;[\s\S]*?left: 50%;[\s\S]*?border-radius: var\(--ui-radius\)/);
+  const instrument = read("night-instrument.css");
+  assert.match(instrument, /:not\(\[data-phone-layout\]\) \.footer-stack \.control-slab \{ grid-template-columns: 72px 92px minmax\(0, 1fr\) minmax\(0, 1\.08fr\) 88px 112px; \}/);
+  assert.match(instrument, /\.palette-control \{ position: relative; display: block; height: 52px;/);
 });
 
 test("the selected FX Deck is a global footer overlay with eight strong tap states", () => {
@@ -178,11 +181,12 @@ test("the selected FX Deck is a global footer overlay with eight strong tap stat
   assert.match(read("remote/phone.jsx"), /MANUAL_EFFECT_CONTROLS/);
   const styles = read("styles.css");
   assert.match(app, /id="manual-effects-deck"/);
-  assert.match(app, /GLOBAL · PLAY THE ROAD \+ SOUNDTRACK/);
+  assert.match(app, /MIX · PLAY THE ROAD \+ SOUNDTRACK/);
   assert.match(app, /aria-controls="manual-effects-deck"/);
   assert.match(app, /const controlsPinned = modalOpen[\s\S]*?\|\| manualEffectsDeckOpen/);
   assert.doesNotMatch(app, /const modalOpen =[^;]*manualEffectsDeckOpen/);
-  assert.match(app, /<span>FX<\/span>[\s\S]*?<strong aria-hidden="true">↑<\/strong>/);
+  assert.match(app, /<span>MIX<\/span>[\s\S]*?<LedRow states=\{SOUNDTRACK_MANUAL_CONTROLS\.map/);
+  assert.match(app, /role="slider"[\s\S]*?aria-label=\{`\$\{effect\.displayLabel\} depth`\}/);
   assert.match(app, /active \? 0 : effect\.performanceAmount/);
   assert.match(controls, /performanceAmount: 0\.78/);
   assert.match(controls, /performanceAmount: 0\.72/);
@@ -198,7 +202,7 @@ test("the selected FX Deck is a global footer overlay with eight strong tap stat
   assert.doesNotMatch(controls, /id: "chorus"/);
   assert.match(styles, /\.manual-effects-deck \{[\s\S]*?bottom: 76px/);
   assert.match(styles, /\.manual-effects-grid \{[^}]*repeat\(4/);
-  assert.match(styles, /article\.is-family-tone::before[\s\S]*?width: 3px[\s\S]*?background: #59d7ff/);
+  assert.match(read("night-instrument.css"), /\.fx-pad-grid \{[^}]*grid-template-columns: repeat\(4, minmax\(0, 1fr\)\)/);
   assert.match(styles, /\.mix-button \{ grid-column: 5/);
 });
 

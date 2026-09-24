@@ -32,6 +32,8 @@ import { ExperienceCard } from "./experience-card.jsx";
 import { CURATED_EXPERIENCES, applyExperienceSettings, matchingExperience } from "./curated-experiences.js";
 import { resolveSemanticTheme } from "./semantic-theme.js";
 import { RailIcon } from "./rail-icon.jsx";
+import { ActivityBars, Led, LedRow, NiGlyph, RollingNumber, SpeedGauge, VisualThumb } from "./ui/night-instrument.jsx";
+import { eventOrigin, withInkWipe } from "./ui/ink-wipe.js";
 import { MotionIcon } from "./motion/motion-ui.jsx";
 import { RemoteReceiverPanel } from "./remote/receiver-panel.jsx";
 import { createRemoteSession } from "./remote/session.js";
@@ -1436,9 +1438,10 @@ class EnvironmentErrorBoundary extends Component {
 
 function ModeSelector({ mode = "flux", onChange }) {
   return (
-    <nav className="mode-selector" aria-label="Experience mode">
-      <button type="button" className={mode === "engine" ? "is-active" : ""} aria-pressed={mode === "engine"} onClick={() => onChange?.("engine")}>ENGINE</button>
-      <button className={mode === "flux" ? "is-active" : ""} type="button" aria-pressed={mode === "flux"} onClick={() => onChange?.("flux")}>MUSIC</button>
+    <nav className="mode-selector" aria-label="Experience mode" data-mode={mode}>
+      <span className="mode-thumb" aria-hidden="true" />
+      <button type="button" className={mode === "engine" ? "is-active" : ""} aria-pressed={mode === "engine"} onClick={() => onChange?.("engine")}><Led on={mode === "engine"} />ENGINE</button>
+      <button className={mode === "flux" ? "is-active" : ""} type="button" aria-pressed={mode === "flux"} onClick={() => onChange?.("flux")}><Led on={mode === "flux"} />MUSIC</button>
     </nav>
   );
 }
@@ -1474,6 +1477,7 @@ function VisualControl({ environment, onOpen }) {
       aria-label={`Visual ${name} ${environment.number}. Tap to change`}
       onClick={onOpen}
     >
+      <VisualThumb id={environment.id} className="control-thumb" width={40} height={40} />
       <span className="control-label">VISUAL</span>
       <span className="control-value">
         <strong>{name}</strong>
@@ -1484,7 +1488,7 @@ function VisualControl({ environment, onOpen }) {
   );
 }
 
-function MusicControl({ genreId, selection, onOpen, musicMode, soundtrackSnapshot = null }) {
+function MusicControl({ genreId, selection, onOpen, musicMode, soundtrackSnapshot = null, artworkUrl = null }) {
   if (musicMode === "soundtrack") {
     const current = soundtrackSnapshot?.current;
     const featured = soundtrackSnapshot?.library?.selection?.kind === "featured";
@@ -1500,7 +1504,8 @@ function MusicControl({ genreId, selection, onOpen, musicMode, soundtrackSnapsho
         aria-label={`Soundtrack ${stateLabel}. Tap for artist credit and effects`}
         onClick={onOpen}
       >
-        <span className="control-label">MUSIC</span>
+        {artworkUrl ? <img className="control-thumb" src={artworkUrl} alt="" width="40" height="40" decoding="async" /> : <span className="control-thumb is-placeholder" aria-hidden="true"><NiGlyph name="music" /></span>}
+        <span className="control-label">{featured ? "ILLOBO" : "JAMENDO"}</span>
         <span className="control-value">
           <strong aria-live="polite">{stateLabel}</strong>
           <span className="control-catalog-number is-provider">{providerMark}</span>
@@ -1528,7 +1533,8 @@ function MusicControl({ genreId, selection, onOpen, musicMode, soundtrackSnapsho
       title={selection.message ?? undefined}
       onClick={onOpen}
     >
-      <span className="control-label">MUSIC</span>
+      <img className="control-thumb" src={selected.coverUrl} alt="" width="40" height="40" decoding="async" />
+      <span className="control-label">PLAY THE ROAD</span>
       <span className="control-value">
         <strong aria-live="polite">{stateLabel}</strong>
         <span className="control-catalog-number" title={scoreSource(selected.id).note}>
@@ -1551,7 +1557,7 @@ function VisualPicker({ environmentId, onChange, onOpenDiscover, onOpenStats, on
         <div><small>MUSIC VISUAL LIBRARY</small><h2 id="visual-picker-title">Visual</h2></div>
         <button data-dialog-initial-focus type="button" onClick={onClose} aria-label="Close visual library">CLOSE</button>
       </div>
-      <ul className="score-list">
+      <ul className="score-list visual-gallery">
         {FLUX_VISUAL_CHOICES.map((entry) => {
           const destination = entry.kind === "destination";
           const family = entry.kind === "family";
@@ -1572,12 +1578,16 @@ function VisualPicker({ environmentId, onChange, onOpenDiscover, onOpenStats, on
                   onClose();
                 }}
               >
+                <span className="visual-gallery-frame">
+                  <VisualThumb id={family && active ? environmentId : entry.id} width={192} height={149} />
+                  {destination ? <span className="visual-gallery-destination" aria-hidden="true">↗</span> : null}
+                </span>
                 <span className="score-entry-body">
                   <strong>{displayLabel(entry)}</strong>
                   <span>{entry.launchDescription}</span>
                 </span>
                 <span className="score-entry-state">
-                  {active ? "ACTIVE" : <span aria-hidden="true">↗</span>}
+                  {active ? <><Led on />ACTIVE</> : null}
                 </span>
               </button>
             </li>
@@ -1687,8 +1697,7 @@ function SoundtrackLibraryContent({
   return (
     <div className="soundtrack-panel-body">
       <div className="soundtrack-choice-heading">
-        <span>CHOOSE A SOUNDTRACK PATH</span>
-        <strong>Two equal ways to start listening</strong>
+        <span>SOURCE</span>
       </div>
       <div className="soundtrack-choice-grid">
         <button type="button" className={`soundtrack-choice-card${selected?.kind === "featured" ? " is-selected" : ""}`} aria-pressed={selected?.kind === "featured"} onClick={onFeatured}>
@@ -1742,7 +1751,7 @@ function SoundtrackLibraryContent({
                 onClick={() => onBrowseSelection({ kind: "pace", id: pace.id })}
               >
                 <strong>{pace.label}</strong>
-                <MediaGlyph name="play" />
+                {selected?.kind === "pace" && selected.id === pace.id ? <Led on /> : null}
               </button>
             ))}
             </div>
@@ -1762,7 +1771,7 @@ function SoundtrackLibraryContent({
                       onClick={() => onBrowseSelection({ kind: "genre", id: genre.id })}
                     >
                       <strong>{genre.label}</strong>
-                      <MediaGlyph name="play" />
+                      {selected?.kind === "genre" && selected.id === genre.id ? <Led on /> : null}
                     </button>
                   ))}
                 </div>
@@ -1886,6 +1895,79 @@ function MusicLibraryPanel({
   );
 }
 
+const clampDepth = (value) => Math.min(1, Math.max(0, Math.round(value * 100) / 100));
+
+/**
+ * One performance pad. A tap plays the authored hit (or stops the effect); a
+ * vertical drag sets depth, drawn as a column of light rising in the pad. The
+ * pad is an ARIA slider, so keyboard and assistive control stay complete.
+ */
+function PerformancePad({ effect, amount, onChange }) {
+  const padRef = useRef(null);
+  const dragRef = useRef(null);
+  const active = amount > 0.01;
+  const percent = Math.round(amount * 100);
+  const toggle = () => onChange(effect.id, active ? 0 : effect.performanceAmount);
+  const release = (event) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    dragRef.current = null;
+    padRef.current?.releasePointerCapture?.(event.pointerId);
+    if (!drag.moved && event.type === "pointerup") toggle();
+  };
+  return (
+    <div
+      ref={padRef}
+      className={`fx-pad${active ? " is-active" : ""}${effect.family ? ` is-family-${effect.family}` : ""}`}
+      style={{ "--depth": amount }}
+      role="slider"
+      tabIndex={0}
+      aria-label={`${effect.displayLabel} depth`}
+      aria-describedby="fx-pad-help"
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={percent}
+      aria-valuetext={`${percent}%${active ? ", playing" : ", off"}`}
+      onPointerDown={(event) => {
+        event.stopPropagation();
+        if (event.pointerType === "mouse" && event.button !== 0) return;
+        dragRef.current = { pointerId: event.pointerId, y: event.clientY, start: amount, moved: false };
+        padRef.current?.setPointerCapture?.(event.pointerId);
+      }}
+      onPointerMove={(event) => {
+        const drag = dragRef.current;
+        if (!drag || drag.pointerId !== event.pointerId) return;
+        const travel = drag.y - event.clientY;
+        if (!drag.moved && Math.abs(travel) < 8) return;
+        drag.moved = true;
+        const height = Math.max(60, padRef.current?.clientHeight ?? 120);
+        onChange(effect.id, clampDepth(drag.start + travel / (height * 0.9)));
+      }}
+      onPointerUp={release}
+      onPointerCancel={release}
+      onKeyDown={(event) => {
+        const steps = { ArrowUp: 0.05, ArrowRight: 0.05, ArrowDown: -0.05, ArrowLeft: -0.05, PageUp: 0.1, PageDown: -0.1 };
+        if (event.key in steps) onChange(effect.id, clampDepth(amount + steps[event.key]));
+        else if (event.key === "Home") onChange(effect.id, 0);
+        else if (event.key === "End") onChange(effect.id, 1);
+        else if (event.key === "Enter" || event.key === " ") toggle();
+        else return;
+        event.preventDefault();
+      }}
+    >
+      <span className="fx-pad-level" aria-hidden="true" />
+      <span className="fx-pad-copy">
+        <strong>{effect.label}</strong>
+        <small>{effect.note}</small>
+      </span>
+      <span className="fx-pad-readout" aria-hidden="true">
+        {effect.family === "tone" ? <em>EQ</em> : null}
+        <b>{percent}</b><i>%</i>
+      </span>
+    </div>
+  );
+}
+
 function ManualEffectsDeck({ values, onChange, onClose }) {
   useEffect(() => {
     const closeOnEscape = (event) => {
@@ -1901,59 +1983,32 @@ function ManualEffectsDeck({ values, onChange, onClose }) {
       <button className="manual-effects-backdrop" type="button" tabIndex={-1} onPointerDown={event => event.stopPropagation()} onClick={event => { event.stopPropagation(); onClose(); }} aria-label="Close Performance FX" />
       <section
         id="manual-effects-deck"
-        className="manual-effects-deck control-layer"
+        className="manual-effects-deck control-layer is-pads"
         role="dialog"
         aria-modal="false"
         aria-labelledby="manual-effects-title"
       >
       <header>
         <div>
-          <small>GLOBAL · PLAY THE ROAD + SOUNDTRACK</small>
+          <small>MIX · PLAY THE ROAD + SOUNDTRACK</small>
           <h2 id="manual-effects-title">Performance FX</h2>
         </div>
-        <span>{activeCount}/8 ACTIVE</span>
+        <span className="fx-deck-count"><LedRow states={SOUNDTRACK_MANUAL_CONTROLS.map(({ id }) => values[id] > 0.01)} />{activeCount}/8 ACTIVE</span>
         <button type="button" onClick={() => SOUNDTRACK_MANUAL_CONTROLS.forEach(({ id }) => onChange(id, 0))}>RESET</button>
         <button type="button" autoFocus onClick={onClose}>CLOSE</button>
       </header>
-      <div className="manual-effects-grid">
-        {SOUNDTRACK_MANUAL_CONTROLS.map((effect) => {
-          const amount = values[effect.id];
-          const active = amount > 0.01;
-          return (
-            <article
-              key={effect.id}
-              className={`${active ? "is-active" : ""}${effect.family ? ` is-family-${effect.family}` : ""}`.trim()}
-            >
-              <button
-                className="manual-effect-hit"
-                type="button"
-                aria-pressed={active}
-                onClick={() => onChange(effect.id, active ? 0 : effect.performanceAmount)}
-              >
-                <span><strong>{effect.label}</strong><small>{effect.note}</small></span>
-                <em>{active ? "ON" : "HIT"}</em>
-              </button>
-              <label>
-                <span>DEPTH</span>
-                <output>{Math.round(amount * 100)}</output>
-                <input
-                  aria-label={`${effect.displayLabel} depth`}
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.01"
-                  value={amount}
-                  onInput={(event) => onChange(effect.id, Number(event.currentTarget.value))}
-                />
-              </label>
-            </article>
-          );
-        })}
+      <p id="fx-pad-help" className="fx-pad-help">Tap a pad to play it. Drag up or down to set its depth.</p>
+      <div className="manual-effects-grid fx-pad-grid">
+        {SOUNDTRACK_MANUAL_CONTROLS.map((effect) => (
+          <PerformancePad key={effect.id} effect={effect} amount={values[effect.id]} onChange={onChange} />
+        ))}
       </div>
       </section>
     </div>
   );
 }
+
+const paletteName = (theme) => theme.label.replace(/\s+\d+$/, "").toLowerCase().replace(/^./, (character) => character.toUpperCase());
 
 /** A full-cell palette preview opens ten independently reachable touch targets. */
 function PaletteControl({ themeId, onChange, open, onOpenChange }) {
@@ -1984,13 +2039,13 @@ function PaletteControl({ themeId, onChange, open, onOpenChange }) {
     }}>
       <button className="palette-trigger" type="button" aria-label={`Palette ${selected.label}. Choose palette`}
         aria-expanded={open} aria-controls="palette-menu" onClick={() => onOpenChange(!open)}>
-        <span className="palette-glyph" aria-hidden="true" />
-        <span>Palette</span>
+        <span className="palette-orb" style={swatch(selected)} aria-hidden="true" />
+        <span className="palette-trigger-copy"><span>PALETTE</span><strong>{paletteName(selected)}</strong></span>
       </button>
       {open ? <div className="palette-menu" id="palette-menu" role="group" aria-label="Colour palettes">
         {FLUX_THEMES.map((theme) => <button key={theme.id} type="button" aria-pressed={theme.id === themeId}
-          aria-label={`Use the ${theme.label.toLowerCase()} palette`} onClick={() => { onChange(theme.id); onOpenChange(false); }}>
-          <span style={swatch(theme)} aria-hidden="true" /><strong>{theme.label.replace(/\s+\d+$/, "").toLowerCase().replace(/^./, character => character.toUpperCase())}</strong>
+          aria-label={`Use the ${theme.label.toLowerCase()} palette`} onClick={(event) => { const origin = eventOrigin(event); onOpenChange(false); withInkWipe(origin, () => onChange(theme.id)); }}>
+          <span style={swatch(theme)} aria-hidden="true" /><strong>{paletteName(theme)}</strong>
         </button>)}
       </div> : null}
     </div>
@@ -2124,6 +2179,9 @@ export function App() {
   const initialAppearanceMode = useMemo(readAppearancePreference, []);
   const initialSystemAppearance = useMemo(readSystemAppearanceSnapshot, []);
   const [phase, setPhase] = useState("idle");
+  // START opens the Signal Gate: the running field is revealed from the centre seam.
+  const [gateReveal, setGateReveal] = useState(false);
+  const previousPhaseRef = useRef(phase);
   const phoneLayout = usePhoneLayout();
   const phonePortrait = phase === "running" && phoneLayout === "portrait";
   const launchStartedRef = useRef(false);
@@ -2259,6 +2317,14 @@ export function App() {
     () => window.matchMedia?.("(prefers-reduced-motion: reduce)").matches ?? false,
     [],
   );
+  useEffect(() => {
+    const previous = previousPhaseRef.current;
+    previousPhaseRef.current = phase;
+    if (phase !== "running" || previous === "running" || reducedMotion) return undefined;
+    setGateReveal(true);
+    const timer = window.setTimeout(() => setGateReveal(false), 1_300);
+    return () => window.clearTimeout(timer);
+  }, [phase, reducedMotion]);
 
   const audioRef = useRef(null);
   const soundtrackRef = useRef(null);
@@ -5464,6 +5530,7 @@ export function App() {
           }}
         />
       ) : null}
+      {gateReveal ? <div className="gate-reveal" aria-hidden="true"><i /><i /><b /></div> : null}
       {sessionUpdate.due && !modalOpen ? <aside className="session-update-notice" role="status">
         <span><strong>{sessionUpdate.latest !== sessionUpdate.current ? "UPDATE AVAILABLE" : "SESSION REFRESH DUE"}</strong><small>Saved choices stay. Session restarts.</small></span>
         <button type="button" disabled={sessionUpdate.reloading} onClick={() => void sessionUpdate.apply()}>{sessionUpdate.reloading ? "UPDATING…" : "UPDATE"}</button>
@@ -5491,7 +5558,7 @@ export function App() {
           soundtrackTrack={soundtrackLaunchReady(soundtrackSnapshot, launchSoundtrackSelection) ? soundtrackSnapshot.current : null}
           soundtrackStatus={soundtrackLaunchState(soundtrackSnapshot, launchSoundtrackSelection, { offline: networkNotice.status === "offline" })}
           onRetrySoundtrack={() => prepareLaunchSoundtrack(launchSoundtrackSelection)}
-          theme={getFluxTheme(themeId)} onPalette={() => { setLaunchExperienceId(null); setThemeId(FLUX_THEMES[(FLUX_THEMES.findIndex(item => item.id === themeId) + 1) % FLUX_THEMES.length].id); }}
+          theme={getFluxTheme(themeId)} onPalette={(event) => withInkWipe(eventOrigin(event), () => { setLaunchExperienceId(null); setThemeId(FLUX_THEMES[(FLUX_THEMES.findIndex(item => item.id === themeId) + 1) % FLUX_THEMES.length].id); })}
           onSelection={chooseLaunchSoundtrack}
           onLucky={() => chooseLaunchSoundtrack(luckySoundtrackGenre(launchSoundtrackSelection.id), true)}
           onRandomVisual={() => { setLaunchExperienceId(null); setLaunchEnvironmentId(luckyLaunchVisual(launchEnvironmentId)); }}
@@ -5505,7 +5572,7 @@ export function App() {
           ready={Boolean(launchMusicId && launchEnvironmentId)}
           pending={launchMusicId === "soundtrack" && !soundtrackLaunchReady(soundtrackSnapshot, launchSoundtrackSelection)}
           onStart={() => runHarness({ musicId: launchMusicId, selectedEnvironmentId: launchEnvironmentId, experienceId: launchExperienceId })}
-        /> : <p className="cockpit-starting" role="status">Starting {experienceMode === "engine" ? "Engine" : FLUX_VISUAL_CHOICES.find(entry => entry.id === launchEnvironmentId)?.displayLabel || environment.displayLabel}…</p>}
+        /> : <p className="cockpit-starting" role="status"><span className="cockpit-starting-gate" aria-hidden="true" />Starting {experienceMode === "engine" ? "Engine" : FLUX_VISUAL_CHOICES.find(entry => entry.id === launchEnvironmentId)?.displayLabel || environment.displayLabel}…</p>}
       </section>
       ) : null}
 
@@ -5530,9 +5597,12 @@ export function App() {
           </button>
           <div className={`source-readout${musicMode === "soundtrack" ? " is-soundtrack" : ""}`} role="group" aria-label={`Speed source ${source}`}>
           <div className="readout-group">
-            <strong>{source === "GPS" && !["fresh", "degraded"].includes(speedFreshness) ? "—" : Math.round(speed)}</strong>
+            {source === "GPS" && !["fresh", "degraded"].includes(speedFreshness)
+              ? <strong className="rolling-number is-static">—</strong>
+              : <RollingNumber value={Math.round(speed)} label={`${Math.round(speed)} km/h`} />}
             <span className="readout-unit">km/h{source === "DEMO" ? " · SIM" : ""}</span>
           </div>
+          <SpeedGauge speed={speed} live={!(source === "GPS" && !["fresh", "degraded"].includes(speedFreshness))} />
           <div className={`effect-badge${experienceMode === "flux" && activeEffect ? " is-active" : ""}`} aria-hidden={experienceMode !== "flux" || !activeEffect}>{experienceMode === "flux" ? <><span>{activeEffect || "UNDERWATER"}</span>{!vehicleEffectsEnabled ? <small>VISUAL ONLY</small> : null}</> : ""}</div>
           </div>
           <ModeSelector mode={experienceMode} onChange={chooseExperienceMode} />
@@ -5613,9 +5683,9 @@ export function App() {
       {showNowPlaying ? (
         <div className="now-playing-dock persistent-transport" aria-label="Now playing and music transport">
           <div className="now-playing-summary" role="status" aria-live="polite" aria-atomic="true">
-            {currentArtwork.src ? <img src={currentArtwork.src} alt="" width="72" height="72" /> : <span className="now-playing-artwork" aria-hidden="true">16</span>}
+            {currentArtwork.src ? <img src={currentArtwork.src} alt="" width="72" height="72" /> : <span className="now-playing-artwork" aria-hidden="true"><img src={BRAND_MARK_URL} alt="" width="40" height="40" /></span>}
             <span className="now-playing-copy">
-              <small>{transportLabel}</small>
+              <small><ActivityBars playing={transportPlaying} />{transportLabel}</small>
               <strong>{transportTrack.title}</strong>
               <em>{transportTrack.artist} · {transportTrack.album}</em>
             </span>
@@ -5636,8 +5706,9 @@ export function App() {
             aria-pressed={muted}
             aria-label={`${muted ? "Unmute" : "Mute"} ${experienceMode === "engine" ? "Engine" : "music"}`}
           >
-            <span>MUTE</span>
-            <strong>{muted ? "ON" : "OFF"}</strong>
+            <NiGlyph name={muted ? "speaker-off" : "speaker"} className="slab-glyph" />
+            <span>SOUND</span>
+            <strong>{muted ? "Muted" : "On"}</strong>
           </button>
           {experienceMode === "flux" ? <button
             className={`effects-button${vehicleEffectsEnabled ? " is-active" : ""}`}
@@ -5647,10 +5718,11 @@ export function App() {
             title="Braking UNDERWATER audio processing"
             onClick={() => updateVehicleEffects(!vehicleEffectsEnabled)}
           >
-            <span>FX</span>
-            <strong>{vehicleEffectsEnabled ? "ON" : "OFF"}</strong>
+            <Led on={vehicleEffectsEnabled} />
+            <span>BRAKE FX</span>
+            <strong>{vehicleEffectsEnabled ? "On" : "Off"}</strong>
           </button> : null}
-          {experienceMode === "engine" ? <><button type="button" className="engine-return-flux" onClick={() => { chooseExperienceMode("flux"); setEnvironmentPickerOpen(true); }}><span>MUSIC</span><strong>Visuals</strong></button><button type="button" className="engine-return-flux" onClick={() => { chooseExperienceMode("flux"); setSoundtrackPanelOpen(true); }}><span>MUSIC</span><strong>Music</strong></button></> : <><VisualControl environment={environment} onOpen={() => {
+          {experienceMode === "engine" ? <><button type="button" className="engine-return-flux" onClick={() => { chooseExperienceMode("flux"); setEnvironmentPickerOpen(true); }}><NiGlyph name="visual" className="slab-glyph" /><span>MUSIC MODE</span><strong>Visual library</strong></button><button type="button" className="engine-return-flux" onClick={() => { chooseExperienceMode("flux"); setSoundtrackPanelOpen(true); }}><NiGlyph name="music" className="slab-glyph" /><span>MUSIC MODE</span><strong>Music library</strong></button></> : <><VisualControl environment={environment} onOpen={() => {
             if (experienceMode === "engine") chooseExperienceMode("flux");
             setEnvironmentPickerOpen(true);
           }} />
@@ -5659,6 +5731,7 @@ export function App() {
             selection={scoreSelection}
             musicMode={musicMode}
             soundtrackSnapshot={soundtrackSnapshot}
+            artworkUrl={musicMode === "soundtrack" ? currentArtwork.src : null}
             onOpen={() => { if (experienceMode === "engine") chooseExperienceMode("flux"); setSoundtrackPanelOpen(true); }}
           /></>}
           {experienceMode === "flux" ? <button
@@ -5669,9 +5742,10 @@ export function App() {
             aria-controls="manual-effects-deck"
             onClick={() => setManualEffectsDeckOpen((open) => !open)}
           >
-            <span>FX</span>
-            <strong aria-hidden="true">↑</strong>
-            <small>{SOUNDTRACK_MANUAL_CONTROLS.filter(({ id }) => soundtrackManualEffects[id] > 0.01).length}/8 ACTIVE</small>
+            <span>MIX</span>
+            <strong>{SOUNDTRACK_MANUAL_CONTROLS.filter(({ id }) => soundtrackManualEffects[id] > 0.01).length || "Off"}</strong>
+            <LedRow states={SOUNDTRACK_MANUAL_CONTROLS.map(({ id }) => soundtrackManualEffects[id] > 0.01)} />
+            <small className="visually-hidden">{SOUNDTRACK_MANUAL_CONTROLS.filter(({ id }) => soundtrackManualEffects[id] > 0.01).length}/8 ACTIVE</small>
           </button> : null}
           <PaletteControl themeId={themeId} onChange={setThemeId} open={paletteMenuOpen} onOpenChange={setPaletteMenuOpen} />
         </footer>

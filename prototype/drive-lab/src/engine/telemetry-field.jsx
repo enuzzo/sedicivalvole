@@ -5,6 +5,12 @@ import "./telemetry-field.css";
 import { telemetrySignals } from "./telemetry-signals.js";
 import { EngineSignals } from "./telemetry-signals.jsx";
 
+// Twelve steady shift lights over the last stretch of the tachometer; no flashing.
+const SHIFT_LIGHTS = Object.freeze(Array.from({ length: 12 }, (_, index) => Object.freeze({
+  at: 0.5 + index * 0.034,
+  tone: index < 5 ? "go" : index < 9 ? "near" : "shift",
+})));
+
 export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease, speed = 0, speedSource = "GPS", speedFreshness = state.motion, onFrame }) {
   const contextual = useContextualControls();
   const [visible, setVisible] = useState(() => document.visibilityState !== "hidden");
@@ -32,12 +38,21 @@ export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease,
   const speedKnown = signal.speedKnown;
   const rpm = state.rpm ?? 1000;
   const rpmPosition = Math.max(0, Math.min(1, rpm / 9000));
+  // Peak hold: the highest RPM of the last 1.5 s stays marked, like a needle tell-tale.
+  const peakRef = useRef({ value: 0, at: 0 });
+  const now = performance.now();
+  if (rpmPosition >= peakRef.current.value || now - peakRef.current.at > 1_500) peakRef.current = { value: rpmPosition, at: now };
+  const peakPosition = peakRef.current.value;
+  const gearLabel = state.singleSpeed ? "—" : state.revving ? "N" : String(state.gear ?? 1);
   const voice = ENGINE_CATALOGUE.find(item => item.id === profileId)?.label ?? profileId;
   return <section ref={fieldRef} className="engine-telemetry" data-revving={Boolean(state.revving)} aria-label="Engine Telemetry">
     <ContextualRail className="engine-contextual-rail"><div {...contextual} onPointerDown={event => event.stopPropagation()} className="engine-profiles" aria-label="Engine profile">
       {ENGINE_CATALOGUE.map(({ id, label, description }) => <button key={id} type="button" title={description} aria-pressed={profileId === id} onClick={() => onProfile(id)}>{label}</button>)}
     </div></ContextualRail>
     <header><span className="engine-voice-title">{voice} <small>ENGINE / TELEMETRY</small></span><span>{state.status === "ready" ? `${(state.source || "sample").toUpperCase()} ENGINE` : state.status?.toUpperCase()}</span></header>
+    <div className="engine-shift-lights" aria-hidden="true">
+      {SHIFT_LIGHTS.map(({ at, tone }) => <i key={at} className={`is-${tone}`} data-on={rpmPosition >= at} />)}
+    </div>
     <div className="engine-tach-labels" aria-hidden="true">{Array.from({ length: 10 }, (_, i) => <span key={i}>{i}</span>)}</div>
     <div className="engine-tach" role="meter" aria-label="Virtual engine RPM" aria-valuenow={rpm} aria-valuemin={0} aria-valuemax={9000}>
       <svg className="engine-rpm-wave" viewBox="0 0 720 66" preserveAspectRatio="none" aria-hidden="true">
@@ -48,6 +63,7 @@ export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease,
             className={i/72>=.88?'is-redline':undefined} style={{opacity:.25+proximity*.75}}/>;
         })}
         <path className="engine-rpm-cursor" d={`M${4+rpmPosition*712-4} 2h8l-4 6z`}/>
+        {peakPosition > rpmPosition + 0.015 ? <path className="engine-rpm-peak" d={`M${4+peakPosition*712} 4V62`}/> : null}
       </svg>
       <i style={{ width: `${rpmPosition*100}%` }} />
     </div>
@@ -66,7 +82,7 @@ export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease,
       </div>
       <div className="engine-metric">
         <small>{state.singleSpeed ? "VIRTUAL SHAFT" : "VIRTUAL GEAR"}</small>
-        <strong>{state.singleSpeed ? "—" : state.revving ? "N" : state.gear ?? 1}</strong>
+        <strong className="engine-gear-value"><span key={gearLabel}>{gearLabel}</span></strong>
         <span>{state.singleSpeed ? "CONTINUOUS" : state.shiftPhase ? state.shiftPhase.toUpperCase() : `${state.transmissionMode || "AUTO"} · ACOUSTIC`}</span>
         <EngineSignals kind="gear" signal={signal} visible={visible} />
       </div>
@@ -76,9 +92,15 @@ export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease,
       <div><small>DECELERATION <b>{Math.round((state.deceleration ?? 0) * 100)}%</b></small><svg viewBox="0 0 300 52" aria-label="Deceleration history"><polyline points={trace("decel")} /></svg></div>
     </div>
     <div className="engine-bottom"><span>{speedFreshness === "fresh" ? "LIVE MOTION" : speedFreshness === "degraded" ? "SIGNAL AGING" : "AWAITING MOTION"}</span></div>
-    {Math.round(speed) === 0 ? ["left", "right"].map(side => <button key={side} className={`engine-rev is-${side}`} type="button" aria-label={`TAMARRO ${side}`} disabled={!state.canRev}
+    {Math.round(speed) === 0 ? <button className="engine-rev is-wide" type="button" aria-label="TAMARRO" disabled={!state.canRev}
       onPointerDown={event => event.stopPropagation()} aria-pressed={Boolean(state.revving)}
-      onClick={() => state.revving ? onRelease?.() : onRev?.()}><strong><span className="engine-rev-emoji" aria-hidden="true">🤘</span>TAMARRO</strong><small>{state.canRev ? state.revving ? "SHOW-OFF · STOP" : "SHOW-OFF" : state.enabled === false ? "AUDIO PAUSED" : "PREPARING AUDIO"}</small></button>) : null}
+      style={{ "--rev-fill": state.revving ? rpmPosition.toFixed(3) : 0 }}
+      onClick={() => state.revving ? onRelease?.() : onRev?.()}>
+      <span className="engine-rev-fill" aria-hidden="true" />
+      <strong><span className="engine-rev-emoji" aria-hidden="true">🤘</span>TAMARRO</strong>
+      <small>{state.canRev ? state.revving ? "SHOW-OFF · TAP TO STOP" : "SHOW-OFF · TAP TO REV" : state.enabled === false ? "AUDIO PAUSED" : "PREPARING AUDIO"}</small>
+      <strong className="engine-rev-mirror" aria-hidden="true">TAMARRO<span className="engine-rev-emoji">🤘</span></strong>
+    </button> : null}
     {state.status === "loading" || state.status === "retrying" || state.status === "error" ? <div className="engine-load-state" role="status" aria-live="polite" aria-atomic="true">
       <strong>{state.status === "error" ? "ENGINE UNAVAILABLE" : `LOADING ${(ENGINE_CATALOGUE.find(item => item.id === profileId)?.label ?? profileId).toUpperCase()}…`}</strong>
       <span>{state.status === "retrying" ? "Waiting for audio · retrying automatically" : state.status === "error" ? "Audio could not be prepared" : "Preparing engine audio"}{state.playing ? ` · ${ENGINE_CATALOGUE.find(item => item.id === state.profileId)?.label ?? state.profileId} continues` : ""}</span>

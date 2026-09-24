@@ -4,7 +4,7 @@
     {
       "name": "drive-lab",
       "runtimeExecutable": "env",
-      "runtimeArgs": ["SEDICIVALVOLE_NO_LOCAL_ENV=1", "npm", "run", "dev", "--prefix", "prototype/drive-lab", "--", "--port", "5183", "--strictPort"],
+      "runtimeArgs": ["SEDICIVALVOLE_NO_LOCAL_ENV=1", "SEDICIVALVOLE_MOTION_QA=1", "npm", "run", "dev", "--prefix", "prototype/drive-lab", "--", "--port", "5183", "--strictPort"],
       "port": 5183
     }
   ]
