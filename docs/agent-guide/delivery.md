@@ -22,7 +22,12 @@ Interface changes pass the visual regression gate before publication: with the
 local server running, `npm run qa:visual` compares 16 deterministic chrome
 states (Tesla 773 × 601 and phone 390 × 844, LIGHT and DARK) with
 `tests/visual-baseline/`. Review every reported diff; accept intended changes
-with `npm run qa:visual -- --update` and commit the new baseline with the change.
+with `npm run qa:visual -- --update` and commit the new baseline with the change. The same
+baseline holds for the compiled build (`npm run preview`, then
+`QA_URL=http://localhost:5184/ npm run qa:visual`). `npm run qa:text-fit` then
+drives running, muted, brake-off, three visual families and Engine in both
+appearances and fails on any clipped top-bar, footer, Now Playing or Engine-rail
+text; a label that does not fit is shortened, not ellipsized.
 
 Report implemented, tested, committed/pushed, live, owner-accepted and physical-device-accepted separately. Browser rendering, headless-muted audio, signal measurements and a successful build do not prove cabin listening, physical iPhone touch, Tesla native media, reception or sustained GPU/endurance performance. Record device/software/build for physical evidence. Existing broad owner acceptance of Flux/Soundtrack/FX/interface/Discover does not require another generic acceptance round; later changes retain their relevant specific gates.
 

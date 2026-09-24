@@ -4222,7 +4222,7 @@ export function App() {
           >
             <NiGlyph name={muted ? "speaker-off" : "speaker"} className="slab-glyph" />
             <span>SOUND</span>
-            <strong>{muted ? "Muted" : "On"}</strong>
+            <strong>{muted ? "Off" : "On"}</strong>
           </button>
           {experienceMode === "flux" ? <button
             className={`effects-button${vehicleEffectsEnabled ? " is-active" : ""}`}

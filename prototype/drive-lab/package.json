@@ -40,7 +40,8 @@
     "qa:chrome": "node scripts/qa-chrome-lifecycle.mjs",
     "qa:phone-integration": "node scripts/qa-phone-integration.mjs",
     "qa:splash-gradient": "node scripts/qa-splash-gradient.mjs",
-    "qa:visual": "node scripts/qa-visual-regression.mjs"
+    "qa:visual": "node scripts/qa-visual-regression.mjs",
+    "qa:text-fit": "node scripts/qa-text-fit.mjs"
   },
   "dependencies": {
     "@react-three/fiber": "9.7.0",

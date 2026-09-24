@@ -155,7 +155,7 @@ test("the footer keeps a compact right palette and exposes one audio-effects mas
   assert.match(app, /Fresh mix · changes every 30 min/);
   assert.match(app, /className=\{`effects-button\$\{vehicleEffectsEnabled \? " is-active" : ""\}`\}/);
   assert.match(app, /className=\{`stop-button\$\{muted \? " is-active" : ""\}`\}/);
-  assert.match(app, /<span>SOUND<\/span>[\s\S]*?<strong>\{muted \? "Muted" : "On"\}<\/strong>/);
+  assert.match(app, /<span>SOUND<\/span>[\s\S]*?<strong>\{muted \? "Off" : "On"\}<\/strong>/);
   assert.match(app, /<Led on=\{vehicleEffectsEnabled\} \/>[\s\S]*?<span>BRAKE FX<\/span>/);
   assert.match(app, /showControlNotice\("VOLUME", !nextMuted\)/);
   assert.match(app, /showControlNotice\("BRAKING FX", enabled\)/);
