@@ -28,6 +28,28 @@ Change the shared owner, then inspect the reference and real application.
 Do not copy specimen CSS into the product, duplicate the controls per renderer,
 change upstream artwork, or use screenshots as a substitute for a live component.
 
+## Night Instrument layer — September 24
+
+The owner-selected [Night Instrument](NIGHT-INSTRUMENT-2026-09-24.md) layer
+lives in `src/night-instrument.css` (loaded last) and the primitives in
+`src/ui/night-instrument.jsx`:
+
+| Primitive | Use |
+| --- | --- |
+| `--ni-plate`, `--ni-key`, `--ni-display`, `--ni-hairline`, `--ni-glow` | Plates, keys, recessed displays and lit edges, derived from the semantic roles |
+| `Led`, `LedRow` | State as light: on/off, one per effect, never a fill |
+| `RollingNumber`, `SpeedGauge` | Speed as odometer digits and one lit line to 130 km/h |
+| `ActivityBars` | Moves only while audio actually plays |
+| `VisualThumb`, `visualThumbnailUrl` | Real preview frames for visuals and destinations |
+| `NiGlyph` | Original monochrome glyphs (speaker, brake, mix, visual, music, engine, palette, phone, scan) |
+| `.ni-switch` | Sliding two/three-position switches with one thumb |
+
+Rules: one housing per group and no divider lines; keys use `--ni-key` with
+10 px corners; footer keys share a 16 px label row and a 20 px value row;
+animation is transform/opacity only and stops with reduced motion; keyframes
+use the individual `translate`/`scale` properties so they never replace a
+component's own `transform`.
+
 ## Roles and tokens
 
 | Role | Token | Size |

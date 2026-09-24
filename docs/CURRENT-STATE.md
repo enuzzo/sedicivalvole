@@ -1,5 +1,22 @@
 # Current Project State
 
+## Night Instrument interface and clean band effects — September 24
+
+The owner selected direction A, **Night Instrument**, from an aesthetic audit
+and approved every proposal. The Tesla display now uses plates of keys with
+LED state, a recessed odometer speed display with a 130 km/h gauge, a sliding
+Music/Engine switch, artwork-led footer keys, a gallery Visual library, a
+quieter Music library, eight Performance FX pads, an Engine cluster with shift
+lights and one full-width TAMARRO, and an Intro whose START opens the Signal
+Gate; palette changes spread from the touched swatch. The passenger remote
+mirrors the display and exposes Visual, Music, FX and Palette behind a tab bar,
+with an illustrated pairing guide. Bass Cut, Mid Focus and High Cut are now
+clean fourth-order filters instead of crackling drive stages, and Jamendo text
+entities are decoded. 1,105 native tests pass; 46 local captures and a real
+local display↔phone pairing are recorded in
+[Night Instrument](NIGHT-INSTRUMENT-2026-09-24.md). Tesla cabin legibility,
+touch, transition GPU cost and iPhone Safari behaviour remain physical gates.
+
 ## Meridian, Aperture and PRTCL curve refinement — September 23
 
 The owner delegates a more immersive Meridian and PRTCL treatment, requests

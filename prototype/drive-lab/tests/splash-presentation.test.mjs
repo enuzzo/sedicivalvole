@@ -170,7 +170,7 @@ test("the footer keeps a compact right palette and exposes one audio-effects mas
   assert.match(styles, /\.swatch-housing button \{[^}]*width: 100%;[^}]*min-height: 0/);
   assert.match(styles, /\.control-status-notice \{[\s\S]*?top: 50%;[\s\S]*?left: 50%;[\s\S]*?border-radius: var\(--ui-radius\)/);
   const instrument = read("night-instrument.css");
-  assert.match(instrument, /:not\(\[data-phone-layout\]\) \.footer-stack \.control-slab \{ grid-template-columns: 72px 92px minmax\(0, 1fr\) minmax\(0, 1\.08fr\) 88px 112px; \}/);
+  assert.match(instrument, /:not\(\[data-phone-layout\]\) \.footer-stack \.control-slab \{ grid-template-columns: 72px 92px minmax\(0, 1fr\) minmax\(0, 1fr\) 88px 112px; \}/);
   assert.match(instrument, /\.palette-control \{ position: relative; display: block; height: 52px;/);
 });
 

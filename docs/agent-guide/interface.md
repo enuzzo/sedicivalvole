@@ -13,6 +13,15 @@ palette-lit Meridian galleries; signed PRTCL banking/torsion; and modest near-ri
 translation with stronger mid-depth Aperture curvature. Curve-driven audio is
 explicitly deferred. This is not approval to redesign other surfaces.
 
+The September 24 owner selected **Night Instrument (direction A)** for the Tesla
+display and passenger remote and approved every item of the proposal, with
+autonomous implementation and no separate Image Gen round. It retains the rail
+geometry, targets, type ladder and chrome rules while changing material, light,
+imagery and motion; it supersedes the footer labels, per-chip filter icons, the
+Intro presets/palette rule, FX Deck slider rows, the two TAMARRO buttons and
+the remote's right-side pages. See [Night Instrument](../NIGHT-INSTRUMENT-2026-09-24.md).
+This is not blanket approval for unrelated redesigns.
+
 For substantial visual work whose reference is unclear or no longer fits the goal, clarify the source using the installed Product Design entry point and relevant context workflow. The old `get-context` skill name is not present in this environment's catalog; do not invent its availability. A requested audit uses screenshot evidence and the available audit workflow. The September 4 ban on the frontend builder belonged to that refinement; Launch Cockpit explicitly superseded it for its redesign. Match tools to the actual current task and installed skills.
 
 When implementing a selected generated mock, reproduce its layout, anatomy, density, spacing, colors, typography, visible content and hierarchy as faithfully as possible, subject to explicit owner amendments. The established design system takes precedence over generated artistic deviations: retain its tokens, typography, geometry, accessibility and shared components. Correct misleading states or unsupported browser promises instead of reproducing them. Record necessary departures beside the selected reference, compare actual rendered screens with that reference at the agreed viewport and correct avoidable drift before handoff. Use actual current browser captures for product evidence; remove obsolete current-product captures. Keep private reference images outside Git. Oversized generated Intro concepts are rejected and must not become product artwork.
@@ -137,11 +146,17 @@ change acoustic/motion ownership. See [road refinement](../ROAD-REFINEMENT-2026-
 
 ## Running media and effects
 
+Night Instrument (September 24) owns the running chrome material: plates of
+keys, one label row and one value row per footer key (Sound, Brake FX, Visual,
+Music, MIX, Palette), artwork on the library keys with the caret on the label
+row, and LEDs for state. Its stylesheet is `src/night-instrument.css`, loaded
+last; phone landscape keeps 56 px rails with 48 px keys.
+
 Now Playing is persistent whenever eligible chrome is awake, not a transient toast. It belongs to the footer's **single animated/inert container** immediately above the footer; suppress it in ATLAS and while any real menu, popup or passenger panel is open. It shows committed artwork, title, artist/source and previous/play-pause/next, following manual and natural track changes. Align artwork, copy and transport on a common center; size credit-role columns from content so labels cannot overlap titles. The older independent overlay is superseded.
 
 The dark Music drawer's chart icon is visibly white and NOW PLAYING stays on one line. Preserve pinned black `chart-bar.svg` bytes; apply presentation through LIGHT/DARK/AUTO roles rather than recoloring or duplicating the vendor source. Use deliberate vertical scrolling rather than reducing semantic type or targets. Pace/Genre chips and track rows are whole-surface controls with standard media icons. Source and transport behavior, the three playable scores, and title-specific Illobo covers are in [music.md#soundtrack-and-selection](music.md#soundtrack-and-selection).
 
-FX Deck is a compact **non-modal** overlay above the footer, opened by persistent MIX, with a readable `2 x 4` layout, independent depth sliders and one reset. It may pin itself open while the visual runs, but never enters the app's inert modal boundary or returns to the bottom of Music. Preserve values across music sources. The eight processors and audible limits are in [music.md#effects-boundary](music.md#effects-boundary).
+FX Deck is a compact **non-modal** overlay above the footer, opened by persistent MIX, with a readable `2 x 4` layout, independent depth sliders and one reset. Since September 24 each effect is a performance pad: tap plays the authored hit or stops it, vertical drag sets depth, and the pad is an ARIA slider with keyboard control. It may pin itself open while the visual runs, but never enters the app's inert modal boundary or returns to the bottom of Music. Preserve values across music sources. The eight processors and audible limits are in [music.md#effects-boundary](music.md#effects-boundary).
 
 ## Intro and branding
 
@@ -186,6 +201,11 @@ the only onboarding action is scanning the display QR once. A one-hour encrypted
 HTTPS pairing is retained through temporary outages and reloads, with a visible
 Forget action for revocation. This UI selection does not close real-device
 transport, Safari background, safe-area or passenger acceptance.
+
+The September 24 Night Instrument selection supersedes the right-side pages:
+the remote mirrors the display at the top (visual frame, cover, transport),
+then a Music/Engine switch and Visual, Music, FX and Palette sections behind a
+tab bar; pairing, Forget and command semantics are unchanged.
 
 The owner's quality pass retains that selected composition. A persistent header
 uses the transparent piston mark and Orbitron wordmark above connection status.
