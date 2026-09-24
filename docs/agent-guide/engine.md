@@ -67,3 +67,44 @@ or physical vehicle telemetry is added.
 ## Mounted phone response — September 19
 
 Mounted longitudinal acceleration feeds the existing demand/load/coast estimator and load-sensitive shifts; GPS still owns speed, standstill and shift freshness. Preserve the dry Engine path and manual rev exception. See [the implementation contract](../PHONE-ROAD-INPUT-2026-09-19.md).
+
+## Predictive response and full-body voicing — September 24
+
+The owner found the sound clean but wanted it higher resolution, fuller and
+more powerful, and above all a more predictive, dynamic response from GPS.
+
+**Response.** `src/engine/speed-tracker.js` treats a repeated speed inside the
+provider's own update interval as no new information (the owner's Tesla trace
+reports whole km/h at about 10 Hz), keeps an alpha-beta speed and acceleration,
+and predicts a short decaying horizon with a 0.25 s lead. The Engine motion
+snapshot exposes it as `predictedSpeedKmh`; gears, standstill and freshness
+keep the filtered/raw speed. The runtime follows the prediction through a
+critically damped spring (`followRoadSpeed`), so a correction is a glide. The
+outlier test uses the provider's interval. First gear pulls away through a
+demand-dependent clutch-slip floor (`launchSlipRpm`) that the road ratio
+overtakes without a dip. This is acoustic estimation only, never measured
+vehicle state; the phone accelerometer path is unchanged and still wins when
+mounted.
+
+**Voicing.** `src/engine/voicing.js` is a dry chain between every loop, the
+procedural voice and the master: per-profile EQ, air harmonics regenerated
+above 3.6 kHz and a firing-order body tone locked to the virtual crank
+(cam-rate harmonics), plus a trim. No reverb, delay or modulation. Measured
+with `scripts/engine-render.mjs` + `scripts/analyse-engine-render.py` along a
+Tesla-like route: +2.6 to +3.7 dB in motion, +4 to +6 dB below 60 Hz, a
+smoother tilt to the top, peaks at or below −6 dBFS. `voicing: null` is exactly
+the earlier sound. The protected LAB A/B is now **A · Refined** (null voicing)
+vs **B · Full body** (published default), same route and response; bump
+`sourceCalibrations.B` (`full-body.v1`) whenever the voicing changes.
+
+**Cluster.** Delegated by the owner on September 24 (free to retouch the Engine
+interface) within the selected Telemetry instrument, Night Instrument and the
+equal-cell contract above; it is a refinement, not a new direction: a
+72-segment LED tachometer (125 RPM each, a tick per thousand) whose heights
+form the crest, with warm/hot/red zones and a held peak segment; twelve shift
+lights that close in from both ends, pulsing at 2.5 Hz only on the limiter;
+three equal plates with status LEDs; oscilloscope response traces; status chips
+in the header; hazard stripes on TAMARRO that run while it revs, with the
+phrase phase (REV, RELEASE, LIMITER) in its label. Standstill, short windows
+(≤ 580 / ≤ 500 px) and phone landscape compact the same cluster; the visual
+gate now captures it.

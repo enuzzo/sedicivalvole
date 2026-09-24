@@ -130,7 +130,12 @@ for (const appearance of ["dark", "light"]) {
     await page.locator(".cockpit-modes button", { hasText: "Engine" }).click();
     await page.locator(".cockpit-start").click();
     await page.locator(".app.phase-running").waitFor({ timeout: 20000 });
-    await page.addStyleTag({ content: FREEZE_CSS + " .engine-telemetry svg { visibility: hidden !important; }" });
+    // The Engine cluster is DOM, not a canvas: keep the experience layer
+    // transparent so it is captured, wait for the bank, and hide only what
+    // moves on its own at idle (RPM value and status, automatic blips, traces).
+    await page.waitForFunction(() => document.querySelector(".engine-telemetry") && !document.querySelector(".engine-load-state"), null, { timeout: 20000 });
+    await page.addStyleTag({ content: FREEZE_CSS + ` .experience { background: transparent !important; }
+      .engine-telemetry svg, .engine-primary .engine-metric:first-child :is(strong, span), .engine-graphs b { visibility: hidden !important; }` });
     await page.waitForTimeout(2000);
     await wake(page);
     await capture(page, `${appearance}-engine`);
