@@ -1078,10 +1078,11 @@ export function createDriveTelemetryReport(telemetry, generatedAtMs = telemetry.
   };
 }
 
-export function classifyGpsConfidence({ gpsState, gpsAgeMs, accuracyM }) {
+export function classifyGpsConfidence({ gpsState, gpsAgeMs, accuracyM, speedOnly = false }) {
   if (gpsState !== "live") return "unavailable";
   if (Number.isFinite(gpsAgeMs) && gpsAgeMs > 3000) return "stale";
-  if (Number.isFinite(accuracyM) && accuracyM > 250) return "unreliable";
+  // Position unusable, speed continuous: the speed drives, maps and curves wait.
+  if (Number.isFinite(accuracyM) && accuracyM > 250) return speedOnly ? "speed-only" : "unreliable";
   if (Number.isFinite(accuracyM) && accuracyM <= 10) return "precise";
   return "usable";
 }

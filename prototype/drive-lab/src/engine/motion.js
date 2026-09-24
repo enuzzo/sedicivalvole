@@ -1,5 +1,6 @@
 import { createRoadResponse } from "../motion/road-input.js";
 import { createSpeedTracker } from "./speed-tracker.js";
+import { speedOnlyPlausible } from "../gps-speed-trust.js";
 const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
 export const ENGINE_MOTION_POLICY = Object.freeze({ freshMs: 1800, lostMs: 5000, positionAccuracyM: 250, smoothingSeconds: 0.22, stationaryDwellMs: 350, stationaryWatchHoldMs: 12000 });
 
@@ -16,9 +17,12 @@ export function createEngineMotion() {
   let zeros = 0;
   let reason = "awaiting-motion";
   let invalidated = true;
+  // Last numeric GPS speed whatever its accuracy: continuity reference for speed-only samples.
+  let lastSeen = null;
+  let speedOnly = false;
   const reset = (nextReason = "lifecycle") => {
     generation++; response.reset(); tracker.reset();
-    last = null; raw = null; filtered = null;
+    last = null; raw = null; filtered = null; lastSeen = null; speedOnly = false;
     zeroSince = null; zeros = 0; reason = nextReason; invalidated = true;
   };
   return {
@@ -39,9 +43,15 @@ export function createEngineMotion() {
         }
         return false;
       }
+      // A moving speed that is continuous with the previous sample stays evidence
+      // even when the position radius is unusable (gps-speed-trust.js); a zero
+      // with an unusable radius still cannot create standstill.
+      speedOnly = gps && Number.isFinite(accuracyM) && accuracyM > ENGINE_MOTION_POLICY.positionAccuracyM
+        && rawSpeedKmh > 0 && speedOnlyPlausible(lastSeen, rawSpeedKmh, receivedMs);
+      if (gps && Number.isFinite(rawSpeedKmh)) lastSeen = { kmh: rawSpeedKmh, atMs: receivedMs };
       const valid = Number.isFinite(rawSpeedKmh) && rawSpeedKmh >= 0 && rawSpeedKmh <= 260
         && acquisitionAgeMs >= -250 && acquisitionAgeMs <= ENGINE_MOTION_POLICY.freshMs
-        && (!gps || (Number.isFinite(accuracyM) && accuracyM >= 0 && accuracyM <= ENGINE_MOTION_POLICY.positionAccuracyM));
+        && (!gps || (Number.isFinite(accuracyM) && accuracyM >= 0 && (accuracyM <= ENGINE_MOTION_POLICY.positionAccuracyM || speedOnly)));
       if (!valid) {
         // A failed one-shot renewal cannot invalidate a still-bounded live watch.
         if (!liveWatch && last?.liveWatch) return false;
@@ -71,7 +81,7 @@ export function createEngineMotion() {
       if (rawSpeedKmh === 0) { zeroSince ??= measuredMs; zeros++; } else { zeroSince = null; zeros = 0; }
       raw = rawSpeedKmh;
       last = { source, sourceTime, acquisitionTime, receivedMs, measuredMs, driveInput, brakeHeld, reacquired, liveWatch };
-      invalidated = false; reason = "accepted";
+      invalidated = false; reason = speedOnly ? "speed-only" : "accepted";
       return true;
     },
     snapshot(nowMs) {

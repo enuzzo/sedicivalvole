@@ -362,7 +362,7 @@ test("live watch receipts share one monotonic clock despite stale provider times
   watch(13500,4);m.reset("hidden");assert.equal(m.snapshot(13500).trustedStationary,false);
 });
 
-test("the observed three-second accuracy collapse holds moving RPM evidence without inventing motion", () => {
+test("the observed accuracy collapse keeps a continuous moving speed as speed-only evidence", () => {
   const m = createEngineMotion();
   const watch = (time, speed, accuracyM = 6) => gps(m, time, speed, { liveWatch: true, accuracyM });
   watch(125212.9, 21);
@@ -377,23 +377,24 @@ test("the observed three-second accuracy collapse holds moving RPM evidence with
     [127530.1, 29], [127629.9, 30], [127730, 30], [127830.5, 31],
     [127930, 32], [128031.9, 33], [128130, 34], [128230.5, 35],
   ];
+  let previousSpeed = 21;
   for (const [time, speed] of poorAccuracyTrace) {
-    assert.equal(watch(time, speed, 10000), false);
+    assert.equal(watch(time, speed, 10000), true);
     const evidence = m.snapshot(time);
-    assert.equal(evidence.freshness, "degraded");
-    assert.equal(evidence.reason, "position-accuracy-hold");
-    assert.equal(evidence.speedKmh, 21);
-    assert.equal(evidence.drive, 0);
-    assert.equal(evidence.canShift, false);
+    assert.equal(evidence.freshness, "fresh");
+    assert.equal(evidence.reason, "speed-only");
+    assert.ok(evidence.speedKmh >= previousSpeed - 1e-9 && evidence.speedKmh <= speed + 1e-9);
+    previousSpeed = evidence.speedKmh;
     assert.equal(evidence.trustedStationary, false);
-    assert.equal(evidence.ageMs, time - 125212.9);
   }
   assert.equal(watch(128331.3, 36), true);
   const recovered = m.snapshot(128333.5);
   assert.equal(recovered.freshness, "fresh");
-  assert.equal(recovered.speedKmh, 36);
-  assert.equal(recovered.accelerationMps2, 0);
-  assert.equal(recovered.canShift, false);
+  assert.equal(recovered.reason, "accepted");
+  assert.ok(recovered.speedKmh > 33);
+  assert.ok(recovered.accelerationMps2 > 0);
+  // A value incoherent with its predecessor is still not admitted without a position.
+  assert.equal(watch(128431.3, 90, 10000), false);
 });
 
 test("poor accuracy cannot renew a moving hold or create standstill, and invalid data revokes it", () => {
@@ -424,34 +425,42 @@ test("poor accuracy cannot renew a moving hold or create standstill, and invalid
   assert.equal(reset.snapshot(200).speedKmh, null);
 });
 
-test("degraded moving evidence preserves coupled Engine RPM until the bounded hold expires", async () => {
+test("a continuous speed with an unusable radius keeps Engine RPM coupled; an unusable zero only holds", async () => {
+  // September 24 owner report: after waking, the Tesla reported minutes of
+  // 9,999.99 m radii while coords.speed carried the vehicle's real speed.
   const f = fixture();
   f.runtime.setEnabled(true); await f.runtime.load();
   const m = createEngineMotion();
-  const step = (time, accuracyM) => {
-    gps(m, time, 21, { liveWatch: true, accuracyM });
+  const step = (time, speed, accuracyM) => {
+    gps(m, time, speed, { liveWatch: true, accuracyM });
     Object.assign(f.evidence, m.snapshot(time));
     f.tick(.1);
     return f.runtime.getState();
   };
-  for (let time = 0; time < 1000; time += 100) step(time, 6);
+  for (let time = 0; time < 1000; time += 100) step(time, 21, 6);
   const movingRpm = f.runtime.getState().rpm;
   assert.ok(movingRpm > 1500);
+  for (let time = 1000; time <= 7900; time += 100) {
+    const state = step(time, 21, 10000);
+    assert.equal(state.motion, "fresh");
+    assert.equal(state.motionReason, "speed-only");
+    assert.ok(Math.abs(state.rpm - movingRpm) <= movingRpm * .05);
+    assert.equal(state.idleBlip, false);
+    assert.equal(state.canRev, false);
+  }
+  // A zero with an unusable radius cannot prove the car stopped: bounded hold, then lost.
   let previousLoad = f.runtime.getState().drive;
-  for (let time = 1000; time <= 5900; time += 100) {
-    const held = step(time, 10000);
+  for (let time = 8000; time <= 12900; time += 100) {
+    const held = step(time, 0, 10000);
     assert.equal(held.motion, "degraded");
     assert.ok(held.rpm >= movingRpm * .95);
-    // drive now reports the acoustic load, which decays to the continuous idle texture.
-    // It does not represent a measured throttle or permission to initiate a shift.
     assert.ok(held.drive >= .08 && held.drive <= previousLoad + 1e-12);
     previousLoad = held.drive;
     assert.equal(held.idleBlip, false);
     assert.equal(held.shift, null);
     assert.equal(held.canRev, false);
   }
-  assert.ok(Math.abs(previousLoad - .08) < 1e-8);
-  for (let time = 6000; time <= 7000; time += 100) step(time, 10000);
+  for (let time = 13000; time <= 14000; time += 100) step(time, 0, 10000);
   assert.equal(f.runtime.getState().motion, "lost");
   assert.equal(f.runtime.getState().rpm, 1000);
   f.runtime.destroy();

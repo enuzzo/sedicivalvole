@@ -5,6 +5,7 @@ import { CacheResetControl } from "./session/cache-reset-control.jsx";
 import {DriveyCycleControl, PrtclCycleControl, ShaderGradientCycleControl} from "./ui/visual-cycle-controls.jsx";
 import {radarDisplayFix} from './environments/radar/radar-location.js';
 import { canAutoReload } from "./session/update-controller.js";
+import { positionUnusable, speedOnlyPlausible } from "./gps-speed-trust.js";
 import { useSessionMaintenance } from "./session/use-session-maintenance.js";
 import { useLaunchPreload } from "./use-launch-preload.js";
 import { preloadLaunchEngine, preloadLaunchVisual } from "./launch-preload.js";
@@ -849,6 +850,9 @@ export function App() {
   const lastGpsSampleAtRef = useRef(null);
   const lastGpsEventAtRef = useRef(null);
   const gpsSpeedLockedRef = useRef(false);
+  // Last numeric GPS speed, whatever its accuracy: the continuity reference for speed-only samples.
+  const lastRawGpsSpeedRef = useRef(null);
+  const gpsSpeedOnlyRef = useRef(false);
   const audioMeterTimerRef = useRef(null);
   const flightRecorderTimerRef = useRef(null);
   const performanceSamplerTimerRef = useRef(null);
@@ -1516,6 +1520,8 @@ export function App() {
     lastGpsSampleAtRef.current = null;
     lastGpsEventAtRef.current = null;
     gpsSpeedLockedRef.current = false;
+    lastRawGpsSpeedRef.current = null;
+    gpsSpeedOnlyRef.current = false;
     atlasPositionSamplesRef.current = [];
     gpsCurveTrackerRef.current.reset();
     atlasSessionJourneyRef.current = {
@@ -1569,11 +1575,12 @@ export function App() {
           || capturedAtMs - lastGpsEventAtRef.current >= 2000
           || kmh == null
           || (Number.isFinite(accuracyM) && accuracyM > 250);
-        // Preserve the last trusted motion value through isolated GPS accuracy
-        // collapses. The real Tesla report contained one 10 km-radius sample
-        // between normal 2–3 m readings; it should be evidence, not a musical
-        // or visual structural command.
-        const unreliable = Number.isFinite(accuracyM) && accuracyM > 250;
+        // An unusable radius excludes the fix from every position consumer.
+        // Its speed is judged separately (gps-speed-trust.js): the owner's Tesla
+        // kept reporting the vehicle's real speed for minutes with a 9,999.99 m
+        // radius after waking, so a speed continuous with the previous sample is
+        // admitted as speed-only; an incoherent one still holds the last value.
+        const unreliable = positionUnusable(accuracyM);
         if (!unreliable
           && Number.isFinite(position.coords.latitude)
           && Number.isFinite(position.coords.longitude)) {
@@ -1647,9 +1654,10 @@ export function App() {
         const next = gpsSpeedLockedRef.current
           ? smoothGpsSpeed(smoothedSpeedRef.current, kmh, elapsedSeconds)
           : kmh;
-        if (!unreliable) {
-        }
-        if (unreliable && gpsSpeedLockedRef.current) {
+        const speedOnly = unreliable && speedOnlyPlausible(lastRawGpsSpeedRef.current, kmh, capturedAtMs);
+        lastRawGpsSpeedRef.current = { kmh, atMs: capturedAtMs };
+        gpsSpeedOnlyRef.current = speedOnly;
+        if (unreliable && !speedOnly && gpsSpeedLockedRef.current) {
           if (shouldLogSample) {
             lastGpsEventAtRef.current = capturedAtMs;
             logDiagnosticEvent("gps.sample", {
@@ -1672,6 +1680,7 @@ export function App() {
             filteredSpeedKmh: Math.round(next * 10) / 10,
             elapsedMs: Math.round(elapsedSeconds * 1000),
             accuracyM: Number.isFinite(accuracyM) ? Math.round(accuracyM * 10) / 10 : null,
+            ...(speedOnly ? { speedOnly: true } : {}),
           });
         }
         if (sourceRef.current === "GPS") setSpeed(next);
@@ -3247,6 +3256,7 @@ export function App() {
           gpsState: gpsStateRef.current,
           gpsAgeMs,
           accuracyM: accuracyRef.current,
+          speedOnly: gpsSpeedOnlyRef.current,
         }),
         motionPhase: audioState?.motionPhase,
         online: connection.online,

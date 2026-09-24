@@ -18,6 +18,19 @@ and Engine speed readouts use accepted GPS freshness, not the audio runtime's
 snapshot. Do not put Demo/GPS switching on a speed numeral; the report owns the
 explicit selection, and Demo is visibly marked `SIM` in the compact readout.
 
+**Speed without a position — September 24.** After waking, the owner's Tesla
+reported every fix for minutes with a 9,999.99 m radius (its "unknown") while
+`coords.speed` kept the vehicle's real speed in whole km/h; the 250 m radius
+gate held the display at 0 through a 58 km/h drive. The radius now governs
+position consumers only (maps, route/journey, terrain, heading curves). A speed
+continuous with the previous numeric sample (within 10 m/s² plus one 2 km/h
+quantization step, gap ≤ 3 s; `src/gps-speed-trust.js`) is admitted as
+**speed-only**: it drives the display, music and visuals, and diagnostics name
+it `speed-only`. The Engine admits only moving speed-only samples; a zero with
+an unusable radius still cannot confirm a stop (bounded hold, then lost), and
+an incoherent value still holds. This supersedes the earlier "hold the last
+trusted speed through an accuracy collapse" rule for continuous speeds.
+
 Do not fabricate GPS motion or turn unknown speed into zero. Keep validity/accuracy, outlier/reordering, asymmetric smoothing, deadband, stale/confidence state and separate Brake cooldown boundaries. Live watch timing is monotonic at the shared receiver; one-shot renewals retain acquisition/replay checks. The Engine no-fix manual-rev exception is not GPS standstill: read [TAMARRO and idle](engine.md#tamarro-and-idle) when changing freshness.
 
 Held Space continuously brakes from the exact displayed speed using the documented time-based Model 3 AWD reference curve; release resumes Demo after a short settle. Held ArrowUp accelerates; release or ArrowDown enters nominal regenerative lift-off from the exact speed. Automatic Demo deceleration uses the same lift-off model; Space remains stronger service braking. Do not return to GPS on an arbitrary timer or introduce a speed jump. Use the reference curve only as a soft real-GPS plausibility envelope, never as simulated evidence. For exact source/curve/handoff parameters read [Speed-source contract](../TECHNICAL-DIRECTION.md#speed-source-contract), [Reference motion model](../TECHNICAL-DIRECTION.md#reference-motion-model) and [Filtering and confidence](../TECHNICAL-DIRECTION.md#filtering-and-confidence).
