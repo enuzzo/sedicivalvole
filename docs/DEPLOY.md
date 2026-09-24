@@ -119,6 +119,7 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 | Date | Record | Build |
 | --- | --- | --- |
+| 2026-09-24 19:45 | [Predictive, full-body Engine and race cluster](#predictive-full-body-engine-and-race-cluster--2026-09-24-1934) | `20260924-1934.e0764dd` |
 | 2026-09-24 18:24 | [Structure, curves and text fit](#structure-curves-and-text-fit--2026-09-24-1821) | `20260924-1821.97fe2a4` |
 | 2026-09-24 18:06 | [Structure, curves and remote Soundtrack (superseded at 18:24)](#structure-curves-and-text-fit--2026-09-24-1821) | `20260924-1804.d4ce645` |
 | 2026-09-24 | [Night Instrument interface](archive/DEPLOY-HISTORY-2026-09-24.md#night-instrument-interface--2026-09-24) | `20260924-1430.1b20183` |
@@ -324,8 +325,42 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 ## Latest release records
 
-The previous record, [Night Instrument interface](archive/DEPLOY-HISTORY-2026-09-24.md#night-instrument-interface--2026-09-24),
-is kept verbatim in the archive.
+Earlier records, from [Night Instrument interface](archive/DEPLOY-HISTORY-2026-09-24.md#night-instrument-interface--2026-09-24)
+back, are kept verbatim in the archive.
+
+### Predictive, full-body Engine and race cluster — 2026-09-24 19:34
+
+Canonical `20260924-1934.e0764dd` is published from source `e0764dd`. Over
+`20260924-1821` it carries the predictive Engine response (speed tracker with
+a short decaying prediction, spring-smoothed acoustic speed, clutch slip on
+pull-away), the dry full-body voicing for Mono, Rosso and Touring, and the
+Engine race cluster. The previous live source is tagged `pre-engine-20260924`
+(`97fe2a4`).
+
+Before publication: native tests 1,117/1,117; the visual gate (now capturing
+the Engine cluster) 16/16 on the dev server and on the compiled build; text
+fit 14/14 on the compiled build; a compiled Engine run across Mono, Rosso and
+Touring with acceleration to 120 km/h showed no console error or warning;
+community credits 189; package 835 exact hashes. Engine audio was rendered
+along a Tesla-like route with `scripts/engine-render.mjs` (see the Engine
+guide for the measurements).
+
+Official read-only preflight and postflight passed with `remote_writes=NONE`.
+Preserve-existing publication uploaded 39 files / 6,583,958 bytes, reused 832
+static files and 29 fully verified recordings, retained two previous
+fingerprinted assets and activated the dynamic root without legacy deletion.
+Bare and cache-busted canonical HTML return HTTP/2 200, no-store and proxy
+MISS, and equal the local 1,445-byte file at SHA-256
+`8b115f0f384ff07d95cad117d8fb26b5f24663d38b80b67bf5d92f6bd5847e90`. Main JS
+`index-Dx71N2XT.js`, CSS `index-ByHFoZ7I.css`, the Engine `runtime`,
+`procedural-voice` and `procedural-processor` chunks, and the phone, report
+and MapLibre chunks match byte-for-byte. On the public site the Engine ran
+across all three profiles to fifth gear, text fit passed 14/14 and TAMARRO
+reached the limiter. The first public run logged one 404 resource that three
+later runs (logging every response) did not reproduce; it is recorded as
+transient during cache convergence. No synthetic diagnostic mail was sent.
+Cabin listening (fullness, level against Music, the new clutch slip), Tesla
+legibility of the cluster and real GPS response remain physical gates.
 
 ### Structure, curves and text fit — 2026-09-24 18:21
 

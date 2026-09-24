@@ -11,12 +11,13 @@ the [DEPLOY release table](DEPLOY.md#release-table).
 ## Live release
 
 - Canonical [https://sedicivalvole.app/](https://sedicivalvole.app/) serves
-  **20260924-1821.97fe2a4**: Night Instrument plus the September 24 structural,
+  **20260924-1934.e0764dd**: Night Instrument, the September 24 structural,
   curve and passenger-remote work listed under
-  [Direction and queue](#direction-and-queue)
-  ([record](DEPLOY.md#latest-release-records)).
+  [Direction and queue](#direction-and-queue), and the predictive, full-body
+  Engine with its race cluster ([record](DEPLOY.md#latest-release-records)).
 - Rollback: `scripts/rollback-release.sh <tag-or-commit> [--publish]`, with the
-  source tags `pre-night-instrument-20260924` and `pre-structural-20260924`
+  source tags `pre-night-instrument-20260924`, `pre-structural-20260924` and
+  `pre-engine-20260924`
   ([DEPLOY / Rollback](DEPLOY.md#rollback)).
 
 ## The product
@@ -52,8 +53,11 @@ the product remains experimental.
   BITCRUSH, BASS CUT, MID FOCUS, HIGH CUT — where the three band effects are
   clean fourth-order filters; braking UNDERWATER has its own master.
 - **Engine.** Three profiles (Mono, Rosso, Touring) from declared-MIT sample
-  banks, automatic virtual gears, a telemetry cluster with shift lights and
-  one TAMARRO show-off key. [Engine](agent-guide/engine.md).
+  banks with a dry full-body voicing, automatic virtual gears, RPM that follows
+  a predicted GPS speed between samples, clutch slip on pull-away, a race
+  cluster (LED tachometer, closing shift lights, equal plates, oscilloscope
+  traces) and one TAMARRO show-off key; the protected LAB compares Refined and
+  Full body. [Engine](agent-guide/engine.md).
 - **Maps and places.** Atlas and Air Atlas on MapLibre, Discover's nearby
   Wikipedia/OSM index with send-to-navigation, and Stats for Nerds, under the
   scoped [geographic privacy](agent-guide/maps.md#geographic-privacy) rules.
@@ -80,7 +84,7 @@ the product remains experimental.
 
 | Gate | Command | What it proves |
 | --- | --- | --- |
-| Native tests | `npm test` in `prototype/drive-lab` | Models, audio graph, protocol, source contracts (1,109 cases on September 24) |
+| Native tests | `npm test` in `prototype/drive-lab` | Models, audio graph, protocol, source contracts (1,117 cases on September 24) |
 | Visual regression | `npm run qa:visual` | 16 frozen chrome screens at `773 × 601` and `390 × 844`, both appearances |
 | Text fit | `npm run qa:text-fit` | No clipped chrome text across 14 running, muted, brake-off, visual and Engine states |
 | Interface QA | `scripts/qa-night-instrument.mjs` | Running chrome, surfaces, geometries and a real local display↔phone pairing |
