@@ -39,6 +39,29 @@ export function apertureSmoothing(coefficientAtThirtyFps, deltaSeconds) {
   return 1 - ((1 - coefficient) ** (elapsed * 30));
 }
 
+/**
+ * A critically damped spring toward a moving target, advanced in closed form.
+ * Position and velocity stay continuous, so a speed that arrives in coarse
+ * GPS steps is drawn as one uninterrupted motion instead of lurch-and-stop.
+ * `omega` is the natural frequency in radians per second.
+ */
+export function advanceSpring(state, target, omega, deltaSeconds) {
+  const value = Number.isFinite(state?.value) ? state.value : target;
+  const velocity = Number.isFinite(state?.velocity) ? state.velocity : 0;
+  const dt = Math.min(0.1, Math.max(0, Number(deltaSeconds) || 0));
+  if (!Number.isFinite(target) || !(omega > 0)) return { value, velocity };
+  const offset = value - target;
+  const impulse = (velocity + omega * offset) * dt;
+  const decay = Math.exp(-omega * dt);
+  return { value: target + (offset + impulse) * decay, velocity: (velocity - omega * impulse) * decay };
+}
+
+/**
+ * The receding end wall follows speed through a slower spring (settling in
+ * about 1.5 s) so the 0–40 km/h retreat stays fluid between GPS samples.
+ */
+export const APERTURE_WALL_SPRING = 2.6;
+
 /** Uniform speed terms computed once per frame rather than once per pixel. */
 export function apertureShaderControls(speedKmh) {
   const speed = Math.max(0, speedKmh);
@@ -71,10 +94,15 @@ export function apertureWall(speedKmh) {
  * avoids supersampling on the Tesla during the only low-speed transition while
  * preserving the exact CSS-pixel geometry and full-resolution cruise tunnel.
  */
-export function aperturePixelRatio(devicePixelRatio, speedKmh) {
+export function aperturePixelRatio(devicePixelRatio, speedKmh, previousRatio = null) {
   const dpr = Math.max(1, Number(devicePixelRatio) || 1);
   const speed = Math.max(0, Number(speedKmh) || 0);
-  return Math.min(dpr, speed <= WALL_APPROACH_SPEED_KMH ? 1 : 1.25);
+  const ratio = Math.min(dpr, speed <= WALL_APPROACH_SPEED_KMH ? 1 : 1.25);
+  // Hysteresis: a speed hovering around 40 km/h must not resize the canvas
+  // back and forth, which would read as a stutter.
+  if (Number.isFinite(previousRatio) && previousRatio !== ratio
+    && Math.abs(speed - WALL_APPROACH_SPEED_KMH) < 3) return Math.min(dpr, previousRatio);
+  return ratio;
 }
 
 /** What the shader draws at a given speed, for diagnostic overlays and QA. */

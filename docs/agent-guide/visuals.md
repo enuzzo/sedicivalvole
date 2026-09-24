@@ -27,6 +27,12 @@ through the minimum measurement window; see the active
 The [September 19 gyro refinement](../PHONE-MOTION-HTTPS-2026-09-19.md) remains
 historical evidence, not an active phone sensor connection.
 
+September 24 owner refinement: the curve reads more clearly (target gain 0.62,
+a gentle tunnel bank of 0.16 rad per unit curve) while the depth bend keeps a
+low slope so no wall compresses into a dark wedge. Curve and the 0–40 km/h end
+wall both follow critically damped springs, so coarse GPS samples draw as one
+continuous motion; the wall-retreat resolution switch at 40 km/h has hysteresis.
+
 Keep approved Modular Aperture/Laminar Product Design images in the ignored local reference library only. Laminar resembles Infinite Lights and requires independent reinterpretation before implementation. Unselected Laminar Switchback and Rolling Register stay in the ignored backlog, not implemented catalogue entries.
 
 WAKE has no salvage path: ribbons, renderer, fallback, tests, current QA captures and active product documentation stay out until a new owner-selected direction. PLUMB was also retired; [the dated study](../FLUX-VISUAL-DIRECTIONS-2026-08-29.md) is historical. PRIMORDIAL and the later original Gradient are retired by owner decision in `PIANO.md` (PP1/PP2 and PRIMORDIAL / Gradient replacement); stored `primordial` maps to Aperture and legacy `gradient` to Japanese Mist. Do not revive historical recovery tasks for them.
@@ -34,6 +40,17 @@ WAKE has no salvage path: ribbons, renderer, fallback, tests, current QA capture
 The August 29 INFINITE/PRIMORDIAL four-direction recovery list is not today's catalogue. INFINITE's source-admission study remains available for a future explicitly requested resumption; no active selection/implementation should be inferred from that recovery prompt. For such work read [Admission matrix](../SOURCE-ADMISSION-2026-08-29.md#admission-matrix): the original project-owned mechanics, excluded upstream JavaScript/assets and unverified galaxy/noise provenance still constrain reuse. Do not infer a revocation of a source/license restriction merely because the study is inactive.
 
 ## MERIDIAN 03
+
+The September 24 owner delegation ("rivederlo in qualsiasi aspetto") replaces
+the blade/soffit composition with a **portal corridor at dusk**: one lit
+rectangular portal per station (a secondary inner frame every third station,
+a dark soffit on alternate ones), low shoulder walls, the longitudinal light
+bands and sparse sheared outer blades. The sky is palette-owned: a meridian
+horizon line, a low half-set sun and its reflection on the road, anchored to
+the corridor's projected vanishing point so they travel with a bend. The camera
+follows only a third of the road curve and banks slightly, so the portals are
+seen to swing away; architecture fogs toward the horizon tone. The earlier
+September 23 description below is historical.
 
 The September 23 scoped reinterpretation uses a repeating spatial phrase of open
 oblique blades, folded soffits and bridged galleries, darker palette-owned faces,

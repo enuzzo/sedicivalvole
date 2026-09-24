@@ -18,6 +18,7 @@
 import {
   advanceMeridianVisualResponse,
   advanceTimeOffset,
+  distortionAt,
   lookAtFromDistortion,
   MERIDIAN_TRAVEL_LENGTH,
   meridianDistortionGlsl,
@@ -27,7 +28,7 @@ import {
   speedToProjection,
   speedToTimeRate,
 } from "./meridian-model.js";
-import { visualCurveTarget, advanceApertureCurve } from "../../motion/aperture-curve.js";
+import { visualCurveTarget, advanceCurveSpring } from "../../motion/aperture-curve.js";
 
 // Elements wrap past the camera rather than at it, so nothing pops out of
 // existence in front of the viewer.
@@ -55,7 +56,6 @@ const KIND_POST = 0;
 const KIND_RULE = 1;
 const KIND_MARKER = 2;
 const ARCHITECTURE_PAIR_COUNT = 12;
-const CLOUD_PANEL_COUNT = 0;
 const ARCHITECTURE_SCROLL_RATE = 26;
 
 /** Deterministic generator so every session, capture, and QA pass matches. */
@@ -112,6 +112,18 @@ function lookAt(eye, target, up) {
     -(z[0] * eye[0] + z[1] * eye[1] + z[2] * eye[2]),
     1,
   ]);
+}
+
+/** Column-major projection of a world point to 0–1 screen coordinates, clamped. */
+function projectToUv(matrix, [x, y, z]) {
+  const clipX = matrix[0] * x + matrix[4] * y + matrix[8] * z + matrix[12];
+  const clipY = matrix[1] * x + matrix[5] * y + matrix[9] * z + matrix[13];
+  const clipW = matrix[3] * x + matrix[7] * y + matrix[11] * z + matrix[15];
+  if (!(clipW > 1e-4)) return [0.5, 0.42];
+  return [
+    Math.min(0.92, Math.max(0.08, clipX / clipW * 0.5 + 0.5)),
+    Math.min(0.8, Math.max(0.2, clipY / clipW * 0.5 + 0.5)),
+  ];
 }
 
 function multiply(a, b) {
@@ -324,6 +336,7 @@ const ARCHITECTURE_VERTEX = `${SHARED_HEADER}
   in vec3 a_scale;
   in vec4 a_meta; // scroll speed, visibility key, material, emissive amount
   in vec2 a_rotation; // yaw, roll
+  in vec2 a_shear; // x and z shear per unit height
 
   uniform float u_architectureFraction;
 
@@ -336,7 +349,10 @@ const ARCHITECTURE_VERTEX = `${SHARED_HEADER}
 
   void main() {
     float travelled = mod(a_offset.z + u_time * a_meta.x, u_travelLength + u_overshoot);
-    vec3 local = a_position * a_scale;
+    vec3 sheared = a_position;
+    sheared.x += sheared.y * a_shear.x;
+    sheared.z += sheared.y * a_shear.y;
+    vec3 local = sheared * a_scale;
     float cy = cos(a_rotation.x);
     float sy = sin(a_rotation.x);
     local.xz = mat2(cy, -sy, sy, cy) * local.xz;
@@ -371,6 +387,7 @@ const ARCHITECTURE_FRAGMENT = `#version 300 es
   uniform vec3 u_secondary;
   uniform float u_fogDensity;
   uniform float u_volumeGlow;
+  uniform vec3 u_fogColor;
 
   in vec3 v_normal;
   in vec2 v_uv;
@@ -410,15 +427,24 @@ const ARCHITECTURE_FRAGMENT = `#version 300 es
     float satin = pow(max(0.0, 1.0 - abs(v_uv.x + v_uv.y * 0.26 - 0.65)), 8.0);
     material += mix(u_accent, u_secondary, 0.65) * (seam * 0.9 + satin * 0.09) * v_emissive;
     // Dark floor panels catch a restrained reflection of the two palette lights.
-    if (v_material > 3.5) {
+    if (v_material > 3.5 && v_material < 4.5) {
       float shoulderLight = pow(abs(v_uv.x * 2.0 - 1.0), 3.0);
       material = mix(u_base, u_mid, 0.1) + mix(u_accent, u_secondary, v_uv.x) * shoulderLight * 0.09;
     }
+    // Portal frames: a lit core with brighter bevels, the corridor's rhythm.
+    if (v_material > 4.5) {
+      vec3 core = mix(u_accent, u_light, 0.26);
+      material = core * (0.58 + diffuse * 0.28)
+        + mix(u_light, u_accent, 0.25) * (edge * 0.5 + bevel * 1.25) * (0.4 + u_volumeGlow * 0.6);
+    }
 
+    // Distance dissolves into the dusk horizon rather than into black.
     float fog = exp(-v_progress * u_fogDensity) * (1.0 - smoothstep(0.62, 1.0, v_progress));
-    vec3 colour = mix(u_base, material, fog);
+    vec3 colour = mix(u_fogColor, material, fog);
     float glassAlpha = v_material > 0.5 && v_material < 1.5 ? 0.92 : 1.0;
-    outColor = vec4(colour, v_alpha * glassAlpha * smoothstep(0.0, 0.04, v_progress));
+    // Portals passing overhead dissolve early instead of sweeping the frame.
+    float nearFade = smoothstep(0.0, v_material > 4.5 ? 0.16 : 0.04, v_progress);
+    outColor = vec4(colour, v_alpha * glassAlpha * nearFade);
   }
 `;
 
@@ -436,25 +462,55 @@ const BACKGROUND_FRAGMENT = `#version 300 es
   precision highp float;
   uniform vec3 u_base;
   uniform vec3 u_mid;
+  uniform vec3 u_light;
   uniform vec3 u_accent;
   uniform float u_atmosphere;
   uniform float u_flow;
+  uniform float u_aspect;
+  uniform float u_sunScale;
+  uniform float u_bank;
+  uniform vec2 u_vanish;
   in vec2 v_uv;
   out vec4 outColor;
   void main() {
-    vec2 centered = v_uv - vec2(0.5, 0.39);
-    float horizon = exp(-pow(centered.y * 7.5, 2.0));
-    float convergence = exp(-length(centered * vec2(1.25, 2.2)) * 4.2);
-    float upperFalloff = smoothstep(1.05, 0.12, v_uv.y);
-    vec3 colour = u_base;
-    colour += u_mid * horizon * (0.06 + u_atmosphere * 0.12);
-    colour += u_accent * convergence * horizon * u_atmosphere * 0.16;
-    colour += u_mid * upperFalloff * 0.012;
+    // The sky banks with the camera around the corridor's vanishing point.
+    vec2 local = vec2((v_uv.x - u_vanish.x) * u_aspect, v_uv.y - u_vanish.y);
+    float bankCos = cos(u_bank);
+    float bankSin = sin(u_bank);
+    local = vec2(local.x * bankCos + local.y * bankSin, -local.x * bankSin + local.y * bankCos);
+    vec2 uv = vec2(u_vanish.x + local.x / u_aspect, u_vanish.y + local.y);
+    // The corridor's own vanishing point, projected from the 3D scene, anchors
+    // the horizon; when the road bends the sun and its reflection travel with it.
+    float horizon = u_vanish.y;
+    float above = uv.y - horizon;
+    vec3 horizonTone = mix(u_mid, u_accent, 0.55);
+    vec3 sunTone = mix(u_accent, u_light, 0.42);
 
-    // Speed remains structural: projection, peripheral geometry and travelling
-    // shoulder planes carry optical flow. The sky stays empty so it cannot turn
-    // into a cheap particle field or a stack of horizontal scan lines.
-    colour += u_mid * u_flow * convergence * 0.008;
+    // Sky: the palette's deepest tone overhead, warming toward the meridian.
+    float skyT = clamp(above / max(0.05, 1.0 - horizon), 0.0, 1.0);
+    vec3 sky = mix(horizonTone * (0.30 + u_atmosphere * 0.10), u_base, pow(skyT, 0.5));
+    vec2 fromSun = vec2((uv.x - u_vanish.x) * u_aspect, above - 0.035);
+    float radius = length(fromSun);
+    float sunRadius = 0.07 * u_sunScale;
+    float disc = 1.0 - smoothstep(sunRadius - 0.004, sunRadius, radius);
+    float halo = exp(-radius * 5.5) * 0.4 + exp(-radius * 16.0) * 0.28;
+    sky += sunTone * halo * (0.6 + u_atmosphere * 0.4);
+    // The disc sets behind the meridian: only its upper part shows, lighter at
+    // the crown and deepening toward the horizon.
+    vec3 discTone = mix(u_accent * 0.9, mix(u_light, u_accent, 0.35), clamp(fromSun.y / sunRadius * 0.5 + 0.5, 0.0, 1.0));
+    sky = mix(sky, discTone, disc * smoothstep(0.0, 0.004, above));
+
+    // Road: dark, catching one soft vertical reflection beneath the sun.
+    float below = -above;
+    vec3 ground = mix(u_base, horizonTone * 0.22, exp(-below * 8.0));
+    float streak = exp(-abs(uv.x - u_vanish.x) * u_aspect * 9.0) * exp(-below * 2.0);
+    ground += sunTone * streak * 0.3;
+
+    vec3 colour = above >= 0.0 ? sky : ground;
+    // The meridian itself: one fine lit line with a restrained halo.
+    float line = exp(-abs(above) * 900.0) * 0.85 + exp(-abs(above) * 55.0) * 0.16;
+    colour += mix(u_light, u_accent, 0.35) * line;
+    colour += u_mid * u_flow * exp(-length(vec2((uv.x - u_vanish.x) * u_aspect, above)) * 4.0) * 0.02;
     outColor = vec4(colour, 1.0);
   }
 `;
@@ -607,9 +663,9 @@ function buildCubeGeometry() {
   for (const face of faces) {
     for (const index of order) {
       const [x, y, z] = face.c[index];
-      // A skewed prism rather than a box: every instance has a directional
-      // silhouette even before its station rotation is applied.
-      positions.push(x + y * 0.34, y, z + y * 0.08);
+      // Shear is applied per instance, so portal frames stay square while the
+      // outer blades keep their directional, skewed silhouette.
+      positions.push(x, y, z);
       normals.push(...face.n);
       uvs.push(...faceUvs[index]);
     }
@@ -638,112 +694,61 @@ function buildArchitectureInstances() {
   const scales = [];
   const metas = [];
   const rotations = [];
-  const push = (offset, scale, meta, rotation = [0, 0]) => {
+  const shears = [];
+  const push = (offset, scale, meta, rotation = [0, 0], shear = [0, 0]) => {
     offsets.push(...offset);
     scales.push(...scale);
     metas.push(...meta);
     rotations.push(...rotation);
+    shears.push(...shear);
   };
   const span = MERIDIAN_TRAVEL_LENGTH + CORRIDOR_OVERSHOOT;
+  const portal = (z, halfWidth, height, thickness, material, emissive, visibility) => {
+    for (const side of [-1, 1]) {
+      push([side * halfWidth, height / 2, z], [thickness, height, thickness], [ARCHITECTURE_SCROLL_RATE, visibility, material, emissive]);
+    }
+    push([0, height, z], [halfWidth * 2 + thickness, thickness, thickness], [ARCHITECTURE_SCROLL_RATE, visibility, material, emissive]);
+  };
   for (let index = 0; index < ARCHITECTURE_PAIR_COUNT; index += 1) {
     const z = (index / ARCHITECTURE_PAIR_COUNT) * span;
-    const visibility = 0.02 + (index % 4) * 0.065;
-    const passage = index % 4;
-    // Alternating open, folded and bridged stations form a deliberate spatial
-    // phrase. The same geometry travels continuously at every road speed.
-    push([0, -0.12, z], [18, 0.12, 24], [ARCHITECTURE_SCROLL_RATE, 0, 4, 0], [0, 0]);
-    if (passage === 1 || passage === 2) {
-      const side = passage === 1 ? -1 : 1;
-      push(
-        [side * 2.2, passage === 1 ? 11 : 13.5, z + 1.2],
-        [13.5, 0.38, 4.8],
-        [ARCHITECTURE_SCROLL_RATE, visibility, passage === 1 ? 2 : 3, 0.82],
-        [side * 0.08, side * 0.12],
-      );
-      // Folded soffits connect to the inner blades instead of floating in the
-      // sky. Their broad underside carries overhead parallax into the frame.
-      for (const wing of [-1, 1]) {
-        push(
-          [wing * 5.1, 10.8, z - 5.0], [6.8, 0.22, 15],
-          [ARCHITECTURE_SCROLL_RATE, visibility, wing < 0 ? 2 : 3, 0.72],
-          [wing * 0.08, -wing * 0.21],
-        );
-        push(
-          [wing * 10.3, 4.4, z - 3.5], [0.30, 8.8, 14],
-          [ARCHITECTURE_SCROLL_RATE, visibility, 1, 0.48],
-          [wing * 0.04, -wing * 0.13],
-        );
-      }
+    // One lit portal per station: the regular rhythm that makes both speed and
+    // the bend of the road legible at a glance. Always present, even at rest.
+    portal(z, 12.4, 10.4, 0.55, 5, 0.95, 0);
+    // Every third station doubles the frame just behind it, in the secondary
+    // tone, so the corridor reads as layered depth rather than a repeated sign.
+    if (index % 3 === 0) portal(z - 3.4, 10.6, 8.6, 0.34, 3, 0.8, 0.06);
+    // A dark soffit over alternate portals carries overhead parallax.
+    if (index % 4 === 2) {
+      push([0, 11.3, z - 4.2], [25.4, 0.16, 8.2], [ARCHITECTURE_SCROLL_RATE, 0.1, 1, 0.5]);
     }
     for (const side of [-1, 1]) {
-      const family = index % 3;
-      const x = side * (passage === 0 ? 12.6 : passage === 3 ? 10.2 : 8.7);
-      const height = passage === 0 ? 16 : passage === 3 ? 18 : 15;
-      const lean = -side * (passage === 0 ? 0.12 : passage === 3 ? 0.28 : 0.36);
-      const yaw = side * (0.1 + (index % 3) * 0.1);
-      const bladeMaterial = (index + (side > 0 ? 1 : 0)) % 4 === 0
-        ? 2
-        : family === 1 ? 0 : 3;
-
-      // One large oblique blade owns each side of a station. Very thin depth and
-      // broad spacing keep these as Euclidean planes, never towers or balconies.
+      // Low shoulder walls close the corridor at road level with a lit top seam.
       push(
-        [x, height * 0.46, z + (side > 0 ? (index % 3) * 5.5 : 0)],
-        [passage === 3 ? 2.2 : 1.1, height, passage === 0 ? 7.2 : 4.8],
-        [ARCHITECTURE_SCROLL_RATE, visibility, bladeMaterial, family === 0 ? 0.92 : 0.58],
-        [yaw, lean],
+        [side * 16.2, 0.9, z + 0.9],
+        [1.4, 1.8, 17.5],
+        [ARCHITECTURE_SCROLL_RATE, 0.02, 1, 0.46],
+        [side * between(random, 0.0, 0.04), 0],
       );
-
-      // Broad shoulder screen joining the blade to the peripheral flow. This is
-      // the large dark coloured mass in the visual contract; without it the
-      // station collapses into a row of isolated letter-like posts.
-      push(
-        [side * 13.5, 1.25, z + 0.9],
-        [7.2, 2.5, 16],
-        [ARCHITECTURE_SCROLL_RATE, visibility + 0.025, 1, 0.46],
-        [side * between(random, 0.03, 0.11), side * between(random, -0.025, 0.045)],
-      );
-
-      // Three solid longitudinal bands make motorway optical flow visible. They
-      // are long authored planes in the road shoulder, not particles or a
-      // scene-wide wireframe, and each uses one palette-owned material.
+      // Three solid longitudinal bands make motorway optical flow visible.
       for (let band = 0; band < 3; band += 1) {
         push(
           [side * (8.9 + band * 2.0), 0.45 + band * 0.8, z - 1.0 - band * 1.4],
           [0.16 + band * 0.07, 0.10 + band * 0.025, 18 + band * 3],
-          [ARCHITECTURE_SCROLL_RATE, visibility + 0.012 + band * 0.012, band === 0 ? 0 : band + 1, 0.98],
+          [ARCHITECTURE_SCROLL_RATE, 0.012 + band * 0.012, band === 0 ? 0 : band + 1, 0.98],
           [side * (0.04 + band * 0.026), 0],
         );
       }
-
-      if (family === 0) {
-        // A second inward blade creates the incomplete portal rhythm visible in
-        // the selected reference without closing it into a conventional gate.
-        push(
-          [x - side * between(random, 2.4, 4.2), height * 0.34, z + 1.6],
-          [between(random, 0.42, 0.82), height * 0.7, between(random, 2.8, 5.2)],
-          [ARCHITECTURE_SCROLL_RATE, visibility + 0.035, side > 0 ? 0 : 2, 0.82],
-          [-yaw * 0.35, lean * 0.52],
-        );
-      } else if (family === 1) {
-        // Low lateral plane: the reference carries colour in the road shoulder,
-        // not in stacked floors above the driver's sight line.
-        push(
-          [x - side * 1.1, between(random, 1.0, 2.1), z - 1.8],
-          [between(random, 5.5, 9.5), between(random, 1.8, 3.8), between(random, 7, 13)],
-          [ARCHITECTURE_SCROLL_RATE, visibility + 0.045, 1, 0.55],
-          [side * 0.12, side * between(random, -0.05, 0.08)],
-        );
-      }
     }
-  }
-  for (let index = 0; index < CLOUD_PANEL_COUNT; index += 1) {
-    const z = (index / CLOUD_PANEL_COUNT) * span;
+    // Sparse outer blades, alternating sides, keep Meridian's folded character
+    // at the periphery without cluttering the travel axis.
+    const side = index % 2 === 0 ? -1 : 1;
+    const height = 13 + (index % 3) * 2.5;
     push(
-      [between(random, -8, 8), between(random, 19, 34), z],
-      [between(random, 10, 25), between(random, 0.2, 0.58), between(random, 5, 14)],
-      [ARCHITECTURE_SCROLL_RATE * 0.72, 0.18 + (index % 8) * 0.075, 2, index % 4 === 0 ? 0.46 : 0.12],
-      [between(random, -0.28, 0.28), between(random, -0.05, 0.05)],
+      [side * (20.5 + (index % 3) * 1.4), height * 0.46, z + 6.5],
+      [1.1, height, 4.8],
+      [ARCHITECTURE_SCROLL_RATE, 0.08 + (index % 4) * 0.05, index % 4 === 0 ? 2 : 0, 0.6],
+      [side * 0.12, side * 0.22],
+      [-side * 0.34, 0.08],
     );
   }
   return {
@@ -751,6 +756,7 @@ function buildArchitectureInstances() {
     scales: new Float32Array(scales),
     metas: new Float32Array(metas),
     rotations: new Float32Array(rotations),
+    shears: new Float32Array(shears),
     count: metas.length / 4,
   };
 }
@@ -841,10 +847,10 @@ export function createMeridianRenderer(canvas, initialPalette) {
   ]);
   const architectureUniforms = uniformsOf(gl, architectureProgram, [
     ...distortionUniforms, "u_architectureFraction", "u_base", "u_mid", "u_light",
-    "u_accent", "u_secondary", "u_fogDensity", "u_volumeGlow",
+    "u_accent", "u_secondary", "u_fogDensity", "u_volumeGlow", "u_fogColor",
   ]);
   const backgroundUniforms = uniformsOf(gl, backgroundProgram, [
-    "u_base", "u_mid", "u_accent", "u_atmosphere", "u_flow",
+    "u_base", "u_mid", "u_light", "u_accent", "u_atmosphere", "u_flow", "u_aspect", "u_vanish", "u_sunScale", "u_bank",
   ]);
   const backgroundVao = gl.createVertexArray();
 
@@ -897,6 +903,7 @@ export function createMeridianRenderer(canvas, initialPalette) {
     attachInstanced(gl, architectureProgram, "a_scale", architecture.scales, 3),
     attachInstanced(gl, architectureProgram, "a_meta", architecture.metas, 4),
     attachInstanced(gl, architectureProgram, "a_rotation", architecture.rotations, 2),
+    attachInstanced(gl, architectureProgram, "a_shear", architecture.shears, 2),
   ];
   gl.bindVertexArray(null);
 
@@ -905,7 +912,7 @@ export function createMeridianRenderer(canvas, initialPalette) {
   gl.enable(gl.BLEND);
 
   let timeOffset = 0;
-  let roadCurve = 0;
+  let roadCurveSpring = { value: 0, velocity: 0 };
   let railScroll = 0;
   let visualResponse = null;
   // A recovered renderer may reuse a canvas whose backing size is already set.
@@ -951,7 +958,10 @@ export function createMeridianRenderer(canvas, initialPalette) {
 
     render({ speedKmh, deltaSeconds, reducedMotion, effect, motionSample }) {
       if (disposed) return;
-      roadCurve = advanceApertureCurve(roadCurve, visualCurveTarget(motionSample, speedKmh, reducedMotion), deltaSeconds);
+      // The road bend is a continuous spring over coarse GPS heading, slightly
+      // stronger than the shared target so the portals visibly swing away.
+      roadCurveSpring = advanceCurveSpring(roadCurveSpring, Math.max(-1, Math.min(1, visualCurveTarget(motionSample, speedKmh, reducedMotion) * 1.15)), deltaSeconds);
+      const roadCurve = roadCurveSpring.value;
 
       visualResponse = advanceMeridianVisualResponse(
         visualResponse,
@@ -979,7 +989,10 @@ export function createMeridianRenderer(canvas, initialPalette) {
         peripheralStretch: peripheral.stretch,
         peripheralParallax: peripheral.parallax,
       };
-      const aim = lookAtFromDistortion(timeOffset, field);
+      // The camera follows only a third of the bend: the corridor must be seen
+      // to curve, not be silently straightened by the view.
+      const aim = lookAtFromDistortion(timeOffset, { ...field, roadCurve: roadCurve * 0.34 });
+      const bank = reducedMotion ? 0 : roadCurve * 0.075;
 
       const eye = [0, projection.cameraLift, 0];
       const viewProjection = multiply(
@@ -998,9 +1011,17 @@ export function createMeridianRenderer(canvas, initialPalette) {
             eye[1] + projection.horizonBias + aim.y * 0.35,
             eye[2] + aim.z,
           ],
-          [0, 1, 0],
+          [Math.sin(bank), Math.cos(bank), 0],
         ),
       );
+      // Project the far corridor to anchor the horizon, sun and reflection.
+      const far = distortionAt(0.97, timeOffset, field);
+      const vanish = projectToUv(viewProjection, [
+        far.x * 0.97,
+        projection.cameraLift + far.y,
+        -MERIDIAN_TRAVEL_LENGTH * 0.97 * projection.depthCompression,
+      ]);
+      const horizonTone = palette.mid.map((value, index) => (value * 0.45 + palette.accent[index] * 0.55) * 0.34);
 
       gl.viewport(0, 0, width, height);
       gl.clearColor(palette.base[0], palette.base[1], palette.base[2], 1);
@@ -1012,7 +1033,12 @@ export function createMeridianRenderer(canvas, initialPalette) {
       gl.bindVertexArray(backgroundVao);
       gl.uniform3fv(backgroundUniforms.u_base, palette.base);
       gl.uniform3fv(backgroundUniforms.u_mid, palette.mid);
+      gl.uniform3fv(backgroundUniforms.u_light, palette.light);
       gl.uniform3fv(backgroundUniforms.u_accent, palette.accent);
+      gl.uniform1f(backgroundUniforms.u_aspect, width / height);
+      gl.uniform2f(backgroundUniforms.u_vanish, vanish[0], vanish[1]);
+      gl.uniform1f(backgroundUniforms.u_sunScale, 1 + effectProfile.atmosphereDelta * 0.4);
+      gl.uniform1f(backgroundUniforms.u_bank, bank);
       gl.uniform1f(
         backgroundUniforms.u_atmosphere,
         Math.min(1, density.atmosphereFraction + effectProfile.atmosphereDelta),
@@ -1035,6 +1061,7 @@ export function createMeridianRenderer(canvas, initialPalette) {
       gl.uniform3fv(architectureUniforms.u_secondary, palette.secondary);
       gl.uniform1f(architectureUniforms.u_fogDensity, 1.85 * effectProfile.fogScale);
       gl.uniform1f(architectureUniforms.u_volumeGlow, density.volumeGlow);
+      gl.uniform3fv(architectureUniforms.u_fogColor, horizonTone);
       gl.drawArraysInstanced(gl.TRIANGLES, 0, cube.vertexCount, architecture.count);
 
       gl.depthMask(false);

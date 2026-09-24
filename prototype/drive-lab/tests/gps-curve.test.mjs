@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { createGpsCurveTracker } from "../src/motion/gps-curve.js";
-import { apertureCurveTarget, apertureCurveOffset, visualCurveTarget, advanceApertureCurve } from "../src/motion/aperture-curve.js";
+import { apertureCurveTarget, apertureCurveOffset, visualCurveTarget, advanceApertureCurve, advanceCurveSpring } from "../src/motion/aperture-curve.js";
 
 const fix = (capturedAtMs, heading, overrides = {}) => ({ capturedAtMs, heading, speedKmh: 70, accuracyM: 2, ...overrides });
 const turning = (cadence = 100, direction = 1) => {
@@ -114,9 +114,12 @@ test("straight travel releases the curve and lost or reduced-motion input return
   assert.equal(apertureCurveTarget(value, 8), 0);
   assert.equal(apertureCurveTarget(value, 70, true), 0);
   assert.equal(apertureCurveTarget({ ...value, ageMs: 1501 }, 70), 0);
-  let curve = apertureCurveTarget(value, 70);
-  for (let i = 0; i < 60; i++) curve = advanceApertureCurve(curve, 0, 1 / 60);
-  assert.ok(Math.abs(curve) < 0.003);
+  let curve = { value: apertureCurveTarget(value, 70), velocity: 0 };
+  for (let i = 0; i < 60; i++) curve = advanceCurveSpring(curve, 0, 1 / 60);
+  assert.ok(Math.abs(curve.value) < 0.003);
+  let shared = visualCurveTarget(value, 70);
+  for (let i = 0; i < 60; i++) shared = advanceApertureCurve(shared, 0, 1 / 60);
+  assert.ok(Math.abs(shared) < 0.012, "the shared exponential release used by other fields stays prompt");
 });
 
 test("reset removes previous direction and increments the input generation", () => {
@@ -155,5 +158,30 @@ test("Aperture carries a curve from the near rim through the middle and far tunn
   for (const depth of [0, 0.25, 0.5, 0.75, 1]) {
     assert.equal(apertureCurveOffset(-curve, depth), -apertureCurveOffset(curve, depth));
     assert.equal(apertureCurveOffset(0, depth), 0);
+  }
+});
+
+test("the Aperture curve lean is stronger, continuous and still releases on loss", async () => {
+  const { advanceCurveSpring, APERTURE_BANK_PER_CURVE } = await import("../src/motion/aperture-curve.js");
+  const target = apertureCurveTarget(turning().sample(3000), 70);
+  assert.ok(target > 0.25, `a clear turn leans the tunnel noticeably (${target})`);
+  let state = { value: 0, velocity: 0 };
+  let previous = 0;
+  for (let frame = 0; frame < 45; frame += 1) {
+    state = advanceCurveSpring(state, target, 1 / 60);
+    assert.ok(state.value >= previous, "the lean builds without stepping back");
+    previous = state.value;
+  }
+  assert.ok(state.value > target * 0.6);
+  for (let frame = 0; frame < 60; frame += 1) state = advanceCurveSpring(state, 0, 1 / 60);
+  assert.ok(Math.abs(state.value) < 0.01, "lost heading returns to straight within a second");
+  assert.ok(APERTURE_BANK_PER_CURVE * 0.62 < 0.12, "the bank stays a gentle lean");
+});
+
+test("the strongest Aperture bend never compresses a wall by more than half", () => {
+  const strongest = 0.62;
+  for (let depth = 0; depth < 1; depth += 0.01) {
+    const slope = (apertureCurveOffset(strongest, depth + 0.01) - apertureCurveOffset(strongest, depth)) / 0.01;
+    assert.ok(slope < 0.56, `slope ${slope.toFixed(3)} at depth ${depth.toFixed(2)}`);
   }
 });

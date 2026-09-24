@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { webcrypto } from 'node:crypto';
 import { createMotionCipher, createRelayKey, createMotionRelay } from '../src/motion/relay.js';
-import { apertureCurveTarget, advanceApertureCurve } from '../src/motion/aperture-curve.js';
+import { apertureCurveTarget, advanceApertureCurve, advanceCurveSpring } from '../src/motion/aperture-curve.js';
 import { createMotionSession } from '../src/motion/session.js';
 import { createMotionProtocol, createMotionPeer } from '../src/motion/channel.js';
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
@@ -83,12 +83,13 @@ test('closing an in-flight relay cannot emit an open event or schedule new reque
  assert.deepEqual(events,['stop']);assert.equal(calls,1);assert.equal(peer.sample(),null);
 });
 test('Aperture curve is bounded, direction-sensitive, fresh-only and disabled at rest or reduced motion', () => {
- const v=values(); const right=apertureCurveTarget(v,42);assert.ok(right>0&&right<0.46);
+ const v=values(); const right=apertureCurveTarget(v,42);assert.ok(right>0&&right<0.62);
  assert.equal(apertureCurveTarget({...v,turnRate:-10},42),-right);
  for(const sample of [null,{...v,ageMs:251},{...v,ageMs:-1},{...v,turnRate:NaN},{...v,frame:'world'}])assert.equal(apertureCurveTarget(sample,42),0);
  assert.equal(apertureCurveTarget(v,0),0);assert.equal(apertureCurveTarget(v,130,true),0);
- assert.ok(apertureCurveTarget({...v,turnRate:2000},130)<=0.46);
- let curve=right;for(let i=0;i<60;i++)curve=advanceApertureCurve(curve,0,1/60);assert.ok(curve<0.003);
+ // September 24: the owner asked for a clearer Aperture curve; the bound rises from 0.46 to 0.62.
+ assert.ok(apertureCurveTarget({...v,turnRate:2000},130)<=0.62);
+ let curve={value:right,velocity:0};for(let i=0;i<60;i++)curve=advanceCurveSpring(curve,0,1/60);assert.ok(Math.abs(curve.value)<0.003);
 });
 function surface(){const listeners=new Map();return {isSecureContext:true,crypto:webcrypto,location:{origin:'https://fixture.invalid'},visibilityState:'visible',addEventListener:(k,f)=>listeners.set(k,f),removeEventListener:k=>listeners.delete(k)};}
 test('HTTPS QR works without WebRTC; encryption key never enters any API request or diagnostics',async()=>{
