@@ -1,5 +1,32 @@
 # Deployment
 
+## Night Instrument interface — 2026-09-24
+
+Canonical `20260924-1430.1b20183` is published from source `1b20183` at
+https://sedicivalvole.app/. It carries the owner-selected Night Instrument
+interface for the display and passenger remote, and the clean Bass Cut /
+Mid Focus / High Cut filters. The previous release source is tagged
+`pre-night-instrument-20260924` (`138fa6a`, live build `20260923-2255`) and its
+local build is kept in `prototype/drive-lab/output/` for rollback.
+
+The aggregate test command passed 1,102 cases; all test files pass 1,105. The
+production package verified 835 exact hashes and 189 community credits.
+Official read-only preflight and postflight passed network, login, exact
+canonical directory and remote identity with no writes. Preserve-existing
+publication uploaded 39 files / 6,572,363 bytes, verified and reused 832
+static files and 29 recordings, retained two previous fingerprinted assets and
+activated the dynamic root without legacy deletion.
+
+Bare and cache-busted canonical HTML return HTTP/2 200, no-store and proxy
+MISS, and equal the local 1,445-byte file at SHA-256
+`d65067db59400ea2e0845aa2a62479bde60071419fbcb9150400d4898f7d0f37`.
+Main JS `index-uLBUPXWx.js`, main CSS `index-BcK2uj-v.css` and the lazy phone
+JS/CSS match the local build byte-for-byte. A public browser at 773 × 601
+showed build `20260924-1430`, the new Intro, the gate reveal and the running
+chrome with real Jamendo artwork. Tesla cabin legibility and touch, the GPU
+cost of the new transitions and iPhone Safari behaviour remain physical
+acceptance gates. No synthetic diagnostic mail was sent.
+
 ## Passenger remote and GPS heading — 2026-09-23
 
 Canonical `20260923-1534.05ad287` is published from source `05ad287` at
