@@ -2,14 +2,16 @@
 //
 // Captures deterministic states of the real App at the Tesla split viewport
 // (773 x 601) and the phone remote (390 x 844): animated fields are replaced by
-// a flat backdrop, motion is disabled, Math.random is seeded, catalogue and GPS
-// are fixtures, and the build stamp is masked. Each capture is compared with
+// a flat backdrop, motion is disabled, Math.random is constant, catalogue and
+// GPS are fixtures, and the build stamp is masked. Each capture is compared with
 // the committed baseline in tests/visual-baseline/ inside Chromium itself.
 //
 //   npm run qa:visual            compare (fails on drift, writes diffs to output/visual-regression)
 //   npm run qa:visual -- --update  accept the current rendering as the new baseline
 //
-// Requires a running local server: QA_URL (default http://localhost:5183/).
+// Requires a running server: QA_URL (default http://localhost:5183/, the dev
+// server). The same baseline holds for the compiled build, so a release can be
+// checked with QA_URL=http://localhost:5184/ (`npm run preview`).
 import fs from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -58,13 +60,11 @@ async function open({ appearance, viewport = { width: 773, height: 601 }, url = 
       localStorage.setItem("sedicivalvole.appearance.v1", appearance);
       sessionStorage.setItem("baseline-init", "1");
     }
-    let seed = 0x5eed1234;
-    Math.random = () => {
-      seed = (seed + 0x6d2b79f5) | 0;
-      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
+    // A constant, not a seeded sequence: React's development mode calls
+    // initializers twice, so a sequence would pick different launch visuals
+    // and presets on the dev server and on the compiled build. Every random
+    // loop in src is bounded (splice-based), so a constant cannot stall one.
+    Math.random = () => 0.05;
     const fix = () => ({ timestamp: Date.now(), coords: { speed: speedKmh / 3.6, heading: 90, accuracy: 5, latitude: 45.4642, longitude: 9.19 } });
     Object.defineProperty(navigator, "geolocation", { value: {
       watchPosition(callback) { callback(fix()); return setInterval(() => callback(fix()), 1000); },
