@@ -4228,12 +4228,22 @@ export function App() {
       case "soundtrack":
         await playSoundtrackTrack(command.value, "phone-remote");
         break;
+      case "soundtrack-selection": {
+        const valid = command.kind === "featured" ? command.value === "signal-border"
+          : command.kind === "library" ? command.value === "all"
+            : command.kind === "pace" ? SOUNDTRACK_PACE_OPTIONS.some((option) => option.id === command.value)
+              : SOUNDTRACK_GENRE_OPTIONS.some((option) => option.id === command.value);
+        if (!valid) return { ok: false, reason: "unknown-selection" };
+        if (experienceModeRef.current !== "flux") chooseExperienceMode("flux");
+        await playSoundtrackSelection({ kind: command.kind, id: command.value }, "phone-remote");
+        break;
+      }
       default:
         return { ok: false, reason: "unsupported-command" };
     }
     logDiagnosticEvent("remote.command.applied", { type: command.type });
     return { ok: true };
-  }, [chooseEngineProfile, chooseExperienceMode, logDiagnosticEvent, moveTransport, playSoundtrackTrack, selectScore, switchMusicMode, toggleMuted, toggleTransport, updateManualEffect, updateVehicleEffects]);
+  }, [chooseEngineProfile, chooseExperienceMode, logDiagnosticEvent, moveTransport, playSoundtrackSelection, playSoundtrackTrack, selectScore, switchMusicMode, toggleMuted, toggleTransport, updateManualEffect, updateVehicleEffects]);
   remoteCommandRef.current = applyRemoteCommand;
 
   const currentTrack = useMemo(() => {
@@ -4311,6 +4321,20 @@ export function App() {
       artist: currentTrackRef.current.artist,
       album: currentTrackRef.current.album,
       artwork: currentTrackRef.current.artwork,
+    } : null,
+    // Soundtrack browsing for the passenger: selection, status and the visible tracks.
+    soundtrack: (sessionMusicModeRef.current || musicMode) === "soundtrack" && soundtrackSnapshot ? {
+      selection: soundtrackSnapshot.library?.selection
+        ? { kind: soundtrackSnapshot.library.selection.kind, id: soundtrackSnapshot.library.selection.id }
+        : null,
+      status: soundtrackSnapshot.status,
+      currentKey: soundtrackSnapshot.current?.key ?? null,
+      entries: (soundtrackSnapshot.library?.entries ?? []).slice(0, 6).map((entry) => ({
+        key: entry.key,
+        title: entry.title,
+        artist: entry.artistName,
+        artwork: entry.imageUrl,
+      })),
     } : null,
   });
 

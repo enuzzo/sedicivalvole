@@ -150,3 +150,44 @@ test("encrypted command relays recover from transient request failures", async (
     phone.close();
   }
 });
+
+test("Soundtrack selections are allowlisted by kind", () => {
+  assert.deepEqual(
+    normalizeRemoteCommand({ id: "s1", type: "soundtrack-selection", kind: "genre", value: "jazz" }),
+    { v: "sv-remote-1", id: "s1", type: "soundtrack-selection", kind: "genre", value: "jazz" },
+  );
+  assert.equal(normalizeRemoteCommand({ id: "s2", type: "soundtrack-selection", kind: "playlist", value: "x" }), null);
+  assert.equal(normalizeRemoteCommand({ id: "s3", type: "soundtrack-selection", kind: "pace" }), null);
+});
+
+test("the heartbeat carries the Soundtrack list but always fits, degrading detail first", () => {
+  const long = (n) => "x".repeat(n);
+  const entries = Array.from({ length: 9 }, (_, index) => ({
+    key: `jamendo:${index}${long(60)}`,
+    title: long(64),
+    artist: long(48),
+    artwork: `https://usercontent.jamendo.com/${long(170)}`,
+  }));
+  const track = { title: long(240), artist: long(240), album: long(240), artwork: `https://a.example/${long(220)}` };
+  const receiver = createCommandProtocol({
+    role: "receiver",
+    getState: () => ({ mode: "flux", musicMode: "soundtrack", track, soundtrack: { selection: { kind: "genre", id: "jazz" }, status: "playing", currentKey: "jamendo:1", entries } }),
+  });
+  let received = null;
+  const phone = createCommandProtocol({ role: "phone", onState: (state) => { received = state; } });
+  const packet = receiver.poll();
+  assert.ok(packet && packet.length <= 4096, "the state packet stays within the relay plaintext limit");
+  phone.receive(packet);
+  assert.equal(received.mode, "flux");
+  assert.equal(received.track.title.length, 240);
+  assert.equal(received.soundtrack.selection.id, "jazz");
+  assert.ok(received.soundtrack.entries.length <= 6);
+  const compact = createCommandProtocol({
+    role: "receiver",
+    getState: () => ({ mode: "flux", soundtrack: { entries: entries.slice(0, 6).map((entry) => ({ ...entry, key: "k1", title: "Night Drive", artist: "Artist", artwork: "https://usercontent.jamendo.com/?id=1&width=300" })) } }),
+  });
+  const phoneCompact = createCommandProtocol({ role: "phone", onState: (state) => { received = state; } });
+  phoneCompact.receive(compact.poll());
+  assert.equal(received.soundtrack.entries.length, 6);
+  assert.match(received.soundtrack.entries[0].artwork, /^https:/, "normal lists keep their covers");
+});

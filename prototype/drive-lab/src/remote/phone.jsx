@@ -1,5 +1,5 @@
 import { MANUAL_EFFECT_CONTROLS } from "../manual-effects-controls.js";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ENGINE_CATALOGUE } from "../engine/catalogue.js";
 import { FLUX_THEMES, getFluxTheme } from "../flux-themes.js";
 import { resolveSemanticTheme } from "../semantic-theme.js";
@@ -9,6 +9,7 @@ import { readyScoreGenres } from "../score/genres.js";
 import { MediaGlyph } from "../media-glyph.jsx";
 import { ActivityBars, Led, NiGlyph } from "../ui/night-instrument.jsx";
 import { REMOTE_PAIRING_STORAGE_KEY, createRemoteSession, selectRemotePair } from "./session.js";
+import { SOUNDTRACK_GENRE_OPTIONS, SOUNDTRACK_PACE_OPTIONS } from "../soundtrack/library-model.js";
 import "./remote.css";
 
 const EMPTY_STATE = Object.freeze({ mode: "flux", musicMode: "play-road", genreId: "junction", environmentId: "aperture", engineProfileId: "mono", themeId: "red", muted: false, vehicleEffectsEnabled: true, playing: false, manualEffects: {}, track: null });
@@ -121,6 +122,108 @@ function PairingGuide({ state, hasPair }) {
   </section>;
 }
 
+/** Soundtrack from the passenger seat: source, pace, genre and the visible tracks. */
+function SoundtrackBrowser({ soundtrack, pendingSelection, onSelect, onTrack }) {
+  const selection = pendingSelection ?? soundtrack?.selection ?? null;
+  const featured = selection?.kind === "featured";
+  const entries = soundtrack?.entries ?? [];
+  const loading = Boolean(pendingSelection) || ["loading", "buffering"].includes(soundtrack?.status);
+  const chip = (kind, option) => {
+    const active = selection?.kind === kind && selection.id === option.id;
+    return <button key={option.id} type="button" aria-pressed={active} className={active ? "is-active" : ""} onClick={() => onSelect(kind, option.id)}>
+      {option.label}{active ? <Led on /> : null}
+    </button>;
+  };
+  return <div className="remote-soundtrack">
+    <div className="remote-source-cards">
+      <button type="button" aria-pressed={featured} className={featured ? "is-active" : ""} onClick={() => onSelect("featured", "signal-border")}>
+        <img src="/brand/illobo-featured-solid.svg" alt="" width="44" height="44" />
+        <span><small>FEATURED ARTIST</small><strong>Lobo Playlist</strong></span>
+      </button>
+      <button type="button" aria-pressed={Boolean(selection) && !featured} className={selection && !featured ? "is-active" : ""} onClick={() => onSelect("library", "all")}>
+        <span className="remote-source-glyph"><NiGlyph name="music" /></span>
+        <span><small>JAMENDO</small><strong>{selection?.kind === "genre" ? SOUNDTRACK_GENRE_OPTIONS.find((option) => option.id === selection.id)?.label ?? "Library"
+          : selection?.kind === "pace" ? `${SOUNDTRACK_PACE_OPTIONS.find((option) => option.id === selection.id)?.label ?? ""} pace`.trim()
+            : "All genres"}</strong></span>
+      </button>
+    </div>
+    {!featured ? <>
+      <h3 className="remote-section-label">Pace</h3>
+      <div className="remote-chip-row">{SOUNDTRACK_PACE_OPTIONS.map((option) => chip("pace", option))}</div>
+      <h3 className="remote-section-label">Genre</h3>
+      <div className="remote-chip-grid">{SOUNDTRACK_GENRE_OPTIONS.map((option) => chip("genre", option))}</div>
+    </> : null}
+    <h3 className="remote-section-label">{loading ? "Loading tracks…" : "Tracks"}</h3>
+    {entries.length ? <ul className="remote-track-list">
+      {entries.map((entry) => {
+        const current = entry.key === soundtrack?.currentKey;
+        return <li key={entry.key}><button type="button" aria-current={current || undefined} className={current ? "is-current" : ""} onClick={() => onTrack(entry.key)}>
+          {entry.artwork ? <img src={entry.artwork} alt="" width="44" height="44" loading="lazy" /> : <span className="remote-track-placeholder"><NiGlyph name="music" /></span>}
+          <span><strong>{entry.title}</strong><small>{entry.artist || "Jamendo"}</small></span>
+          {current ? <ActivityBars playing={soundtrack?.status === "playing"} /> : <MediaGlyph name="play" />}
+        </button></li>;
+      })}
+    </ul> : <p className="remote-hint">{loading ? "The display is preparing this selection." : "Choose a source, pace or genre to fill the list."}</p>}
+  </div>;
+}
+
+/**
+ * XY filter: left removes the top end, right removes the low end, height adds
+ * the bounded resonance of the last stretch. It is momentary: lifting the
+ * finger returns the music to open.
+ */
+function XyFilterPad({ disabled, onChange }) {
+  const padRef = useRef(null);
+  const lastSentRef = useRef({ highCut: 0, bassDrive: 0 });
+  const [point, setPoint] = useState(null);
+  const emit = (next) => {
+    const previous = lastSentRef.current;
+    if (next.highCut === previous.highCut && next.bassDrive === previous.bassDrive) return;
+    lastSentRef.current = next;
+    onChange(next);
+  };
+  const valuesAt = (x, y) => {
+    const magnitude = Math.max(0, (Math.abs(x) - 0.08) / 0.92);
+    const amount = magnitude === 0 ? 0 : Math.min(1, Math.round(magnitude ** 0.8 * (0.78 + 0.22 * y) * 100) / 100);
+    return { highCut: x < 0 ? amount : 0, bassDrive: x > 0 ? amount : 0 };
+  };
+  const track = (event) => {
+    const rect = padRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const x = Math.max(-1, Math.min(1, ((event.clientX - rect.left) / rect.width) * 2 - 1));
+    const y = Math.max(0, Math.min(1, 1 - (event.clientY - rect.top) / rect.height));
+    setPoint({ x, y });
+    emit(valuesAt(x, y));
+  };
+  const release = () => {
+    setPoint(null);
+    emit({ highCut: 0, bassDrive: 0 });
+  };
+  useEffect(() => () => { if (lastSentRef.current.highCut || lastSentRef.current.bassDrive) onChange({ highCut: 0, bassDrive: 0 }); }, [onChange]);
+  const values = point ? valuesAt(point.x, point.y) : { highCut: 0, bassDrive: 0 };
+  return <div
+    ref={padRef}
+    className="remote-xy"
+    data-active={Boolean(point)}
+    aria-disabled={disabled || undefined}
+    role="application"
+    aria-label="XY filter. Hold and slide left to cut the highs, right to cut the bass, up for resonance. Release to open."
+    onPointerDown={(event) => { if (disabled) return; padRef.current?.setPointerCapture?.(event.pointerId); track(event); }}
+    onPointerMove={(event) => { if (point) track(event); }}
+    onPointerUp={release}
+    onPointerCancel={release}
+    style={point ? { "--xy-x": `${(point.x + 1) * 50}%`, "--xy-y": `${(1 - point.y) * 100}%`, "--xy-amount": Math.max(values.highCut, values.bassDrive) } : undefined}
+  >
+    <span className="remote-xy-axis is-vertical" aria-hidden="true" />
+    <span className="remote-xy-axis is-horizontal" aria-hidden="true" />
+    <span className="remote-xy-label is-left" aria-hidden="true">HIGH CUT</span>
+    <span className="remote-xy-label is-right" aria-hidden="true">BASS CUT</span>
+    <span className="remote-xy-label is-top" aria-hidden="true">RESONANCE</span>
+    <span className="remote-xy-label is-centre" aria-hidden="true">{point ? values.highCut ? `High Cut ${Math.round(values.highCut * 100)}%` : values.bassDrive ? `Bass Cut ${Math.round(values.bassDrive * 100)}%` : "Open" : "Hold and slide"}</span>
+    {point ? <span className="remote-xy-dot" aria-hidden="true" /> : null}
+  </div>;
+}
+
 function safePresentation() {
   const query = new URLSearchParams(window.location.search);
   return { palette: query.get("palette") || "red", appearance: query.get("appearance") === "light" ? "light" : "dark" };
@@ -213,6 +316,8 @@ export function MotionPhone() {
   const [snapshot, setSnapshot] = useState({ state: "idle", networkState: "offline" });
   const [pair, setPair] = useState(null);
   const [tab, setTab] = useState("visual");
+  const [fxView, setFxView] = useState("pads");
+  const [pendingSelection, setPendingSelection] = useState(null);
   const [showGuide, setShowGuide] = useState(false);
   const [notice, setNotice] = useState(null);
   const sessionRef = useRef(null);
@@ -261,6 +366,24 @@ export function MotionPhone() {
   useEffect(() => {
     if (snapshot.state === "connected" && snapshot.networkState === "online") setNotice(null);
   }, [snapshot.state, snapshot.networkState]);
+
+  // A tapped Soundtrack selection shows as chosen until the display confirms it.
+  const confirmedSelection = remoteState.soundtrack?.selection;
+  useEffect(() => {
+    if (!pendingSelection) return undefined;
+    if (confirmedSelection?.kind === pendingSelection.kind && confirmedSelection.id === pendingSelection.id) {
+      setPendingSelection(null);
+      return undefined;
+    }
+    const timer = window.setTimeout(() => setPendingSelection(null), 8000);
+    return () => window.clearTimeout(timer);
+  }, [pendingSelection, confirmedSelection?.kind, confirmedSelection?.id]);
+  const sendFilter = useCallback((values) => {
+    send("manual-effect", { effect: "highCut", value: values.highCut });
+    send("manual-effect", { effect: "bassDrive", value: values.bassDrive });
+  // `send` only reads the session ref; recreating it per render is harmless.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const forget = () => { sessionRef.current?.stop(); forgetSavedPair(); setPair(null); setRemoteState(EMPTY_STATE); setPendingManualEffects({}); setSnapshot({ state: "idle", networkState: "offline" }); setShowGuide(false); };
   const connected = snapshot.state === "connected";
@@ -313,7 +436,12 @@ export function MotionPhone() {
               <button type="button" aria-pressed={remoteState.musicMode === "soundtrack"} onClick={() => send("music-mode", { value: "soundtrack" })}>Soundtrack</button>
             </nav>
             {remoteState.musicMode === "soundtrack"
-              ? <p className="remote-hint">Soundtrack follows the pace and genre chosen on the display. Use the transport above to move between tracks.</p>
+              ? <SoundtrackBrowser
+                soundtrack={remoteState.soundtrack}
+                pendingSelection={pendingSelection}
+                onSelect={(kind, id) => { setPendingSelection({ kind, id }); send("soundtrack-selection", { kind, value: id }); }}
+                onTrack={(key) => send("soundtrack", { value: key })}
+              />
               : <div className="remote-genre-grid">{genres.map((genre) => {
                 const active = genre.id === remoteState.genreId;
                 return <button key={genre.id} type="button" aria-pressed={active} className={active ? "is-active" : ""} onClick={() => send("genre", { value: genre.id })}>
@@ -328,11 +456,18 @@ export function MotionPhone() {
               <span><small>BRAKING RESPONSE</small><strong>Underwater</strong></span>
               <span className="remote-brake-state"><Led on={remoteState.vehicleEffectsEnabled && musicEffectsAvailable} />{musicEffectsAvailable ? remoteState.vehicleEffectsEnabled ? "ON" : "OFF" : "DRY"}</span>
             </button>
-            <p className="remote-hint">{musicEffectsAvailable ? remoteState.vehicleEffectsEnabled ? "Firm braking filters the music. Manual FX below work independently." : "Braking changes visuals only. Manual FX still work." : "Effects apply to Music. Engine stays dry."}</p>
-            <p id="remote-pad-help" className="remote-visually-hidden">Tap a pad to play it. Drag up or down to set its depth.</p>
-            <div className="remote-pad-grid" aria-label="Manual FX">
-              {MANUAL_EFFECT_CONTROLS.map((effect) => <RemotePad key={effect.id} effect={effect} value={displayedManualEffects[effect.id]} pending={effect.id in pendingManualEffects} disabled={!musicEffectsAvailable} onChange={(id, value) => send("manual-effect", { effect: id, value })} />)}
-            </div>
+            {fxView === "pads" || !musicEffectsAvailable ? <p className="remote-hint">{musicEffectsAvailable ? remoteState.vehicleEffectsEnabled ? "Firm braking filters the music. Manual FX below work independently." : "Braking changes visuals only. Manual FX still work." : "Effects apply to Music. Engine stays dry."}</p> : null}
+            <nav className="remote-switch is-compact ni-switch" aria-label="Effects view" data-index={fxView === "xy" ? 1 : 0} style={{ "--switch-count": 2 }}>
+              <span className="ni-switch-thumb" aria-hidden="true" />
+              <button type="button" aria-pressed={fxView === "pads"} onClick={() => setFxView("pads")}>Pads</button>
+              <button type="button" aria-pressed={fxView === "xy"} onClick={() => setFxView("xy")}>XY filter</button>
+            </nav>
+            {fxView === "pads" ? <>
+              <p id="remote-pad-help" className="remote-visually-hidden">Tap a pad to play it. Drag up or down to set its depth.</p>
+              <div className="remote-pad-grid" aria-label="Manual FX">
+                {MANUAL_EFFECT_CONTROLS.map((effect) => <RemotePad key={effect.id} effect={effect} value={displayedManualEffects[effect.id]} pending={effect.id in pendingManualEffects} disabled={!musicEffectsAvailable} onChange={(id, value) => send("manual-effect", { effect: id, value })} />)}
+              </div>
+            </> : <XyFilterPad disabled={!musicEffectsAvailable} onChange={sendFilter} />}
           </div> : null}
 
           {activeTab === "engine" ? <div className="remote-engine-list">

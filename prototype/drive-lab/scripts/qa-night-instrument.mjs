@@ -174,12 +174,21 @@ for (const appearance of process.env.QA_PAIRED === "0" ? [] : ["dark", "light"])
   await display.page.locator(".motion-button").click();
   await display.page.locator(".remote-receiver-qr").waitFor({ timeout: 15000 });
   await shot(display.page, `${appearance}-receiver-qr`);
-  const qrUrl = await display.page.evaluate(() => {
-    const node = document.querySelector(".remote-receiver");
-    const key = Object.keys(node).find((name) => name.startsWith("__reactFiber$"));
-    for (let fiber = node[key]; fiber; fiber = fiber.return) if (fiber.memoizedProps?.snapshot?.qrUrl) return fiber.memoizedProps.snapshot.qrUrl;
-    return null;
-  });
+  let qrUrl = null;
+  for (let attempt = 0; attempt < 10 && !qrUrl; attempt += 1) {
+    await display.page.waitForTimeout(500);
+    qrUrl = await display.page.evaluate(() => {
+      for (const node of document.querySelectorAll(".remote-receiver, .remote-receiver-qr")) {
+        const key = Object.keys(node).find((name) => name.startsWith("__reactFiber$"));
+        for (let fiber = key ? node[key] : null; fiber; fiber = fiber.return) if (fiber.memoizedProps?.snapshot?.qrUrl) return fiber.memoizedProps.snapshot.qrUrl;
+      }
+      return null;
+    });
+  }
+  if (!qrUrl) {
+    const debug = await display.page.evaluate(() => ({ status: document.querySelector(".remote-receiver-status")?.textContent, hasQr: Boolean(document.querySelector(".remote-receiver-qr")) }));
+    console.error("pairing debug", JSON.stringify(debug));
+  }
   assert.ok(qrUrl, "pairing URL");
   const phone = await session({ appearance, viewport: { width: 390, height: 844 }, url: qrUrl });
   await phone.page.locator(".remote-now").waitFor({ timeout: 20000 });
@@ -195,6 +204,31 @@ for (const appearance of process.env.QA_PAIRED === "0" ? [] : ["dark", "light"])
   const reverb = await display.page.evaluate(() => document.querySelector(".mix-button")?.textContent);
   evidence.checks.push(`${appearance}: phone pad reached the display MIX key (${reverb?.trim()})`);
   await shot(phone.page, `${appearance}-phone-fx-active`);
+  // Soundtrack from the passenger seat: source, genre and the live track list.
+  await phone.page.locator(".remote-tabbar button", { hasText: "Music" }).click();
+  await phone.page.locator(".remote-switch button", { hasText: "Soundtrack" }).click();
+  await phone.page.waitForTimeout(3000);
+  await phone.page.locator(".remote-chip-grid button", { hasText: "Jazz" }).click();
+  await phone.page.locator(".remote-track-list button").first().waitFor({ timeout: 15000 });
+  await phone.page.waitForTimeout(1200);
+  evidence.checks.push(`${appearance}: phone lists ${await phone.page.locator(".remote-track-list button").count()} Soundtrack tracks after choosing Jazz`);
+  await shot(phone.page, `${appearance}-phone-soundtrack`);
+  await phone.page.locator(".remote-track-list button").nth(2).click();
+  await phone.page.waitForTimeout(2500);
+  evidence.checks.push(`${appearance}: display title after tapping the third track: "${await display.page.title()}"`);
+  // XY filter: hold on the left, the display's High Cut engages; release opens.
+  await phone.page.locator(".remote-tabbar button", { hasText: "FX" }).click();
+  await phone.page.locator(".remote-switch button", { hasText: "XY filter" }).click();
+  const xy = await phone.page.locator(".remote-xy").boundingBox();
+  await phone.page.mouse.move(xy.x + xy.width * 0.12, xy.y + xy.height * 0.3);
+  await phone.page.mouse.down();
+  await phone.page.mouse.move(xy.x + xy.width * 0.1, xy.y + xy.height * 0.25, { steps: 4 });
+  await display.page.waitForTimeout(1800);
+  await shot(phone.page, `${appearance}-phone-xy`);
+  evidence.checks.push(`${appearance}: holding XY left -> display MIX "${(await display.page.locator(".mix-button").textContent())?.trim()}"`);
+  await phone.page.mouse.up();
+  await display.page.waitForTimeout(1800);
+  evidence.checks.push(`${appearance}: released XY -> display MIX "${(await display.page.locator(".mix-button").textContent())?.trim()}"`);
   await phone.page.locator(".remote-switch button", { hasText: "Engine" }).first().click();
   await phone.page.waitForTimeout(2500);
   await shot(phone.page, `${appearance}-phone-engine`);

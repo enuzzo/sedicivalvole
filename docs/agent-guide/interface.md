@@ -206,6 +206,12 @@ The September 24 Night Instrument selection supersedes the right-side pages:
 the remote mirrors the display at the top (visual frame, cover, transport),
 then a Music/Engine switch and Visual, Music, FX and Palette sections behind a
 tab bar; pairing, Forget and command semantics are unchanged.
+Since September 24 (owner-approved F1/F4) the Music section also browses
+Soundtrack — Lobo or Jamendo, pace and genre (`soundtrack-selection`) and the
+six visible tracks from the display heartbeat (`soundtrack`) — and FX offers a
+momentary XY filter: left drives High Cut, right Bass Cut, height adds the
+bounded resonance, release returns both to zero. The heartbeat stays within the
+4,096-character relay limit by dropping track covers, then the list, first.
 
 The owner's quality pass retains that selected composition. A persistent header
 uses the transparent piston mark and Orbitron wordmark above connection status.

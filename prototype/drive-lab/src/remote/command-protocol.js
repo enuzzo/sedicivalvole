@@ -6,8 +6,10 @@ const integer = (value) => Number.isSafeInteger(value) && value >= 0;
 
 const COMMAND_TYPES = new Set([
   "mode", "music-mode", "genre", "visual", "engine-profile", "transport",
-  "mute", "vehicle-effects", "manual-effect", "theme", "soundtrack",
+  "mute", "vehicle-effects", "manual-effect", "theme", "soundtrack", "soundtrack-selection",
 ]);
+const SOUNDTRACK_SELECTION_KINDS = new Set(["featured", "library", "pace", "genre"]);
+const SOUNDTRACK_TRACK_LIMIT = 6;
 
 function cleanText(value, maximum = 96) {
   if (typeof value !== "string") return null;
@@ -43,6 +45,12 @@ export function normalizeRemoteCommand(value) {
     const key = cleanText(value.value, 160);
     if (!key) return null;
     command.value = key;
+  } else if (type === "soundtrack-selection") {
+    const kind = cleanText(value.kind, 16);
+    const id = cleanText(value.value, 32);
+    if (!kind || !SOUNDTRACK_SELECTION_KINDS.has(kind) || !id) return null;
+    command.kind = kind;
+    command.value = id;
   }
   return command;
 }
@@ -80,6 +88,31 @@ function cleanState(value) {
       if (text) track[key] = text;
     }
     if (Object.keys(track).length) state.track = track;
+  }
+  if (value.soundtrack && typeof value.soundtrack === "object") {
+    const soundtrack = {};
+    const selection = value.soundtrack.selection;
+    if (selection && SOUNDTRACK_SELECTION_KINDS.has(selection.kind) && cleanText(selection.id, 32)) {
+      soundtrack.selection = { kind: selection.kind, id: cleanText(selection.id, 32) };
+    }
+    const status = cleanText(value.soundtrack.status, 16);
+    if (status) soundtrack.status = status;
+    const currentKey = cleanText(value.soundtrack.currentKey, 80);
+    if (currentKey) soundtrack.currentKey = currentKey;
+    if (Array.isArray(value.soundtrack.entries)) {
+      soundtrack.entries = value.soundtrack.entries.slice(0, SOUNDTRACK_TRACK_LIMIT).map((entry) => {
+        const key = cleanText(entry?.key, 80);
+        const title = cleanText(entry?.title, 64);
+        if (!key || !title) return null;
+        const item = { key, title };
+        const artist = cleanText(entry.artist, 48);
+        if (artist) item.artist = artist;
+        const artwork = cleanText(entry.artwork, 200);
+        if (artwork && /^https:\/\//.test(artwork)) item.artwork = artwork;
+        return item;
+      }).filter(Boolean);
+    }
+    state.soundtrack = soundtrack;
   }
   if (value.manualEffects && typeof value.manualEffects === "object") {
     const effects = {};
@@ -128,10 +161,28 @@ export function createCommandProtocol({ role, getState = () => ({}), onState = (
   }
 
   function poll() {
-    const packet = role === "receiver"
-      ? { v: VERSION, kind: "state", sequence: nextSequence++, state: cleanState(getState()), acknowledgements: acknowledgements.splice(0, MAX_COMMANDS) }
-      : { v: VERSION, kind: "commands", sequence: nextSequence++, commands: [...pending.values()].slice(0, MAX_COMMANDS) };
-    return encode(packet);
+    if (role !== "receiver") {
+      return encode({ v: VERSION, kind: "commands", sequence: nextSequence++, commands: [...pending.values()].slice(0, MAX_COMMANDS) });
+    }
+    // The heartbeat must always fit. Optional Soundtrack detail degrades first:
+    // track artwork, then the track list, never the core state.
+    const state = cleanState(getState());
+    const sequence = nextSequence++;
+    const acks = acknowledgements.splice(0, MAX_COMMANDS);
+    const attempts = [state];
+    if (state.soundtrack?.entries?.some((entry) => entry.artwork)) {
+      attempts.push({ ...state, soundtrack: { ...state.soundtrack, entries: state.soundtrack.entries.map(({ artwork, ...entry }) => entry) } });
+    }
+    if (state.soundtrack?.entries) attempts.push({ ...state, soundtrack: { ...state.soundtrack, entries: [] } });
+    if (state.soundtrack) {
+      const { soundtrack, ...core } = state;
+      attempts.push(core);
+    }
+    for (const candidate of attempts) {
+      const text = encode({ v: VERSION, kind: "state", sequence, state: candidate, acknowledgements: acks });
+      if (text) return text;
+    }
+    return null;
   }
 
   function receive(text) {
