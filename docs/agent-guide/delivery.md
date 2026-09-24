@@ -18,6 +18,12 @@ Set `SEDICIVALVOLE_NO_LOCAL_ENV=1` for credential-free QA/builds: both Vite conf
 
 Use the existing native wrappers and package scripts under `prototype/drive-lab`; environment mismatches follow [Environment portability](motion-runtime.md#environment-portability). For a requested runnable visual result, start/open the available local preview yourself and inspect the real user path. Use current build screenshots at agreed Tesla viewports (`773 x 601` is the compact reference), including relevant responsive, lifecycle, reduced-motion and input states. For source-fidelity changes compare source/candidate at the same viewport. For native/media behavior use actual handler invocation/outcome and source-specific integrity checks. Never weaken upstream gates to pass.
 
+Interface changes pass the visual regression gate before publication: with the
+local server running, `npm run qa:visual` compares 16 deterministic chrome
+states (Tesla 773 × 601 and phone 390 × 844, LIGHT and DARK) with
+`tests/visual-baseline/`. Review every reported diff; accept intended changes
+with `npm run qa:visual -- --update` and commit the new baseline with the change.
+
 Report implemented, tested, committed/pushed, live, owner-accepted and physical-device-accepted separately. Browser rendering, headless-muted audio, signal measurements and a successful build do not prove cabin listening, physical iPhone touch, Tesla native media, reception or sustained GPU/endurance performance. Record device/software/build for physical evidence. Existing broad owner acceptance of Flux/Soundtrack/FX/interface/Discover does not require another generic acceptance round; later changes retain their relevant specific gates.
 
 ## Canonical publication
@@ -31,6 +37,15 @@ Before publication read **[DEPLOY / Gate for every development deployment](../DE
 Upload/hash-verify complete assets, audio, fonts, third-party trees and API files before activating the generated entry. JUNCTION/NIGHTSHIFT banks with an exact verified remote hash are reused; changed banks are uploaded to a temporary name, hash-verified and renamed before activation. An interrupted bank stage must preserve the active bytes. The narrowly scoped `--repair-nightshift` mode accepts only a truncated prefix of the pinned September 11 bank and runs full verification before returning; it never activates a release. Preserve previous content-addressed assets during cache overlap and generations used by open clients. Entry rename does not make mutable bank/API updates whole-release atomic: retain compatibility or use addressed versions for incompatible changes. Do not silently change protocol. Plain FTP's recorded security limit is not proof FTPS/SFTP is available.
 
 An upload is not success. Verify bare canonical and cache-busted URL, HTTP status, HTML/current version/source/build, referenced assets and local/live size/SHA-256, cache behavior on controlled reload and actual product-visible behavior. Cache-busted success alone is insufficient if bare root is stale. Run community credits `--check` before publishing. Remote reuse is valid only with the official identity checks; do not waive complete verification. Technical QA must not send synthetic mail to the real destination.
+
+## Rollback
+
+`scripts/rollback-release.sh <tag-or-commit>` rebuilds that ref in a temporary
+worktree, keeps the current `dist` beside it and runs the official read-only
+verification; add `--publish` to publish it with `--preserve-existing`. It never
+reads or links environment files. Tag a stable point before large changes (for
+example `pre-night-instrument-20260924`, `pre-structural-20260924`) and verify
+the canonical URL after any rollback as for a normal release.
 
 ## Sites package
 
