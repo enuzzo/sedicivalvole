@@ -119,6 +119,7 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 | Date | Record | Build |
 | --- | --- | --- |
+| 2026-09-24 20:45 | [Speed-only GPS fix](#speed-only-gps-fix--2026-09-24-2036) | `20260924-2036.a083fed` |
 | 2026-09-24 20:10 | [START gate symmetry fix](#start-gate-symmetry-fix--2026-09-24-2004) | `20260924-2004.6d2f15b` |
 | 2026-09-24 19:45 | [Predictive, full-body Engine and race cluster](#predictive-full-body-engine-and-race-cluster--2026-09-24-1934) | `20260924-1934.e0764dd` |
 | 2026-09-24 18:24 | [Structure, curves and text fit](#structure-curves-and-text-fit--2026-09-24-1821) | `20260924-1821.97fe2a4` |
@@ -328,6 +329,18 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 Earlier records, from [Night Instrument interface](archive/DEPLOY-HISTORY-2026-09-24.md#night-instrument-interface--2026-09-24)
 back, are kept verbatim in the archive.
+
+### Speed-only GPS fix — 2026-09-24 20:36
+
+Canonical `20260924-2036.a083fed` keeps GPS speed when the Tesla reports no
+position accuracy (the owner's two manual reports: every fix at 9,999.99 m for
+minutes after waking while speed stayed real). Native tests 1,122/1,122; the
+visual gate 16/16 on the compiled build; a replay of the wake regime in the
+compiled and public app follows the speed to 57 km/h in Music and drives the
+Engine to third gear with LIVE MOTION. Read-only preflight and postflight
+`remote_writes=NONE`; 39 files / 6,584,997 bytes uploaded, 832 static files
+reused. Bare and cache-busted HTML, main JS/CSS and the Engine runtime chunk
+match the local build. Real Tesla confirmation after a cold wake remains open.
 
 ### START gate symmetry fix — 2026-09-24 20:04
 
