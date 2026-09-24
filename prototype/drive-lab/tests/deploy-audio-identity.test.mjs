@@ -326,6 +326,56 @@ assert not module.is_recognized_retired_brand("unknown.png", new_master)
   });
 });
 
+test("the artwork gate admits only the exact retired PNG visual previews", () => {
+  const program = String.raw`
+import importlib.util
+import sys
+from pathlib import Path
+import tempfile
+
+spec = importlib.util.spec_from_file_location("sedicivalvole_deploy", sys.argv[1])
+module = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(module)
+
+assert len(module.RETIRED_VISUAL_PREVIEW_HASHES) == 12
+assert all(name.endswith(".png") for name in module.RETIRED_VISUAL_PREVIEW_HASHES)
+module.RETIRED_VISUAL_PREVIEW_HASHES = {"aperture.png": module.sha256_bytes(b"old-preview")}
+assert module.is_recognized_retired_visual_preview("visuals/aperture.png", b"old-preview")
+assert not module.is_recognized_retired_visual_preview("visuals/aperture.png", b"altered")
+assert not module.is_recognized_retired_visual_preview("visuals/unknown.png", b"old-preview")
+assert not module.is_recognized_retired_visual_preview("illobo/aperture.png", b"old-preview")
+assert not module.is_recognized_retired_visual_preview("aperture.png", b"old-preview")
+
+class ReadOnlyFTP:
+    def __init__(self, files): self.files = files
+    def nlst(self): return list(self.files)
+    def retrbinary(self, command, callback): callback(self.files[command.removeprefix("RETR ")])
+
+with tempfile.TemporaryDirectory() as temporary:
+    module.BUILD = Path(temporary)
+    root = module.BUILD / "artwork" / "visuals"
+    root.mkdir(parents=True)
+    (root / "aperture.webp").write_bytes(b"new-preview")
+    module.verify_remote_static_tree(
+        ReadOnlyFTP({"aperture.webp": b"new-preview", "aperture.png": b"old-preview"}),
+        root, tree_name="artwork", relative_root=Path("visuals"),
+    )
+    for extra in [{"aperture.png": b"altered"}, {"vertigo.png": b"old-preview"}]:
+        try:
+            module.verify_remote_static_tree(
+                ReadOnlyFTP({"aperture.webp": b"new-preview", **extra}),
+                root, tree_name="artwork", relative_root=Path("visuals"),
+            )
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("Unrecognized retired preview accepted")
+`;
+  execFileSync("python3", ["-c", program, deployScript.pathname], {
+    env: { ...process.env, PYTHONDONTWRITEBYTECODE: "1" },
+  });
+});
+
 test("third-party upgrades are limited to recognized project-owned Drivey bridge files", () => {
   const source = readFileSync(deployScript, "utf8");
   assert.match(source, /tree_name == "third-party"/);

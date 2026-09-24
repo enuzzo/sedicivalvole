@@ -1112,3 +1112,5 @@ No dated releases exist yet.
 
 - 2026-09-24 17:57 `[3987059]`: Make the visual gate hold one baseline for the dev server and the compiled build by using a constant `Math.random` (React's development mode runs initializers twice, so a seeded sequence chose different launch visuals). The gate passes 16/16 on both `localhost:5183` and the production preview on `localhost:5184`. Native tests pass 1,108/1,108 (1,111 across all test files), community credits 189, and the production package 835 exact hashes.
 
+- 2026-09-24 18:08: Admit the twelve PNG visual previews published with `20260924-1430.1b20183` during cache overlap. The first read-only preflight for this release failed closed with `unexpected_artwork_entry` because the live `artwork/visuals/` still holds those PNGs while the build now ships WebP; the deploy gate now accepts exactly those twelve SHA-256-pinned files under `artwork/visuals/` and still rejects altered bytes, other names and other folders. The corrected preflight passes with `remote_writes=NONE`.
+

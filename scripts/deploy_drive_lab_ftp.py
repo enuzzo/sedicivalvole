@@ -70,6 +70,23 @@ RETIRED_FONT_HASHES = {
 RETIRED_BRAND_HASHES = {
     "illobo-featured-provisional.png": "da6d5086f06dc8a38ea580f3a5c4289363c214cb8736c9e84ffa39a462946e2b",
 }
+# Visual library previews moved from PNG to WebP on 2026-09-24 (2ba43cd).
+# The exact PNGs published with build 20260924-1430.1b20183 stay admitted
+# under artwork/visuals/ during cache overlap; any other byte still fails.
+RETIRED_VISUAL_PREVIEW_HASHES = {
+    "acid-orchard.png": "897c63cb6de40700b50fdcb0b6ccb19ee84a245e838044e208068684f0dabb58",
+    "air-atlas.png": "a3ceb02db3f7fcc7b33ad84c7035670c83b816eae26accc4a95d3d718c5a7abd",
+    "aperture.png": "03e9681ed12a00ebb62d53a4e27dd70de0013a9b10a4ee299156343c7bdb58a3",
+    "atlas.png": "b1660dbf929f8936a4c2036adc4bfd21922ca85afde8ca8ddf857d7a5da91fed",
+    "chromatic-silk.png": "305efd443700c52bcc5534c13092914e26a6ddcb09a36bc19df4550ead679c40",
+    "discover.png": "9b3b7bd1e1727ebc8032114fe2766574211bf78c8b37c095436263befd3506f6",
+    "drivey.png": "c63a94f19dfd2b6376847c40108048d611ccae6deeb2a3c537b3b881eb250ba9",
+    "japanese-mist.png": "1d22a5dc867c3cb1091f4652defd6d2a3cbe44090b9cd520ea15e753626b0352",
+    "meridian.png": "88994a14ea02871e802786d41a04122a10d0fcc34a0b53e3a764f004c627c59b",
+    "prtcl.png": "42c192a08c279a820d9492400704a3e874feb3bec544bc78a7f29dfd82d0a027",
+    "stats.png": "1a7ca5497fac7c61db6f9502cc5a4f17d5cbcaead2f47b87c12af1099df44bbe",
+    "vertigo.png": "e0fe15c98ed06382328267446b10ff777f92e75f4ba4bf19562e3ef7ac385a65",
+}
 MOTION_PAIR_ENDPOINT = "motion-pair.php"
 MOTION_PAIR_ENDPOINT_HASHES = {
     "58c94438661861cf165b0d37927ed141c0b008a6c9e8f18c9e8096921d87a98f",  # Remaining absolute lease for automatic direct upgrade.
@@ -335,6 +352,18 @@ def is_recognized_retired_illobo_artwork(
     return sha256_bytes(payload) == hashlib.sha256(master.read_bytes()).hexdigest()
 
 
+def is_recognized_retired_visual_preview(
+    relative_path: Path | str,
+    payload: bytes,
+) -> bool:
+    """Admit only byte-identical PNG previews replaced by WebP derivatives."""
+    path = Path(relative_path)
+    if len(path.parts) != 2 or path.parts[0] != "visuals":
+        return False
+    expected_hash = RETIRED_VISUAL_PREVIEW_HASHES.get(path.name)
+    return expected_hash is not None and sha256_bytes(payload) == expected_hash
+
+
 def is_recognized_project_owned_brand_entry(
     relative_path: Path | str,
     payload: bytes,
@@ -374,11 +403,10 @@ def verify_remote_static_tree(
         ) or (
             tree_name == "artwork"
             and all(
-                is_recognized_retired_illobo_artwork(
-                    relative_root / name,
-                    remote_bytes(ftp, name),
-                )
+                is_recognized_retired_illobo_artwork(relative_root / name, payload)
+                or is_recognized_retired_visual_preview(relative_root / name, payload)
                 for name in unexpected_names
+                for payload in (remote_bytes(ftp, name),)
             )
         )
         if unexpected_names and not recognized_overlap:
