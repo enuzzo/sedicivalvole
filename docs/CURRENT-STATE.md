@@ -11,7 +11,7 @@ the [DEPLOY release table](DEPLOY.md#release-table).
 ## Live release
 
 - Canonical [https://sedicivalvole.app/](https://sedicivalvole.app/) serves
-  **20260927-2140.a18a36d**: Night Instrument, the September 24 structural,
+  **20260927-2349.59fe317**: Night Instrument, the September 24 structural,
   curve and passenger-remote work listed under
   [Direction and queue](#direction-and-queue), and the predictive, full-body
   Engine with its race cluster ([record](DEPLOY.md#latest-release-records)).

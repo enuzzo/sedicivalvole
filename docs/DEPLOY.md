@@ -119,6 +119,7 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 | Date | Record | Build |
 | --- | --- | --- |
+| 2026-09-28 00:01 | [Live Engine cluster](#live-engine-cluster--2026-09-27-2349) | `20260927-2349.59fe317` |
 | 2026-09-27 21:50 | [Full-screen Engine cluster](#full-screen-engine-cluster--2026-09-27-2140) | `20260927-2140.a18a36d` |
 | 2026-09-24 20:45 | [Speed-only GPS fix](#speed-only-gps-fix--2026-09-24-2036) | `20260924-2036.a083fed` |
 | 2026-09-24 20:10 | [START gate symmetry fix](#start-gate-symmetry-fix--2026-09-24-2004) | `20260924-2004.6d2f15b` |
@@ -330,6 +331,18 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 Earlier records, from [Night Instrument interface](archive/DEPLOY-HISTORY-2026-09-24.md#night-instrument-interface--2026-09-24)
 back, are kept verbatim in the archive.
+
+### Live Engine cluster — 2026-09-27 23:49
+
+Canonical `20260927-2349.59fe317` reads the Engine cluster from the audio
+runtime each frame (about 40 updates/s in a headless simulated drive, 10
+before), holds one rejected speed outlier as degraded instead of dropping the
+road coupling, applies the full-screen cluster at 773 × 575, and classifies
+long freezes by speed. Native tests 1,123/1,123; visual gate 16/16 on dev and
+compiled builds; text fit 14/14. Read-only preflight and postflight
+`remote_writes=NONE`; 39 files / 6,592,670 bytes uploaded, 832 static files
+reused. Bare and cache-busted HTML carry the build; main JS/CSS match the local
+build. The public Engine was not started.
 
 ### Full-screen Engine cluster — 2026-09-27 21:40
 
