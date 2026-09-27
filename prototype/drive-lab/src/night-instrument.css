@@ -989,6 +989,56 @@
 .app[data-appearance]:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) .engine-graphs > div { padding: 8px 14px 6px; }
 .app[data-appearance]:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) .engine-graphs svg { height: 26px; }
 
+/* When the footer retracts, the cluster follows it down with the footer's own
+   timing: the 64 px it vacates (less a 32 px bottom gutter) goes to the
+   tachometer, values, micro-signals and traces, measured at 773 × 601. Taller
+   windows share their extra height (--engine-rest-extra) in the same
+   proportions; values are also capped by the plate width. TAMARRO descends to
+   the same gutter. */
+@media (min-height: 581px) {
+  .app[data-appearance].controls-resting:not([data-phone-layout]) .engine-telemetry { --engine-rest-extra: calc(100dvh - 601px); }
+  .app[data-appearance]:not([data-phone-layout]) .engine-telemetry { transition: padding-bottom 260ms var(--ni-ease); }
+  .app[data-appearance]:not([data-phone-layout]) .engine-telemetry :is(.engine-tach-bar, .engine-micro-signal, .engine-graphs svg) { transition: height 260ms var(--ni-ease); }
+  .app[data-appearance]:not([data-phone-layout]) .engine-primary > .engine-metric { transition: grid-template-rows 260ms var(--ni-ease); }
+  .app[data-appearance]:not([data-phone-layout]) .engine-primary .engine-metric strong { transition: font-size 260ms var(--ni-ease); }
+  .app[data-appearance]:not([data-phone-layout]) .engine-rev.is-wide { transition: bottom 260ms var(--ni-ease), transform var(--ni-quick) var(--ni-ease), box-shadow var(--ni-base) ease; }
+
+  .app[data-appearance].controls-resting:not([data-phone-layout]) .engine-telemetry { padding-bottom: 32px; }
+  .app[data-appearance].controls-resting:not([data-phone-layout]) .engine-tach-bar { height: calc(86px + var(--engine-rest-extra) * .3); }
+  .app[data-appearance].controls-resting:not([data-phone-layout]) .engine-primary > .engine-metric { grid-template-rows: 18px auto 32px calc(34px + var(--engine-rest-extra) * .1); }
+  .app[data-appearance].controls-resting:not([data-phone-layout]) .engine-primary .engine-metric strong { font-size: min(calc(68px + var(--engine-rest-extra) * .2), 10vw); }
+  .app[data-appearance].controls-resting:not([data-phone-layout]) .engine-primary .engine-micro-signal { height: calc(34px + var(--engine-rest-extra) * .1); }
+  .app[data-appearance].controls-resting:not([data-phone-layout]) .engine-graphs svg { height: calc(52px + var(--engine-rest-extra) * .4); }
+
+  .app[data-appearance].controls-resting:not([data-phone-layout]) .engine-rev.is-wide { bottom: 32px; }
+  .app[data-appearance].controls-resting:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) { padding-bottom: 106px; }
+  .app[data-appearance].controls-resting:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) .engine-tach-bar { height: calc(64px + var(--engine-rest-extra) * .3); }
+  .app[data-appearance].controls-resting:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) .engine-primary > .engine-metric { grid-template-rows: 18px auto 18px calc(28px + var(--engine-rest-extra) * .1); }
+  .app[data-appearance].controls-resting:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) .engine-primary .engine-metric strong { font-size: min(calc(66px + var(--engine-rest-extra) * .2), 10vw); }
+  .app[data-appearance].controls-resting:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) .engine-primary .engine-micro-signal { height: calc(28px + var(--engine-rest-extra) * .1); }
+  .app[data-appearance].controls-resting:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) .engine-graphs svg { height: calc(40px + var(--engine-rest-extra) * .4); }
+}
+/* With chrome awake, 773 × 601 is already full down to the footer; taller
+   windows share their extra height in the same proportions as at rest. */
+@media (min-height: 602px) {
+  .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-telemetry { --engine-awake-extra: calc(100dvh - 601px); }
+  .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-tach-bar { height: calc(70px + var(--engine-awake-extra) * .3); }
+  .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-primary > .engine-metric { grid-template-rows: 18px auto 32px calc(28px + var(--engine-awake-extra) * .1); }
+  .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-primary .engine-metric strong { font-size: max(48px, min(calc(58px + var(--engine-awake-extra) * .2), 10vw)); }
+  .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-primary .engine-micro-signal { height: calc(28px + var(--engine-awake-extra) * .1); }
+  .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-graphs svg { height: calc(40px + var(--engine-awake-extra) * .4); }
+
+  .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) .engine-tach-bar { height: calc(48px + var(--engine-awake-extra) * .3); }
+  .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) .engine-primary > .engine-metric { grid-template-rows: 18px auto 18px calc(20px + var(--engine-awake-extra) * .1); }
+  .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) .engine-primary .engine-metric strong { font-size: max(48px, min(calc(60px + var(--engine-awake-extra) * .2), 10vw)); }
+  .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) .engine-primary .engine-micro-signal { height: calc(20px + var(--engine-awake-extra) * .1); }
+  .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) .engine-graphs svg { height: calc(26px + var(--engine-awake-extra) * .4); }
+}
+@media (min-height: 581px) and (prefers-reduced-motion: reduce) {
+  .app[data-appearance]:not([data-phone-layout]) :is(.engine-telemetry, .engine-tach-bar, .engine-micro-signal, .engine-graphs svg, .engine-metric, .engine-metric strong) { transition: none; }
+  .app[data-appearance]:not([data-phone-layout]) .engine-rev.is-wide { transition: transform var(--ni-quick) var(--ni-ease), box-shadow var(--ni-base) ease; }
+}
+
 /* Phone landscape keeps its compact geometry. */
 .app[data-appearance][data-phone-layout="landscape"] .engine-tach { padding: 6px 10px 4px; gap: 2px; }
 .app[data-appearance][data-phone-layout="landscape"] .engine-tach-bar { height: 28px; }

@@ -144,6 +144,16 @@ separator and Presets. Engine's selected minimal Telemetry direction includes an
 explicitly delegated RPM-stem crest, voice heading and accent gear; it does not
 change acoustic/motion ownership. See [road refinement](../ROAD-REFINEMENT-2026-09-11.md).
 
+The September 27 owner request lets the Engine cluster follow the retracting
+footer down (display layout, windows at least 581 px tall): tachometer, values,
+micro-signals and traces take the vacated height with the footer's 260 ms timing,
+leaving a 32 px bottom gutter; TAMARRO descends to the same gutter. At 773 × 601
+the gain is 44 px; taller windows share their extra height in the same proportions,
+values capped by plate width. With chrome awake, 773 × 601 keeps its geometry
+(already full to the footer); taller windows share their extra height in the same
+proportions, so neither state leaves an empty band. Reduced motion snaps. Phone
+landscape and short windows keep their compact rules.
+
 ## Running media and effects
 
 Night Instrument (September 24) owns the running chrome material: plates of
