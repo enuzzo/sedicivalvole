@@ -445,21 +445,41 @@ export function recordLongTask(telemetry, task, limit = 60) {
     online: typeof task?.online === "boolean" ? task.online : null,
     effectiveType: typeof task?.effectiveType === "string" ? task.effectiveType.slice(0, 20) : null,
     visibility: typeof task?.visibility === "string" ? task.visibility.slice(0, 20) : null,
+    speedAfterKmh: null,
   });
   if (telemetry.recentTasks.length > limit) {
     telemetry.recentTasks.splice(0, telemetry.recentTasks.length - limit);
   }
-  return telemetry;
+  return telemetry.recentTasks[telemetry.recentTasks.length - 1];
+}
+
+/** Speed a few seconds after a freeze, once queued GPS updates have arrived. */
+export function completeLongTask(task, speedAfterKmh) {
+  if (task) task.speedAfterKmh = rounded(speedAfterKmh, 1);
+  return task;
+}
+
+// A freeze of five seconds or more is either the Tesla suspending the page
+// (reverse, the rear camera, parking) or our own main thread. Pulling away from
+// a standstill points to the first; a freeze while moving needs investigation.
+export const LONG_FREEZE_MS = 5000;
+export const FREEZE_MOVING_KMH = 5;
+export function classifyFreeze(task) {
+  if (!(task?.durationMs >= LONG_FREEZE_MS) || !Number.isFinite(task.speedKmh)) return null;
+  return task.speedKmh >= FREEZE_MOVING_KMH ? "while-moving" : "from-standstill";
 }
 
 export function summarizeLongTaskTelemetry(telemetry) {
+  const recentTasks = telemetry.recentTasks.map((task) => ({ ...task, freeze: classifyFreeze(task) }));
   return {
     supported: telemetry.supported,
     count: telemetry.count,
     totalDurationMs: rounded(telemetry.totalDurationMs, 2),
     maximumDurationMs: rounded(telemetry.maximumDurationMs, 2),
     retainedTasks: telemetry.recentTasks.length,
-    recentTasks: telemetry.recentTasks.map((task) => ({ ...task })),
+    freezesFromStandstill: recentTasks.filter((task) => task.freeze === "from-standstill").length,
+    freezesWhileMoving: recentTasks.filter((task) => task.freeze === "while-moving").length,
+    recentTasks,
   };
 }
 

@@ -26,6 +26,8 @@ import {
   sanitizeDiagnosticDetail,
   recordFrameSample,
   recordLongTask,
+  completeLongTask,
+  classifyFreeze,
   recordNetworkOnlineState,
   recordNetworkResourceEntry,
   recordPhaseFrame,
@@ -402,6 +404,22 @@ test("long tasks retain bounded phase and runtime context without coordinates", 
   assert.equal(summary.maximumDurationMs, 12741);
   assert.equal(summary.recentTasks[0].phase, "drive:atlas:junction:visual");
   assert.equal(JSON.stringify(summary).includes("latitude"), false);
+});
+
+test("long freezes are classified by the speed around them", () => {
+  const telemetry = createLongTaskTelemetry(true);
+  // September 27: 57.6 s from 1.5 km/h, already at 43 km/h afterwards (reversing out, rear camera).
+  const pullAway = recordLongTask(telemetry, { startTimeMs: 0, durationMs: 57635, observedAtMs: 57635, speedKmh: 1.5 });
+  assert.equal(pullAway.speedAfterKmh, null);
+  completeLongTask(pullAway, 43.04);
+  recordLongTask(telemetry, { startTimeMs: 60000, durationMs: 8000, observedAtMs: 68000, speedKmh: 72 });
+  recordLongTask(telemetry, { startTimeMs: 70000, durationMs: 380, observedAtMs: 70380, speedKmh: 72 });
+  const summary = summarizeLongTaskTelemetry(telemetry);
+  assert.deepEqual(summary.recentTasks.map((task) => task.freeze), ["from-standstill", "while-moving", null]);
+  assert.equal(summary.recentTasks[0].speedAfterKmh, 43);
+  assert.equal(summary.freezesFromStandstill, 1);
+  assert.equal(summary.freezesWhileMoving, 1);
+  assert.equal(classifyFreeze({ durationMs: 9000, speedKmh: null }), null);
 });
 
 test("audio latency distinguishes unavailable, reported zero, and positive readings", () => {

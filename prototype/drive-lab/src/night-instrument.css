@@ -991,11 +991,11 @@
 
 /* When the footer retracts, the cluster follows it down with the footer's own
    timing: the 64 px it vacates (less a 32 px bottom gutter) goes to the
-   tachometer, values, micro-signals and traces, measured at 773 × 601. Taller
-   windows share their extra height (--engine-rest-extra) in the same
-   proportions; values are also capped by the plate width. TAMARRO descends to
-   the same gutter. */
-@media (min-height: 581px) {
+   tachometer, values, micro-signals and traces, measured at 773 × 601. Other
+   window heights from 560 px (the Tesla also reports 773 × 575) share their
+   difference (--engine-rest-extra) in the same proportions; values are also
+   capped by the plate width. TAMARRO descends to the same gutter. */
+@media (min-height: 560px) {
   .app[data-appearance].controls-resting:not([data-phone-layout]) .engine-telemetry { --engine-rest-extra: calc(100dvh - 601px); }
   .app[data-appearance]:not([data-phone-layout]) .engine-telemetry { transition: padding-bottom 260ms var(--ni-ease); }
   .app[data-appearance]:not([data-phone-layout]) .engine-telemetry :is(.engine-tach-bar, .engine-micro-signal, .engine-graphs svg) { transition: height 260ms var(--ni-ease); }
@@ -1017,24 +1017,37 @@
   .app[data-appearance].controls-resting:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) .engine-primary .engine-metric strong { font-size: min(calc(66px + var(--engine-rest-extra) * .2), 10vw); }
   .app[data-appearance].controls-resting:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) .engine-primary .engine-micro-signal { height: calc(28px + var(--engine-rest-extra) * .1); }
   .app[data-appearance].controls-resting:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) .engine-graphs svg { height: calc(40px + var(--engine-rest-extra) * .4); }
+  /* The Tesla often reports 773 × 575 with its browser bar: at rest the vacated
+     footer brings back the traces the short-window rules hide beside TAMARRO. */
+  .app[data-appearance].controls-resting:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) .engine-graphs { display: grid; }
 }
-/* With chrome awake, 773 × 601 is already full down to the footer; taller
-   windows share their extra height in the same proportions as at rest. */
-@media (min-height: 602px) {
+/* With chrome awake, 773 × 601 is already full down to the footer. Taller
+   windows, and the Tesla's 773 × 575 with its browser bar, share the height
+   difference in the same proportions as at rest; there the moving cluster also
+   keeps its 601 px spacing instead of the short-window compaction. */
+@media (min-height: 560px) and (max-height: 580px), (min-height: 602px) {
   .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-telemetry { --engine-awake-extra: calc(100dvh - 601px); }
   .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-tach-bar { height: calc(70px + var(--engine-awake-extra) * .3); }
   .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-primary > .engine-metric { grid-template-rows: 18px auto 32px calc(28px + var(--engine-awake-extra) * .1); }
   .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-primary .engine-metric strong { font-size: max(48px, min(calc(58px + var(--engine-awake-extra) * .2), 10vw)); }
   .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-primary .engine-micro-signal { height: calc(28px + var(--engine-awake-extra) * .1); }
   .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-graphs svg { height: calc(40px + var(--engine-awake-extra) * .4); }
-
+}
+@media (min-height: 560px) and (max-height: 580px) {
+  .app[data-appearance]:is(.controls-awake, .controls-resting):not([data-phone-layout]) .engine-telemetry { gap: 12px; }
+  .app[data-appearance]:is(.controls-awake, .controls-resting):not([data-phone-layout]) .engine-tach { padding: 14px 16px 8px; }
+  .app[data-appearance]:is(.controls-awake, .controls-resting):not([data-phone-layout]) .engine-primary > .engine-metric { padding: 12px 16px 8px; }
+  .app[data-appearance]:is(.controls-awake, .controls-resting):not([data-phone-layout]) .engine-graphs > div { padding: 10px 14px 8px; }
+}
+/* At standstill with chrome awake, short windows keep TAMARRO over the traces. */
+@media (min-height: 602px) {
   .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) .engine-tach-bar { height: calc(48px + var(--engine-awake-extra) * .3); }
   .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) .engine-primary > .engine-metric { grid-template-rows: 18px auto 18px calc(20px + var(--engine-awake-extra) * .1); }
   .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) .engine-primary .engine-metric strong { font-size: max(48px, min(calc(60px + var(--engine-awake-extra) * .2), 10vw)); }
   .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) .engine-primary .engine-micro-signal { height: calc(20px + var(--engine-awake-extra) * .1); }
   .app[data-appearance].controls-awake:not([data-phone-layout]) .engine-telemetry:has(.engine-rev.is-wide) .engine-graphs svg { height: calc(26px + var(--engine-awake-extra) * .4); }
 }
-@media (min-height: 581px) and (prefers-reduced-motion: reduce) {
+@media (min-height: 560px) and (prefers-reduced-motion: reduce) {
   .app[data-appearance]:not([data-phone-layout]) :is(.engine-telemetry, .engine-tach-bar, .engine-micro-signal, .engine-graphs svg, .engine-metric, .engine-metric strong) { transition: none; }
   .app[data-appearance]:not([data-phone-layout]) .engine-rev.is-wide { transition: transform var(--ni-quick) var(--ni-ease), box-shadow var(--ni-base) ease; }
 }

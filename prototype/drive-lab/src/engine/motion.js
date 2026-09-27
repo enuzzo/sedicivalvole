@@ -88,7 +88,10 @@ export function createEngineMotion() {
       const ageMs = last ? Math.max(0, nowMs - last.measuredMs) : Infinity;
       const stationaryWatch = last?.liveWatch && raw === 0;
       const freshMs = stationaryWatch ? ENGINE_MOTION_POLICY.stationaryWatchHoldMs : ENGINE_MOTION_POLICY.freshMs;
-      const holdingMovingSpeed = invalidated && reason === "position-accuracy-hold"
+      // A rejected outlier, like an accuracy collapse, holds the last good speed
+      // (no shifts, no standstill) instead of dropping the road coupling: one bad
+      // sample at 85 km/h must not restart the engine's road speed.
+      const holdingMovingSpeed = invalidated && (reason === "position-accuracy-hold" || reason === "speed-outlier")
         && ageMs <= ENGINE_MOTION_POLICY.lostMs;
       const freshness = holdingMovingSpeed ? "degraded"
         : invalidated || ageMs > Math.max(freshMs, ENGINE_MOTION_POLICY.lostMs) ? "lost"

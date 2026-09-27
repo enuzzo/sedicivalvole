@@ -18,8 +18,12 @@ const TACH_SEGMENTS = 72;
 const TACH_MAX_RPM = 9000;
 const REDLINE_FROM = 0.88;
 const SHOW_OFF_PHASES = Object.freeze({ rev: "REV", release: "RELEASE", limiter: "LIMITER" });
+// The audio runtime advances every 25 ms while the app polls it every 100 ms.
+// The cluster reads these fast-moving fields itself on each display frame, so
+// the tachometer, gear and response traces move with the sound.
+const LIVE_FIELDS = Object.freeze(["rpm", "drive", "deceleration", "gear", "shift", "shiftPhase", "revving", "showOffPhase", "idleBlip"]);
 
-export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease, speed = 0, speedSource = "GPS", speedFreshness = state.motion, onFrame }) {
+export function EngineTelemetry({ state: polled, runtimeRef, profileId, onProfile, onRev, onRelease, speed = 0, speedSource = "GPS", speedFreshness = polled.motion, onFrame }) {
   const contextual = useContextualControls();
   const [visible, setVisible] = useState(() => document.visibilityState !== "hidden");
   useEffect(() => {
@@ -27,16 +31,33 @@ export function EngineTelemetry({ state, profileId, onProfile, onRev, onRelease,
     document.addEventListener("visibilitychange", update);
     return () => document.removeEventListener("visibilitychange", update);
   }, []);
+  const [live, setLive] = useState(null);
+  useEffect(() => {
+    if (!visible || !runtimeRef) return undefined;
+    let frame = 0, last = null;
+    const step = () => {
+      const next = runtimeRef.current?.getState();
+      if (next && (!last || LIVE_FIELDS.some(key => next[key] !== last[key]))) {
+        last = next;
+        setLive(Object.fromEntries(LIVE_FIELDS.map(key => [key, next[key]])));
+      }
+      frame = requestAnimationFrame(step);
+    };
+    frame = requestAnimationFrame(step);
+    return () => { cancelAnimationFrame(frame); setLive(null); };
+  }, [visible, runtimeRef]);
+  const state = live && polled.status === "ready" ? { ...polled, ...live } : polled;
   const signal = telemetrySignals(state, speed, speedSource, speedFreshness);
   const historyRef = useRef([]);
   const fieldRef = useRef(null);
   useEffect(() => {
     if (fieldRef.current && onFrame) onFrame(performance.now(), 100, "Engine SVG telemetry", fieldRef.current.clientWidth, fieldRef.current.clientHeight);
   }, [state, onFrame]);
+  // The response history keeps the 100 ms poll, so its hundred points still span ten seconds.
   useEffect(() => {
-    const next = { drive: state.drive ?? 0, decel: state.deceleration ?? 0 };
+    const next = { drive: polled.drive ?? 0, decel: polled.deceleration ?? 0 };
     historyRef.current = [...historyRef.current.slice(-99), next];
-  }, [state]);
+  }, [polled]);
   useEffect(() => {
     const release = () => onRelease?.();
     window.addEventListener("blur", release);

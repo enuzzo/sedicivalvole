@@ -30,6 +30,16 @@ Use `timeBasis: active-visible-session`, `intervalActiveMs`, `activeMs` and `tot
 
 For changes to scheduling/transport/server validation read [Active-session correction](../AUTOMATIC-DIAGNOSTICS-2026-09-07.md#active-session-clock--owner-correction-2026-09-08), rather than its historical driving-only description. Inspect `src/automatic-diagnostics.js` and the matching endpoint/clock tests under Drive Lab. GPS-specific reporting is not the session clock.
 
+## Freeze classification — September 27
+
+The Tesla suspends the page while reversing (and the rear camera stays up for a
+while after Drive), which reports record as long tasks of tens of seconds. Each
+long task of 5 s or more now gets `speedAfterKmh` three seconds after it ends,
+and the summary classifies it as `freeze: "from-standstill"` (speed before
+under 5 km/h: a likely manoeuvre) or `"while-moving"` (to investigate), with
+`freezesFromStandstill` / `freezesWhileMoving` counts. The September 25 and 27
+freezes (37 s and 57.6 s) both began at 1–4 km/h after creeping.
+
 ## Email attachment
 
 Email body stays a concise human summary; attach the **complete accepted report** as gzip-compressed JSON. Filename includes build and accepted timestamp; summary records compressed/uncompressed SHA-256. Retain the deterministic decompress-and-compare round-trip test. Read [Complete attachment packaging](../DIAGNOSTICS.md#complete-attachment-packaging--2026-08-28) for packaging changes. Historical browser/mail results are not proof of current inbox delivery.

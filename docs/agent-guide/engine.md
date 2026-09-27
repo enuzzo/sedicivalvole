@@ -68,6 +68,24 @@ or physical vehicle telemetry is added.
 
 Mounted longitudinal acceleration feeds the existing demand/load/coast estimator and load-sensitive shifts; GPS still owns speed, standstill and shift freshness. Preserve the dry Engine path and manual rev exception. See [the implementation contract](../PHONE-ROAD-INPUT-2026-09-19.md).
 
+## Live cluster and outlier hold — September 27
+
+The owner asked for an Engine that is quicker to look at and quicker to follow
+the car. The audio runtime ticks every 25 ms, but the App polled it every
+100 ms, so diagnostics saw the cluster at 10 FPS. `EngineTelemetry` now reads
+the fast fields (RPM, drive, deceleration, gear, shift phase, rev, idle blip)
+from `runtimeRef` on each display frame while visible, re-rendering only
+itself on a change (about 40 updates/s in a simulated drive); the App keeps its
+100 ms poll and the response history keeps it too, so its hundred points still
+span ten seconds.
+
+A single rejected `speed-outlier` no longer drops the motion to `lost` (the
+September 25 report: one 85 km/h sample on the motorway cancelled the road
+coupling). Like an accuracy collapse, it holds the last good speed as
+`degraded`: no shift, no drive, no standstill, road coupling kept; the next
+accepted sample reacquires with zero acceleration, and outliers persisting past
+the 5 s loss window still lose motion.
+
 ## Predictive response and full-body voicing — September 24
 
 The owner found the sound clean but wanted it higher resolution, fuller and

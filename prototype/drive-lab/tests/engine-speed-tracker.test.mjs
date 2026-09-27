@@ -61,7 +61,11 @@ test("stepped providers are not mistaken for outliers, while real glitches still
   const glitch = createEngineMotion();
   for (let ms = 0; ms <= 1000; ms += 100) gps(glitch, ms, 20);
   gps(glitch, 1100, 120);
-  assert.equal(glitch.snapshot(1100).freshness, "lost");
+  const held = glitch.snapshot(1100);
+  assert.equal(held.reason, "speed-outlier");
+  assert.equal(held.freshness, "degraded", "the glitch is rejected and the last good speed held");
+  assert.equal(held.speedKmh, 20);
+  assert.equal(held.canShift, false);
 });
 
 test("the acoustic road speed glides to a correction and pull-away slips the clutch", () => {

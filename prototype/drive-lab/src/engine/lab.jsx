@@ -72,7 +72,7 @@ function EngineBench({ audioRef, prepareAudio, profile, onProfile, calibration, 
       <details><summary>Engine diagnostics / latest 100 events</summary><pre>{JSON.stringify({ ...geaps.snapshot, evidence: motion.current.snapshot(performance.now()), events: events.current }, null, 2)}</pre></details>
       </details>
     </div>
-    <div className="engine-lab-stage"><EngineTelemetry state={geaps.snapshot} profileId={profile} onProfile={onProfile} speed={speed} onRev={() => !routeMode && geaps.runtimeRef.current?.setRevHeld(true)} onRelease={release} /></div>
+    <div className="engine-lab-stage"><EngineTelemetry state={geaps.snapshot} runtimeRef={geaps.runtimeRef} profileId={profile} onProfile={onProfile} speed={speed} onRev={() => !routeMode && geaps.runtimeRef.current?.setRevHeld(true)} onRelease={release} /></div>
   </section>;
 }
 

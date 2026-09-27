@@ -145,14 +145,18 @@ explicitly delegated RPM-stem crest, voice heading and accent gear; it does not
 change acoustic/motion ownership. See [road refinement](../ROAD-REFINEMENT-2026-09-11.md).
 
 The September 27 owner request lets the Engine cluster follow the retracting
-footer down (display layout, windows at least 581 px tall): tachometer, values,
+footer down (display layout, windows at least 560 px tall): tachometer, values,
 micro-signals and traces take the vacated height with the footer's 260 ms timing,
 leaving a 32 px bottom gutter; TAMARRO descends to the same gutter. At 773 × 601
 the gain is 44 px; taller windows share their extra height in the same proportions,
 values capped by plate width. With chrome awake, 773 × 601 keeps its geometry
 (already full to the footer); taller windows share their extra height in the same
-proportions, so neither state leaves an empty band. Reduced motion snaps. Phone
-landscape and short windows keep their compact rules.
+proportions, so neither state leaves an empty band. The Tesla also reports
+773 × 575 while its browser bar is shown (September 25–27 reports): from 560 to
+580 px the moving cluster keeps its 601 px spacing and fills to the footer awake
+and to the gutter at rest; at rest TAMARRO's traces return, while awake at
+standstill TAMARRO still wins over them. Reduced motion snaps. Phone landscape
+and windows under 560 px keep their compact rules.
 
 ## Running media and effects
 

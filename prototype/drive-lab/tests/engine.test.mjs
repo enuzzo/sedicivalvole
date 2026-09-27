@@ -94,7 +94,12 @@ test("standstill requires distinct exact zeros; tiny movement, lifecycle and sou
   gps(m,2000,0); gps(m,2400,0); m.observe({source:"Demo",receivedMs:2500,rawSpeedKmh:0}); assert.equal(m.snapshot(2500).trustedStationary,false);
 });
 test("outliers revoke confidence; reacquisition resets acceleration and forbids an immediate shift", () => {
-  const m=createEngineMotion(); gps(m,0,20); gps(m,100,120); assert.equal(m.snapshot(100).freshness,"lost");
+  const m=createEngineMotion(); gps(m,0,20); gps(m,100,120);
+  // One outlier holds the last good speed, degraded: no shift, no drive, road coupling kept.
+  const held=m.snapshot(100); assert.equal(held.freshness,"degraded"); assert.equal(held.reason,"speed-outlier");
+  assert.equal(held.speedKmh,20); assert.equal(held.canShift,false); assert.equal(held.drive,0);
+  // Outliers that persist past the loss window still lose motion.
+  assert.equal(m.snapshot(5200).freshness,"lost");
   gps(m,1000,25); assert.equal(m.snapshot(1000).accelerationMps2,0); assert.equal(m.snapshot(1000).canShift,false);
   gps(m,2000,30); assert.equal(m.snapshot(2000).canShift,true); assert.ok(m.snapshot(2000).drive>0.15);
 });

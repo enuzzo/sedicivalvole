@@ -65,6 +65,8 @@ import {
   recordDriveTelemetrySample,
   recordFrameSample,
   recordLongTask,
+  completeLongTask,
+  LONG_FREEZE_MS,
   recordNetworkOnlineState,
   recordNetworkResourceEntry,
   recordPhaseFrame,
@@ -3008,7 +3010,7 @@ export function App() {
         const observedAtMs = performance.now();
         const gpsCapturedAtMs = latestGpsObservationRef.current.capturedAtMs;
         const connection = readConnectionSnapshot("long-task");
-        recordLongTask(longTaskTelemetryRef.current, {
+        const task = recordLongTask(longTaskTelemetryRef.current, {
           startTimeMs: entry.startTime,
           durationMs: entry.duration,
           observedAtMs,
@@ -3024,6 +3026,9 @@ export function App() {
           effectiveType: connection.effectiveType,
           visibility: document.visibilityState,
         });
+        // After a long freeze, queued GPS updates arrive within a few seconds:
+        // the speed then tells a manoeuvre from a freeze while driving.
+        if (entry.duration >= LONG_FREEZE_MS) window.setTimeout(() => completeLongTask(task, speedRef.current), 3000);
       }
     });
     observer.observe({ entryTypes: ["longtask"] });
@@ -3921,7 +3926,7 @@ export function App() {
           onError={handleEnvironmentError}
         >
           {statsOpen || passengerAtlasOpen ? null : experienceMode === "engine" ? (
-            <EngineTelemetry state={geaps.snapshot} profileId={engineProfileId} onProfile={chooseEngineProfile} onRev={holdEngineRev} onRelease={releaseEngineRev} speed={speed} speedSource={source} speedFreshness={speedFreshness} onFrame={recordRenderedFrame} />
+            <EngineTelemetry state={geaps.snapshot} runtimeRef={geaps.runtimeRef} profileId={engineProfileId} onProfile={chooseEngineProfile} onRev={holdEngineRev} onRelease={releaseEngineRev} speed={speed} speedSource={source} speedFreshness={speedFreshness} onFrame={recordRenderedFrame} />
           ) : environmentRuntimeError ? (
             <FieldFailure label={environment.label} recovery={environmentRecovery} />
           ) : environment.renderer === "vertigo" ? (
