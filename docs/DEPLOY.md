@@ -119,6 +119,7 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 | Date | Record | Build |
 | --- | --- | --- |
+| 2026-09-27 21:50 | [Full-screen Engine cluster](#full-screen-engine-cluster--2026-09-27-2140) | `20260927-2140.a18a36d` |
 | 2026-09-24 20:45 | [Speed-only GPS fix](#speed-only-gps-fix--2026-09-24-2036) | `20260924-2036.a083fed` |
 | 2026-09-24 20:10 | [START gate symmetry fix](#start-gate-symmetry-fix--2026-09-24-2004) | `20260924-2004.6d2f15b` |
 | 2026-09-24 19:45 | [Predictive, full-body Engine and race cluster](#predictive-full-body-engine-and-race-cluster--2026-09-24-1934) | `20260924-1934.e0764dd` |
@@ -329,6 +330,16 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 Earlier records, from [Night Instrument interface](archive/DEPLOY-HISTORY-2026-09-24.md#night-instrument-interface--2026-09-24)
 back, are kept verbatim in the archive.
+
+### Full-screen Engine cluster — 2026-09-27 21:40
+
+Canonical `20260927-2140.a18a36d` lets the Engine cluster follow the retracting
+footer down and fill taller windows in both chrome states. Native tests
+1,122/1,122; visual gate 16/16 on dev and compiled builds; text fit 14/14.
+Read-only preflight and postflight `remote_writes=NONE`; 39 files / 6,590,170
+bytes uploaded, 832 static files reused. Bare and cache-busted HTML carry the
+build; main JS/CSS match the local build. The public Engine was not started
+(no QA audio or diagnostic mail); geometry was measured on the local build.
 
 ### Speed-only GPS fix — 2026-09-24 20:36
 
