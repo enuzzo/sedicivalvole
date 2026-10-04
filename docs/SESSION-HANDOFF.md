@@ -1,5 +1,29 @@
 # Session Handoff
 
+## Pre-release maintenance published — October 4
+
+Canonical **20261004-1955.2928503**, VERSION **0.0.0**, is published and
+verified. Product source `2928503` and QA checkpoint `64069bf` are pushed.
+Poor-accuracy first GPS speeds now require corroborating continuity before
+Music/visual input or smoothing; the raw predecessor remains available for
+recovery. Saved-pair testing waits for the actual exchange instead of 40 ms.
+Text-fit QA uses observable keyboard actions and actual toggle/Engine states.
+
+Evidence: **1,125/1,125** native tests, compiled visual **16/16**, text fit
+**14/14**, **835** package hashes, **189** credits, zero dependency advisories
+and public hygiene findings. Official preserve-existing publication uploads
+**39 files / 6,592,658 bytes**, reuses **832** static files and **29** recordings,
+retains one previous asset and reports `ROOT_UPLOAD_ONLY`. **29 HTTPS checks**
+and the isolated canonical Intro/reload/profile browser path pass. No synthetic
+mail. QA browser contexts and the local preview are closed.
+
+The ignored dependency symlink now uses this Intel host's existing lockfile-keyed
+cache; tests need Python 3.11. Pre-existing root AGENTS and Jev-lab work were
+preserved. See [the maintenance record](qa/2026-10-04-pre-release.md) for exact
+identity, scope and limits. Next start: physical Tesla wake → first fixes →
+departure, followed by iPhone/network and low-volume listening acceptance;
+formal Security evidence and a versioned release remain separate gates.
+
 ## Companion first-screen refinement published — September 19 morning
 
 Canonical **20260919-1003.fb6f880**, VERSION **0.0.0**, is published and verified.

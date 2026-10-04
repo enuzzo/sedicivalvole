@@ -11,10 +11,13 @@ the [DEPLOY release table](DEPLOY.md#release-table).
 ## Live release
 
 - Canonical [https://sedicivalvole.app/](https://sedicivalvole.app/) serves
-  **20260927-2349.59fe317**: Night Instrument, the September 24 structural,
+  **20261004-1955.2928503**: October 4 GPS startup maintenance,
+  Night Instrument, the September 24 structural,
   curve and passenger-remote work listed under
   [Direction and queue](#direction-and-queue), and the predictive, full-body
   Engine with its race cluster ([record](DEPLOY.md#latest-release-records)).
+  Maintenance passes 1,125 tests, visual regression 16/16, text fit 14/14 and
+  29 canonical HTTPS checks ([evidence](qa/2026-10-04-pre-release.md)).
 - Rollback: `scripts/rollback-release.sh <tag-or-commit> [--publish]`, with the
   source tags `pre-night-instrument-20260924`, `pre-structural-20260924` and
   `pre-engine-20260924`

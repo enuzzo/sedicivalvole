@@ -119,6 +119,7 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 | Date | Record | Build |
 | --- | --- | --- |
+| 2026-10-04 20:14 | [GPS startup maintenance](#gps-startup-maintenance--2026-10-04) | `20261004-1955.2928503` |
 | 2026-09-28 00:01 | [Live Engine cluster](#live-engine-cluster--2026-09-27-2349) | `20260927-2349.59fe317` |
 | 2026-09-27 21:50 | [Full-screen Engine cluster](#full-screen-engine-cluster--2026-09-27-2140) | `20260927-2140.a18a36d` |
 | 2026-09-24 20:45 | [Speed-only GPS fix](#speed-only-gps-fix--2026-09-24-2036) | `20260924-2036.a083fed` |
@@ -331,6 +332,22 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 Earlier records, from [Night Instrument interface](archive/DEPLOY-HISTORY-2026-09-24.md#night-instrument-interface--2026-09-24)
 back, are kept verbatim in the archive.
+
+### GPS startup maintenance — 2026-10-04
+
+Canonical `20261004-1955.2928503`, VERSION `0.0.0`, rejects uncorroborated
+poor-accuracy first speeds before Music/visual input or smoothing. Source
+`2928503` and QA checkpoint `64069bf` are pushed. Native tests 1,125/1,125,
+compiled visual gate 16/16, text fit 14/14, 835 package hashes and 189 credits.
+Read-only preflight passes with `remote_writes=NONE`. Preserve-existing
+publication uploads 39 files / 6,592,658 bytes, reuses 832 static files and
+29 full-hash-verified recordings, retains one previous entry asset and reports
+`ROOT_UPLOAD_ONLY`. HTTPS postflight passes 29 identity/cache/asset checks;
+bare, cache-busted and reloaded root HTML are byte-identical, HTTP 200,
+`no-store` and proxy `MISS`. The canonical browser confirms Intro, reload and
+Engine profile selection with no errors or synthetic diagnostic sends. Public
+running audio/GPS were not started; physical acceptance and formal versioned
+release remain separate. [Maintenance evidence](qa/2026-10-04-pre-release.md).
 
 ### Live Engine cluster — 2026-09-27 23:49
 

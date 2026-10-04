@@ -166,8 +166,10 @@ Cut, Mid Focus and High Cut are clean fourth-order filters. See
 October 4 maintenance corrects GPS startup admission: when position accuracy
 is unusable, a first raw speed waits for a coherent successor before driving
 Music, visuals or smoothing. Geographic consumers retain their accuracy gate.
-The native regression passes 1,125 tests; deployment and remaining release
-gates are tracked in [the maintenance record](docs/qa/2026-10-04-pre-release.md).
+The native regression passes 1,125 tests. Maintenance build
+**20261004-1955.2928503** is published and verified on the canonical site;
+remaining release acceptance is tracked in
+[the maintenance record](docs/qa/2026-10-04-pre-release.md).
 
 The canonically verified September 7 night build **20260907-2243** adds the selected iPhone Compact Cockpit,
 Stats motion/runtime parity and a branded Travel Report with preview, download

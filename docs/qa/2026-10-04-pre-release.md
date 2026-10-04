@@ -59,7 +59,7 @@ upgrade was introduced.
 | GPS/motion/tracker focused group | 22/22 |
 | Dependency database | Live `npm audit`: zero advisories across 189 dependencies |
 | Package/credits | 835 exact hashes; 189 exact lockfile credits |
-| Public hygiene | Zero findings across 1,676 tracked text files before adding this record |
+| Public hygiene | Zero findings across 1,677 tracked text files, including this record |
 | Final compiled UI baseline | 16/16 screens on `20261004-1955.2928503`, DARK/LIGHT, Tesla and phone; no baseline update |
 | Final compiled text fit | 14/14 on `20261004-1955.2928503`; actual toggle states, visible running chrome, Engine mounted, DARK/LIGHT |
 | Focused code review | No actionable findings; GPS/test repairs and settled keyboard QA reviewed; final compiled gates pass |
@@ -67,14 +67,39 @@ upgrade was introduced.
 
 Source checkpoint `2928503` is committed and pushed. Final build
 `20261004-1955.2928503` passes all 835 hashes and VERSION/HTML identity.
-Final visual and text-fit gates pass on this exact build. Canonical delivery
-results are recorded below when publication and verification finish.
+Final visual and text-fit gates pass on this exact build. QA checkpoint
+`64069bf` is committed and pushed; its changes affect verification and docs,
+while the published product bytes come from source `2928503`.
+
+## Canonical delivery
+
+Published and verified at `https://sedicivalvole.app/`, VERSION `0.0.0`,
+build `20261004-1955.2928503`, on October 4 at 20:14 local time.
+Official preserve-existing publication passes: 39 files / 6,592,658 bytes,
+832 static files and all 29 recordings reused with verified identity,
+one previous entry asset retained, `remote_writes=ROOT_UPLOAD_ONLY`.
+No legacy deletion was performed.
+
+HTTPS postflight passes 29 checks: bare root, cache-busted root, controlled
+reload, exact release manifest, every emitted JS/CSS/worklet chunk, and all
+HTML-referenced fonts/icons. All responses are HTTP 200 and byte-identical to
+the local package. Root cache headers are `no-store, no-cache, must-revalidate,
+max-age=0` with proxy `MISS`. HTML is 1,445 bytes at SHA-256
+`c2a5173a96ad3990a14ee1f32c2cfc89b0dbb6987bdaa143a4cd1a38dbc016f2`.
+
+An isolated canonical browser confirms the visible Intro, short build stamp,
+full release/commit and VERSION metadata, current identity after reload, and
+Engine profile selection before START. No page/console errors or synthetic
+diagnostic sends occurred. The public experience was not started; actual
+running geometry and GPS admission were verified locally. QA browsers and the
+local preview were closed.
 
 ## Limits and next acceptance
 
 The dependency database and focused public hygiene guard do not complete the
-historical formal Security scan R06. That scan remains unresolved; no duplicate
-was created and no clean full-security-audit claim is made. Recording provenance
+historical formal Security scan R06. No completed scan evidence is available
+in this checkout and it was not resumed in this run; no duplicate was created
+and no clean full-security-audit claim is made. Recording provenance
 follow-up, physical Tesla/iPhone/network/native-media acceptance and sustained
 GPU/thermal behavior remain open as listed in `CURRENT-STATE.md` and the
 subsystem contracts. Large lazy graphics chunks and the main entry still produce
