@@ -31,6 +31,11 @@ an unusable radius still cannot confirm a stop (bounded hold, then lost), and
 an incoherent value still holds. This supersedes the earlier "hold the last
 trusted speed through an accuracy collapse" rule for continuous speeds.
 
+The same continuity gate applies to the first watch callback: an unusable
+position cannot seed the Music/visual speed or smoothing before a coherent
+numeric successor corroborates it. Rejected numeric samples remain only the
+continuity reference; the first admitted speed starts smoothing directly.
+
 Do not fabricate GPS motion or turn unknown speed into zero. Keep validity/accuracy, outlier/reordering, asymmetric smoothing, deadband, stale/confidence state and separate Brake cooldown boundaries. Live watch timing is monotonic at the shared receiver; one-shot renewals retain acquisition/replay checks. The Engine no-fix manual-rev exception is not GPS standstill: read [TAMARRO and idle](engine.md#tamarro-and-idle) when changing freshness.
 
 Held Space continuously brakes from the exact displayed speed using the documented time-based Model 3 AWD reference curve; release resumes Demo after a short settle. Held ArrowUp accelerates; release or ArrowDown enters nominal regenerative lift-off from the exact speed. Automatic Demo deceleration uses the same lift-off model; Space remains stronger service braking. Do not return to GPS on an arbitrary timer or introduce a speed jump. Use the reference curve only as a soft real-GPS plausibility envelope, never as simulated evidence. For exact source/curve/handoff parameters read [Speed-source contract](../TECHNICAL-DIRECTION.md#speed-source-contract), [Reference motion model](../TECHNICAL-DIRECTION.md#reference-motion-model) and [Filtering and confidence](../TECHNICAL-DIRECTION.md#filtering-and-confidence).

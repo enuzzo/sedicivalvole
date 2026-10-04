@@ -84,7 +84,7 @@ the product remains experimental.
 
 | Gate | Command | What it proves |
 | --- | --- | --- |
-| Native tests | `npm test` in `prototype/drive-lab` | Models, audio graph, protocol, source contracts (1,117 cases on September 24) |
+| Native tests | `npm test` in `prototype/drive-lab` | Models, audio graph, protocol, source contracts (1,125 cases on October 4) |
 | Visual regression | `npm run qa:visual` | 16 frozen chrome screens at `773 × 601` and `390 × 844`, both appearances |
 | Text fit | `npm run qa:text-fit` | No clipped chrome text across 14 running, muted, brake-off, visual and Engine states |
 | Interface QA | `scripts/qa-night-instrument.mjs` | Running chrome, surfaces, geometries and a real local display↔phone pairing |

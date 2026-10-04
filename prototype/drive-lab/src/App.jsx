@@ -1659,7 +1659,9 @@ export function App() {
         const speedOnly = unreliable && speedOnlyPlausible(lastRawGpsSpeedRef.current, kmh, capturedAtMs);
         lastRawGpsSpeedRef.current = { kmh, atMs: capturedAtMs };
         gpsSpeedOnlyRef.current = speedOnly;
-        if (unreliable && !speedOnly && gpsSpeedLockedRef.current) {
+        // Startup has the same continuity gate as an established watch. Keep
+        // the raw predecessor above, but never seed smoothing from a rejected fix.
+        if (unreliable && !speedOnly) {
           if (shouldLogSample) {
             lastGpsEventAtRef.current = capturedAtMs;
             logDiagnosticEvent("gps.sample", {

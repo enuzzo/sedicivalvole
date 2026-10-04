@@ -272,6 +272,12 @@ Use a pipeline with:
 6. source confidence/state;
 7. a separate discrete Brake detector with cooldown.
 
+The September 24 speed-only continuity exception is shared by Music, visuals
+and Engine when position accuracy is unusable. It also applies at startup:
+the first raw numeric value cannot seed speed or smoothing until a coherent
+successor corroborates it. Position consumers retain their accuracy gate.
+See [GPS admission](agent-guide/motion-runtime.md#gps-and-simulator).
+
 Do not hide unavailable GPS behind a false zero. Surface `unknown`, `stale`, or `manual` in a calm, compact state.
 
 ## Multi-lane musical mapping

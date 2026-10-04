@@ -1,7 +1,72 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { readFileSync } from "node:fs";
+import { runInNewContext } from "node:vm";
 import { positionUnusable, speedOnlyPlausible } from "../src/gps-speed-trust.js";
 import { classifyGpsConfidence } from "../src/diagnostics-model.js";
+import { normalizeGpsSpeed, smoothGpsSpeed } from "../src/signal-model.js";
+import { createEngineMotion } from "../src/engine/motion.js";
+
+// Exercise the actual watch callback, including its admission and smoothing
+// order. A poor position cannot enter geographic consumers in this fixture.
+function appWatch() {
+  const source = readFileSync(new URL("../src/App.jsx", import.meta.url), "utf8");
+  const start = source.indexOf("gpsPositionRef.current = (position, liveWatch = true) => {");
+  const end = source.indexOf("    watchRef.current = navigator.geolocation.watchPosition(", start);
+  assert.ok(start >= 0 && end > start);
+  let now = 0;
+  const speeds = [], events = [];
+  const ref = (current) => ({ current });
+  const scope = {
+    performance: { now: () => now },
+    gpsPositionRef: ref(null), mapPositionRef: ref(null),
+    sourceRef: ref("GPS"), engineMotionRef: ref(createEngineMotion()),
+    latestGpsObservationRef: ref(null), terrainElevationRef: ref(null),
+    gpsTelemetryRef: ref({}), lastGpsEventAtRef: ref(null),
+    lastGpsSampleAtRef: ref(null), gpsSpeedLockedRef: ref(false),
+    lastRawGpsSpeedRef: ref(null), gpsSpeedOnlyRef: ref(false),
+    smoothedSpeedRef: ref(0),
+    radarDisplayFix: () => null, recordGpsSample: (value) => value,
+    setAccuracy: () => {}, setGpsState: () => {},
+    setSpeed: (value) => speeds.push(value),
+    logDiagnosticEvent: (type, detail) => events.push({ type, ...detail }),
+    normalizeGpsSpeed, smoothGpsSpeed, positionUnusable, speedOnlyPlausible,
+  };
+  runInNewContext(source.slice(start, end), scope);
+  return {
+    speeds, events,
+    observe(kmh, atMs) {
+      now = atMs;
+      scope.gpsPositionRef.current({ timestamp: Date.now(), coords: { speed: kmh / 3.6, accuracy: 9999.99 } });
+    },
+    motion: () => scope.engineMotionRef.current.snapshot(now),
+  };
+}
+
+test("the App waits for continuity before admitting its first speed-only sample", () => {
+  const watch = appWatch();
+  watch.observe(40, 0);
+  assert.deepEqual(watch.speeds, [], "an uncorroborated first fix cannot drive music or visuals");
+  assert.equal(watch.motion().freshness, "lost");
+  assert.equal(watch.events.at(-1).heldForConfidence, true);
+  watch.observe(42, 100);
+  assert.deepEqual(watch.speeds, [42], "the first admitted value is not smoothed against rejected evidence");
+  assert.equal(watch.motion().reason, "speed-only");
+});
+
+test("an implausible first GPS value cannot poison the later speed-only launch", () => {
+  const watch = appWatch();
+  watch.observe(200, 0);
+  watch.observe(40, 100);
+  assert.deepEqual(watch.speeds, []);
+  watch.observe(42, 200);
+  assert.deepEqual(watch.speeds, [42]);
+  watch.observe(200, 300);
+  watch.observe(43, 400);
+  assert.deepEqual(watch.speeds, [42], "both neighbours of a garbage value are withheld");
+  watch.observe(44, 500);
+  assert.ok(watch.speeds.at(-1) > 42 && watch.speeds.at(-1) <= 44);
+});
 
 // The owner's September 24 session after wake: whole km/h every 100 ms, every
 // fix with a 9,999.99 m radius (coordinate-free profile of the real report).

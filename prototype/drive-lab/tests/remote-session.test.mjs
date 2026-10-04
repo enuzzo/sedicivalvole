@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { webcrypto } from "node:crypto";
 import { createRemoteSession, parseRemotePair, selectRemotePair } from "../src/remote/session.js";
+import { withReadinessTimeout } from "../src/promise-timeout.js";
 
 function fakeSurface() {
   const listeners = new Map();
@@ -38,9 +39,12 @@ test("a saved phone pairing restores the relay without joining again", async () 
   const { host, doc } = fakeSurface();
   const actions = [];
   const events = [];
+  let exchangeStarted;
+  const exchanged = new Promise((resolve) => { exchangeStarted = resolve; });
   const fetcher = async (_url, options) => {
     const payload = JSON.parse(options.body);
     actions.push(payload.action);
+    if (payload.action === "exchange") exchangeStarted();
     return {
       ok: true,
       status: 200,
@@ -57,7 +61,7 @@ test("a saved phone pairing restores the relay without joining again", async () 
   const session = createRemoteSession({ role: "phone", host, doc, fetcher, onEvent: (type) => events.push(type) });
   try {
     await session.start(pair);
-    await new Promise((resolve) => setTimeout(resolve, 40));
+    await withReadinessTimeout(exchanged, { timeoutMs: 2000, label: "Restored relay exchange" });
     assert.ok(events.includes("restored"));
     assert.ok(actions.includes("exchange"));
     assert.equal(actions.includes("join"), false);
