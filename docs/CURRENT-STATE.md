@@ -11,41 +11,47 @@ the [DEPLOY release table](DEPLOY.md#release-table).
 ## Live release
 
 - Canonical [https://sedicivalvole.app/](https://sedicivalvole.app/) serves
-  **20261004-1955.2928503**: October 4 GPS startup maintenance,
-  Night Instrument, the September 24 structural,
-  curve and passenger-remote work listed under
-  [Direction and queue](#direction-and-queue), and the predictive, full-body
-  Engine with its race cluster ([record](DEPLOY.md#latest-release-records)).
-  Maintenance passes 1,125 tests, visual regression 16/16, text fit 14/14 and
-  29 canonical HTTPS checks ([evidence](qa/2026-10-04-pre-release.md)).
+  **20261023-1537.4969ee2**: the owner-authorized Veduta real-car trial,
+  alongside October 4 GPS maintenance, Night Instrument, passenger remote
+  and predictive/full-body Engine. Tests pass 1,143 cases, compiled chrome
+  16/16, text fit 14/14, package identity 839 hashes and canonical browser HTTPS
+  19 identity/cache checks. All three media render with synthetic GPS on the
+  public build; this does not establish physical Tesla acceptance
+  ([release](DEPLOY.md#veduta-realtime-trial--2026-10-23),
+  [performance evidence](VEDUTA-PERFORMANCE-2026-10-23.md)).
 - Rollback: `scripts/rollback-release.sh <tag-or-commit> [--publish]`, with the
   source tags `pre-night-instrument-20260924`, `pre-structural-20260924` and
-  `pre-engine-20260924`
+  `pre-engine-20260924`, plus `pre-veduta-20261023` at prior live `2928503`
   ([DEPLOY / Rollback](DEPLOY.md#rollback)).
 
-## Local candidate — Veduta
+## Veduta — experimental real-car trial
 
-**VEDUTA 11** is being implemented locally as a standalone illustrated travel
+**VEDUTA 11** is published for the owner's trial as a standalone illustrated travel
 view, using admitted real GPS samples, the shared MapLibre runtime, actual
 terrain/vector data and original lightweight vehicle symbols. The owner selected
 the elevated forward-facing composition on October 23. Anime, Manga, Watercolor,
 Model 3 Highland, Model Y, a simple point and six illustrative body colours are
-in the candidate. A terminal whole-scene illustration pass now treats native
+in the view. A terminal whole-scene illustration pass now treats native
 terrain, sky, roads and water together with nearby custom geometry. Anime uses
 stronger normal-based light/shade, Manga uses ink/retino, and Watercolor retains
 structural edges beneath paper/pigment. STYLE/VIEW use the shared two-line keys
 and popover. See [scope](VEDUTA-2026-10-23.md) and the
-[art iteration](VEDUTA-ART-2026-10-23.md). This does not change the live release.
+[art iteration](VEDUTA-ART-2026-10-23.md).
 Owner inspection changed the default to a small fixed-size GPS dot after
 rejecting the enlarged car; optional car symbols no longer use that enlargement.
-The package test suite passed 1,141 cases; after the last shader refinement,
-16 focused checks passed. Chrome regression passed 16/16 with unchanged
-baselines and text fit 14/14. Browser checks include medium changes, 40 metres
-of synthetic GPS travel, pause/recovery, optional vehicles, keyboard/outside
+Source
+`4969ee2` removes the deferred second camera RAF, indexes polygon exclusions
+without changing placement and corrects the diagnostic frame target. Compiled
+package `20261023-1537.4969ee2` passes 1,143 tests, 16/16 chrome, 14/14 text fit
+and 839 exact hashes. Desktop moving draw-submission cadence improves from
+about 30Hz to 58–60Hz; 4× CPU stress gives 56–60Hz. This is not presented FPS or
+Tesla emulation, and occasional rebuild hitches remain. See
+[performance evidence](VEDUTA-PERFORMANCE-2026-10-23.md).
+Browser checks cover medium changes, synthetic travel beyond the 180m scenery
+refresh boundary, GPS pause/recovery, optional vehicles, keyboard/outside
 dismissal and phone options in both appearances. Artistic P1 findings remain
-open in [design QA](../design-qa.md). Source `9d4821b` is pushed; local package
-`20261023-1458.9d4821b` passes 839 exact hashes. No publication or physical
-acceptance is claimed.
+open in [design QA](../design-qa.md); trial publication does not close physical
+endurance or final art acceptance.
 
 ## The product
 
@@ -65,7 +71,8 @@ the product remains experimental.
   [Interface](agent-guide/interface.md), [Design system](DESIGN-SYSTEM.md).
 - **Modes.** Music and Engine, chosen in the Launch Cockpit before START.
 - **Visuals.** APERTURE, VERTIGO, MERIDIAN, ATLAS, DRIVEY, PRTCL, the GRADIENT
-  family (JAPANESE MIST, ACID ORCHARD, CHROMATIC SILK) and AIR ATLAS, plus the
+  family (JAPANESE MIST, ACID ORCHARD, CHROMATIC SILK), AIR ATLAS and the VEDUTA
+  trial, plus the
   passenger destinations DISCOVER and STATS FOR NERDS. Aperture, Meridian and
   PRTCL bend with fresh, trusted GPS heading and return to neutral on loss or
   reduced motion. [Visuals](agent-guide/visuals.md).

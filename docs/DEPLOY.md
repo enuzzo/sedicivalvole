@@ -119,6 +119,7 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 | Date | Record | Build |
 | --- | --- | --- |
+| 2026-10-23 16:07 | [Veduta realtime trial](#veduta-realtime-trial--2026-10-23) | `20261023-1537.4969ee2` |
 | 2026-10-04 20:14 | [GPS startup maintenance](#gps-startup-maintenance--2026-10-04) | `20261004-1955.2928503` |
 | 2026-09-28 00:01 | [Live Engine cluster](#live-engine-cluster--2026-09-27-2349) | `20260927-2349.59fe317` |
 | 2026-09-27 21:50 | [Full-screen Engine cluster](#full-screen-engine-cluster--2026-09-27-2140) | `20260927-2140.a18a36d` |
@@ -332,6 +333,35 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 Earlier records, from [Night Instrument interface](archive/DEPLOY-HISTORY-2026-09-24.md#night-instrument-interface--2026-09-24)
 back, are kept verbatim in the archive.
+
+### Veduta realtime trial — 2026-10-23
+
+Canonical `20261023-1537.4969ee2`, VERSION `0.0.0`, publishes the owner's
+explicitly authorized illustrated real-car trial. The admitted GPS dot and
+whole-scene Anime/Manga/Watercolor retain the selected horizon camera and
+shared controls. Public synchronous redraw removes the deferred second camera
+RAF; conservative polygon buckets preserve exact tree placement. Tests pass
+1,143 cases, compiled chrome 16/16, text fit 14/14, credits 189 and package
+identity 839 exact hashes. Desktop submission cadence improves from about
+30Hz to 58–60Hz, or 56–60Hz at relative CPU4× slowdown; neither is Tesla GPU or
+display-presented FPS evidence. Rebuild hitches and artistic P1 findings remain.
+
+Read-only preflight passes with `remote_writes=NONE`. Preserve-existing
+publication uploads 43 files / 6,651,338 bytes, reuses 832 static files and all
+29 full-hash-verified recordings, retains two previous assets and reports
+`ROOT_UPLOAD_ONLY`. Bare, cache-busted and reloaded HTTPS roots are HTTP200,
+byte-identical, `no-store` and proxy `MISS`; 19 browser HTTPS checks match local
+entry, chunks, worker, fonts, thumbnail and exact release manifest. Normal
+browser fetch reads the manifest at HTTP200; a standalone Python client receives
+403, so that client's result is not substituted for browser transport evidence.
+Canonical browser checks load all three media with synthetic GPS and no page
+errors, with diagnostic sending blocked. No physical Tesla acceptance is claimed.
+Rollback tag `pre-veduta-20261023` points to previous live `2928503`.
+Independent read-only postflight passes with 13 root entries and
+`remote_writes=NONE`. The final muted headless rendering run reports no page
+errors; two AudioContext autoplay warnings are retained as expected automation
+limitations, not graphics failures or cabin-audio acceptance.
+See [performance and trial evidence](VEDUTA-PERFORMANCE-2026-10-23.md).
 
 ### GPS startup maintenance — 2026-10-04
 

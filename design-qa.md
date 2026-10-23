@@ -120,3 +120,9 @@ Keep the live local preview available for owner inspection. Do not mark the
 artistic implementation complete while P1 findings remain open. Experimental
 publication for the owner's real-car trial is now explicitly authorized;
 release verification and physical acceptance remain separate.
+
+The authorized trial is now canonical build `20261023-1537.4969ee2`, with
+19 browser HTTPS identity/cache checks and all three media loaded through the
+public App with synthetic GPS. The [performance record](docs/VEDUTA-PERFORMANCE-2026-10-23.md)
+separates measured desktop improvement, remaining rebuild hitches and physical
+Tesla evidence still required. Artistic P1 findings above remain open.
