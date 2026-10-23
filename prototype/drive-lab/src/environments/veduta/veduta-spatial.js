@@ -1,10 +1,19 @@
 /** Conservative local-space buckets; exact geographic containment stays with the caller. */
 export function createVedutaPolygonIndex(polygons, toLocal, { cellSize = 64, maxEntries = 100000 } = {}) {
+  const job = createVedutaPolygonIndexJob(polygons, toLocal, { cellSize, maxEntries });
+  let result; do { result = job.next(); } while (!result.done);
+  return result.value;
+}
+
+/** Same buckets and insertion order, with cooperative boundaries for the scene job. */
+export function* createVedutaPolygonIndexJob(polygons, toLocal, { cellSize = 64, maxEntries = 100000 } = {}) {
   const cells = new Map(), global = [], empty = [];
-  let entries = 0;
+  let entries = 0, units = 0;
   for (const polygon of polygons) {
+    yield;
     let left = Infinity, right = -Infinity, bottom = Infinity, top = -Infinity;
     for (const point of polygon[0] ?? []) {
+      if (++units % 32 === 0) yield;
       const [x, y] = toLocal(point);
       left = Math.min(left, x); right = Math.max(right, x);
       bottom = Math.min(bottom, y); top = Math.max(top, y);
@@ -16,6 +25,7 @@ export function createVedutaPolygonIndex(polygons, toLocal, { cellSize = 64, max
       global.push(polygon); continue;
     }
     for (let x = x0; x <= x1; x++) for (let y = y0; y <= y1; y++) {
+      if (++units % 32 === 0) yield;
       const key = `${x}:${y}`;
       if (!cells.has(key)) cells.set(key, []);
       cells.get(key).push(polygon);

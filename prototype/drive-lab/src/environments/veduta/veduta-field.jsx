@@ -27,7 +27,7 @@ function applyMedium(map, preferences) {
 /** One map and one measured GPS stream. All persisted settings are non-geographic. */
 export default function VedutaField({ position, positionSamplesRef, gpsState, speed, theme, reducedMotion, onRenderer, onFrame, onRuntimeError, onRetryLocation }) {
   const host = useRef(null), mapRef = useRef(null), layerFactory = useRef(null), sceneLayerRef = useRef(null), pointRef = useRef(null);
-  const latest = useRef(null), panel = useRef(null), controls = useRef(null), optionsButton = useRef(null);
+  const latest = useRef(null), displayed = useRef(null), panel = useRef(null), controls = useRef(null), optionsButton = useRef(null);
   const contextual = useContextualControls();
   const [preferences, setPreferences] = useState(savedPreferences);
   const [optionsOpen, setOptionsOpen] = useState(false);
@@ -122,14 +122,17 @@ export default function VedutaField({ position, positionSamplesRef, gpsState, sp
           fadeDuration: 0, renderWorldCopies: false, cancelPendingTileRequestsWhileZooming: true });
         mapRef.current = map;
         map.setVerticalFieldOfView(48);
-        layerFactory.current = () => createVedutaLayer(maplibre, latest.current.preferences, () => pointRef.current, fail);
+        layerFactory.current = () => createVedutaLayer(maplibre, latest.current.preferences, () => pointRef.current, fail, style => {
+          if (disposed || displayed.current?.style === style) return;
+          displayed.current = { ...latest.current.preferences, style }; applyMedium(map, displayed.current);
+        });
         const mountLayer = () => {
           if (disposed) return;
-          applyMedium(map, latest.current.preferences);
+          displayed.current = { ...latest.current.preferences }; applyMedium(map, displayed.current);
           if (map.getLayer('veduta-illustration')) map.removeLayer('veduta-illustration');
           sceneLayerRef.current = layerFactory.current(); map.addLayer(sceneLayerRef.current); ready = true;
           if (map.getLayer('veduta-medium-finish')) map.removeLayer('veduta-medium-finish');
-          map.addLayer(createVedutaFinish(() => latest.current.preferences, () => pointRef.current, fail));
+          map.addLayer(createVedutaFinish(() => displayed.current, () => pointRef.current, fail));
           clearTimeout(loadTimer); onRenderer('WebGL2 · Veduta');
         };
         map.on('style.load', mountLayer);
@@ -170,9 +173,8 @@ export default function VedutaField({ position, positionSamplesRef, gpsState, sp
 
   useEffect(() => {
     const map = mapRef.current; if (!map?.getLayer('veduta-ground')) return;
-    // Update paints and original materials in place: replacing the whole style
-    // races native terrain-depth rendering and needlessly reloads geographic tiles.
-    applyMedium(map, preferences); sceneLayerRef.current?.updatePreferences(preferences); map.triggerRepaint();
+    // The completed scenery job atomically switches native paints and finish.
+    sceneLayerRef.current?.updatePreferences(preferences); map.triggerRepaint();
   }, [preferences.style]);
   useEffect(() => {
     sceneLayerRef.current?.updatePreferences(latest.current.preferences); mapRef.current?.triggerRepaint();

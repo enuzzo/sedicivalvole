@@ -70,6 +70,16 @@ conservative polygon buckets followed by unchanged exact geographic tests;
 density, geometry and geographic marks must remain unchanged. Report intervals
 against the declared 60Hz target, never the observed interval as its own target.
 Desktop CPU throttling is stress evidence, not Tesla GPU or physical acceptance.
+Scenery preparation is a finite cooperative job outside the draw callback. Keep
+its point/origin/scale/medium immutable; retain the last complete scenery until
+an atomic commit also switches native paints, finish and geographic origin.
+Tile arrivals coalesce a subsequent revision; medium/180m-centre changes, hide
+and removal cancel the candidate and its owned CPU worker. The worker runs the
+unchanged pinned Three normal/merged-edge algorithms on transferred buffers.
+The terminal finish draws to the public main framebuffer and releases its own
+bindings. Pinned MapLibre restores native state after custom rendering; do not
+reintroduce synchronous per-frame GL state queries or runtime private access.
+The soft 3ms CPU budget is not a guaranteed bound on MapLibre or driver calls.
 
 ## Discover
 

@@ -57,7 +57,9 @@ World materials remain owned across batch replacements and medium changes, so
 discarding geometry does not repeatedly discard their shader programs. Removal
 disposes the bounded material cache. Instance meshes emit their own disposal
 event to release instance attributes as well as ordinary geometry/materials.
-The terminal pass restores every GL state it changes, reallocates only on
+The terminal pass releases its bindings and lets the pinned MapLibre custom-layer
+owner invalidate/restore native state. The October 23 loading follow-up removes
+per-frame synchronous GL state queries; it still reallocates only on
 viewport resize and deletes only its owned program, texture and VAO.
 
 ## Interface change

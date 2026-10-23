@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { createVedutaRepaintScheduler } from './veduta-repaint.js';
-import { createVedutaPolygonIndex } from './veduta-spatial.js';
+import { createVedutaPolygonIndexJob } from './veduta-spatial.js';
+import { createVedutaBuildQueue, vedutaBuildScheduling } from './veduta-build.js';
+import { createVedutaGeometryBaker } from './veduta-geometry.js';
 import { VEDUTA_COLORS, VEDUTA_PAINT, VEDUTA_WORLD_METRES, pointInVedutaPolygon, vedutaDistanceToSegment, vedutaGridCoordinate, vedutaHash, vedutaRoofFacets } from './veduta-model.js';
 
 const VERTEX = `varying vec3 vNormal; varying vec3 vWorld; varying vec2 vUv;
@@ -112,53 +114,34 @@ export function disposeVedutaTree(root, retainedMaterials = new Set()) {
   geometries.forEach(item => item.dispose()); materials.forEach(item => { if (!retainedMaterials.has(item)) item.dispose(); });
 }
 
-/** The map owns this GL context. Never clear it, create a second canvas or lose it. */
-export function createVedutaLayer(maplibre, preferences, readPoint, onError) {
-  let map, renderer, origin, scale, car, fallback, ground = null, lastGroundAt = 0, lastSceneryAt = -Infinity;
-  let disposed = false, pendingScenery = true;
-  let lastSceneryCentre = null, carPose = null, lastPoseAt = 0, groundDirty = true, lastGroundPoint = '';
-  const repaint = createVedutaRepaintScheduler({ repaint: () => map?.triggerRepaint(), visible: () => !document.hidden,
-    now: () => performance.now(), setTimer: (fn, ms) => setTimeout(fn, ms), clearTimer: id => clearTimeout(id) });
-  const visibility = () => { repaint.cancel(); if (!document.hidden) map?.triggerRepaint(); };
-  const scene = new THREE.Scene(), camera = new THREE.Camera(), scenery = new THREE.Group();
-  const worldMaterials = new Map(), retainedMaterials = new Set();
-  const worldMaterial = (role, make) => {
-    const key = `${role}:${preferences.style}`;
-    if (!worldMaterials.has(key)) { const value = make(); worldMaterials.set(key,value); retainedMaterials.add(value); }
-    return worldMaterials.get(key);
-  };
-  scene.add(scenery);
-  const projection = new THREE.Matrix4(), transform = new THREE.Matrix4();
-  const inverse = new THREE.Matrix4(), eye = new THREE.Vector4();
-  const requestScenery = event => {
-    if (['openfreemap', 'veduta-terrain'].includes(event.sourceId) && event.tile?.state === 'loaded') {
-      pendingScenery = true;
-      if (event.sourceId === 'veduta-terrain') groundDirty = true;
-      repaint.schedule(performance.now());
-    }
-  };
-  const local = coordinate => {
-    const p = maplibre.MercatorCoordinate.fromLngLat(coordinate);
-    return [(p.x - origin.x) / scale, -(p.y - origin.y) / scale];
-  };
-  function rebuildScenery(point) {
-    if (!origin || disposed) return;
-    const nextScenery = new THREE.Group();
+/** Same ordered geometry as the synchronous builder; every yield retains private ownership. */
+export function* createVedutaSceneryJob({ map, maplibre, point, origin, scale, style, worldMaterial, retainedMaterials, bakeGeometry }, signal) {
+  const local = coordinate => { const p = maplibre.MercatorCoordinate.fromLngLat(coordinate); return [(p.x-origin.x)/scale, -(p.y-origin.y)/scale]; };
+  const nextScenery = new THREE.Group();
+  let complete = false;
+  try {
     // Source features are already loaded by the single MapLibre tile owner.
-    const features = layer => { try { return map.querySourceFeatures('openfreemap', { sourceLayer: layer }); } catch { return []; } };
-    const c = VEDUTA_PAINT[preferences.style], centre = local([point.longitude, point.latitude]);
-    lastSceneryCentre = centre;
+    const snapshot = {};
+    for (const layer of ['building','landuse','transportation','landcover','park']) {
+      yield; try { snapshot[layer] = map.querySourceFeatures('openfreemap', { sourceLayer: layer }); } catch { snapshot[layer] = []; }
+    }
+    const features = layer => snapshot[layer];
+    const c = VEDUTA_PAINT[style], centre = local([point.longitude, point.latitude]);
     const near = xy => Math.hypot(xy[0] - centre[0], xy[1] - centre[1]) < 650;
     const buildings = [], unique = new Set(), position = [], uv = [], colors = [];
     const push = (p, texture, color) => { position.push(...p); uv.push(...texture); colors.push(color.r, color.g, color.b); };
-    const rankedBuildings = features('building').map(feature => {
+    const rankedBuildings = [];
+    for (const feature of features('building')) {
+      yield;
       const coordinates = feature.geometry.type === 'MultiPolygon' ? feature.geometry.coordinates[0]?.[0] : feature.geometry.coordinates[0];
       const p = coordinates?.[0];
-      return { feature, distance: p ? Math.hypot(...local(p).map((v, i) => v - centre[i])) : Infinity };
-    }).sort((a, b) => a.distance - b.distance);
+      rankedBuildings.push({ feature, distance: p ? Math.hypot(...local(p).map((v, i) => v - centre[i])) : Infinity });
+    }
+    yield; rankedBuildings.sort((a, b) => a.distance - b.distance);
     for (const { feature } of rankedBuildings) {
       const polygons = feature.geometry.type === 'Polygon' ? [feature.geometry.coordinates] : feature.geometry.type === 'MultiPolygon' ? feature.geometry.coordinates : [];
       for (const rings of polygons) {
+        yield;
         const key = `${feature.id ?? ''}:${rings[0]?.[0]?.join(',')}`;
         if (unique.has(key) || buildings.length >= 450 || !rings[0]?.length) continue;
         unique.add(key);
@@ -173,14 +156,17 @@ export function createVedutaLayer(maplibre, preferences, readPoint, onError) {
         const variation = 0.9 + vedutaHash(geo[0] * 1000, geo[1] * 1000) * 0.18;
         const wall = new THREE.Color(c.wall).multiplyScalar(variation), roof = new THREE.Color(c.roof).multiplyScalar(variation);
         for (let i = 0; i < ring.length; i++) {
+          if (i % 32 === 0) yield;
           const a = ring[i], b = ring[(i + 1) % ring.length], width = Math.hypot(b[0] - a[0], b[1] - a[1]);
           for (const [xy, z, tex] of [[a, base, [0, 0]], [b, base, [width, 0]], [a, top, [0, height]], [a, top, [0, height]], [b, base, [width, 0]], [b, top, [width, height]]]) push([xy[0], xy[1], z], tex, wall);
         }
         const outer = ring.map(p => new THREE.Vector2(...p));
         const holes = rings.slice(1).map(hole => hole.slice(0, -1).map(p => new THREE.Vector2(...local(p))));
         const vertices = [...outer, ...holes.flat()];
-        for (const triangle of THREE.ShapeUtils.triangulateShape(outer, holes)) for (const index of triangle) {
-          const v = vertices[index]; push([v.x, v.y, top], [0, 0], roof);
+        let triangles = 0;
+        for (const triangle of THREE.ShapeUtils.triangulateShape(outer, holes)) {
+          if (++triangles % 32 === 0) yield;
+          for (const index of triangle) { const v = vertices[index]; push([v.x, v.y, top], [0, 0], roof); }
         }
         const pitched = rings.length === 1 ? vedutaRoofFacets(ring, top + 0.02) : null;
         if (pitched) {
@@ -190,29 +176,40 @@ export function createVedutaLayer(maplibre, preferences, readPoint, onError) {
       }
     }
     if (position.length) {
+      const baked = yield bakeGeometry(new Float32Array(position), style !== 'Watercolor', signal);
       const geometry = new THREE.BufferGeometry();
-      geometry.setAttribute('position', new THREE.Float32BufferAttribute(position, 3));
+      geometry.setAttribute('position', new THREE.BufferAttribute(baked.position, 3));
       geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
       geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
-      geometry.computeVertexNormals();
-      const walls = worldMaterial('facades', () => material('#ffffff', preferences.style, true)); walls.side = THREE.DoubleSide;
+      geometry.setAttribute('normal', new THREE.BufferAttribute(baked.normal, 3));
+      const walls = worldMaterial('facades', style, () => material('#ffffff', style, true)); walls.side = THREE.DoubleSide;
       walls.polygonOffset = true; walls.polygonOffsetFactor = -1; walls.polygonOffsetUnits = -2;
       mesh(geometry, walls, nextScenery);
-      if (preferences.style !== 'Watercolor') nextScenery.add(new THREE.LineSegments(new THREE.EdgesGeometry(geometry, 25), worldMaterial('edges', () => new THREE.LineBasicMaterial({ color: c.ink, transparent: true, opacity: preferences.style === 'Manga' ? 0.52 : 0.16 }))));
+      if (baked.edges) {
+        const edges = new THREE.BufferGeometry(); edges.setAttribute('position', new THREE.BufferAttribute(baked.edges, 3));
+        nextScenery.add(new THREE.LineSegments(edges, worldMaterial('edges', style, () => new THREE.LineBasicMaterial({ color: c.ink, transparent: true, opacity: style === 'Manga' ? 0.52 : 0.16 }))));
+      }
+      yield;
     }
     // Illustrative tree symbols belong only to source-mapped vegetation. Their
     // exact species/count are not observations. A global grid prevents reseeding.
     const treePlaces = [], seen = new Set();
-    const clearedAreas = features('landuse').filter(feature => ['pitch', 'playground'].includes(feature.properties?.class)).flatMap(feature => feature.geometry.type === 'Polygon' ? [feature.geometry.coordinates] : feature.geometry.type === 'MultiPolygon' ? feature.geometry.coordinates : []);
+    const clearedAreas = [];
+    for (const feature of features('landuse')) {
+      yield; if (!['pitch','playground'].includes(feature.properties?.class)) continue;
+      clearedAreas.push(...(feature.geometry.type === 'Polygon' ? [feature.geometry.coordinates] : feature.geometry.type === 'MultiPolygon' ? feature.geometry.coordinates : []));
+    }
     const noTreeAreas = [...buildings,...clearedAreas], roads = new Map(), bucketSize = 64;
-    const exclusions = createVedutaPolygonIndex(noTreeAreas, local);
+    const exclusions = yield* createVedutaPolygonIndexJob(noTreeAreas, local);
     let roadSegments = 0, roadEntries = 0;
     for (const feature of features('transportation')) {
+      yield;
       if (roadSegments >= 12000 || roadEntries >= 100000) break;
       if (feature.properties?.class === 'rail') continue;
       const lines = feature.geometry.type === 'LineString' ? [feature.geometry.coordinates] : feature.geometry.type === 'MultiLineString' ? feature.geometry.coordinates : [];
       const clearance = feature.properties?.class === 'path' ? 2.5 : ['motorway','trunk'].includes(feature.properties?.class) ? 11 : 5;
       for (const line of lines) for (let i=1;i<line.length;i++) {
+        yield;
         if (++roadSegments > 12000 || roadEntries >= 100000) break;
         const a=local(line[i-1]),b=local(line[i]);
         const left=Math.floor(Math.max(Math.min(a[0],b[0])-clearance,centre[0]-650)/bucketSize),right=Math.floor(Math.min(Math.max(a[0],b[0])+clearance,centre[0]+650)/bucketSize);
@@ -225,18 +222,21 @@ export function createVedutaLayer(maplibre, preferences, readPoint, onError) {
     const radius = Math.min(5000, 650 / Math.cos(point.latitude * Math.PI / 180));
     let candidates = 0;
     for (const feature of [...features('landcover'), ...features('park'), ...features('landuse')]) {
+      yield;
       if (treePlaces.length >= 1400 || candidates >= 8000) break;
       if (!['wood', 'forest', 'park', 'recreation_ground', 'garden', 'grass', 'meadow'].includes(feature.properties?.class)) continue;
       const polygons = feature.geometry.type === 'Polygon' ? [feature.geometry.coordinates] : feature.geometry.type === 'MultiPolygon' ? feature.geometry.coordinates : [];
       for (const rings of polygons) {
+        yield;
         if (treePlaces.length >= 1400 || candidates >= 8000) break;
         let left = Infinity, right = -Infinity, top = Infinity, bottom = -Infinity;
-        for (const p of rings[0]) { const m = maplibre.MercatorCoordinate.fromLngLat(p); left = Math.min(left, m.x * VEDUTA_WORLD_METRES); right = Math.max(right, m.x * VEDUTA_WORLD_METRES); top = Math.min(top, m.y * VEDUTA_WORLD_METRES); bottom = Math.max(bottom, m.y * VEDUTA_WORLD_METRES); }
+        let vertices = 0;
+        for (const p of rings[0]) { if (++vertices % 32 === 0) yield; const m = maplibre.MercatorCoordinate.fromLngLat(p); left = Math.min(left, m.x * VEDUTA_WORLD_METRES); right = Math.max(right, m.x * VEDUTA_WORLD_METRES); top = Math.min(top, m.y * VEDUTA_WORLD_METRES); bottom = Math.max(bottom, m.y * VEDUTA_WORLD_METRES); }
         const step = ['wood', 'forest'].includes(feature.properties.class) ? 26 : 50;
         const minX = Math.floor(Math.max(left, cx - radius) / step), maxX = Math.ceil(Math.min(right, cx + radius) / step);
         const minY = Math.floor(Math.max(top, cy - radius) / step), maxY = Math.ceil(Math.min(bottom, cy + radius) / step);
         for (let x = minX; x <= maxX && treePlaces.length < 1400 && candidates < 8000; x++) for (let y = minY; y <= maxY && treePlaces.length < 1400 && candidates < 8000; y++) {
-          candidates++;
+          yield; candidates++;
           const key = `${step}:${x}:${y}`;
           if (seen.has(key)) continue;
           const geo = vedutaGridCoordinate(x, y, step);
@@ -250,10 +250,12 @@ export function createVedutaLayer(maplibre, preferences, readPoint, onError) {
       }
     }
     if (treePlaces.length) {
-      const canopy = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 1), worldMaterial('foliage', () => material(c.forest, preferences.style,-1)), treePlaces.length * 3);
-      const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.25, 0.4, 1, 5).rotateX(Math.PI / 2), worldMaterial('trunks', () => material('#7d7057', preferences.style)), treePlaces.length);
+      const canopy = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(1, 1), worldMaterial('foliage', style, () => material(c.forest, style,-1)), treePlaces.length * 3);
+      const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.25, 0.4, 1, 5).rotateX(Math.PI / 2), worldMaterial('trunks', style, () => material('#7d7057', style)), treePlaces.length);
+      nextScenery.add(canopy, trunks);
       const dummy = new THREE.Object3D();
-      treePlaces.forEach((tree, i) => {
+      for (const [i, tree] of treePlaces.entries()) {
+        yield;
         dummy.position.set(...tree.xy, tree.z + tree.size * 0.42); dummy.scale.set(1, 1, tree.size * 0.84); dummy.rotation.set(0, 0, 0); dummy.updateMatrix(); trunks.setMatrixAt(i, dummy.matrix);
         for (let lobe = 0; lobe < 3; lobe++) {
           const slender = tree.seed > .72;
@@ -261,47 +263,123 @@ export function createVedutaLayer(maplibre, preferences, readPoint, onError) {
           dummy.scale.set(tree.size * (slender ? .23 : .42 + tree.seed * .2), tree.size * (slender ? .23 : .4 + tree.seed * .14), tree.size * (slender ? .85 : lobe === 1 ? .7 : .52)); dummy.rotation.z = tree.seed * Math.PI * 2 + lobe; dummy.updateMatrix(); canopy.setMatrixAt(i * 3 + lobe, dummy.matrix);
           canopy.setColorAt(i * 3 + lobe, new THREE.Color().setRGB(0.85 + tree.seed * 0.4, 0.93 + tree.seed * 0.22, 0.86 + tree.seed * 0.25));
         }
-      });
+      }
       // Shader world positions must include the instance transform.
       for (const object of [canopy, trunks]) {
         object.material.vertexShader = VERTEX.replace('vNormal=normalize(mat3(modelMatrix)*normal);vWorld=(modelMatrix*vec4(position,1.)).xyz;', 'mat3 basis=mat3(instanceMatrix);vec3 inverseScale=vec3(dot(basis[0],basis[0]),dot(basis[1],basis[1]),dot(basis[2],basis[2]));vNormal=normalize(mat3(modelMatrix)*basis*(normal/max(inverseScale,vec3(.0001))));vWorld=(modelMatrix*instanceMatrix*vec4(position,1.)).xyz;').replace('projectionMatrix*modelViewMatrix*vec4(position,1.)', 'projectionMatrix*modelViewMatrix*instanceMatrix*vec4(position,1.)');
         if (object === canopy) object.material.vertexShader = object.material.vertexShader.replace('vColor=color;', 'vColor=color*instanceColor;');
-        object.frustumCulled = false; nextScenery.add(object);
+        object.frustumCulled = false;
       }
     }
-    disposeVedutaTree(scenery,retainedMaterials); scenery.clear();
-    while (nextScenery.children.length) scenery.add(nextScenery.children[0]);
-  }
+    complete = true; return { group: nextScenery, origin, scale, centre, style, point };
+  } finally { if (!complete) disposeVedutaTree(nextScenery, retainedMaterials); }
+}
+
+/** The map owns this GL context. Never clear it, create a second canvas or lose it. */
+export function createVedutaLayer(maplibre, preferences, readPoint, onError, onStyleReady = () => {}) {
+  let map, renderer, origin, scale, car, fallback, ground = null, lastGroundAt = 0, lastSceneryAt = -Infinity;
+  let disposed = false, requestedRevision = 1, committedRevision = 0, epoch = 0, jobContext = null, baker = null;
+  let displayedStyle = preferences.style, markerKey;
+  let lastSceneryCentre = null, carPose = null, lastPoseAt = 0, groundDirty = true, lastGroundPoint = '';
+  const repaint = createVedutaRepaintScheduler({ repaint: () => map?.triggerRepaint(), visible: () => !document.hidden,
+    now: () => performance.now(), setTimer: (fn, ms) => setTimeout(fn, ms), clearTimer: id => clearTimeout(id) });
+  const stopBaker = () => { baker?.dispose(); baker = null; };
+  const queue = createVedutaBuildQueue({ ...vedutaBuildScheduling(), now: () => performance.now(),
+    visible: () => !document.hidden, onError });
+  const invalidate = () => { epoch++; queue.cancel(); stopBaker(); jobContext = null; requestedRevision++; };
+  const visibility = () => {
+    repaint.cancel(); invalidate();
+    if (!document.hidden) { lastSceneryAt = -Infinity; map?.triggerRepaint(); }
+  };
+  const scene = new THREE.Scene(), camera = new THREE.Camera();
+  let scenery = new THREE.Group();
+  const worldMaterials = new Map(), retainedMaterials = new Set();
+  const worldMaterial = (role, style, make) => {
+    const key = `${role}:${style}`;
+    if (!worldMaterials.has(key)) { const value = make(); worldMaterials.set(key,value); retainedMaterials.add(value); }
+    return worldMaterials.get(key);
+  };
+  scene.add(scenery);
+  const projection = new THREE.Matrix4(), transform = new THREE.Matrix4();
+  const inverse = new THREE.Matrix4(), eye = new THREE.Vector4();
+  const requestScenery = event => {
+    if (['openfreemap', 'veduta-terrain'].includes(event.sourceId) && event.tile?.state === 'loaded') {
+      requestedRevision++;
+      if (event.sourceId === 'veduta-terrain') groundDirty = true;
+      repaint.schedule(performance.now());
+    }
+  };
+  const local = coordinate => {
+    const p = maplibre.MercatorCoordinate.fromLngLat(coordinate);
+    return [(p.x - origin.x) / scale, -(p.y - origin.y) / scale];
+  };
+  const replaceMarker = () => {
+    const key = `${preferences.vehicle}:${preferences.color}:${displayedStyle}`;
+    if (markerKey === key) return;
+    markerKey = key;
+    for (const object of [car, fallback]) if (object) { scene.remove(object); disposeVedutaTree(object); }
+    car = createVedutaVehicle(preferences.vehicle, preferences.color, displayedStyle); scene.add(car);
+    fallback = createVedutaVehicle('point', preferences.color, displayedStyle); scene.add(fallback);
+  };
+  const distanceFrom = (point, reference) => {
+    const coordinate = maplibre.MercatorCoordinate.fromLngLat([point.longitude, point.latitude]);
+    return Math.hypot(coordinate.x - reference.x, coordinate.y - reference.y) / reference.meterInMercatorCoordinateUnits();
+  };
+  const beginScenery = point => {
+    const coordinate = maplibre.MercatorCoordinate.fromLngLat([point.longitude, point.latitude]);
+    const candidateOrigin = distanceFrom(point, origin) > 2000 ? coordinate : origin;
+    const context = { epoch, revision: requestedRevision, style: preferences.style, coordinate,
+      origin: candidateOrigin, scale: candidateOrigin.meterInMercatorCoordinateUnits(), point: { ...point } };
+    jobContext = context; lastSceneryAt = performance.now();
+    queue.start(signal => createVedutaSceneryJob({ map, maplibre, ...context, worldMaterial, retainedMaterials,
+      bakeGeometry: (position, edges, abort) => {
+        if (!baker) baker = createVedutaGeometryBaker(new Worker(new URL('./veduta-geometry.worker.js', import.meta.url), { type: 'module' }));
+        return baker.bake(position, edges, abort);
+      } }, signal), {
+      valid: () => !disposed && epoch === context.epoch && preferences.style === context.style,
+      discard: () => { if (jobContext === context) jobContext = null; },
+      commit: result => {
+        if (disposed || document.hidden || epoch !== context.epoch) { disposeVedutaTree(result.group, retainedMaterials); return; }
+        // Native paints, finish, marker, geometry and the geographic origin switch together.
+        try { onStyleReady(result.style); }
+        catch (error) { disposeVedutaTree(result.group, retainedMaterials); throw error; }
+        displayedStyle = result.style;
+        const previous = scenery; scenery = result.group; scene.remove(previous); scene.add(scenery);
+        if (origin !== result.origin) carPose = null;
+        origin = result.origin; scale = result.scale; lastSceneryCentre = context.coordinate;
+        committedRevision = context.revision; jobContext = null;
+        disposeVedutaTree(previous, retainedMaterials); replaceMarker(); map.triggerRepaint();
+        if (requestedRevision > committedRevision) repaint.schedule(lastSceneryAt + 1800);
+      },
+    });
+  };
   return {
     id: 'veduta-illustration', type: 'custom', renderingMode: '3d',
     updatePreferences(next) {
       if (disposed) return;
       const changedMedium = preferences.style !== next.style;
       preferences = { ...next };
-      if (car) {
-        for (const object of [car, fallback]) { scene.remove(object); disposeVedutaTree(object); }
-        car = createVedutaVehicle(preferences.vehicle, preferences.color, preferences.style); scene.add(car);
-        fallback = createVedutaVehicle('point', preferences.color, preferences.style); scene.add(fallback);
-      }
-      if (changedMedium) { pendingScenery = true; lastSceneryAt = -Infinity; }
+      if (car) replaceMarker();
+      if (changedMedium) { invalidate(); lastSceneryAt = -Infinity; }
+      map?.triggerRepaint();
     },
     onAdd(owner, gl) {
       map = owner;
       renderer = new THREE.WebGLRenderer({ canvas: map.getCanvas(), context: gl }); renderer.autoClear = false;
-      car = createVedutaVehicle(preferences.vehicle, preferences.color, preferences.style); scene.add(car);
-      fallback = createVedutaVehicle('point', preferences.color, preferences.style); scene.add(fallback);
+      replaceMarker();
       map.on('sourcedata', requestScenery);
       document.addEventListener('visibilitychange', visibility);
     },
     render(gl, args) {
-      if (disposed) return;
+      if (disposed || document.hidden) return;
       const point = readPoint(); if (!point) return;
       try {
         const now = performance.now();
         const coordinate = maplibre.MercatorCoordinate.fromLngLat([point.longitude, point.latitude]);
-        if (!origin || Math.hypot(coordinate.x - origin.x, coordinate.y - origin.y) / scale > 2000) {
-          origin = coordinate; scale = origin.meterInMercatorCoordinateUnits(); pendingScenery = true; lastSceneryAt = -Infinity; carPose = null;
-        }
+        if (!origin) { origin = coordinate; scale = origin.meterInMercatorCoordinateUnits(); }
+        // A moving request has one centre. Tile arrivals coalesce a compatible follow-up.
+        if (jobContext && distanceFrom(point, jobContext.coordinate) > 180) { invalidate(); lastSceneryAt = -Infinity; }
+        if (!jobContext && lastSceneryCentre && distanceFrom(point, lastSceneryCentre) > 180 && requestedRevision === committedRevision) requestedRevision++;
         const groundPoint = `${point.longitude.toFixed(7)}:${point.latitude.toFixed(7)}`;
         if (groundPoint !== lastGroundPoint) groundDirty = true;
         if (groundDirty && now - lastGroundAt >= 250) {
@@ -311,11 +389,10 @@ export function createVedutaLayer(maplibre, preferences, readPoint, onError) {
         }
         if (groundDirty) repaint.schedule(lastGroundAt + 250);
         const xy = local([point.longitude, point.latitude]);
-        if (lastSceneryCentre && Math.hypot(xy[0] - lastSceneryCentre[0], xy[1] - lastSceneryCentre[1]) > 180) pendingScenery = true;
-        if (pendingScenery && now - lastSceneryAt >= 1800 && !document.hidden) {
-          rebuildScenery(point); pendingScenery = false; lastSceneryAt = now;
+        if (!jobContext && requestedRevision > committedRevision && !document.hidden) {
+          if (now - lastSceneryAt >= 1800) beginScenery(point);
+          else repaint.schedule(lastSceneryAt + 1800);
         }
-        if (pendingScenery) repaint.schedule(lastSceneryAt + 1800);
         const alpha = 1 - Math.exp(-Math.min(64, Math.max(0, now - (lastPoseAt || now))) / 180);
         lastPoseAt = now;
         if (!carPose || point.stale || point.reducedMotion) carPose = { x: xy[0], y: xy[1], heading: point.heading ?? 0 };
@@ -352,7 +429,7 @@ export function createVedutaLayer(maplibre, preferences, readPoint, onError) {
       } catch (error) { onError(error); }
     },
     onRemove() {
-      disposed = true; repaint.dispose(); document.removeEventListener('visibilitychange', visibility); map.off('sourcedata', requestScenery);
+      disposed = true; epoch++; queue.dispose(); stopBaker(); jobContext = null; repaint.dispose(); document.removeEventListener('visibilitychange', visibility); map.off('sourcedata', requestScenery);
       disposeVedutaTree(scene,retainedMaterials); scene.clear(); retainedMaterials.forEach(value => value.dispose()); retainedMaterials.clear(); worldMaterials.clear(); renderer?.dispose();
     },
   };

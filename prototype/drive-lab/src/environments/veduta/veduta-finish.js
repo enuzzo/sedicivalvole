@@ -121,16 +121,15 @@ export function createVedutaFinish(readPreferences, readPoint, onError) {
     },
     render(gl) {
       if (disposed || disabled || !program || !texture) return;
-      const viewport = gl.getParameter(gl.VIEWPORT), previousRead = gl.getParameter(gl.READ_FRAMEBUFFER_BINDING);
-      const previousActive = gl.getParameter(gl.ACTIVE_TEXTURE), previousProgram = gl.getParameter(gl.CURRENT_PROGRAM);
-      const previousVao = gl.getParameter(gl.VERTEX_ARRAY_BINDING);
-      gl.activeTexture(gl.TEXTURE0); const previousTexture = gl.getParameter(gl.TEXTURE_BINDING_2D);
+      // MapLibre's public custom render targets the main framebuffer. Its pinned
+      // owner invalidates/restores GL state afterwards; querying it here forces
+      // synchronous driver round trips. This finish is the terminal 2D layer.
+      const width = gl.drawingBufferWidth, height = gl.drawingBufferHeight;
+      if (!width || !height) return;
       const caps = [gl.BLEND,gl.DEPTH_TEST,gl.STENCIL_TEST,gl.CULL_FACE,gl.SCISSOR_TEST];
-      const enabled = caps.map(cap => gl.isEnabled(cap));
-      const depthWrite = gl.getParameter(gl.DEPTH_WRITEMASK);
       try {
-        const [x,y,width,height] = viewport;
-        if (!width || !height) return;
+        gl.bindFramebuffer(gl.FRAMEBUFFER,null); gl.viewport(0,0,width,height);
+        gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, texture);
         if (size !== `${width}:${height}`) {
           gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA8,width,height,0,gl.RGBA,gl.UNSIGNED_BYTE,null);
@@ -138,9 +137,7 @@ export function createVedutaFinish(readPreferences, readPoint, onError) {
           gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
           size = `${width}:${height}`;
         }
-        gl.bindFramebuffer(gl.READ_FRAMEBUFFER,gl.getParameter(gl.DRAW_FRAMEBUFFER_BINDING));
-        gl.copyTexSubImage2D(gl.TEXTURE_2D,0,0,0,x,y,width,height);
-        gl.bindFramebuffer(gl.READ_FRAMEBUFFER,previousRead);
+        gl.copyTexSubImage2D(gl.TEXTURE_2D,0,0,0,0,0,width,height);
         caps.forEach(cap => gl.disable(cap)); gl.depthMask(false);
         gl.useProgram(program); gl.bindVertexArray(vao);
         const ratio = width / Math.max(1,map.getCanvas().clientWidth), preferences = readPreferences();
@@ -152,9 +149,10 @@ export function createVedutaFinish(readPreferences, readPoint, onError) {
         gl.drawArrays(gl.TRIANGLES,0,3);
       } catch (error) { disabled = true; onError?.(error); }
       finally {
-        gl.bindFramebuffer(gl.READ_FRAMEBUFFER,previousRead); gl.bindTexture(gl.TEXTURE_2D,previousTexture); gl.activeTexture(previousActive);
-        gl.useProgram(previousProgram); gl.bindVertexArray(previousVao); gl.depthMask(depthWrite);
-        caps.forEach((cap,index) => enabled[index] ? gl.enable(cap) : gl.disable(cap));
+        // Release our bindings. MapLibre restores its own tracked native state.
+        gl.bindFramebuffer(gl.FRAMEBUFFER,null); gl.bindTexture(gl.TEXTURE_2D,null);
+        gl.useProgram(null); gl.bindVertexArray(null); gl.depthMask(true);
+        gl.disable(gl.SCISSOR_TEST);
       }
     },
     onRemove(owner, gl) {
