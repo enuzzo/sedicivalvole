@@ -43,8 +43,9 @@ The package test suite passed 1,141 cases; after the last shader refinement,
 baselines and text fit 14/14. Browser checks include medium changes, 40 metres
 of synthetic GPS travel, pause/recovery, optional vehicles, keyboard/outside
 dismissal and phone options in both appearances. Artistic P1 findings remain
-open in [design QA](../design-qa.md); no publication or physical acceptance is
-claimed.
+open in [design QA](../design-qa.md). Source `9d4821b` is pushed; local package
+`20261023-1458.9d4821b` passes 839 exact hashes. No publication or physical
+acceptance is claimed.
 
 ## The product
 
@@ -110,12 +111,12 @@ the product remains experimental.
 
 | Gate | Command | What it proves |
 | --- | --- | --- |
-| Native tests | `npm test` in `prototype/drive-lab` | Models, audio graph, protocol, source contracts (1,125 cases on October 4) |
+| Native tests | `npm test` in `prototype/drive-lab` | Models, audio graph, protocol, source contracts (1,141 cases for local Veduta on October 23) |
 | Visual regression | `npm run qa:visual` | 16 frozen chrome screens at `773 × 601` and `390 × 844`, both appearances |
 | Text fit | `npm run qa:text-fit` | No clipped chrome text across 14 running, muted, brake-off, visual and Engine states |
 | Interface QA | `scripts/qa-night-instrument.mjs` | Running chrome, surfaces, geometries and a real local display↔phone pairing |
 | Curve QA | `scripts/qa-visual-curves.mjs` | Aperture/Meridian through the real geolocation callback |
-| Build identity | `npm run build` | 835 exact static hashes, `VERSION` and HTML identity |
+| Build identity | `npm run build` | 839 exact static hashes for local Veduta, `VERSION` and HTML identity |
 
 Browser and office evidence never closes a physical gate
 ([Delivery](agent-guide/delivery.md)).

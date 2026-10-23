@@ -110,6 +110,9 @@ The whole-scene iteration subsequently passes 1,141 full package tests,
 After the last shader/normal refinement, 16 focused renderer/model tests pass;
 actual current browser captures cover all three media and phone options. These
 gates establish implementation behavior, not the unresolved artistic P1 target.
+Source checkpoint `9d4821b` is pushed; local production package
+`20261023-1458.9d4821b` passes 839 exact static hashes and VERSION/HTML identity.
+Documentation consistency passes 8 checks. No canonical publication is made.
 
 Keep the live local preview available for owner inspection. Do not mark the
 artistic implementation complete or publish it while P1 findings remain open.

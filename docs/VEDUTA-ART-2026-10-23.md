@@ -89,7 +89,9 @@ measure physical-GPS performance or sustained frame pacing.
 
 After the last shader refinement, 16 focused renderer/model tests passed.
 The earlier full suite/chrome gates remain separate evidence; final production
-package identity belongs to the checkpoint record. Independent image review
+package `20261023-1458.9d4821b` passes 839 exact static hashes and matching
+VERSION/HTML identity. Source checkpoint `9d4821b` is pushed to `origin/main`.
+The package is not published. Independent image review
 confirms clearer Watercolor boundaries, stronger Anime volume and finer Manga
 retino. Full GeoPoster richness remains unmet: repeated schematic houses and
 windows, generic vegetation, uniform water and limited material-specific brush
