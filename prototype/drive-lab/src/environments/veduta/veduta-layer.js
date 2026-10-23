@@ -182,11 +182,13 @@ export function* createVedutaSceneryJob({ map, maplibre, point, origin, scale, s
       geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
       geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
       geometry.setAttribute('normal', new THREE.BufferAttribute(baked.normal, 3));
+      geometry.boundingSphere = new THREE.Sphere(new THREE.Vector3(...baked.bounds.centre), baked.bounds.radius);
       const walls = worldMaterial('facades', style, () => material('#ffffff', style, true)); walls.side = THREE.DoubleSide;
       walls.polygonOffset = true; walls.polygonOffsetFactor = -1; walls.polygonOffsetUnits = -2;
       mesh(geometry, walls, nextScenery);
       if (baked.edges) {
         const edges = new THREE.BufferGeometry(); edges.setAttribute('position', new THREE.BufferAttribute(baked.edges, 3));
+        edges.boundingSphere = new THREE.Sphere(new THREE.Vector3(...baked.edgeBounds.centre), baked.edgeBounds.radius);
         nextScenery.add(new THREE.LineSegments(edges, worldMaterial('edges', style, () => new THREE.LineBasicMaterial({ color: c.ink, transparent: true, opacity: style === 'Manga' ? 0.52 : 0.16 }))));
       }
       yield;

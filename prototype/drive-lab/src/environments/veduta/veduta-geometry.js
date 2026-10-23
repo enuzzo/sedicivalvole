@@ -7,8 +7,12 @@ export function bakeVedutaGeometry(position, withEdges) {
   geometry.setAttribute('position', new BufferAttribute(position, 3));
   geometry.computeVertexNormals();
   const edges = withEdges ? new EdgesGeometry(geometry, 25) : null;
+  // The first visible draw otherwise calculates these on the GL-owning thread.
+  geometry.computeBoundingSphere(); edges?.computeBoundingSphere();
+  const bounds = value => ({ centre: value.center.toArray(), radius: value.radius });
   const result = { position, normal: geometry.getAttribute('normal').array,
-    edges: edges?.getAttribute('position').array ?? null };
+    edges: edges?.getAttribute('position').array ?? null,
+    bounds: bounds(geometry.boundingSphere), edgeBounds: edges ? bounds(edges.boundingSphere) : null };
   geometry.dispose(); edges?.dispose();
   return result;
 }

@@ -60,6 +60,9 @@ test('worker bake preserves the pinned merged normals and edge arrays exactly', 
   const edges = new THREE.EdgesGeometry(merged, 25);
   const result = bakeVedutaGeometry(position.slice(), true);
   assert.deepEqual(result.position, position); assert.deepEqual(result.normal, merged.attributes.normal.array);
+  merged.computeBoundingSphere(); edges.computeBoundingSphere();
+  assert.deepEqual(result.bounds, { centre: merged.boundingSphere.center.toArray(), radius: merged.boundingSphere.radius });
+  assert.deepEqual(result.edgeBounds, { centre: edges.boundingSphere.center.toArray(), radius: edges.boundingSphere.radius });
   assert.deepEqual(result.edges, edges.attributes.position.array); assert.equal(bakeVedutaGeometry(position.slice(), false).edges, null);
   for (const geometry of [a, b, merged, edges]) geometry.dispose();
 });

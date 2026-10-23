@@ -75,7 +75,8 @@ its point/origin/scale/medium immutable; retain the last complete scenery until
 an atomic commit also switches native paints, finish and geographic origin.
 Tile arrivals coalesce a subsequent revision; medium/180m-centre changes, hide
 and removal cancel the candidate and its owned CPU worker. The worker runs the
-unchanged pinned Three normal/merged-edge algorithms on transferred buffers.
+unchanged pinned Three normal/merged-edge/bounding-sphere algorithms on
+transferred buffers, including exact bounds for the first visible draw.
 The terminal finish draws to the public main framebuffer and releases its own
 bindings. Pinned MapLibre restores native state after custom rendering; do not
 reintroduce synchronous per-frame GL state queries or runtime private access.
