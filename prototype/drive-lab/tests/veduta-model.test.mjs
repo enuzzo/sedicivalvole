@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeVedutaPreferences, createVedutaStyle, vedutaCamera, vedutaCameraCentre, vedutaRoofFacets, vedutaPosition, vedutaStatus, pointInVedutaPolygon, vedutaGridCoordinate, VEDUTA_STYLES } from '../src/environments/veduta/veduta-model.js';
+import { normalizeVedutaPreferences, createVedutaStyle, vedutaCamera, vedutaCameraCentre, vedutaRoofFacets, vedutaPosition, vedutaStatus, pointInVedutaPolygon, vedutaDistanceToSegment, vedutaGridCoordinate, VEDUTA_STYLES } from '../src/environments/veduta/veduta-model.js';
 import { createVedutaRepaintScheduler } from '../src/environments/veduta/veduta-repaint.js';
 import { appendAtlasPositionSample, advanceAtlasFollowCamera } from '../src/environments/atlas/atlas-model.js';
-import { createVedutaVehicle } from '../src/environments/veduta/veduta-layer.js';
+import { createVedutaVehicle, disposeVedutaTree } from '../src/environments/veduta/veduta-layer.js';
+import * as THREE from 'three';
 
 test('network loss does not claim that fresh GPS has stopped', () => {
   const fresh = { heading: 90, stale: false };
@@ -74,6 +75,12 @@ test('decorative vegetation respects polygon holes and fixed global grid cells',
   assert.equal(pointInVedutaPolygon([11,5], [outer,hole]), false);
   assert.deepEqual(vedutaGridCoordinate(123456, 98765, 42), vedutaGridCoordinate(123456, 98765, 42));
 });
+test('vegetation road clearance covers segment interiors, endpoints and zero-length roads', () => {
+  assert.equal(vedutaDistanceToSegment([5,3],[0,0],[10,0]),3);
+  assert.equal(vedutaDistanceToSegment([-3,4],[0,0],[10,0]),5);
+  assert.equal(vedutaDistanceToSegment([13,4],[0,0],[10,0]),5);
+  assert.equal(vedutaDistanceToSegment([3,4],[0,0],[0,0]),5);
+});
 test('Highland, Model Y and the point have distinct original bounded geometry across media', () => {
   for (const medium of VEDUTA_STYLES) {
     const sedan = createVedutaVehicle('highland', 'white', medium), suv = createVedutaVehicle('model-y', 'blue', medium), point = createVedutaVehicle('point', 'red', medium);
@@ -82,6 +89,17 @@ test('Highland, Model Y and the point have distinct original bounded geometry ac
     assert.ok(suv.getObjectByName('cabin').position.z > sedan.getObjectByName('cabin').position.z);
     for (const vehicle of [sedan,suv,point]) vehicle.traverse(item => { item.geometry?.dispose(); item.material?.dispose(); });
   }
+});
+test('scene replacement releases instance buffers and geometry while retaining shared world materials', () => {
+  const parent = new THREE.Group(), geometry = new THREE.BoxGeometry(), material = new THREE.MeshBasicMaterial();
+  const instances = new THREE.InstancedMesh(geometry,material,2); parent.add(instances);
+  let instanceDisposals=0, geometryDisposals=0, materialDisposals=0;
+  instances.addEventListener('dispose',()=>instanceDisposals++);
+  geometry.addEventListener('dispose',()=>geometryDisposals++);
+  material.addEventListener('dispose',()=>materialDisposals++);
+  disposeVedutaTree(parent,new Set([material]));
+  assert.equal(instanceDisposals,1); assert.equal(geometryDisposals,1); assert.equal(materialDisposals,0);
+  material.dispose(); assert.equal(materialDisposals,1);
 });
 test('camera look-ahead never mutates observed position and wraps the dateline', () => {
   const point = Object.freeze({ latitude: 46, longitude: 179.9999, heading: 90 });

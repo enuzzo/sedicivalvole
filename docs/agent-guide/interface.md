@@ -13,6 +13,10 @@ gate for that feature. See [Veduta](../VEDUTA-2026-10-23.md); the generated targ
 does not establish runtime fidelity or physical Tesla acceptance.
 The owner's subsequent live inspection rejected the oversized vehicle. Use a
 small fixed-size GPS dot by default; optional original car shapes remain in VIEW.
+The subsequent owner correction explicitly requires the established control
+language: shared two-line visual-cycle cells, direct STYLE cycle, real VIEW
+disclosure, Night Instrument popover, shared outside dismissal and keyboard lane.
+Do not restore the horizontal label/select controls or independent button chrome.
 
 Before implementing a new visual direction, present exactly two carefully developed Image Gen directions and wait for the owner's selection. The September 20 owner instruction supersedes the former three-direction rule project-wide. Ground both directions in actual product captures and the established design system; vary meaningful layout or interaction choices rather than merely recoloring the same screen. A selected direction or an explicit delegation for a named change resolves that gate only for that scope. Bug fixes and refinements within an already selected design do not restart selection. The current selections are Modular Aperture, refined Balanced Rail, Launch Cockpit with the September 10 compact Intro corrections, Engine Telemetry, the ATLAS/Stats remix, Travel Report, Air Atlas A and its A+C flight view, and the subtle spherical radar lens A. Night Glass's first curated composition and Launch Cockpit had explicit scoped design delegation; that is not blanket future delegation.
 

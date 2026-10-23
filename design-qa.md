@@ -11,8 +11,10 @@ this Veduta comparison does not resolve its owner acceptance.
 
 - Target: owner-selected first Image Gen direction, forward toward the horizon,
   refined with a white Highland (`exec-aea20e6b-76a8-4caf-87bb-9f9444648ccc.png`).
-- Actual application: `http://127.0.0.1:5183/qa-veduta.html?qaMute=1`, explicit
-  synthetic public-road GPS, Anime, Highland white, no audio/diagnostic sending.
+- Original actual application comparison:
+  `http://127.0.0.1:5183/qa-veduta.html?qaMute=1`, explicit synthetic public-road
+  GPS, Anime, Highland white, no audio/diagnostic sending. The owner subsequently
+  accepted a small GPS point; the latest comparison uses that approved point.
 - Both target and actual comparison images are 1672 × 941 pixels. The browser
   viewport was explicitly set to 1672 × 941 CSS pixels for this capture, then
   restored. Additional actual checks used Tesla 773 × 601 and phone 390 × 844.
@@ -27,13 +29,18 @@ this Veduta comparison does not resolve its owner acceptance.
 - The target has awake chrome and music; the captured actual state has resting
   chrome and muted visuals. Existing chrome behavior/design tokens take
   precedence. This state mismatch prevents a literal chrome-fidelity verdict.
+- Current whole-scene iteration: the three `*-tesla-final.png` files under
+  `Documents/Codex/2026-10-23/veduta-art/` have identical 773 × 601 viewport,
+  public synthetic GPS, dot and resting-chrome state. `three-media-final.jpg`
+  combines them. GeoPoster Anime R140, Manga R144 and Watercolor R129 native
+  proofs were also inspected read-only; no proof or lab asset enters the app.
 
 ## Current findings
 
 | Priority | Location | Evidence and consequence | Required next change |
 | --- | --- | --- | --- |
-| P1 | Whole landscape | The target reads as a rich illustration; actual still reads as a simplified 3D map, with broad flat surfaces and sparse near-field vegetation. | Improve semantic terrain/building/vegetation rendering while retaining real geometry and bounded GPU work; compare again. |
-| P1 | Watercolor | World-anchored pigment washes are visible on roofs, but silhouette edges, facades and distant terrain remain mechanically clean. | Develop a coherent watercolor treatment across materials; changing palette alone is insufficient. |
+| P1 | Whole landscape | The latest whole-scene finish gives distinct media, stronger Anime light/shadow and Manga paper/ink. Repeated schematic houses/windows, generic vegetation and uniform water remain far simpler than the reference/GeoPoster. | Develop material-specific architecture, vegetation and water hierarchy within bounded GPU work; compare again. |
+| P1 | Watercolor | Paper/pigment now covers the whole scene. Separating one-pixel contours from broad washes removed most ghosted roof/road edges, but the overall foreground remains pale and the brush hierarchy is limited. | Preserve the corrected structural edges and develop differentiated washes/detail by material. |
 | P3 | Optional vehicle | The symbol follows the admitted position, but simplified cabin/roof details remain generic at some angles. The owner rejected the initial enlarged scale. | The default is now a 12 CSS-pixel dot; optional vehicle shapes use approximate metre dimensions. Further silhouette polish can remain a separate iteration. |
 | P2 | Travel endurance | Interactive GPS motion/pause/resume was inspected, but sustained actual Tesla GPS/GPU performance is unmeasured. | Validate on the physical Highland with the identified build; desktop rendering cannot certify cabin performance. |
 
@@ -72,6 +79,17 @@ this Veduta comparison does not resolve its owner acceptance.
    the earlier symbol and do not establish acceptance of the revised default.
    The subsequent inspected `anime-gps-dot.png` shows the small white-rimmed dot
    in the visible browser; its current-reload warning/error log was empty.
+6. The owner accepted the point, rejected the ordinary 3D-map appearance and
+   requested the GeoPoster media. The original bounded terminal GPU pass now
+   abstracts the completed scene, with distinct Anime/Manga/Watercolor responses.
+   No sampled pixels leave the GPU and the pass owns no extra canvas/context.
+7. Independent final image review confirms the targeted corrections: stronger
+   geometry-based Anime value grouping, clearer Watercolor structural edges and
+   finer Manga retino. This is a scoped visual pass, not full artistic fidelity.
+8. STYLE/VIEW now share the two-line control cells, extracted footer caret and
+   popover material. Phone LIGHT/DARK, keyboard Tab, Escape/focus return and
+   consumed outside dismissal were inspected. Synthetic 40-metre motion moves
+   the geographic scene; paused GPS holds its last position and resumes.
 
 ## Separate verification
 
@@ -86,6 +104,12 @@ this Veduta comparison does not resolve its owner acceptance.
   changed after visual inspection of the new real thumbnail; unrelated Intro
   baselines were preserved. This chrome gate is separate from artistic fidelity.
 - No canonical publication or physical Tesla acceptance is claimed.
+
+The whole-scene iteration subsequently passes 1,141 full package tests,
+16/16 chrome regression and 14/14 text fit with no further baseline changes.
+After the last shader/normal refinement, 16 focused renderer/model tests pass;
+actual current browser captures cover all three media and phone options. These
+gates establish implementation behavior, not the unresolved artistic P1 target.
 
 Keep the live local preview available for owner inspection. Do not mark the
 artistic implementation complete or publish it while P1 findings remain open.

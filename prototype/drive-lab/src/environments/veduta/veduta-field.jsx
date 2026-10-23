@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { ContextualRail, useContextualControls } from '../../contextual-controls.jsx';
+import { DisclosureCaret } from '../../ui/disclosure-caret.jsx';
+import { useOutsideDismiss } from '../../ui/use-outside-dismiss.js';
 import { advanceAtlasFollowCamera, atlasMapPixelRatio, validAtlasPosition } from '../atlas/atlas-model.js';
 import { createVedutaLayer } from './veduta-layer.js';
+import { createVedutaFinish } from './veduta-finish.js';
 import { installVedutaPatterns } from './veduta-patterns.js';
 import { createVedutaStyle, normalizeVedutaPreferences, VEDUTA_COLORS, VEDUTA_PREFERENCE_KEY, VEDUTA_STYLES, VEDUTA_VEHICLES, vedutaCamera, vedutaCameraCentre, vedutaPosition, vedutaStatus } from './veduta-model.js';
 import '../../vendor-maplibre.css';
@@ -24,7 +27,7 @@ function applyMedium(map, preferences) {
 /** One map and one measured GPS stream. All persisted settings are non-geographic. */
 export default function VedutaField({ position, positionSamplesRef, gpsState, speed, theme, reducedMotion, onRenderer, onFrame, onRuntimeError, onRetryLocation }) {
   const host = useRef(null), mapRef = useRef(null), layerFactory = useRef(null), sceneLayerRef = useRef(null), pointRef = useRef(null);
-  const latest = useRef(null), panel = useRef(null), optionsButton = useRef(null);
+  const latest = useRef(null), panel = useRef(null), controls = useRef(null), optionsButton = useRef(null);
   const contextual = useContextualControls();
   const [preferences, setPreferences] = useState(savedPreferences);
   const [optionsOpen, setOptionsOpen] = useState(false);
@@ -33,18 +36,19 @@ export default function VedutaField({ position, positionSamplesRef, gpsState, sp
   const zoomRef = useRef(0);
   const canStart = validAtlasPosition(position);
   latest.current = { position, positionSamplesRef, speed, theme, reducedMotion, preferences, gpsState };
+  const closeOptions = () => { setOptionsOpen(false); optionsButton.current?.focus({ preventScroll: true }); };
+  useOutsideDismiss(controls, optionsOpen, closeOptions);
 
   useEffect(() => { try { localStorage.setItem(VEDUTA_PREFERENCE_KEY, JSON.stringify(preferences)); } catch { /* Settings remain usable without storage. */ } }, [preferences]);
   useEffect(() => {
     if (!optionsOpen) return;
     const close = event => {
-      if (event.type === 'keydown' && event.key !== 'Escape') return;
-      if (event.type === 'pointerdown' && (panel.current?.contains(event.target) || optionsButton.current?.contains(event.target))) return;
-      setOptionsOpen(false);
-      if (event.type === 'keydown') { event.stopPropagation(); optionsButton.current?.focus(); }
+      if (event.key !== 'Escape') return;
+      event.preventDefault(); event.stopPropagation(); closeOptions();
     };
-    document.addEventListener('pointerdown', close); document.addEventListener('keydown', close);
-    return () => { document.removeEventListener('pointerdown', close); document.removeEventListener('keydown', close); };
+    const focus = requestAnimationFrame(() => panel.current?.querySelector('button')?.focus({ preventScroll: true }));
+    document.addEventListener('keydown', close);
+    return () => { cancelAnimationFrame(focus); document.removeEventListener('keydown', close); };
   }, [optionsOpen]);
   useEffect(() => { if (contextual.inert) setOptionsOpen(false); }, [contextual.inert]);
 
@@ -120,6 +124,8 @@ export default function VedutaField({ position, positionSamplesRef, gpsState, sp
           applyMedium(map, latest.current.preferences);
           if (map.getLayer('veduta-illustration')) map.removeLayer('veduta-illustration');
           sceneLayerRef.current = layerFactory.current(); map.addLayer(sceneLayerRef.current); ready = true;
+          if (map.getLayer('veduta-medium-finish')) map.removeLayer('veduta-medium-finish');
+          map.addLayer(createVedutaFinish(() => latest.current.preferences, () => pointRef.current, fail));
           clearTimeout(loadTimer); onRenderer('WebGL2 · Veduta');
         };
         map.on('style.load', mountLayer);
@@ -168,15 +174,17 @@ export default function VedutaField({ position, positionSamplesRef, gpsState, sp
     sceneLayerRef.current?.updatePreferences(latest.current.preferences); mapRef.current?.triggerRepaint();
   }, [preferences.vehicle, preferences.color]);
   const set = (key, value) => setPreferences(previous => normalizeVedutaPreferences({ ...previous, [key]: value }));
+  const nextStyle = VEDUTA_STYLES[(VEDUTA_STYLES.indexOf(preferences.style) + 1) % VEDUTA_STYLES.length];
   return <>
     <div className="veduta-field" ref={host} aria-label="Veduta illustrated geographic landscape" />
     {!canStart ? <div className="veduta-waiting" role="status"><strong>Veduta</strong><span>Waiting for the car’s GPS position</span><small>{gpsState === 'permission denied' ? 'Allow Location in this browser, then retry.' : 'The landscape starts when a usable position arrives.'}</small><button onClick={onRetryLocation}>RETRY LOCATION</button></div> : null}
     {canStart ? <>
-      <ContextualRail className="veduta-rail"><nav {...contextual} className="veduta-controls" aria-label="Veduta controls" onPointerDown={event => event.stopPropagation()}>
-        <label className="veduta-key"><span>STYLE</span><select aria-label="Illustration style" value={preferences.style} onChange={event => set('style', event.target.value)}>{VEDUTA_STYLES.map(name => <option key={name}>{name}</option>)}</select></label>
-        <button className="veduta-key" ref={optionsButton} aria-label="Follow camera and vehicle settings" aria-expanded={optionsOpen} onClick={() => setOptionsOpen(value => !value)}><span>VIEW</span><strong>Follow</strong></button>
-        {optionsOpen ? <section className="veduta-options" ref={panel} aria-label="Follow camera and vehicle settings">
-          <div className="veduta-option-heading"><strong>Follow camera</strong><button onClick={() => { setOptionsOpen(false); optionsButton.current?.focus(); }}>CLOSE</button></div>
+      <ContextualRail className="veduta-rail"><nav {...contextual} ref={controls} className="veduta-controls visual-cycle-rail" aria-label="Veduta controls" data-contextual-dialog={optionsOpen ? 'open' : undefined} onPointerDown={event => event.stopPropagation()}
+        onBlurCapture={event => { if (optionsOpen && event.relatedTarget && !event.currentTarget.contains(event.relatedTarget)) setOptionsOpen(false); }}>
+        <button className="visual-cycle-button" type="button" aria-label={`Illustration style ${preferences.style}. Next ${nextStyle}`} onClick={() => set('style', nextStyle)}><span>STYLE</span><small>{preferences.style}</small></button>
+        <button className="visual-cycle-button veduta-view-key" type="button" ref={optionsButton} aria-label="Follow camera and vehicle settings" aria-haspopup="dialog" aria-controls="veduta-view-options" aria-expanded={optionsOpen} onClick={() => setOptionsOpen(value => !value)}><span>VIEW</span><small>Follow</small><DisclosureCaret /></button>
+        {optionsOpen ? <section className="veduta-options" id="veduta-view-options" ref={panel} role="dialog" aria-modal="false" aria-labelledby="veduta-view-title">
+          <div className="veduta-option-heading"><strong id="veduta-view-title">Follow camera</strong><button onClick={closeOptions}>CLOSE</button></div>
           <div className="veduta-zoom"><button aria-label="Zoom in Veduta" onClick={() => { zoomRef.current = Math.min(1, zoomRef.current + 0.25); }}>+</button><button onClick={() => { zoomRef.current = 0; }}>RESET VIEW</button><button aria-label="Zoom out Veduta" onClick={() => { zoomRef.current = Math.max(-1, zoomRef.current - 0.25); }}>−</button></div>
           <label className="veduta-vehicle-label">Vehicle<select aria-label="Vehicle shape" value={preferences.vehicle} onChange={event => set('vehicle', event.target.value)}>{VEDUTA_VEHICLES.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
           {preferences.vehicle !== 'point' ? <div className="veduta-colors" role="group" aria-label="Vehicle body colour">{VEDUTA_COLORS.map(color => <button key={color.id} aria-label={color.label} aria-pressed={preferences.color === color.id} onClick={() => set('color', color.id)}><span style={{ backgroundColor: color.hex }} /><small>{color.label}</small></button>)}</div> : null}

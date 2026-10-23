@@ -47,6 +47,10 @@ Use the existing admitted GPS sample buffer, MapLibre worker and geographic
 providers; never integrate speed into invented travel. Hold stale/missing fixes,
 keep source coordinates out of diagnostics and retain all map/DEM attribution.
 The view is illustrative, with no Atlas POI/article/statistics panels.
+The owner's subsequent style correction requires the medium across the whole
+landscape, including terrain/water/native fallback geometry. Keep the final
+original GPU treatment in the public custom-layer boundary, with no CPU pixel
+readback or second canvas/context; DOM controls and credits remain crisp.
 
 The camera's look-ahead target is separate from measured vehicle coordinates.
 Vehicle dimensions, roof/window details, vegetation and road/terrain alignment
@@ -57,6 +61,8 @@ map is idle. Preserve pending vehicle changes across source/style loading.
 See [selected scope and implementation](../VEDUTA-2026-10-23.md). Local and
 physical Tesla acceptance remain separate; do not equate the private Image Gen
 target or the synthetic development fixture with real-car evidence.
+See the [whole-scene art iteration](../VEDUTA-ART-2026-10-23.md) for current
+resource limits and the distinction from GeoPoster's semantic/depth renderer.
 
 ## Discover
 

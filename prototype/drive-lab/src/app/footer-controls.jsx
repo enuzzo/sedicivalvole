@@ -4,6 +4,7 @@ import { getScoreGenre, scoreSource } from "../score/genres.js";
 import { useOutsideDismiss } from "../ui/use-outside-dismiss.js";
 import { getFluxTheme, FLUX_THEMES } from "../flux-themes.js";
 import { eventOrigin, withInkWipe } from "../ui/ink-wipe.js";
+import { DisclosureCaret } from "../ui/disclosure-caret.jsx";
 
 export function ModeSelector({ mode = "flux", onChange }) {
   return (
@@ -24,14 +25,6 @@ export function ModeSelector({ mode = "flux", onChange }) {
  * bar taller to fit them would cost the thing that makes this interface work —
  * that it retreats off-canvas entirely and leaves the road.
  */
-function DisclosureCaret() {
-  return (
-    <svg className="disclosure-caret" viewBox="0 0 12 8" aria-hidden="true">
-      <path d="m1 1 5 5 5-5" />
-    </svg>
-  );
-}
-
 export function displayLabel(entry) {
   return entry?.displayLabel ?? entry?.label ?? "";
 }

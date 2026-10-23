@@ -1471,3 +1471,16 @@ Four current-product screenshots include the existing OpenFreeMap/OpenMapTiles/O
 Runtime service: https://developers.cloudflare.com/realtime/turn/faq/ ; provider Cloudflare, Inc. Public contact: https://community.cloudflare.com/ . No copied software/assets and no project relicensing.
 
 Unsent thank-you draft: “Thank you for documenting and providing public STUN discovery. Sedicivalvole uses it to explore a direct, encrypted phone-to-display connection while keeping its HTTPS recovery path. Your clear distinction between discovery and TURN relay helps us describe what is actually supported.”
+
+## Painterly abstraction research — October 23, 2026
+
+- **Credit:** Jan Eric Kyprianidis, Henry Kang and Jürgen Döllner.
+- **Source:** [2009 paper](https://www.kyprianidis.com/p/pg2009/jkyprian-pg2009.pdf), [publication DOI](https://doi.org/10.1111/j.1467-8659.2009.01574.x).
+- **Use:** Research only, informing an original smaller four-region colour/variance stage for Veduta. No paper figures/text or third-party implementation is included; the project does not claim to implement the full anisotropic method.
+- **Public contact route:** [author website](https://www.kyprianidis.com/). No private contact inferred.
+- **Status:** DRAFT — not sent. No external message is authorized by this record.
+
+Unsent thank-you draft: “Thank you for explaining how local variation and structure can guide coherent painterly abstraction. Your paper helped us think about treating an entire travelling landscape as one illustration. Sedicivalvole's small original GPU experiment is a different, limited implementation, and we have credited the research separately from the software we ship.”
+
+MapLibre's existing register also covers the October 23 public custom-layer
+documentation study and Veduta's original terminal same-context colour pass.

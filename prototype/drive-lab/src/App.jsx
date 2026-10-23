@@ -3919,7 +3919,8 @@ export function App() {
       onClickCapture={handleControlActivation}
       onChangeCapture={handleControlChange}
       onKeyDownCapture={(event) => {
-        if (event.key === "Tab") wakeControls();
+        // Open contextual options retain their keyboard lane while chrome rests.
+        if (event.key === "Tab" && !event.target.closest?.('[data-contextual-dialog="open"]')) wakeControls();
         if (event.key === "Escape" && !controlsPinned) restControls();
       }}
     >

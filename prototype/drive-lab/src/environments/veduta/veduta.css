@@ -4,20 +4,18 @@
   .veduta-field .maplibregl-canvas { outline: none; }
   .veduta-attribution { position: absolute; z-index: 6; left: 10px; bottom: 70px; max-width: calc(100% - 20px); overflow-x: auto; white-space: nowrap; padding: 2px 6px; background: color-mix(in srgb, var(--ui-surface-strong) 78%, transparent); color: var(--ui-text); font: 14px/1.4 'Space Grotesk', sans-serif; pointer-events: auto; }
   .veduta-attribution a { color: inherit; }
-  .veduta-controls { display: flex; gap: 6px; position: relative; pointer-events: auto; }
-  .veduta-key { display: flex; align-items: center; gap: 12px; min-height: 48px; padding: 6px 12px; background: var(--ni-key, var(--ui-surface-strong)); color: var(--ui-text); border: 1px solid var(--ui-line); border-radius: 10px; font-size: 15px; }
-  .veduta-key > span { font-size: 14px; color: var(--ui-muted); }
-  .veduta-key select { font: 600 15px 'Space Grotesk', sans-serif; background: var(--ni-key, var(--ui-surface-strong)); color: inherit; border: 0; min-height: 36px; max-width: 125px; }
-  .veduta-key strong { font-size: 17px; font-weight: 600; }
+  .veduta-controls { position: relative; pointer-events: auto; grid-template-columns: repeat(2, minmax(0, 112px)); }
+  .veduta-view-key { position: relative; }
+  .veduta-view-key .disclosure-caret { position: absolute; right: 10px; top: 50%; width: 12px; height: 8px; fill: none; stroke: currentColor; stroke-width: 1.5; }
   .veduta-options { position: absolute; top: 60px; right: 0; width: min(352px, calc(100vw - 24px)); padding: 14px; border: 1px solid var(--ui-line); border-radius: 10px; background: var(--ui-surface-strong); color: var(--ui-text); display: grid; gap: 14px; max-height: calc(100dvh - 150px); overflow-y: auto; }
   .veduta-option-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-  .veduta-options button, .veduta-waiting button, .veduta-status button { min-height: 48px; min-width: 48px; border: 1px solid var(--ui-line); border-radius: 10px; background: var(--ni-key, var(--ui-surface)); color: var(--ui-text); font: 500 14px 'Space Grotesk', sans-serif; padding: 6px 10px; }
+  .veduta-options button, .veduta-waiting button, .veduta-status button { min-height: 48px; min-width: 48px; border: 1px solid var(--ui-line); border-radius: 10px; background: var(--ni-key, var(--ui-surface)); color: var(--ui-text); font: 500 var(--type-action) var(--font-ui); padding: 6px 10px; }
   .veduta-zoom { display: grid; grid-template-columns: 48px 1fr 48px; gap: 6px; }
   .veduta-vehicle-label { display: grid; gap: 6px; font-size: 14px; }
-  .veduta-vehicle-label select { min-height: 48px; padding: 8px; font: 500 15px 'Space Grotesk', sans-serif; background: var(--ni-key, var(--ui-surface)); color: inherit; border: 1px solid var(--ui-line); border-radius: 10px; }
+  .veduta-vehicle-label select { min-height: 48px; padding: 8px; font: 500 var(--type-action) var(--font-ui); background: var(--ni-key, var(--ui-surface)); color: inherit; border: 1px solid var(--ui-line); border-radius: 10px; }
   .veduta-colors { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
   .veduta-colors button { display: flex; align-items: center; gap: 6px; padding: 6px; }
-  .veduta-colors button[aria-pressed='true'] { outline: 2px solid var(--ui-text); outline-offset: -2px; }
+  .veduta-colors button[aria-pressed='true'] { background: var(--ui-selected-surface); color: var(--ui-selected-text); box-shadow: inset 3px 0 var(--ui-selected-accent); }
   .veduta-colors button span { width: 18px; height: 18px; border-radius: 50%; border: 1px solid #999; flex-shrink: 0; }
   .veduta-options small { font-size: 13px; line-height: 1.45; }
   .veduta-status { position: absolute; bottom: 100px; left: 12px; display: flex; align-items: center; gap: 8px; color: var(--ui-text); background: color-mix(in srgb, var(--ui-surface-strong) 82%, transparent); padding: 5px 8px; border-radius: 4px; font-size: 13px; pointer-events: auto; }
@@ -26,5 +24,6 @@
   .app.controls-resting .veduta-attribution { bottom: 8px; }
   .app.controls-resting .veduta-status { bottom: 38px; }
   .veduta-controls :is(button, select):focus-visible { outline: 2px solid var(--ui-focus); outline-offset: 2px; }
-  @media (max-width: 550px) { .veduta-key { gap: 6px; padding-inline: 8px; }.veduta-key > span { display: none; }.veduta-key select { max-width: 114px; }.veduta-options { top: 56px; } }
+  .veduta-options button:not([aria-pressed="true"]):hover { background: var(--ni-key-hover); }
+  @media (max-width: 550px) { .veduta-options { top: 60px; } }
 }

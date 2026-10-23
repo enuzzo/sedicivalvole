@@ -534,7 +534,7 @@
 
 /* ——— Popovers: small plates that rise from their key ——— */
 
-.app[data-appearance] :is(.appearance-menu, .network-popover, .gps-help-popover) {
+.app[data-appearance] :is(.appearance-menu, .network-popover, .gps-help-popover, .veduta-options) {
   border: 0;
   border-radius: 12px;
   background: var(--ni-plate);

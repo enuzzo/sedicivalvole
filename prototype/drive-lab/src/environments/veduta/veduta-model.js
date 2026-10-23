@@ -51,7 +51,7 @@ export function vedutaCameraCentre(point, distanceM = 65) {
 
 export const VEDUTA_PAINT = Object.freeze({
   Anime: { ground: '#dfd8b1', grass: '#99b56a', forest: '#4b815e', water: '#439fb5', road: '#7c8881', casing: '#ece6ce', wall: '#ecdbac', roof: '#bd8658', ink: '#495f56', sky: '#82c6e9', horizon: '#d5e6d9' },
-  Manga: { ground: '#f4f1e7', grass: '#d8d7c9', forest: '#b0b4a6', water: '#d4dcd8', road: '#faf8ef', casing: '#777b70', wall: '#f3f0e5', roof: '#b7b7aa', ink: '#3b423d', sky: '#e0e5df', horizon: '#f2f0e5' },
+  Manga: { ground: '#f4f1e7', grass: '#d8d7c9', forest: '#84897f', water: '#d4dcd8', road: '#faf8ef', casing: '#777b70', wall: '#f3f0e5', roof: '#90948c', ink: '#3b423d', sky: '#e0e5df', horizon: '#f2f0e5' },
   Watercolor: { ground: '#ede5cc', grass: '#b4c58b', forest: '#86a88a', water: '#8dc5ce', road: '#e9dfca', casing: '#a5a78f', wall: '#ede0c8', roof: '#c7a28c', ink: '#8a9688', sky: '#b8d8e6', horizon: '#eee9d6' },
 });
 
@@ -111,6 +111,11 @@ export function pointInVedutaPolygon(point, rings) {
 }
 
 export const VEDUTA_WORLD_METRES = 40075016.68557849;
+export function vedutaDistanceToSegment(point, a, b) {
+  const dx = b[0]-a[0], dy = b[1]-a[1], length2 = dx*dx+dy*dy;
+  const t = length2 ? Math.max(0,Math.min(1,((point[0]-a[0])*dx+(point[1]-a[1])*dy)/length2)) : 0;
+  return Math.hypot(point[0]-a[0]-dx*t,point[1]-a[1]-dy*t);
+}
 export function vedutaGridCoordinate(x, y, step) {
   const mx = (x + 0.2 + vedutaHash(x, y) * 0.6) * step / VEDUTA_WORLD_METRES;
   const my = (y + 0.2 + vedutaHash(y, x) * 0.6) * step / VEDUTA_WORLD_METRES;
