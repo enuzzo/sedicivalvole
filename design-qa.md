@@ -126,3 +126,14 @@ The authorized trial is now canonical build `20261023-1537.4969ee2`, with
 public App with synthetic GPS. The [performance record](docs/VEDUTA-PERFORMANCE-2026-10-23.md)
 separates measured desktop improvement, remaining rebuild hitches and physical
 Tesla evidence still required. Artistic P1 findings above remain open.
+
+## Loading follow-up publication
+
+Build `20261023-1706.92cd1d7` retains the current illustrated treatment, geometry,
+density, resolution, GPS dot and shared controls. The cooperative/worker changes
+pass exact original-buffer fixtures and all three public synthetic-GPS media
+were visually inspected after publication. Compiled chrome remains 16/16 and
+text fit 14/14. The matched longer desktop journey reduces CPU blocking and
+frame-gap tails but still has occasional hitches. This is a performance trial,
+not closure of the artistic P1 findings or physical Tesla acceptance. See
+[measured evidence](docs/VEDUTA-PERFORMANCE-2026-10-23.md).

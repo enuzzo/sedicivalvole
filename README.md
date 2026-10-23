@@ -65,7 +65,7 @@ third-party work retains the credits and licences recorded below.
 
 Public development repository: [github.com/enuzzo/sedicivalvole](https://github.com/enuzzo/sedicivalvole).
 
-**Real-car trial: Veduta 11.** Published in build `20261023-1537.4969ee2`, this separate illustrated geographic travel view
+**Real-car trial: Veduta 11.** Published in build `20261023-1706.92cd1d7`, this separate illustrated geographic travel view
 follows the admitted vehicle GPS over actual terrain and map geometry. Anime,
 Manga and Watercolor share one elevated forward camera; original simplified
 Model 3 Highland, Model Y and point symbols have six illustrative body colours.
@@ -73,8 +73,11 @@ It reuses the existing MapLibre/Three.js runtime and geographic providers.
 The selected concept, approximation boundaries and separate visual/device
 acceptance are recorded in [Veduta](docs/VEDUTA-2026-10-23.md). Publication for
 this trial does not establish final artistic or physical-Tesla acceptance.
-The owner-authorized real-car trial and measured desktop CPU
-stress comparison are in [Veduta performance](docs/VEDUTA-PERFORMANCE-2026-10-23.md).
+Complete scenery is prepared in cooperative slices with exact geometry work in
+a CPU worker; the previous scene remains visible until the new one is ready.
+A >2km desktop stress journey reduces observed long tasks, while occasional
+frame gaps and physical Tesla acceptance remain open. The owner-authorized
+real-car trial and measured desktop CPU stress comparison are in [Veduta performance](docs/VEDUTA-PERFORMANCE-2026-10-23.md).
 
 The active phone companion is a passenger remote for music, visuals and effects.
 The display keeps GPS authority. Its top-bar phone icon opens a compact Scan /

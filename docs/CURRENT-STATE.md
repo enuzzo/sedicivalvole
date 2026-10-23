@@ -11,17 +11,18 @@ the [DEPLOY release table](DEPLOY.md#release-table).
 ## Live release
 
 - Canonical [https://sedicivalvole.app/](https://sedicivalvole.app/) serves
-  **20261023-1537.4969ee2**: the owner-authorized Veduta real-car trial,
+  **20261023-1706.92cd1d7**: the owner-authorized Veduta real-car trial,
   alongside October 4 GPS maintenance, Night Instrument, passenger remote
-  and predictive/full-body Engine. Tests pass 1,143 cases, compiled chrome
-  16/16, text fit 14/14, package identity 839 hashes and canonical browser HTTPS
-  19 identity/cache checks. All three media render with synthetic GPS on the
+  and predictive/full-body Engine. Tests pass 1,152 cases, compiled chrome
+  16/16, text fit 14/14, package identity 840 hashes and canonical browser HTTPS
+  20 identity/cache checks. All three media render with synthetic GPS on the
   public build; this does not establish physical Tesla acceptance
-  ([release](DEPLOY.md#veduta-realtime-trial--2026-10-23),
+  ([release](DEPLOY.md#veduta-loading-follow-up--2026-10-23),
   [performance evidence](VEDUTA-PERFORMANCE-2026-10-23.md)).
 - Rollback: `scripts/rollback-release.sh <tag-or-commit> [--publish]`, with the
   source tags `pre-night-instrument-20260924`, `pre-structural-20260924` and
   `pre-engine-20260924`, plus `pre-veduta-20261023` at prior live `2928503`
+  and `pre-veduta-loading-20261023` at `4969ee2`
   ([DEPLOY / Rollback](DEPLOY.md#rollback)).
 
 ## Veduta — experimental real-car trial
@@ -39,13 +40,17 @@ and popover. See [scope](VEDUTA-2026-10-23.md) and the
 [art iteration](VEDUTA-ART-2026-10-23.md).
 Owner inspection changed the default to a small fixed-size GPS dot after
 rejecting the enlarged car; optional car symbols no longer use that enlargement.
-Source
-`4969ee2` removes the deferred second camera RAF, indexes polygon exclusions
-without changing placement and corrects the diagnostic frame target. Compiled
-package `20261023-1537.4969ee2` passes 1,143 tests, 16/16 chrome, 14/14 text fit
-and 839 exact hashes. Desktop moving draw-submission cadence improves from
-about 30Hz to 58–60Hz; 4× CPU stress gives 56–60Hz. This is not presented FPS or
-Tesla emulation, and occasional rebuild hitches remain. See
+Source `92cd1d7` prepares complete scenery in cooperative slices and runs exact
+merged normals/edges/bounds in an owned worker. A candidate captures its medium
+and geographic origin; both switch only when the group is ready. Tile updates
+coalesce; hard changes, hide and removal cancel private work. The finish no
+longer queries GL state per frame. Geometry, density, shader and resolution
+remain unchanged. Compiled `20261023-1706.92cd1d7` passes 1,152 tests, 16/16
+chrome, 14/14 text fit and 840 exact hashes. In a matched 150-second >2km
+synthetic CPU4× journey, draw submissions improve 55.8 → 59.5Hz, long tasks
+38 → 5 and their maximum 626 → 110ms. The final maximum submission gap is
+164.5ms; an intermediate 758.4ms outlier remains unexplained. This is not
+presented FPS, Tesla emulation or complete hitch removal. See
 [performance evidence](VEDUTA-PERFORMANCE-2026-10-23.md).
 Browser checks cover medium changes, synthetic travel beyond the 180m scenery
 refresh boundary, GPS pause/recovery, optional vehicles, keyboard/outside
@@ -118,12 +123,12 @@ the product remains experimental.
 
 | Gate | Command | What it proves |
 | --- | --- | --- |
-| Native tests | `npm test` in `prototype/drive-lab` | Models, audio graph, protocol, source contracts (1,141 cases for local Veduta on October 23) |
+| Native tests | `npm test` in `prototype/drive-lab` | Models, audio graph, protocol, source contracts (1,152 cases for the October 23 Veduta loading build) |
 | Visual regression | `npm run qa:visual` | 16 frozen chrome screens at `773 × 601` and `390 × 844`, both appearances |
 | Text fit | `npm run qa:text-fit` | No clipped chrome text across 14 running, muted, brake-off, visual and Engine states |
 | Interface QA | `scripts/qa-night-instrument.mjs` | Running chrome, surfaces, geometries and a real local display↔phone pairing |
 | Curve QA | `scripts/qa-visual-curves.mjs` | Aperture/Meridian through the real geolocation callback |
-| Build identity | `npm run build` | 839 exact static hashes for local Veduta, `VERSION` and HTML identity |
+| Build identity | `npm run build` | 840 exact static hashes for the October 23 Veduta loading build, `VERSION` and HTML identity |
 
 Browser and office evidence never closes a physical gate
 ([Delivery](agent-guide/delivery.md)).

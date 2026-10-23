@@ -119,6 +119,7 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 | Date | Record | Build |
 | --- | --- | --- |
+| 2026-10-23 17:21 | [Veduta loading follow-up](#veduta-loading-follow-up--2026-10-23) | `20261023-1706.92cd1d7` |
 | 2026-10-23 16:07 | [Veduta realtime trial](#veduta-realtime-trial--2026-10-23) | `20261023-1537.4969ee2` |
 | 2026-10-04 20:14 | [GPS startup maintenance](#gps-startup-maintenance--2026-10-04) | `20261004-1955.2928503` |
 | 2026-09-28 00:01 | [Live Engine cluster](#live-engine-cluster--2026-09-27-2349) | `20260927-2349.59fe317` |
@@ -333,6 +334,37 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 Earlier records, from [Night Instrument interface](archive/DEPLOY-HISTORY-2026-09-24.md#night-instrument-interface--2026-09-24)
 back, are kept verbatim in the archive.
+
+### Veduta loading follow-up — 2026-10-23
+
+Canonical `20261023-1706.92cd1d7`, VERSION `0.0.0`, prepares scenery in finite
+cooperative slices, runs the unchanged merged normals/edges/bounds in one CPU
+worker and switches complete scenery/origin/medium together. The terminal
+finish uses the pinned MapLibre state owner without per-frame synchronous GL
+queries. Geometry/density, shaders, patterns, resolution, dot and controls are
+retained. Tests pass 1,152 cases, compiled chrome 16/16 with unchanged baselines,
+text fit 14/14, credits 189 and package identity 840 hashes.
+
+A matched 150-second >2km synthetic journey at 54km/h with desktop main CPU4×
+slowdown improves 55.8 → 59.5 draw submissions/s, 38 → 5 long tasks and
+626 → 110ms maximum long task. The observed largest submission gap improves
+626.9 → 164.5ms; an intermediate 758.4ms outlier did not recur and remains
+unexplained. These are desktop draw-submission/stress observations, not Tesla
+processor emulation, presented FPS or a guarantee that all hitches are gone.
+See [full evidence and limits](VEDUTA-PERFORMANCE-2026-10-23.md).
+
+Read-only preflight passes with `remote_writes=NONE`. Preserve-existing
+publication uploads 43 files / 6,724,841 bytes, reuses 833 static files and all
+29 full-hash-verified recordings, retains one previous asset and reports
+`ROOT_UPLOAD_ONLY`. Twenty actual-browser HTTPS checks match local bytes,
+including bare/cache-busted/reloaded root, the new geometry worker and exact
+manifest. Roots are HTTP200, no-store/no-cache and proxy MISS. All three media
+render publicly with synthetic GPS and no page error; two muted automation
+AudioContext warnings remain separate from graphics or cabin-audio acceptance.
+The in-app public Intro/catalogue has no warning/error. Diagnostic sending is
+blocked in QA. Rollback tag `pre-veduta-loading-20261023` points to prior live
+`4969ee2`. Independent read-only postflight passes with 13 root entries and
+`remote_writes=NONE`.
 
 ### Veduta realtime trial — 2026-10-23
 
