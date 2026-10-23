@@ -54,7 +54,7 @@ export default function VedutaField({ position, positionSamplesRef, gpsState, sp
 
   useEffect(() => {
     if (!canStart || !host.current) { onRenderer('Veduta · waiting for GPS'); return undefined; }
-    let disposed = false, failed = false, map, frame, timer, loadTimer, lastFrame = 0, lastUi = 0, lastRender = 0, lastPose = '';
+    let disposed = false, failed = false, map, frame, timer, loadTimer, lastFrame = 0, lastUi = 0, lastPose = '';
     let ready = false, terrain = false, failures = 0, tileFailure = false;
     const failedTiles = new Set();
     const fail = error => {
@@ -97,7 +97,11 @@ export default function VedutaField({ position, positionSamplesRef, gpsState, sp
         }
         // The 3D symbol is updated inside the same map render, including while stopped.
         const pose = `${point.longitude.toFixed(8)}:${point.latitude.toFixed(8)}:${Number.isFinite(point.heading) ? point.heading.toFixed(2) : 'unknown'}`;
-        if (move || pose !== lastPose) { map.triggerRepaint(); lastPose = pose; }
+        if (move || pose !== lastPose) {
+          // The camera RAF owns this update. Cancel MapLibre's deferred second
+          // RAF and draw the current pose now, as in the shared Atlas owner.
+          map.triggerRepaint(); map.redraw(); lastPose = pose;
+        }
       } catch (error) { fail(error); }
     };
     const wake = () => {
@@ -145,7 +149,7 @@ export default function VedutaField({ position, positionSamplesRef, gpsState, sp
         map.on('render', () => {
           if (disposed || document.hidden || !ready) return;
           const now = performance.now(), canvas = map.getCanvas();
-          onFrame(now, lastRender ? now - lastRender : 1000 / 60, 'WebGL2 · Veduta', canvas.width, canvas.height); lastRender = now;
+          onFrame(now, 1000 / 60, 'WebGL2 · Veduta', canvas.width, canvas.height);
         });
         map.getCanvas().addEventListener('webglcontextlost', fail);
         loadTimer = setTimeout(() => { if (!ready) fail(new Error('Veduta map loading timed out')); }, 45000);

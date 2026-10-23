@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { createVedutaRepaintScheduler } from './veduta-repaint.js';
+import { createVedutaPolygonIndex } from './veduta-spatial.js';
 import { VEDUTA_COLORS, VEDUTA_PAINT, VEDUTA_WORLD_METRES, pointInVedutaPolygon, vedutaDistanceToSegment, vedutaGridCoordinate, vedutaHash, vedutaRoofFacets } from './veduta-model.js';
 
 const VERTEX = `varying vec3 vNormal; varying vec3 vWorld; varying vec2 vUv;
@@ -204,6 +205,7 @@ export function createVedutaLayer(maplibre, preferences, readPoint, onError) {
     const treePlaces = [], seen = new Set();
     const clearedAreas = features('landuse').filter(feature => ['pitch', 'playground'].includes(feature.properties?.class)).flatMap(feature => feature.geometry.type === 'Polygon' ? [feature.geometry.coordinates] : feature.geometry.type === 'MultiPolygon' ? feature.geometry.coordinates : []);
     const noTreeAreas = [...buildings,...clearedAreas], roads = new Map(), bucketSize = 64;
+    const exclusions = createVedutaPolygonIndex(noTreeAreas, local);
     let roadSegments = 0, roadEntries = 0;
     for (const feature of features('transportation')) {
       if (roadSegments >= 12000 || roadEntries >= 100000) break;
@@ -239,7 +241,7 @@ export function createVedutaLayer(maplibre, preferences, readPoint, onError) {
           if (seen.has(key)) continue;
           const geo = vedutaGridCoordinate(x, y, step);
           const xy = local(geo);
-          if (!near(xy) || !pointInVedutaPolygon(geo, rings) || noTreeAreas.some(polygon => pointInVedutaPolygon(geo, polygon))) continue;
+          if (!near(xy) || !pointInVedutaPolygon(geo, rings) || exclusions.candidates(xy).some(polygon => pointInVedutaPolygon(geo, polygon))) continue;
           if (roads.get(`${Math.floor(xy[0]/bucketSize)}:${Math.floor(xy[1]/bucketSize)}`)?.some(road => vedutaDistanceToSegment(xy,road.a,road.b)<road.clearance)) continue;
           const z = map.queryTerrainElevation(geo);
           if (!Number.isFinite(z)) continue;

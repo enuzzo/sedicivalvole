@@ -63,6 +63,13 @@ physical Tesla acceptance remain separate; do not equate the private Image Gen
 target or the synthetic development fixture with real-car evidence.
 See the [whole-scene art iteration](../VEDUTA-ART-2026-10-23.md) for current
 resource limits and the distinction from GeoPoster's semantic/depth renderer.
+The owner explicitly authorized the subsequent real-Tesla trial/publication.
+Camera updates may use the same public synchronous `redraw()` boundary as Atlas
+to avoid a second deferred camera RAF. Near-field tree exclusion uses bounded
+conservative polygon buckets followed by unchanged exact geographic tests;
+density, geometry and geographic marks must remain unchanged. Report intervals
+against the declared 60Hz target, never the observed interval as its own target.
+Desktop CPU throttling is stress evidence, not Tesla GPU or physical acceptance.
 
 ## Discover
 

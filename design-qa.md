@@ -1,9 +1,11 @@
 # Veduta — active visual comparison
 
-final result: blocked
+final result: blocked for full artistic fidelity; owner-authorized experimental vehicle trial
 
-This is a development preview, not an accepted artistic implementation or a
-publication candidate. Functional/build gates do not close the findings below.
+This is not an accepted final artistic implementation. The owner's subsequent
+October 23 request explicitly authorizes publication for a real Tesla trial
+after focused performance work and release verification. That trial authority
+supersedes the earlier publication hold, without closing the findings below.
 The prior guided companion review is [preserved separately](docs/PHONE-DESIGN-QA-PRESERVED-2026-10-23.md);
 this Veduta comparison does not resolve its owner acceptance.
 
@@ -115,4 +117,6 @@ Source checkpoint `9d4821b` is pushed; local production package
 Documentation consistency passes 8 checks. No canonical publication is made.
 
 Keep the live local preview available for owner inspection. Do not mark the
-artistic implementation complete or publish it while P1 findings remain open.
+artistic implementation complete while P1 findings remain open. Experimental
+publication for the owner's real-car trial is now explicitly authorized;
+release verification and physical acceptance remain separate.
