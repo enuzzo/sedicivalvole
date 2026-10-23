@@ -1,0 +1,98 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { normalizeVedutaPreferences, createVedutaStyle, vedutaCamera, vedutaCameraCentre, vedutaRoofFacets, vedutaPosition, vedutaStatus, pointInVedutaPolygon, vedutaGridCoordinate, VEDUTA_STYLES } from '../src/environments/veduta/veduta-model.js';
+import { createVedutaRepaintScheduler } from '../src/environments/veduta/veduta-repaint.js';
+import { appendAtlasPositionSample, advanceAtlasFollowCamera } from '../src/environments/atlas/atlas-model.js';
+import { createVedutaVehicle } from '../src/environments/veduta/veduta-layer.js';
+
+test('network loss does not claim that fresh GPS has stopped', () => {
+  const fresh = { heading: 90, stale: false };
+  assert.equal(vedutaStatus({ online: false, terrain: true, point: fresh }), 'Offline · cached map');
+  assert.match(vedutaStatus({ online: false, terrain: true, point: { ...fresh, stale: true } }), /position held/);
+  assert.match(vedutaStatus({ online: true, terrain: true, point: { ...fresh, stale: true } }), /GPS interrupted/);
+});
+test('parked deferred work schedules one render at the earliest deadline and then idles', () => {
+  let now = 100, rendered = 0, serial = 0;
+  const timers = new Map();
+  const clock = { now: () => now, visible: () => true, repaint: () => rendered++,
+    setTimer: (fn, delay) => { const id = ++serial; timers.set(id, { fn, at: now + delay }); return id; }, clearTimer: id => timers.delete(id) };
+  const schedule = createVedutaRepaintScheduler(clock);
+  schedule.schedule(1800); schedule.schedule(250); schedule.schedule(1800);
+  assert.equal(timers.size, 1); assert.equal([...timers.values()][0].at, 250);
+  now = 250; const pending = [...timers.values()][0]; timers.clear(); pending.fn();
+  assert.equal(rendered, 1); assert.equal(timers.size, 0);
+  schedule.schedule(1800); assert.equal(timers.size, 1);
+  schedule.dispose(); assert.equal(timers.size, 0); schedule.schedule(1900); assert.equal(timers.size, 0);
+});
+test('hidden deferred work neither wakes the GL context nor survives cancellation', () => {
+  let visible = true, callback, cleared = false, renders = 0;
+  const schedule = createVedutaRepaintScheduler({ repaint: () => renders++, visible: () => visible, now: () => 0,
+    setTimer: fn => { callback = fn; return 1; }, clearTimer: () => { cleared = true; } });
+  schedule.schedule(250); visible = false; schedule.cancel(); callback();
+  assert.equal(cleared, true); assert.equal(renders, 0);
+  visible = true; schedule.schedule(1800); callback(); assert.equal(renders, 1); schedule.dispose();
+});
+
+test('Veduta stores only allowlisted presentation choices, never geographic input', () => {
+  assert.deepEqual(normalizeVedutaPreferences({ style: 'Manga', vehicle: 'model-y', color: 'red', latitude: 10 }), { style: 'Manga', vehicle: 'model-y', color: 'red' });
+  assert.deepEqual(normalizeVedutaPreferences({ style: 'unknown', vehicle: 'unknown' }), { style: 'Anime', vehicle: 'point', color: 'white' });
+});
+test('illustrative media keep the existing geographic providers and source geometry', () => {
+  for (const medium of VEDUTA_STYLES) {
+    const style = createVedutaStyle(medium, {});
+    assert.deepEqual(Object.keys(style.sources), ['openfreemap', 'veduta-terrain', 'veduta-shading']);
+    assert.deepEqual(style.sources['veduta-shading'].tiles, style.sources['veduta-terrain'].tiles);
+    assert.equal(style.terrain.exaggeration, 1);
+    assert.ok(style.sources['veduta-terrain'].attribution.includes('Mapterhorn'));
+    assert.ok(style.layers.every(layer => layer.type !== 'symbol'));
+    assert.deepEqual(style.layers.find(layer => layer.id === 'veduta-buildings').paint['fill-extrusion-height'], ['coalesce', ['get', 'render_height'], 5]);
+  }
+  assert.notEqual(createVedutaStyle('Anime', {}).layers[0].paint['background-color'], createVedutaStyle('Manga', {}).layers[0].paint['background-color']);
+});
+test('GPS holds stale observations and never derives translation from speed', () => {
+  assert.equal(vedutaPosition(null, [], 500), null);
+  let samples = [];
+  for (const [at, longitude, heading] of [[100, 179.999, 359], [300, -179.999, 1]]) samples = appendAtlasPositionSample(samples, { latitude: 46, longitude, heading, speedKmh: 62 }, at);
+  const sample = vedutaPosition(null, samples, 300);
+  assert.ok(Math.abs(sample.longitude) > 179.99);
+  assert.ok(sample.heading < 2 || sample.heading > 358);
+  const held = vedutaPosition(null, samples, 3000);
+  assert.equal(held.stale, true); assert.equal(held.longitude, -179.999);
+  assert.equal(vedutaPosition({ latitude: 46, longitude: 8, speedKmh: 130 }, [], 3000).longitude, 8);
+});
+test('follow composition remains 3D at the shared road ceiling and takes the short heading arc', () => {
+  assert.deepEqual(vedutaCamera(130), vedutaCamera(260));
+  assert.ok(vedutaCamera(130).zoom > 16);
+  assert.equal(vedutaCamera(60).pitch, 73);
+  const result = advanceAtlasFollowCamera({ longitude: 8, latitude: 46, bearing: 359, zoom: 17, pitch: 68 }, { longitude: 8, latitude: 46, bearing: 1, zoom: 17, pitch: 68 }, 16);
+  assert.ok(result.bearing > 359 && result.bearing < 361);
+});
+test('decorative vegetation respects polygon holes and fixed global grid cells', () => {
+  const outer = [[0,0],[10,0],[10,10],[0,10],[0,0]], hole = [[3,3],[7,3],[7,7],[3,7],[3,3]];
+  assert.equal(pointInVedutaPolygon([1,1], [outer,hole]), true);
+  assert.equal(pointInVedutaPolygon([5,5], [outer,hole]), false);
+  assert.equal(pointInVedutaPolygon([11,5], [outer,hole]), false);
+  assert.deepEqual(vedutaGridCoordinate(123456, 98765, 42), vedutaGridCoordinate(123456, 98765, 42));
+});
+test('Highland, Model Y and the point have distinct original bounded geometry across media', () => {
+  for (const medium of VEDUTA_STYLES) {
+    const sedan = createVedutaVehicle('highland', 'white', medium), suv = createVedutaVehicle('model-y', 'blue', medium), point = createVedutaVehicle('point', 'red', medium);
+    assert.ok(sedan.children.length > 8); assert.ok(suv.children.length > 8); assert.equal(point.children.length, 1);
+    assert.equal(point.children[0].isPoints, true);
+    assert.ok(suv.getObjectByName('cabin').position.z > sedan.getObjectByName('cabin').position.z);
+    for (const vehicle of [sedan,suv,point]) vehicle.traverse(item => { item.geometry?.dispose(); item.material?.dispose(); });
+  }
+});
+test('camera look-ahead never mutates observed position and wraps the dateline', () => {
+  const point = Object.freeze({ latitude: 46, longitude: 179.9999, heading: 90 });
+  const target = vedutaCameraCentre(point);
+  assert.equal(point.longitude, 179.9999); assert.ok(target.longitude < -179.99);
+  assert.ok(Math.abs(target.latitude - point.latitude) < 0.00001);
+  assert.deepEqual(vedutaCameraCentre({ latitude: 46, longitude: 8, heading: null }), { latitude: 46, longitude: 8 });
+});
+test('illustrative gables preserve simple footprint bounds and refuse concave roofs', () => {
+  const ring = [[0,0],[10,0],[10,20],[0,20]], roof = vedutaRoofFacets(ring, 12);
+  assert.equal(roof.halves.length, 2); assert.equal(roof.gables.length, 2);
+  for (const point of roof.halves.flat()) { assert.ok(point[0] >= 0 && point[0] <= 10); assert.ok(point[1] >= 0 && point[1] <= 20); assert.ok(point[2] >= 12 && point[2] <= 15.2); }
+  assert.equal(vedutaRoofFacets([[0,0],[10,0],[5,5],[10,10],[0,10]], 12), null);
+});

@@ -4,6 +4,16 @@ Read only the sections affected by the task. These are maintained agent contract
 
 ## Design decisions
 
+On October 23 the owner selected the first, horizon-facing **Veduta** direction
+and requested a separate illustrative GPS-following view, with original Model 3
+Highland / Model Y / point symbols and basic colours. Anime, Manga and Watercolor
+are media within that selected composition. Preserve shared Night Instrument
+chrome; settings remain secondary to the landscape. This resolves the selection
+gate for that feature. See [Veduta](../VEDUTA-2026-10-23.md); the generated target
+does not establish runtime fidelity or physical Tesla acceptance.
+The owner's subsequent live inspection rejected the oversized vehicle. Use a
+small fixed-size GPS dot by default; optional original car shapes remain in VIEW.
+
 Before implementing a new visual direction, present exactly two carefully developed Image Gen directions and wait for the owner's selection. The September 20 owner instruction supersedes the former three-direction rule project-wide. Ground both directions in actual product captures and the established design system; vary meaningful layout or interaction choices rather than merely recoloring the same screen. A selected direction or an explicit delegation for a named change resolves that gate only for that scope. Bug fixes and refinements within an already selected design do not restart selection. The current selections are Modular Aperture, refined Balanced Rail, Launch Cockpit with the September 10 compact Intro corrections, Engine Telemetry, the ATLAS/Stats remix, Travel Report, Air Atlas A and its A+C flight view, and the subtle spherical radar lens A. Night Glass's first curated composition and Launch Cockpit had explicit scoped design delegation; that is not blanket future delegation.
 
 The September 23 owner explicitly delegates the Meridian reinterpretation and

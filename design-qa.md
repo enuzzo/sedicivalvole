@@ -1,104 +1,90 @@
-# Guided companion design QA
+# Veduta — active visual comparison
 
-final result: execution repair verified; owner visual acceptance remains open
+final result: blocked
 
-The owner rejected the published drawer composition on September 20: flat/empty
-visual hierarchy and inconsistent alignment, especially Connection details. The
-prior comparison below is historical evidence, not owner aesthetic acceptance.
-See [revision handoff](docs/PHONE-DESIGN-REVIEW-HANDOFF-2026-09-20.md).
+This is a development preview, not an accepted artistic implementation or a
+publication candidate. Functional/build gates do not close the findings below.
+The prior guided companion review is [preserved separately](docs/PHONE-DESIGN-QA-PRESERVED-2026-10-23.md);
+this Veduta comparison does not resolve its owner acceptance.
 
-## Target and evidence
+## Evidence and normalization
 
-- Selected target: `docs/design/phone-onboarding-2026-09-20/reference/selected-combination.png` (1568 x 1003 board, three differently scaled content views; no real device chrome).
-- Actual browser captures: `docs/qa/2026-09-20-phone-onboarding/phone-awake-390.png`, `phone-live-390.png`, `phone-live-320.png`, `receiver-live.png`, `receiver-delayed.png`, `phone-wake-denied-320.png`, `phone-awake-dark.png`, `phone-ended.png`.
-- Browser: Codex integrated Chromium. CSS/capture pixels 390 x 760, 320 x 568 and 773 x 601 at 1:1. Compare the corresponding phone setup/live and receiver live regions of the source board, excluding its frame and captions. The generated receiver panel aspect ratio differs from the product; the established compact viewport controls implementation geometry.
-- Source and the three primary implementation captures were opened together in one comparison tool input. Full-view text, controls and illustration are legible at these sizes, so separate focused crops were unnecessary. A premature capture immediately after a viewport resize was discarded and replaced after DOM geometry settled.
-- Screens use development-only synthetic samples. They are UI evidence, not sensor, wake-lock or physical network acceptance.
+- Target: owner-selected first Image Gen direction, forward toward the horizon,
+  refined with a white Highland (`exec-aea20e6b-76a8-4caf-87bb-9f9444648ccc.png`).
+- Actual application: `http://127.0.0.1:5183/qa-veduta.html?qaMute=1`, explicit
+  synthetic public-road GPS, Anime, Highland white, no audio/diagnostic sending.
+- Both target and actual comparison images are 1672 × 941 pixels. The browser
+  viewport was explicitly set to 1672 × 941 CSS pixels for this capture, then
+  restored. Additional actual checks used Tesla 773 × 601 and phone 390 × 844.
+- Private local evidence: `Documents/Codex/2026-10-23/veduta/` contains
+  `anime-reference-viewport.png`, `anime-tesla.png`, `watercolor-tesla.png`,
+  `phone-settings.png` and the inspected combined `design-comparison.jpg`.
+  Generated references and full screenshots are not product backgrounds.
+- The combined image includes both full views and focused building/car regions.
+  The target depicts an invented lakeside composition; the implementation uses
+  actual Lugano vector/DEM geometry. Geographic/content differences are not
+  treated as geometry defects or permission to manufacture scenery.
+- The target has awake chrome and music; the captured actual state has resting
+  chrome and muted visuals. Existing chrome behavior/design tokens take
+  precedence. This state mismatch prevents a literal chrome-fidelity verdict.
 
-## Comparison history and fixes
+## Current findings
 
-1. P2: completed-step disclosure wrapped at 320 px and pushed the last control below the viewport. Fixed the disclosure typography and nowrap labels; reduced short-height title spacing. Fresh geometry: main clientHeight=scrollHeight=568, scrollWidth=320. All primary controls remain visible.
-2. P2: temporary navigation/appearance icons did not communicate the intended measured axes. Replaced with the admitted original Tabler arrow-up-right and rotate-clockwise icons; final live captures show them.
-3. Rechecked phone 390 x 760: clientHeight=scrollHeight=760 and clientWidth=scrollWidth=390. Final wake action remains 56 px; recovery and disclosure targets remain 48 px.
+| Priority | Location | Evidence and consequence | Required next change |
+| --- | --- | --- | --- |
+| P1 | Whole landscape | The target reads as a rich illustration; actual still reads as a simplified 3D map, with broad flat surfaces and sparse near-field vegetation. | Improve semantic terrain/building/vegetation rendering while retaining real geometry and bounded GPU work; compare again. |
+| P1 | Watercolor | World-anchored pigment washes are visible on roofs, but silhouette edges, facades and distant terrain remain mechanically clean. | Develop a coherent watercolor treatment across materials; changing palette alone is insufficient. |
+| P3 | Optional vehicle | The symbol follows the admitted position, but simplified cabin/roof details remain generic at some angles. The owner rejected the initial enlarged scale. | The default is now a 12 CSS-pixel dot; optional vehicle shapes use approximate metre dimensions. Further silhouette polish can remain a separate iteration. |
+| P2 | Travel endurance | Interactive GPS motion/pause/resume was inspected, but sustained actual Tesla GPS/GPU performance is unmeasured. | Validate on the physical Highland with the identified build; desktop rendering cannot certify cabin performance. |
 
 ## Required fidelity surfaces
 
-- Typography: actual Space Grotesk/Orbitron assets, semantic sizes and accessible control targets take precedence over raster-generated letterforms. Correct headings, wrapping and hierarchy; no clipped copy in checked portrait states.
-- Spacing: focused phone step, illustration/action/status order, numbered circles and the selected compact two-row receiver hierarchy are retained. The completed guide collapses. Compact-height art shrinks before controls.
-- Colors: existing LIGHT/DARK semantic colors control surfaces, type, accent and state; intentional contrast-corrected reds differ from the generated mock. No new palette system.
-- Images: original piston identity and four generated genuine RGBA PNGs; real alpha verified separately. Objects have subtle generated tonal shading, but no artificial transparency pattern. The decorative mock sparklines are omitted rather than fabricating history. TRACE remains optional after setup.
-- Copy: exact device-specific instructions, receiver request/reply latency, measured forward acceleration and yaw rotation, explicit stale/ended/denied states. The phone shows actual wake state instead of inventing receiver RTT. These necessary truth corrections are documented in the selected brief.
+- **Typography:** existing Space Grotesk and shared controls retained. New
+  controls remain legible; 48px targets and phone settings panel inspected.
+- **Spacing/layout:** forward horizon, separate STYLE/VIEW controls and shared
+  chrome preserved. Existing contextual controls intentionally follow the
+  product's awake/resting rules. No new Atlas passenger panels were added.
+- **Colors/tokens:** chrome uses shared tokens. Illustration uses three explicit
+  medium-specific natural palettes. Pinned MapLibre paint transitions are zero
+  to prevent a cached mixture of old terrain colors and new buildings/sky.
+- **Image quality:** P1 remains open. Procedural geometry/materials are real
+  runtime content; the selected generated scene is only a design target.
+- **Copy/content:** product text is English. Source attribution links are visible
+  in the actual map; a visibly labeled GPS fixture remains development-only.
 
-## Interactions and limits
+## Iterations and verified corrections
 
-Verified the five button sequence, evidence-driven checkmarks, automatic collapse, receiver delayed-data blanking and restart CTA, denied wake staying incomplete, STOP returning to new-QR guidance, light/dark layout, and zero browser console warnings/errors in the final fixture pass. Unit tests cover unsupported/released wake, missing placement, invalid calibration, missing receipts and deferred wake acquisition. Existing sensor, relay and lifecycle suites remain the protocol evidence.
+1. Removed padded camera composition after actual captures exposed a black
+   sky/terrain horizon band. Zero padding plus bounded geographic look-ahead
+   fixed the band in inspected Tesla/phone captures.
+2. Replaced whole-style changes with in-place paints/materials after a native
+   terrain-depth failure. Zero paint transitions fixed stale colored terrain
+   when switching to Manga. Anime → Manga → Anime → Watercolor was inspected.
+3. Corrected missing gallery preview with a 384 × 298 WebP cropped from actual
+   runtime geography. It does not promise the richer generated target.
+4. Actual UI checks covered Highland/Model Y, white/blue, point selection,
+   GPS movement, stale-position hold, recovery, medium switching and phone
+   settings. Latest observed warning/error log entries after the current reload
+   were empty; historical HMR errors were retained separately by the browser.
+5. The owner identified an oversized car during live inspection. The revised
+   default is a fixed 12 CSS-pixel GPS dot; optional vehicles no longer use the
+   previous 3.4× display enlargement. The original comparison captures retain
+   the earlier symbol and do not establish acceptance of the revised default.
+   The subsequent inspected `anime-gps-dot.png` shows the small white-rimmed dot
+   in the visible browser; its current-reload warning/error log was empty.
 
-No actionable P0/P1/P2 findings remain for the selected UI. Larger accessibility text or unusually short browser heights may scroll rather than hide controls. A real Safari wake-lock acquisition/release and iPhone/Tesla end-to-end drive remain open physical checks.
+## Separate verification
 
-## Follow-up polish
+- Full package tests: 1,136 passed (including eleven Veduta tests).
+- Affected catalogue/Atlas/launch/Veduta tests: 70 passed.
+- Text fit: 14 states passed, no clipped shared chrome text.
+- Dependency/community credits: 189 exact lockfile credits passed.
+- Production package: build pipeline passed, 838 exact static hashes before the
+  runtime gallery thumbnail was added. Final package identity is recorded in
+  the accompanying development checkpoint when rebuilt.
+- Visual regression baselines: intended Veduta gallery addition only; final
+  capture/recheck is recorded separately from artistic acceptance.
+- No canonical publication or physical Tesla acceptance is claimed.
 
-P3: generated illustrations retain slight material shading and the static UI does not reproduce decorative traces from the mock. Neither affects measurement truth or the primary onboarding action.
-
-## Canonical delivery
-
-Published and verified as `20260920-1716.24c955b`; sixteen HTTPS identity/hash/cache/API
-checks pass. Public browser verification is recorded separately from the synthetic
-layout captures and the still-open physical iPhone/Tesla acceptance. See
-[release evidence](docs/qa/2026-09-20-phone-onboarding/README.md).
-
-## September 20 execution repair — current comparison
-
-The current [revision evidence](docs/qa/2026-09-20-phone-design-review/README.md)
-supersedes the historical agent sign-off above. Frontend App Builder was explicitly
-used. Reference and final captures were inspected together using `view_image`.
-The 1568 x 1003 source is a composition board, not one product viewport; comparison
-uses its corresponding phone/setup/live and receiver regions. Exact product sizes
-are 773 x 601, 390 x 760 and 320 x 568, in both appearances.
-
-| Comparison | Reference / starting mismatch | Current render / repair |
-| --- | --- | --- |
-| Container and density | Compact receiver; published full-height 800 px sheet left a large void | Intrinsic panel, maximum 640 px, bounded to viewport; QR and ordinary LIVE fit Tesla |
-| Shared alignment | Common left gutter; local sensor button added another 24 px | Heading, intro, instructions and details share measured x=142; local option uses the same gutter inside details |
-| Progress and icons | Linked numbered/checkmarked sequence, check/close/carets | Quiet connecting rail, real vector checks/carets and admitted telemetry shapes; no false completion |
-| Type and hierarchy | Strong heading, section label, two clear measured rows | Space Grotesk 22 px drawer title / 32 px readings, 13 px labels; reference LIVE FROM YOUR PHONE restored |
-| Color and surfaces | Reference red semantic emphasis with plain surface | Existing LIGHT/DARK tokens; accent masks preserve pinned icon bytes; no new gradients or palette |
-| Media | Focused phone art and legible pairing | Original RGBA assets unchanged; 184 px QR quiet zone; recovery reuses appropriate awake art |
-| Phone geometry | Focused step/action and collapsed data | Complete core setup and LIVE fit exact 390 x 760 and 320 x 568; detail controls remain reachable |
-| Recovery | Reference omits some failure variants | Truthful wake denial/release and delayed blank values retained; restart visible, optional details may scroll |
-
-Above-the-fold copy diff: platform-neutral phone/page/browser wording is an explicit
-owner amendment. Setup completed becomes reference wording Setup complete; LIVE FROM
-YOUR PHONE is restored from the accepted reference. Scan to connect replaces the
-platform-specific heading; sensor/wake errors describe observed failure and recovery.
-No invented badges, metrics, histories or filler copy. The legacy local-sensing copy
-and road source label were included in the wording sweep.
-
-Intentional departures remain: the established type/color system overrides generated
-letterforms and bright mock red; phone shows actual wake state instead of invented RTT;
-no decorative sparklines. Optional details are additional truthful controls. In delayed
-receiver state the restart action stays visible and details scroll below it. The board's
-outer phone frame/captions are not product chrome.
-
-IAB was used first for actual product and synthetic UI review. Its phone viewport
-returned 354 x 691 CSS for a requested 390 x 760 (zoom 1.1); those preliminary phone
-captures were replaced. Playwright Chromium at deviceScaleFactor 1 provides exact
-viewport evidence, 32 checkpoints and zero page errors. It verifies all five actions,
-collapse/review, denial, STOP, fresh-QR restart and stale reading/RTT blanking.
-
-Agency review question: the current implementation faithfully reproduces the accepted
-arrangement subject to the documented system/truth constraints; no material fixable
-visual mismatch remains in the tested core surfaces. This is an agent fidelity
-assessment, explicitly not the owner's aesthetic approval or physical acceptance.
-
-### Compiled-wrapper correction
-
-Actual App QA caught the gesture surface intercepting Connection details, unlike the
-isolated fixture. Fixed native summary/SVG target exclusion and refocused remote/local
-panel swaps. The final release gate includes a dedicated rendered regression covering
-real disclosure, local mode, keyboard Escape, close-icon and non-control drag paths.
-
-
-Current canonical publication is `20260920-1757.eb5eb91`. All sixteen HTTPS checks
-and the public browser smoke pass, with zero observed console warnings/errors.
-The selected layout was faithfully verified against the reference under the stated
-system/truth constraints; owner judgement and physical acceptance remain open.
+Keep the live local preview available for owner inspection. Do not mark the
+artistic implementation complete or publish it while P1 findings remain open.

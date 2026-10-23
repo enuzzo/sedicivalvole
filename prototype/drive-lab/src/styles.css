@@ -396,8 +396,10 @@ button { -webkit-tap-highlight-color: transparent; }
 .experience { opacity: 0; visibility: hidden; transition: opacity 460ms ease, visibility 460ms; }
 .phase-running .experience { opacity: 1; visibility: visible; }
 .app[data-environment="atlas"] .experience,
+.app[data-environment="veduta"] .experience,
 .app[data-environment="air-atlas"] .experience { z-index: 8; pointer-events: none; }
 .app[data-environment="atlas"].controls-awake .experience .control-layer,
+.app[data-environment="veduta"].controls-awake .experience .control-layer,
 .app[data-environment="air-atlas"].controls-awake .experience .control-layer,
 .app:is([data-environment="atlas"], [data-environment="air-atlas"]) .experience .gps-help-popover,
 .app:is([data-environment="atlas"], [data-environment="air-atlas"]) .experience .source-readout { pointer-events: auto; }

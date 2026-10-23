@@ -179,7 +179,7 @@ enuzzo
 - **Credit:** Ricardo Cabello (mrdoob) and contributors.
 - **Source:** [Three.js](https://github.com/mrdoob/three.js).
 - **Public contact route:** [Contact / profile](https://github.com/mrdoob).
-- **Use:** Production and upstream-bundled dependency. 0.169.0 for ShaderGradient, r109 inside Infinite Lights and r115 inside Drivey; upstream copies remain separate.
+- **Use:** Production and upstream-bundled dependency. 0.169.0 for ShaderGradient and Veduta's original shared-context geometry, r109 inside Infinite Lights and r115 inside Drivey; upstream copies remain separate.
 - **License / permission boundary:** MIT.
 - **Source evidence:** linked upstream project plus the current local [notices](../THIRD_PARTY_NOTICES.md), package metadata or vendored notices; public routes checked 2026-09-05 where recorded in the verification evidence.
 - **Status:** DRAFT — not sent. Sent on: —; Channel: —; Reply: —; Follow-up: —.
@@ -1451,6 +1451,8 @@ Michael Wolf / Mictronics and readsb-protobuf contributors: shipped unmodified t
 Research only: wiedehopf / tar1090-db (https://github.com/wiedehopf/tar1090-db), MapLibre terrain/camera documentation (https://maplibre.org), Mapterhorn data access and attribution (https://mapterhorn.com). No terrain service is shipped by this checkpoint. No messages sent.
 
 ## 2026-09-10 — Mapterhorn terrain
+
+October 23 usage update: the Veduta candidate reuses the same credited elevation service at 1.0 terrain exaggeration. The existing aircraft camera retains 1.25. No additional provider source, redistributed tiles or message sending is introduced.
 
 Mapterhorn contributors, https://mapterhorn.com, service integration for the A+C aircraft nose camera. Exact use: public Terrarium elevation tiles; no source code imported. Public contact: https://github.com/mapterhorn/mapterhorn . Full elevation provenance: https://mapterhorn.com/attribution/ . Unsent: Thank you for joining public elevation surveys into a practical global terrain service. Your terrain gives our aircraft view recognizable hills and mountains; we retain your source attribution and distinguish our modest display exaggeration from the measured height data. — enuzzo
 

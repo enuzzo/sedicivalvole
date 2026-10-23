@@ -35,6 +35,29 @@ camera component is shared with the [interface reference](../DESIGN-SYSTEM.md).
 
 Recover Atlas after network/location restoration; nearby OSM places are independent of map zoom, with Maps/Wikipedia links where supported and truthful Wikipedia/OpenStreetMap provider labels. Keep camera travel/rotation smooth, shortest heading/dateline path, north lock, zoom in/out/reset and bounded frame-time work. Numbered POI discs are `32 px` inside unchanged `48 px` targets. Reset restores speed-follow zoom without silently changing orientation preference. Use [road UI implementation](../ROAD-UI-REFINEMENT-2026-09-09.md#implemented) for camera/marker ownership and [source-specific recovery](../ATLAS-STATS-REFINEMENT-2026-09-08.md#recovery-and-nearby-sources) for request limits. Desktop render timing cannot prove sustained Tesla 60 FPS.
 
+## Veduta
+
+The October 23 owner-selected first direction adds a standalone illustrative
+view with an elevated horizon-facing follow camera, Anime/Manga/Watercolor and
+optional original Model 3 Highland / Model Y / point markers with body colours.
+The owner's live preview correction makes a fixed 12 CSS-pixel GPS dot the
+default. Optional cars retain approximate metre dimensions; do not restore the
+rejected 3.4× symbol enlargement.
+Use the existing admitted GPS sample buffer, MapLibre worker and geographic
+providers; never integrate speed into invented travel. Hold stale/missing fixes,
+keep source coordinates out of diagnostics and retain all map/DEM attribution.
+The view is illustrative, with no Atlas POI/article/statistics panels.
+
+The camera's look-ahead target is separate from measured vehicle coordinates.
+Vehicle dimensions, roof/window details, vegetation and road/terrain alignment
+are approximate visual representations, not surveyed data. Use one shared GL
+context, bounded scenery and stable global marks. Map retries cannot clear GPS
+or session journey history. A failed tile is not recovered merely because the
+map is idle. Preserve pending vehicle changes across source/style loading.
+See [selected scope and implementation](../VEDUTA-2026-10-23.md). Local and
+physical Tesla acceptance remain separate; do not equate the private Image Gen
+target or the synthetic development fixture with real-car evidence.
+
 ## Discover
 
 Discover is a separate passenger index and complete localized Wikipedia reader. It must not open, switch to or link back to ATLAS. Free-text search is global in the selected Wikipedia language, works without GPS and preserves Wikipedia relevance. Location/heading apply only to empty-search NEARBY / AHEAD / REGION scopes. Keep the language selector understandable without a visible LANGUAGE label and compact scope rows.

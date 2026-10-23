@@ -21,6 +21,7 @@ const SHOTS = [
   { id: "acid-orchard", pick: "Gradient", variant: "Acid Orchard", speed: 60, turn: 0, settle: 7000 },
   { id: "chromatic-silk", pick: "Gradient", variant: "Chromatic Silk", speed: 60, turn: 0, settle: 7000 },
   { id: "atlas", pick: "Atlas", speed: 35, turn: 4, settle: 12000 },
+  { id: "veduta", pick: "Veduta", speed: 35, turn: 0, settle: 18000 },
   { id: "air-atlas", pick: "Air Atlas", speed: 0, turn: 0, settle: 12000 },
   { id: "discover", pick: "Discover", speed: 0, turn: 0, settle: 12000, panel: true },
   { id: "stats", pick: "Stats for Nerds", speed: 45, turn: 5, settle: 8000, panel: true, running: "Aperture" },

@@ -130,6 +130,12 @@ export default defineConfig(({ mode }) => {
   server: {
     host: "0.0.0.0",
     allowedHosts: ["terminal.local"],
+    // Dropbox File Provider may miss native change events. Opt in for source
+    // iteration only; never poll generated dependencies or the static archive.
+    watch: process.env.SEDICIVALVOLE_POLL_SOURCE === "1" ? {
+      usePolling: true, interval: 1200,
+      ignored: ["**/node_modules/**", "**/public/**", "**/output/**", "**/dist/**"],
+    } : undefined,
     warmup: {
       clientFiles: ["./src/main.jsx"],
     },

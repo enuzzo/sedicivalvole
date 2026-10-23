@@ -23,6 +23,22 @@ the [DEPLOY release table](DEPLOY.md#release-table).
   `pre-engine-20260924`
   ([DEPLOY / Rollback](DEPLOY.md#rollback)).
 
+## Local candidate — Veduta
+
+**VEDUTA 11** is being implemented locally as a standalone illustrated travel
+view, using admitted real GPS samples, the shared MapLibre runtime, actual
+terrain/vector data and original lightweight vehicle symbols. The owner selected
+the elevated forward-facing composition on October 23. Anime, Manga, Watercolor,
+Model 3 Highland, Model Y, a simple point and six illustrative body colours are
+in the candidate. Initial model checks pass; visual fidelity, release gates and
+physical Tesla endurance are separate and still open. This paragraph does not
+change the live release above. See [scope](VEDUTA-2026-10-23.md).
+Owner inspection changed the default to a small fixed-size GPS dot after
+rejecting the enlarged car; optional car symbols no longer use that enlargement.
+The package test suite passed 1,136 cases, text fit passed 14 states and local
+browser GPS/medium/vehicle interactions were inspected. Artistic P1 findings
+remain open in [design QA](../design-qa.md); no publication is claimed.
+
 ## The product
 
 Sedicivalvole is an experimental browser instrument for the Tesla display while

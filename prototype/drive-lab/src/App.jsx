@@ -761,6 +761,7 @@ export function App() {
   // React.lazy caches rejected promises: a new attempt needs a fresh lazy owner.
   const AirAtlasField = useMemo(() => lazy(() => import("./environments/radar/air-atlas-field.jsx")), [environmentAttempt]);
   const AtlasField = useMemo(() => lazy(() => import("./environments/atlas/atlas-field.jsx")), [environmentAttempt]);
+  const VedutaField = useMemo(() => lazy(() => import("./environments/veduta/veduta-field.jsx")), [environmentAttempt]);
   const ShaderGradientField = useMemo(() => lazy(() => import("./environments/shadergradient/shadergradient-field.jsx")), [environmentAttempt]);
   const environmentRecoveryRef = useRef(null);
   const [genreId, setGenreId] = useState(initialPreferences.genreId);
@@ -2800,7 +2801,7 @@ export function App() {
   useEffect(() => {
     if (phase === "running" && currentTrack?.artwork) logDiagnosticEvent("media-session.artwork.state", { key: currentTrack.key, status: currentArtwork.status });
   }, [currentTrack?.key, currentTrack?.artwork, currentArtwork.status, phase, logDiagnosticEvent]);
-  const immersiveEnvironment = ["atlas", "air-atlas"].includes(environment.renderer);
+  const immersiveEnvironment = ["atlas", "air-atlas", "veduta"].includes(environment.renderer);
   const showNowPlaying = experienceMode === "flux" && phase === "running" && !modalOpen && !immersiveEnvironment && !controlsPinned;
 
   const transportPlaying = !muted && (experienceMode === "engine" ? geaps.snapshot.playing === true : musicMode === "soundtrack"
@@ -3651,6 +3652,8 @@ export function App() {
       atlasLocationFeatureActive: environmentIdRef.current === "atlas",
       atlasLocationHeldInMemory: Boolean(mapPositionRef.current),
       atlasThirdPartyRequestsActive: environmentIdRef.current === "atlas" && Boolean(mapPositionRef.current),
+      vedutaLocationFeatureActive: environmentIdRef.current === "veduta",
+      vedutaThirdPartyRequestsActive: environmentIdRef.current === "veduta" && Boolean(mapPositionRef.current),
       terrainElevationFallbackUsesRoundedArea: true,
       terrainElevationFallbackProvider: "Open-Meteo / Copernicus",
       automaticRemoteTelemetry: diagnosticPreferencesRef.current.mode === "dev" && diagnosticPreferencesRef.current.automatic,
@@ -3955,6 +3958,12 @@ export function App() {
           ) : environment.renderer === "air-atlas" ? (
             <Suspense fallback={<div className="atlas-waiting"><strong>AIR ATLAS</strong><span>Loading nearby sky</span></div>}>
               <AirAtlasField position={mapPosition ?? radarInitialPosition} gpsState={gpsState} theme={theme} reducedMotion={reducedMotion} onRenderer={setRenderer} onFrame={recordRenderedFrame} onRuntimeError={handleEnvironmentError} onRetryLocation={startGps} />
+            </Suspense>
+          ) : environment.renderer === "veduta" ? (
+            <Suspense fallback={<div className="atlas-waiting"><strong>VEDUTA</strong><span>Loading illustrated landscape</span></div>}>
+              <VedutaField position={mapPosition} positionSamplesRef={atlasPositionSamplesRef} gpsState={gpsState}
+                speed={speed} theme={theme} reducedMotion={reducedMotion} onRenderer={setRenderer}
+                onFrame={recordRenderedFrame} onRuntimeError={handleEnvironmentError} onRetryLocation={startGps} />
             </Suspense>
           ) : environment.renderer === "atlas" ? (
             <Suspense fallback={<div className="atlas-waiting"><strong>ATLAS</strong><span>Loading city field</span></div>}>

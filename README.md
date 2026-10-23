@@ -65,6 +65,15 @@ third-party work retains the credits and licences recorded below.
 
 Public development repository: [github.com/enuzzo/sedicivalvole](https://github.com/enuzzo/sedicivalvole).
 
+**Local candidate: Veduta 11.** A separate illustrated geographic travel view
+follows the admitted vehicle GPS over actual terrain and map geometry. Anime,
+Manga and Watercolor share one elevated forward camera; original simplified
+Model 3 Highland, Model Y and point symbols have six illustrative body colours.
+It reuses the existing MapLibre/Three.js runtime and geographic providers.
+The selected concept, approximation boundaries and separate visual/device
+acceptance are recorded in [Veduta](docs/VEDUTA-2026-10-23.md). This candidate
+statement is not a canonical-publication or physical-Tesla acceptance claim.
+
 The active phone companion is a passenger remote for music, visuals and effects.
 The display keeps GPS authority. Its top-bar phone icon opens a compact Scan /
 Connect / Ready panel with a complete 240 px QR and four-module white quiet zone.
@@ -722,7 +731,7 @@ A heartfelt thank-you to the people who share the code, type, music, data and ex
 | ✒️ Paweł Kuna and contributors — Tabler Icons | [Project](https://github.com/tabler/tabler-icons) | **Integrated assets.** Unchanged v3.46.0 SVGs in public/third-party/tabler-icons/; project CSS supplies optical sizing, masks and semantic colour, including the launch Music and Engine accents and the companion acceleration/rotation icons. Play/pause/previous/next and the Now Playing level icon are bundled inline from the same unchanged SVG files so controls do not wait for image requests. |
 | 🌈 Björn Ottosson — Oklab reference conversion | [Project](https://bottosson.github.io/posts/oklab/) | **Adapted numeric implementation.** Forward/inverse conversion matrices translated into src/semantic-theme.js; contrast search and role resolution are project-owned. |
 | ⚛️ Meta and React contributors — React / React DOM | [Project](https://github.com/facebook/react) | **Production dependencies.** React 19.2.0 and React DOM power the interface and component lifecycle in src/. |
-| 🧊 Ricardo Cabello (mrdoob) and contributors — Three.js | [Project](https://github.com/mrdoob/three.js) | **Production and upstream-bundled dependency.** 0.169.0 for ShaderGradient, r109 inside Infinite Lights and r115 inside Drivey; upstream copies remain separate. |
+| 🧊 Ricardo Cabello (mrdoob) and contributors — Three.js | [Project](https://github.com/mrdoob/three.js) | **Production and upstream-bundled dependency.** 0.169.0 for ShaderGradient and Veduta's shared-context geometry, r109 inside Infinite Lights and r115 inside Drivey; upstream copies remain separate. |
 | 🧊 Paul Henschel and Poimandres contributors — React Three Fiber / three-stdlib | [Project](https://github.com/pmndrs/react-three-fiber) | **Production dependencies.** Unmodified R3F 9.7.0 and three-stdlib 2.36.1 support the lazy ShaderGradient renderer; [three-stdlib repository](https://github.com/pmndrs/three-stdlib). |
 | 🎥 Yomotsu and contributors — camera-controls | [Project](https://github.com/yomotsu/camera-controls) | **Production dependency.** Unmodified 2.9.0 peer of ShaderGradient; no independent camera-controls fork. |
 | ✈️ ADSB.lol contributors | [API documentation](https://www.adsb.lol/docs/open-data/api/) · [Public project](https://github.com/adsblol) | **Air Atlas integration.** Original bounded same-origin aircraft/route adapter, authorized rounded-location forwarding and shared caching. No provider code imported. Data declared ODbL 1.0; no aircraft dataset bundled. |
@@ -1068,7 +1077,7 @@ Study only; no new audio or runtime shipped. See the [research report](docs/ENGI
 
 - ✈️ **Michael Wolf / Mictronics and readsb-protobuf contributors** — [original aircraft type data](https://github.com/Mictronics/readsb-protobuf/tree/845b65eb87e3164ddecd2a2d64ac49b6555550a1/webapp/src/db): shipped unmodified 2,788-type JSON catalogue, GPL-3.0-or-later, with original licence and hashes. Air Atlas uses its descriptions to select an original category silhouette when an exact RexKramer1 shape is unavailable. No decoder code imported. [tar1090-db](https://github.com/wiedehopf/tar1090-db) was a discovery reference only.
 
-- 🏔️ **Mapterhorn contributors and credited elevation-data producers** — [service](https://mapterhorn.com), [source/terms inventory](https://mapterhorn.com/attribution/), [project](https://github.com/mapterhorn/mapterhorn): public 512 px Terrarium elevation tiles for the aircraft nose camera, rendered at 1.25 exaggeration. Shipped service integration; no provider runtime, tile redistribution or licence substitution.
+- 🏔️ **Mapterhorn contributors and credited elevation-data producers** — [service](https://mapterhorn.com), [source/terms inventory](https://mapterhorn.com/attribution/), [project](https://github.com/mapterhorn/mapterhorn): public 512 px Terrarium elevation tiles for the aircraft nose camera at 1.25 exaggeration and the local Veduta candidate at 1.0. Service integration; no provider runtime, tile redistribution or licence substitution.
 
 - 🖼️ **Existing map, aviation and Wikipedia contributors** — Current-product Intro screenshots include their previously integrated surfaces; exact material, source links and capture hashes are recorded in [the preview inventory](docs/INTRO-PREVIEW-CAPTURES-2026-09-10.md). Underlying attribution/licences remain applicable.
 

@@ -113,6 +113,7 @@ export const FLUX_ENVIRONMENTS = [
     themed: true,
   },
   { id: "air-atlas", label: "AIR ATLAS", displayLabel: "Air Atlas", number: "10", rendererLabel: "Air Atlas", launchDescription: "Nearby aircraft, photos and routes", renderer: "air-atlas", themed: true },
+  { id: "veduta", label: "VEDUTA", displayLabel: "Veduta", number: "11", rendererLabel: "Veduta", launchDescription: "Your journey, illustrated in 3D", renderer: "veduta", themed: true },
 
 ];
 
@@ -173,7 +174,7 @@ export const FLUX_VISUAL_CHOICES = [
  */
 const VISUAL_THUMBNAIL_IDS = new Set([
   "aperture", "vertigo", "meridian", "atlas", "drivey", "prtcl", "discover",
-  "stats", "air-atlas", "japanese-mist", "acid-orchard", "chromatic-silk",
+  "stats", "air-atlas", "veduta", "japanese-mist", "acid-orchard", "chromatic-silk",
 ]);
 export function visualThumbnailUrl(id) {
   const key = id === "shadergradient" ? "japanese-mist" : id;
