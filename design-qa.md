@@ -75,15 +75,16 @@ this Veduta comparison does not resolve its owner acceptance.
 
 ## Separate verification
 
-- Full package tests: 1,136 passed (including eleven Veduta tests).
+- Full package tests: 1,136 passed before the final dot refinement (including
+  eleven Veduta tests). Subsequent Veduta/documentation checks: 19 passed.
 - Affected catalogue/Atlas/launch/Veduta tests: 70 passed.
 - Text fit: 14 states passed, no clipped shared chrome text.
 - Dependency/community credits: 189 exact lockfile credits passed.
-- Production package: build pipeline passed, 838 exact static hashes before the
-  runtime gallery thumbnail was added. Final package identity is recorded in
-  the accompanying development checkpoint when rebuilt.
-- Visual regression baselines: intended Veduta gallery addition only; final
-  capture/recheck is recorded separately from artistic acceptance.
+- Production package: `20261023-1342.495204d`, 839 exact static hashes, VERSION
+  and HTML identity matched. The actual GPS fixture is not a production entry.
+- Local visual regression: 16/16 passed. Only the two gallery baselines were
+  changed after visual inspection of the new real thumbnail; unrelated Intro
+  baselines were preserved. This chrome gate is separate from artistic fidelity.
 - No canonical publication or physical Tesla acceptance is claimed.
 
 Keep the live local preview available for owner inspection. Do not mark the
