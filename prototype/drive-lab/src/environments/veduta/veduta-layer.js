@@ -3,7 +3,7 @@ import { createVedutaRepaintScheduler } from './veduta-repaint.js';
 import { createVedutaPolygonIndexJob } from './veduta-spatial.js';
 import { createVedutaBuildQueue, vedutaBuildScheduling } from './veduta-build.js';
 import { createVedutaGeometryBaker } from './veduta-geometry.js';
-import { VEDUTA_COLORS, VEDUTA_PAINT, VEDUTA_WORLD_METRES, pointInVedutaPolygon, vedutaDistanceToSegment, vedutaGridCoordinate, vedutaHash, vedutaRoofFacets } from './veduta-model.js';
+import { VEDUTA_COLORS, VEDUTA_PAINT, VEDUTA_WORLD_METRES, pointInVedutaPolygon, vedutaCounterClockwiseRing, vedutaDistanceToSegment, vedutaGridCoordinate, vedutaHash, vedutaRoofFacets } from './veduta-model.js';
 
 const VERTEX = `varying vec3 vNormal; varying vec3 vWorld; varying vec2 vUv;
 varying vec3 vColor;
@@ -145,7 +145,7 @@ export function* createVedutaSceneryJob({ map, maplibre, point, origin, scale, s
         const key = `${feature.id ?? ''}:${rings[0]?.[0]?.join(',')}`;
         if (unique.has(key) || buildings.length >= 450 || !rings[0]?.length) continue;
         unique.add(key);
-        const ring = rings[0].slice(0, -1).map(local);
+        const ring = vedutaCounterClockwiseRing(rings[0].slice(0, -1).map(local));
         if (!ring.length || !near(ring[0])) continue;
         const geo = rings[0][0], elevation = map.queryTerrainElevation(geo);
         if (!Number.isFinite(elevation)) continue;

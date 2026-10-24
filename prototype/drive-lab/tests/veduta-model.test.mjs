@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeVedutaPreferences, createVedutaStyle, vedutaCamera, vedutaCameraCentre, vedutaRoofFacets, vedutaPosition, vedutaStatus, pointInVedutaPolygon, vedutaDistanceToSegment, vedutaGridCoordinate, VEDUTA_STYLES } from '../src/environments/veduta/veduta-model.js';
+import { normalizeVedutaPreferences, createVedutaStyle, vedutaCamera, vedutaCameraCentre, vedutaRoofFacets, vedutaCounterClockwiseRing, vedutaPosition, vedutaStatus, pointInVedutaPolygon, vedutaDistanceToSegment, vedutaGridCoordinate, VEDUTA_STYLES } from '../src/environments/veduta/veduta-model.js';
 import { createVedutaRepaintScheduler } from '../src/environments/veduta/veduta-repaint.js';
 import { appendAtlasPositionSample, advanceAtlasFollowCamera } from '../src/environments/atlas/atlas-model.js';
 import { createVedutaVehicle, disposeVedutaTree } from '../src/environments/veduta/veduta-layer.js';
@@ -113,4 +113,17 @@ test('illustrative gables preserve simple footprint bounds and refuse concave ro
   assert.equal(roof.halves.length, 2); assert.equal(roof.gables.length, 2);
   for (const point of roof.halves.flat()) { assert.ok(point[0] >= 0 && point[0] <= 10); assert.ok(point[1] >= 0 && point[1] <= 20); assert.ok(point[2] >= 12 && point[2] <= 15.2); }
   assert.equal(vedutaRoofFacets([[0,0],[10,0],[5,5],[10,10],[0,10]], 12), null);
+});
+test('clockwise tile footprints still give upward roof facets and outward walls', () => {
+  const clockwise = [[0,0],[0,20],[10,20],[10,0]], ring = vedutaCounterClockwiseRing(clockwise);
+  assert.notEqual(ring, clockwise); assert.deepEqual(clockwise, [[0,0],[0,20],[10,20],[10,0]]);
+  const counterClockwise = [[0,0],[10,0],[10,20],[0,20]];
+  assert.equal(vedutaCounterClockwiseRing(counterClockwise), counterClockwise);
+  const normalZ = ([a, b, c]) => (b[0] - a[0]) * (c[1] - a[1]) - (b[1] - a[1]) * (c[0] - a[0]);
+  for (const half of vedutaRoofFacets(ring, 12).halves) for (let i = 1; i < half.length - 1; i++) assert.ok(normalZ([half[0], half[i], half[i + 1]]) > 0);
+  // A wall quad starts (a, base), (b, base), (a, top): its normal is (dy, -dx) and must leave the centroid.
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i], b = ring[(i + 1) % ring.length], mid = [(a[0] + b[0]) / 2 - 5, (a[1] + b[1]) / 2 - 10];
+    assert.ok((b[1] - a[1]) * mid[0] - (b[0] - a[0]) * mid[1] > 0);
+  }
 });

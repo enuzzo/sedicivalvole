@@ -122,6 +122,13 @@ export function vedutaGridCoordinate(x, y, step) {
   return [mx * 360 - 180, Math.atan(Math.sinh(Math.PI * (1 - 2 * my))) * 180 / Math.PI];
 }
 
+/** Tile rings arrive clockwise. Walls and roof facets need counter-clockwise rings to face outward and up. */
+export function vedutaCounterClockwiseRing(ring) {
+  let area = 0;
+  for (let i = 0; i < ring.length; i++) { const a = ring[i], b = ring[(i + 1) % ring.length]; area += a[0] * b[1] - b[0] * a[1]; }
+  return area < 0 ? ring.slice().reverse() : ring;
+}
+
 /** An illustrative gable for simple convex footprints, not surveyed roof data. */
 export function vedutaRoofFacets(ring, top) {
   if (ring.length < 3 || ring.length > 8) return null;
