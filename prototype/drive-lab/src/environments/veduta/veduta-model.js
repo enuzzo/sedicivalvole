@@ -1,10 +1,11 @@
-import { OPENFREEMAP_VECTOR_URL, interpolateAtlasPosition, validAtlasPosition } from '../atlas/atlas-model.js';
+import { OPENFREEMAP_VECTOR_URL, atlasContrastRatio, interpolateAtlasPosition, validAtlasPosition } from '../atlas/atlas-model.js';
 
 export const VEDUTA_STYLES = Object.freeze(['Anime', 'Manga', 'Watercolor']);
+// `short` is the VIEW key value; `label` names the option in the VIEW popover.
 export const VEDUTA_VEHICLES = Object.freeze([
-  { id: 'highland', label: 'Model 3 Highland' },
-  { id: 'model-y', label: 'Model Y' },
-  { id: 'point', label: 'Simple point' },
+  { id: 'point', label: 'GPS dot', short: 'Dot' },
+  { id: 'highland', label: 'Model 3 Highland', short: 'Model 3' },
+  { id: 'model-y', label: 'Model Y', short: 'Model Y' },
 ]);
 // Illustrative body colours, not an assertion about a regional Tesla catalogue.
 export const VEDUTA_COLORS = Object.freeze([
@@ -51,9 +52,18 @@ export function vedutaCameraCentre(point, distanceM = 65) {
 
 export const VEDUTA_PAINT = Object.freeze({
   Anime: { ground: '#dfd8b1', grass: '#99b56a', forest: '#4b815e', water: '#439fb5', road: '#7c8881', casing: '#ece6ce', wall: '#ecdbac', roof: '#bd8658', ink: '#495f56', sky: '#82c6e9', horizon: '#d5e6d9' },
-  Manga: { ground: '#f4f1e7', grass: '#d8d7c9', forest: '#84897f', water: '#d4dcd8', road: '#faf8ef', casing: '#777b70', wall: '#f3f0e5', roof: '#90948c', ink: '#3b423d', sky: '#e0e5df', horizon: '#f2f0e5' },
-  Watercolor: { ground: '#ede5cc', grass: '#b4c58b', forest: '#86a88a', water: '#8dc5ce', road: '#e9dfca', casing: '#a5a78f', wall: '#ede0c8', roof: '#c7a28c', ink: '#8a9688', sky: '#b8d8e6', horizon: '#eee9d6' },
+  Manga: { ground: '#f4f1e7', grass: '#d8d7c9', forest: '#84897f', water: '#aeb7b3', road: '#faf8ef', casing: '#777b70', wall: '#f3f0e5', roof: '#90948c', ink: '#3b423d', sky: '#e0e5df', horizon: '#f2f0e5' },
+  Watercolor: { ground: '#ede5cc', grass: '#b4c58b', forest: '#86a88a', water: '#8dc5ce', road: '#f7f2e6', casing: '#9a9883', wall: '#ede0c8', roof: '#c7a28c', ink: '#8a9688', sky: '#b8d8e6', horizon: '#eee9d6' },
 });
+
+/** The GPS dot carries the PALETTE accent, darkened until it holds 3:1 against the medium's ground. */
+export function vedutaDotColor(palette, styleName = 'Anime') {
+  const hex = value => value.match(/\w\w/g).map(pair => parseInt(pair, 16) / 255);
+  const ground = hex(VEDUTA_PAINT[VEDUTA_STYLES.includes(styleName) ? styleName : 'Anime'].ground);
+  let color = Array.isArray(palette?.accent) ? palette.accent.map(value => Math.min(1, Math.max(0, value))) : hex('#347eb4');
+  for (let step = 0; step < 16 && atlasContrastRatio(color, ground) < 3; step++) color = color.map(value => value * 0.86);
+  return `#${color.map(value => Math.round(value * 255).toString(16).padStart(2, '0')).join('')}`;
+}
 
 /** Existing disclosed providers only. No labels, POIs, route or navigation UI. */
 export function createVedutaStyle(styleName = 'Anime', palette) {

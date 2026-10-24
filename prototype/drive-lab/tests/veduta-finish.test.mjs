@@ -36,7 +36,7 @@ test('terminal finish owns one texture, uses the main framebuffer and returns na
   const f = framebufferFixture(), errors = [];
   let preferences = { style: 'Anime', vehicle: 'point' };
   const layer = createVedutaFinish(() => preferences, () => ({ latitude: 10, longitude: 20, heading: 90 }), error => errors.push(error));
-  const map = { getCanvas: () => ({ clientWidth: 400 }), project: () => ({ x: 80,y: 60 }) };
+  const map = { getPixelRatio: () => 2, project: () => ({ x: 80,y: 60 }) };
   layer.onAdd(map,f.gl);
   for (const style of ['Anime','Manga','Watercolor']) { preferences = { ...preferences,style }; layer.render(f.gl); }
   assert.deepEqual(errors,[]);
@@ -72,7 +72,7 @@ test('finish compile failure reports once and never draws a falsely named medium
 test('zero-sized and failed copies release owned bindings without drawing or retry loops', () => {
   const f=framebufferFixture(),errors=[];
   const layer=createVedutaFinish(()=>({style:'Anime',vehicle:'point'}),()=>null,error=>errors.push(error));
-  layer.onAdd({getCanvas:()=>({clientWidth:400})},f.gl);
+  layer.onAdd({getPixelRatio:()=>2},f.gl);
   f.gl.drawingBufferWidth=0; f.gl.drawingBufferHeight=0; layer.render(f.gl);
   assert.equal(f.calls.filter(call=>call[0]==='drawArrays').length,0);
   f.gl.drawingBufferWidth=800; f.gl.drawingBufferHeight=600;

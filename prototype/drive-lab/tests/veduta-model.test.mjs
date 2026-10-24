@@ -127,3 +127,16 @@ test('clockwise tile footprints still give upward roof facets and outward walls'
     assert.ok((b[1] - a[1]) * mid[0] - (b[0] - a[0]) * mid[1] > 0);
   }
 });
+test('the GPS dot carries the palette accent with at least 3:1 against every medium ground', async () => {
+  const { vedutaDotColor, VEDUTA_PAINT } = await import('../src/environments/veduta/veduta-model.js');
+  const { atlasContrastRatio } = await import('../src/environments/atlas/atlas-model.js');
+  const { FLUX_THEMES } = await import('../src/flux-themes.js');
+  const channels = hex => hex.match(/\w\w/g).map(pair => parseInt(pair, 16) / 255);
+  for (const theme of FLUX_THEMES) for (const style of VEDUTA_STYLES) {
+    const dot = vedutaDotColor(theme.palette, style);
+    assert.match(dot, /^#[0-9a-f]{6}$/);
+    assert.ok(atlasContrastRatio(channels(dot), channels(VEDUTA_PAINT[style].ground)) >= 3, `${theme.id} ${style} ${dot}`);
+  }
+  assert.equal(vedutaDotColor({ accent: [0.2, 0.3, 0.8] }, 'Anime'), '#334dcc');
+  assert.match(vedutaDotColor(undefined, 'Manga'), /^#[0-9a-f]{6}$/);
+});

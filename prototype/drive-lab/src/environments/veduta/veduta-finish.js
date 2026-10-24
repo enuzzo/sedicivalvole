@@ -140,7 +140,7 @@ export function createVedutaFinish(readPreferences, readPoint, onError) {
         gl.copyTexSubImage2D(gl.TEXTURE_2D,0,0,0,0,0,width,height);
         caps.forEach(cap => gl.disable(cap)); gl.depthMask(false);
         gl.useProgram(program); gl.bindVertexArray(vao);
-        const ratio = width / Math.max(1,map.getCanvas().clientWidth), preferences = readPreferences();
+        const ratio = map.getPixelRatio(), preferences = readPreferences();
         gl.uniform1i(uniforms.landscape,0); gl.uniform2f(uniforms.resolution,width,height); gl.uniform1f(uniforms.pixelRatio,ratio);
         gl.uniform1f(uniforms.medium,Math.max(0,VEDUTA_STYLES.indexOf(preferences.style)));
         const point = readPoint(), marker = point ? map.project([point.longitude,point.latitude]) : null;

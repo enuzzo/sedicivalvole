@@ -54,26 +54,27 @@ function mesh(geometry, paint, parent, position, scale) {
 }
 
 /** Original low-poly vehicle symbols. No branded model, texture or logo asset. */
-export function createVedutaVehicle(vehicle, color, style) {
+export function createVedutaVehicle(vehicle, color, style, dotColor = '#347eb4') {
   const group = new THREE.Group();
-  const bodyColor = VEDUTA_COLORS.find(item => item.id === color)?.hex ?? '#e9e9e2';
-  const body = material(bodyColor, style), glass = material('#34444d', style), rubber = material('#24282b', style);
   if (vehicle === 'point') {
-    // A fixed 12 CSS-pixel GPS dot stays readable without occupying a street.
+    // A fixed 12 CSS-pixel GPS dot stays readable without occupying a street:
+    // palette core, white ring and a dark hairline that also holds on Manga paper.
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute('position', new THREE.Float32BufferAttribute([0, 0, 0.5], 3));
     const paint = new THREE.ShaderMaterial({ transparent: true, depthTest: false, depthWrite: false,
-      uniforms: { pixelRatio: { value: 1 }, dotColor: { value: new THREE.Color(style === 'Manga' ? '#3b423d' : '#347eb4') } },
+      uniforms: { pixelRatio: { value: 1 }, dotColor: { value: new THREE.Color(dotColor) } },
       vertexShader: 'uniform float pixelRatio; void main(){gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);gl_PointSize=12.*pixelRatio;}',
       fragmentShader: `uniform vec3 dotColor; void main(){float r=length(gl_PointCoord-vec2(.5));
-        float alpha=1.-smoothstep(.45,.5,r);if(alpha<=0.)discard;
-        gl_FragColor=vec4(mix(dotColor,vec3(1.),smoothstep(.29,.34,r)),alpha);
+        float alpha=1.-smoothstep(.46,.5,r);if(alpha<=0.)discard;
+        vec3 c=mix(dotColor,vec3(1.),smoothstep(.25,.29,r));
+        gl_FragColor=vec4(mix(c,vec3(.09,.11,.12),smoothstep(.38,.42,r)),alpha);
         #include <colorspace_fragment>
       }` });
     const dot = new THREE.Points(geometry, paint); dot.frustumCulled = false; dot.renderOrder = 100; group.add(dot);
-    body.dispose(); glass.dispose(); rubber.dispose();
     return group;
   }
+  const bodyColor = VEDUTA_COLORS.find(item => item.id === color)?.hex ?? '#e9e9e2';
+  const body = material(bodyColor, style), glass = material('#34444d', style), rubber = material('#24282b', style);
   const tall = vehicle === 'model-y';
   const footprint = new THREE.Shape();
   footprint.moveTo(-0.82, -2.25); footprint.lineTo(0.82, -2.25);
@@ -120,10 +121,13 @@ export function* createVedutaSceneryJob({ map, maplibre, point, origin, scale, s
   const nextScenery = new THREE.Group();
   let complete = false;
   try {
-    // Source features are already loaded by the single MapLibre tile owner.
-    const snapshot = {};
+    // Source features are already loaded by the single MapLibre tile owner. Filters
+    // drop classes the builder ignores before MapLibre creates their GeoJSON features.
+    const snapshot = {}, treeClasses = ['wood', 'forest', 'park', 'recreation_ground', 'garden', 'grass', 'meadow'];
+    const filters = { transportation: ['!=', ['get', 'class'], 'rail'], landcover: ['in', ['get', 'class'], ['literal', treeClasses]],
+      landuse: ['in', ['get', 'class'], ['literal', [...treeClasses, 'pitch', 'playground']]], park: ['in', ['get', 'class'], ['literal', treeClasses]] };
     for (const layer of ['building','landuse','transportation','landcover','park']) {
-      yield; try { snapshot[layer] = map.querySourceFeatures('openfreemap', { sourceLayer: layer }); } catch { snapshot[layer] = []; }
+      yield; try { snapshot[layer] = map.querySourceFeatures('openfreemap', { sourceLayer: layer, filter: filters[layer] }); } catch { snapshot[layer] = []; }
     }
     const features = layer => snapshot[layer];
     const c = VEDUTA_PAINT[style], centre = local([point.longitude, point.latitude]);
@@ -226,7 +230,7 @@ export function* createVedutaSceneryJob({ map, maplibre, point, origin, scale, s
     for (const feature of [...features('landcover'), ...features('park'), ...features('landuse')]) {
       yield;
       if (treePlaces.length >= 1400 || candidates >= 8000) break;
-      if (!['wood', 'forest', 'park', 'recreation_ground', 'garden', 'grass', 'meadow'].includes(feature.properties?.class)) continue;
+      if (!treeClasses.includes(feature.properties?.class)) continue;
       const polygons = feature.geometry.type === 'Polygon' ? [feature.geometry.coordinates] : feature.geometry.type === 'MultiPolygon' ? feature.geometry.coordinates : [];
       for (const rings of polygons) {
         yield;
@@ -288,7 +292,8 @@ export function createVedutaLayer(maplibre, preferences, readPoint, onError, onS
   const stopBaker = () => { baker?.dispose(); baker = null; };
   const queue = createVedutaBuildQueue({ ...vedutaBuildScheduling(), now: () => performance.now(),
     visible: () => !document.hidden, onError });
-  const invalidate = () => { epoch++; queue.cancel(); stopBaker(); jobContext = null; requestedRevision++; };
+  // The geometry worker survives invalidation: aborts reject pending bakes and late replies are dropped.
+  const invalidate = () => { epoch++; queue.cancel(); jobContext = null; requestedRevision++; };
   const visibility = () => {
     repaint.cancel(); invalidate();
     if (!document.hidden) { lastSceneryAt = -Infinity; map?.triggerRepaint(); }
@@ -303,7 +308,19 @@ export function createVedutaLayer(maplibre, preferences, readPoint, onError, onS
   };
   scene.add(scenery);
   const projection = new THREE.Matrix4(), transform = new THREE.Matrix4();
-  const inverse = new THREE.Matrix4(), eye = new THREE.Vector4();
+  const inverse = new THREE.Matrix4(), eye = new THREE.Vector4(), axes = new THREE.Vector3();
+  // Uniform owners are collected when the scene changes, never searched per frame.
+  let shadedMaterials = [], pointMaterials = [];
+  const collectMaterials = () => {
+    const seen = new Set(); shadedMaterials = []; pointMaterials = [];
+    scene.traverse(object => {
+      const paint = object.material;
+      if (!paint?.uniforms || seen.has(paint)) return;
+      seen.add(paint);
+      if (paint.uniforms.eye) shadedMaterials.push(paint);
+      if (paint.uniforms.pixelRatio) pointMaterials.push(paint);
+    });
+  };
   const requestScenery = event => {
     if (['openfreemap', 'veduta-terrain'].includes(event.sourceId) && event.tile?.state === 'loaded') {
       requestedRevision++;
@@ -316,12 +333,15 @@ export function createVedutaLayer(maplibre, preferences, readPoint, onError, onS
     return [(p.x - origin.x) / scale, -(p.y - origin.y) / scale];
   };
   const replaceMarker = () => {
-    const key = `${preferences.vehicle}:${preferences.color}:${displayedStyle}`;
+    const key = `${preferences.vehicle}:${preferences.color}:${displayedStyle}:${preferences.dotColor}`;
     if (markerKey === key) return;
     markerKey = key;
     for (const object of [car, fallback]) if (object) { scene.remove(object); disposeVedutaTree(object); }
-    car = createVedutaVehicle(preferences.vehicle, preferences.color, displayedStyle); scene.add(car);
-    fallback = createVedutaVehicle('point', preferences.color, displayedStyle); scene.add(fallback);
+    car = createVedutaVehicle(preferences.vehicle, preferences.color, displayedStyle, preferences.dotColor); scene.add(car);
+    // A car symbol without a heading falls back to the dot; the dot needs no fallback.
+    fallback = preferences.vehicle === 'point' ? null : createVedutaVehicle('point', preferences.color, displayedStyle, preferences.dotColor);
+    if (fallback) scene.add(fallback);
+    collectMaterials();
   };
   const distanceFrom = (point, reference) => {
     const coordinate = maplibre.MercatorCoordinate.fromLngLat([point.longitude, point.latitude]);
@@ -336,7 +356,8 @@ export function createVedutaLayer(maplibre, preferences, readPoint, onError, onS
     queue.start(signal => createVedutaSceneryJob({ map, maplibre, ...context, worldMaterial, retainedMaterials,
       bakeGeometry: (position, edges, abort) => {
         if (!baker) baker = createVedutaGeometryBaker(new Worker(new URL('./veduta-geometry.worker.js', import.meta.url), { type: 'module' }));
-        return baker.bake(position, edges, abort);
+        // A failed worker is replaced on the next bake; a cancelled bake keeps it.
+        return baker.bake(position, edges, abort).catch(error => { if (error?.name !== 'AbortError') stopBaker(); throw error; });
       } }, signal), {
       valid: () => !disposed && epoch === context.epoch && preferences.style === context.style,
       discard: () => { if (jobContext === context) jobContext = null; },
@@ -350,7 +371,7 @@ export function createVedutaLayer(maplibre, preferences, readPoint, onError, onS
         if (origin !== result.origin) carPose = null;
         origin = result.origin; scale = result.scale; lastSceneryCentre = context.coordinate;
         committedRevision = context.revision; jobContext = null;
-        disposeVedutaTree(previous, retainedMaterials); replaceMarker(); map.triggerRepaint();
+        disposeVedutaTree(previous, retainedMaterials); replaceMarker(); collectMaterials(); map.triggerRepaint();
         if (requestedRevision > committedRevision) repaint.schedule(lastSceneryAt + 1800);
       },
     });
@@ -408,25 +429,20 @@ export function createVedutaLayer(maplibre, preferences, readPoint, onError, onS
         // Optional silhouettes use their authored approximate metre dimensions.
         car.scale.setScalar(1);
         car.visible = Number.isFinite(ground) && (Number.isFinite(point.heading) || preferences.vehicle === 'point');
-        fallback.visible = Number.isFinite(ground) && !car.visible;
-        fallback.position.copy(car.position); fallback.scale.setScalar(1);
-        const pixelRatio = map.getCanvas().width / Math.max(1, map.getCanvas().clientWidth);
-        for (const marker of [car, fallback]) marker.traverse(object => {
-          if (object.material?.uniforms?.pixelRatio) object.material.uniforms.pixelRatio.value = pixelRatio;
-        });
-        transform.makeTranslation(origin.x, origin.y, 0).scale(new THREE.Vector3(scale, -scale, scale));
+        if (fallback) { fallback.visible = Number.isFinite(ground) && !car.visible; fallback.position.copy(car.position); }
+        // MapLibre's own ratio avoids a per-frame layout read of the canvas.
+        const pixelRatio = map.getPixelRatio();
+        for (const paint of pointMaterials) paint.uniforms.pixelRatio.value = pixelRatio;
+        transform.makeTranslation(origin.x, origin.y, 0).scale(axes.set(scale, -scale, scale));
         projection.fromArray(args.defaultProjectionData.mainMatrix).multiply(transform); camera.projectionMatrix.copy(projection);
         inverse.copy(projection).invert(); eye.set(0, 0, 1, 0).applyMatrix4(inverse);
-        if (Math.abs(eye.w) > 1e-12) {
-          eye.multiplyScalar(1 / eye.w);
-          scene.traverse(object => { if (object.material?.uniforms?.eye) object.material.uniforms.eye.value.set(eye.x, eye.y, eye.z); });
+        const visibleEye = Math.abs(eye.w) > 1e-12;
+        if (visibleEye) eye.multiplyScalar(1 / eye.w);
+        const inkX = (origin.x * VEDUTA_WORLD_METRES) % 6400, inkY = (-origin.y * VEDUTA_WORLD_METRES) % 6400, inkScale = scale * VEDUTA_WORLD_METRES;
+        for (const paint of shadedMaterials) {
+          if (visibleEye) paint.uniforms.eye.value.set(eye.x, eye.y, eye.z);
+          paint.uniforms.inkOffset.value.set(inkX, inkY); paint.uniforms.inkScale.value = inkScale;
         }
-        scene.traverse(object => {
-          if (object.material?.uniforms?.inkOffset) {
-            object.material.uniforms.inkOffset.value.set((origin.x * VEDUTA_WORLD_METRES) % 6400, (-origin.y * VEDUTA_WORLD_METRES) % 6400);
-            object.material.uniforms.inkScale.value = scale * VEDUTA_WORLD_METRES;
-          }
-        });
         renderer.resetState(); renderer.render(scene, camera); renderer.resetState();
       } catch (error) { onError(error); }
     },

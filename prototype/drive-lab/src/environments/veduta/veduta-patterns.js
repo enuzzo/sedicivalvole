@@ -12,7 +12,7 @@ export function installVedutaPatterns(map, style) {
       if (kind === 'water') {
         const wave = Math.abs(Math.sin((y + Math.sin(x * Math.PI / 64) * 2.5) * Math.PI / 16));
         const segment = Math.sin(x * Math.PI / 16 + Math.sin(y * Math.PI / 32));
-        alpha = wave < 0.12 && segment > 0.25 ? (style === 'Manga' ? 35 : style === 'Anime' ? 76 : 44) : 0;
+        alpha = wave < 0.12 && segment > 0.25 ? (style === 'Manga' ? 70 : style === 'Anime' ? 76 : 44) : 0;
         data[i] = style === 'Manga' ? 93 : 230; data[i + 1] = style === 'Manga' ? 103 : 243; data[i + 2] = style === 'Manga' ? 98 : 233;
       } else if (kind === 'ground') {
         alpha = style === 'Watercolor' ? Math.max(0, broad * 22 + fine * 7) : style === 'Manga' ? (fine > 0.986 ? 30 : 0) : Math.max(0, broad * 10 + fine * 3);

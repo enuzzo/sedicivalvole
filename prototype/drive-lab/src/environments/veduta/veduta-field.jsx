@@ -6,7 +6,7 @@ import { advanceAtlasFollowCamera, atlasMapPixelRatio, validAtlasPosition } from
 import { createVedutaLayer } from './veduta-layer.js';
 import { createVedutaFinish } from './veduta-finish.js';
 import { installVedutaPatterns } from './veduta-patterns.js';
-import { createVedutaStyle, normalizeVedutaPreferences, VEDUTA_COLORS, VEDUTA_PREFERENCE_KEY, VEDUTA_STYLES, VEDUTA_VEHICLES, vedutaCamera, vedutaCameraCentre, vedutaPosition, vedutaStatus } from './veduta-model.js';
+import { createVedutaStyle, normalizeVedutaPreferences, VEDUTA_COLORS, VEDUTA_PREFERENCE_KEY, VEDUTA_STYLES, VEDUTA_VEHICLES, vedutaCamera, vedutaCameraCentre, vedutaDotColor, vedutaPosition, vedutaStatus } from './veduta-model.js';
 import '../../vendor-maplibre.css';
 import './veduta.css';
 
@@ -33,9 +33,13 @@ export default function VedutaField({ position, positionSamplesRef, gpsState, sp
   const [optionsOpen, setOptionsOpen] = useState(false);
   const [state, setState] = useState({ message: 'Waiting for GPS', terrain: false, mapError: false });
   const [retry, setRetry] = useState(0);
+  const [zoom, setZoom] = useState(0);
   const zoomRef = useRef(0);
   const canStart = validAtlasPosition(position);
-  latest.current = { position, positionSamplesRef, speed, theme, reducedMotion, preferences, gpsState };
+  // The dot colour follows PALETTE and the medium; it is derived, never persisted.
+  const dotColor = vedutaDotColor(theme?.palette, preferences.style);
+  const layerPreferences = { ...preferences, dotColor };
+  latest.current = { position, positionSamplesRef, speed, theme, reducedMotion, preferences: layerPreferences, gpsState };
   const closeOptions = () => { setOptionsOpen(false); optionsButton.current?.focus({ preventScroll: true }); };
   useOutsideDismiss(controls, optionsOpen, closeOptions);
 
@@ -46,7 +50,7 @@ export default function VedutaField({ position, positionSamplesRef, gpsState, sp
       if (event.key !== 'Escape') return;
       event.preventDefault(); event.stopPropagation(); closeOptions();
     };
-    const focus = requestAnimationFrame(() => panel.current?.querySelector('button')?.focus({ preventScroll: true }));
+    const focus = requestAnimationFrame(() => (panel.current?.querySelector('[aria-checked="true"]') ?? panel.current?.querySelector('button'))?.focus({ preventScroll: true }));
     document.addEventListener('keydown', close);
     return () => { cancelAnimationFrame(focus); document.removeEventListener('keydown', close); };
   }, [optionsOpen]);
@@ -145,7 +149,9 @@ export default function VedutaField({ position, positionSamplesRef, gpsState, sp
           if (disposed || failed) return;
           tileFailure = true;
           if (failedTiles.size < 256) failedTiles.add(`${event.sourceId ?? 'unknown'}:${event.tile?.tileID?.key ?? 'metadata'}`);
-          setState({ message: vedutaStatus({ online: navigator.onLine !== false, tileFailure, terrain, point: pointRef.current }), terrain, mapError: true });
+          const message = vedutaStatus({ online: navigator.onLine !== false, tileFailure, terrain, point: pointRef.current });
+          // A burst of tile errors renders once.
+          setState(previous => previous.message === message && previous.terrain === terrain && previous.mapError ? previous : { message, terrain, mapError: true });
           if (!timer && !document.hidden && navigator.onLine !== false && failures < 5) timer = setTimeout(recover, Math.min(120000, 5000 * 2 ** failures));
         });
         map.on('idle', () => { if (ready && terrain && !failedTiles.size) { tileFailure = false; failures = 0; clearTimeout(timer); timer = null; } });
@@ -174,13 +180,15 @@ export default function VedutaField({ position, positionSamplesRef, gpsState, sp
   useEffect(() => {
     const map = mapRef.current; if (!map?.getLayer('veduta-ground')) return;
     // The completed scenery job atomically switches native paints and finish.
-    sceneLayerRef.current?.updatePreferences(preferences); map.triggerRepaint();
+    sceneLayerRef.current?.updatePreferences(latest.current.preferences); map.triggerRepaint();
   }, [preferences.style]);
   useEffect(() => {
     sceneLayerRef.current?.updatePreferences(latest.current.preferences); mapRef.current?.triggerRepaint();
-  }, [preferences.vehicle, preferences.color]);
+  }, [preferences.vehicle, preferences.color, dotColor]);
   const set = (key, value) => setPreferences(previous => normalizeVedutaPreferences({ ...previous, [key]: value }));
+  const changeZoom = value => { const next = Math.max(-1, Math.min(1, value)); zoomRef.current = next; setZoom(next); };
   const nextStyle = VEDUTA_STYLES[(VEDUTA_STYLES.indexOf(preferences.style) + 1) % VEDUTA_STYLES.length];
+  const vehicle = VEDUTA_VEHICLES.find(item => item.id === preferences.vehicle) ?? VEDUTA_VEHICLES[0];
   return <>
     <div className="veduta-field" ref={host} aria-label="Veduta illustrated geographic landscape" />
     {!canStart ? <div className="veduta-waiting" role="status"><strong>Veduta</strong><span>Waiting for the car’s GPS position</span><small>{gpsState === 'permission denied' ? 'Allow Location in this browser, then retry.' : 'The landscape starts when a usable position arrives.'}</small><button onClick={onRetryLocation}>RETRY LOCATION</button></div> : null}
@@ -188,16 +196,25 @@ export default function VedutaField({ position, positionSamplesRef, gpsState, sp
       <ContextualRail className="veduta-rail"><nav {...contextual} ref={controls} className="veduta-controls visual-cycle-rail" aria-label="Veduta controls" data-contextual-dialog={optionsOpen ? 'open' : undefined} onPointerDown={event => event.stopPropagation()}
         onBlurCapture={event => { if (optionsOpen && event.relatedTarget && !event.currentTarget.contains(event.relatedTarget)) setOptionsOpen(false); }}>
         <button className="visual-cycle-button" type="button" aria-label={`Illustration style ${preferences.style}. Next ${nextStyle}`} onClick={() => set('style', nextStyle)}><span>STYLE</span><small>{preferences.style}</small></button>
-        <button className="visual-cycle-button veduta-view-key" type="button" ref={optionsButton} aria-label="Follow camera and vehicle settings" aria-haspopup="dialog" aria-controls="veduta-view-options" aria-expanded={optionsOpen} onClick={() => setOptionsOpen(value => !value)}><span>VIEW</span><small>Follow</small><DisclosureCaret /></button>
-        {optionsOpen ? <section className="veduta-options" id="veduta-view-options" ref={panel} role="dialog" aria-modal="false" aria-labelledby="veduta-view-title">
-          <div className="veduta-option-heading"><strong id="veduta-view-title">Follow camera</strong><button onClick={closeOptions}>CLOSE</button></div>
-          <div className="veduta-zoom"><button aria-label="Zoom in Veduta" onClick={() => { zoomRef.current = Math.min(1, zoomRef.current + 0.25); }}>+</button><button onClick={() => { zoomRef.current = 0; }}>RESET VIEW</button><button aria-label="Zoom out Veduta" onClick={() => { zoomRef.current = Math.max(-1, zoomRef.current - 0.25); }}>−</button></div>
-          <label className="veduta-vehicle-label">Vehicle<select aria-label="Vehicle shape" value={preferences.vehicle} onChange={event => set('vehicle', event.target.value)}>{VEDUTA_VEHICLES.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
-          {preferences.vehicle !== 'point' ? <div className="veduta-colors" role="group" aria-label="Vehicle body colour">{VEDUTA_COLORS.map(color => <button key={color.id} aria-label={color.label} aria-pressed={preferences.color === color.id} onClick={() => set('color', color.id)}><span style={{ backgroundColor: color.hex }} /><small>{color.label}</small></button>)}</div> : null}
-          <small>{preferences.vehicle === 'point' ? 'GPS position. The dot stays small at every zoom.' : 'Illustrative GPS marker. Road alignment and height are approximate.'}</small>
+        <button className="visual-cycle-button veduta-view-key" type="button" ref={optionsButton} aria-label={`View: ${vehicle.label}. Camera and marker settings`} aria-haspopup="dialog" aria-controls="veduta-view-options" aria-expanded={optionsOpen} onClick={() => setOptionsOpen(value => !value)}><span>VIEW</span><small>{vehicle.short}</small><DisclosureCaret /></button>
+        {optionsOpen ? <section className="veduta-options" id="veduta-view-options" ref={panel} role="dialog" aria-modal="false" aria-label="Veduta view">
+          <div className="veduta-option-group" role="group" aria-labelledby="veduta-camera-label">
+            <span className="veduta-option-label" id="veduta-camera-label">Camera</span>
+            <div className="veduta-zoom">
+              <button type="button" aria-label="Zoom in Veduta" disabled={zoom >= 1} onClick={() => changeZoom(zoom + 0.25)}>+</button>
+              <button type="button" aria-pressed={zoom === 0} onClick={() => changeZoom(0)}>Reset</button>
+              <button type="button" aria-label="Zoom out Veduta" disabled={zoom <= -1} onClick={() => changeZoom(zoom - 0.25)}>−</button>
+            </div>
+          </div>
+          <div className="veduta-option-group" role="radiogroup" aria-labelledby="veduta-marker-label">
+            <span className="veduta-option-label" id="veduta-marker-label">Marker</span>
+            {VEDUTA_VEHICLES.map(item => <button key={item.id} type="button" className="veduta-option-row" role="radio" aria-checked={preferences.vehicle === item.id} onClick={() => set('vehicle', item.id)}>{item.label}</button>)}
+          </div>
+          {preferences.vehicle !== 'point' ? <div className="veduta-colors" role="radiogroup" aria-label="Vehicle body colour">{VEDUTA_COLORS.map(color => <button key={color.id} type="button" role="radio" aria-label={color.label} title={color.label} aria-checked={preferences.color === color.id} onClick={() => set('color', color.id)}><span style={{ backgroundColor: color.hex }} /></button>)}</div> : null}
+          {preferences.vehicle !== 'point' ? <small>Illustrative shape. Size and road alignment are approximate.</small> : null}
         </section> : null}
       </nav></ContextualRail>
-      <div className="veduta-status" role="status"><span>{state.message}</span>{state.mapError ? <button onClick={() => { setRetry(value => value + 1); }}>RETRY MAP</button> : null}</div>
+      {state.message !== 'GPS follow' ? <div className="veduta-status" role="status"><span>{state.message}</span>{state.mapError ? <button type="button" onClick={() => { setRetry(value => value + 1); }}>RETRY MAP</button> : null}</div> : null}
       <nav className="veduta-attribution" aria-label="Map sources"><a href="https://mapterhorn.com/attribution/" target="_blank" rel="noopener noreferrer">© Mapterhorn</a><span> · </span><a href="https://openfreemap.org/" target="_blank" rel="noopener noreferrer">OpenFreeMap</a><span> · </span><a href="https://openmaptiles.org/" target="_blank" rel="noopener noreferrer">OpenMapTiles</a><span> · © </span><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a></nav>
     </> : null}
   </>;

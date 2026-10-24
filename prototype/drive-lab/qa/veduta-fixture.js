@@ -2,15 +2,17 @@
 if (!import.meta.env.DEV || !['127.0.0.1', 'localhost'].includes(location.hostname)) throw new Error('Local development QA only');
 const params = new URLSearchParams(location.search);
 let active = true, moving = false, elapsed = 0;
+// Optional ?speed=<m/s>&distance=<m> reproduce faster journeys; defaults keep the original 1.5 m/s for 40 m.
+const speed = Math.max(0.1, Number(params.get('speed')) || 1.5), distance = Math.max(1, Number(params.get('distance')) || 40);
 const callbacks = new Map(); let sequence = 0;
 const fetchOriginal = window.fetch.bind(window);
 window.fetch = (input, init) => String(typeof input === 'string' ? input : input?.url).includes('send-diagnostic.php')
   ? Promise.resolve(new Response('{}', { status: 403, headers: { 'Content-Type': 'application/json' } })) : fetchOriginal(input, init);
 const fixture = () => ({ timestamp: Date.now(), coords: {
   // Public OpenFreeMap road sample, not a recorded personal journey.
-  latitude: params.get('place') === 'milan' ? 45.4642 : 46.006294199042 - Math.min(40, elapsed * 1.5) * 0.9978 / 111320,
-  longitude: params.get('place') === 'milan' ? 9.19 : 8.958173844373498 + Math.min(40, elapsed * 1.5) * 0.06605 / 77323,
-  heading: 176.2124, speed: moving && elapsed * 1.5 < 40 ? 1.5 : 0, accuracy: 4,
+  latitude: params.get('place') === 'milan' ? 45.4642 : 46.006294199042 - Math.min(distance, elapsed * speed) * 0.9978 / 111320,
+  longitude: params.get('place') === 'milan' ? 9.19 : 8.958173844373498 + Math.min(distance, elapsed * speed) * 0.06605 / 77323,
+  heading: 176.2124, speed: moving && elapsed * speed < distance ? speed : 0, accuracy: 4,
 } });
 Object.defineProperty(navigator, 'geolocation', { configurable: true, value: {
   watchPosition(callback) { const id = ++sequence; callbacks.set(id, callback); callback(fixture()); return id; },

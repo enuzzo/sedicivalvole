@@ -73,14 +73,26 @@ Desktop CPU throttling is stress evidence, not Tesla GPU or physical acceptance.
 Scenery preparation is a finite cooperative job outside the draw callback. Keep
 its point/origin/scale/medium immutable; retain the last complete scenery until
 an atomic commit also switches native paints, finish and geographic origin.
-Tile arrivals coalesce a subsequent revision; medium/180m-centre changes, hide
-and removal cancel the candidate and its owned CPU worker. The worker runs the
+Tile arrivals coalesce a subsequent revision; medium/180m-centre changes and
+hide cancel the candidate (its pending bake is rejected and a late reply is
+dropped). The owned CPU worker survives cancellation and is terminated only on
+removal or replaced after a worker failure. Feature snapshots pass class
+filters so MapLibre skips classes the builder ignores. The worker runs the
 unchanged pinned Three normal/merged-edge/bounding-sphere algorithms on
 transferred buffers, including exact bounds for the first visible draw.
 The terminal finish draws to the public main framebuffer and releases its own
 bindings. Pinned MapLibre restores native state after custom rendering; do not
 reintroduce synchronous per-frame GL state queries or runtime private access.
 The soft 3ms CPU budget is not a guaranteed bound on MapLibre or driver calls.
+October 24 polish (refinement within the selected Veduta, no new direction):
+the GPS dot keeps its fixed 12 CSS px but carries the PALETTE accent, darkened
+until it holds 3:1 against the medium ground, with a white ring and dark
+hairline. VIEW shows the marker (Dot / Model 3 / Model Y) and opens a Night
+Instrument popover: CAMERA zoom keys and MARKER radio rows with the indicator
+bar, colour swatches only for car shapes. The status line appears only when
+not nominal. Credits follow Atlas: one quiet 13 px strip, links underlined only
+on focus/hover. DARK appearance still leaves the landscape in daylight; a night
+landscape is a new visual direction awaiting the two-direction gate.
 
 ## Discover
 
