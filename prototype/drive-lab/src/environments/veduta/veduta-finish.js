@@ -1,4 +1,4 @@
-import { VEDUTA_STYLES } from './veduta-model.js';
+import { VEDUTA_STYLES, vedutaBaseStyle, vedutaIsNight } from './veduta-model.js';
 
 const VERTEX = `#version 300 es
 out vec2 uv;
@@ -18,35 +18,38 @@ uniform float pixelRatio;
 uniform float medium;
 uniform vec2 marker;
 uniform float keepMarker;
+uniform float night;
 in vec2 uv;
 out vec4 result;
 float lum(vec3 c){return dot(c,vec3(.299,.587,.114));}
 float hash(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
 float noise(vec2 p){vec2 a=floor(p),f=fract(p);f=f*f*(3.-2.*f);
 return mix(mix(hash(a),hash(a+vec2(1.,0.)),f.x),mix(hash(a+vec2(0.,1.)),hash(a+1.),f.x),f.y);}
+bool invert(){return night>.5&&medium>.5&&medium<1.5;}
+vec3 tap(vec2 p){vec3 c=texture(landscape,p).rgb;return invert()?1.-c:c;}
 vec4 region(vec3 a,vec3 b,vec3 c,vec3 d){vec3 mean=(a+b+c+d)*.25;
 vec3 variance=max((a*a+b*b+c*c+d*d)*.25-mean*mean,vec3(0.));
 float w=1./pow(1.+dot(variance,vec3(.3,.5,.2))*180.,2.);
 return vec4(mean*w,w);}
 void main(){vec2 px=gl_FragCoord.xy/pixelRatio;
-vec3 original=texture(landscape,uv).rgb;
-if(keepMarker>.5&&distance(px,marker)<7.5){result=vec4(original,1.);return;}
+vec3 original=tap(uv);
+if(keepMarker>.5&&distance(px,marker)<7.5){result=vec4(texture(landscape,uv).rgb,1.);return;}
 float radius=medium>1.5?3.2:medium>.5?1.05:1.65;
 vec2 t=vec2(radius*pixelRatio)/resolution;
-vec3 n=texture(landscape,uv+vec2(0.,t.y)).rgb;
-vec3 s=texture(landscape,uv-vec2(0.,t.y)).rgb;
-vec3 e=texture(landscape,uv+vec2(t.x,0.)).rgb;
-vec3 w=texture(landscape,uv-vec2(t.x,0.)).rgb;
-vec3 ne=texture(landscape,uv+t).rgb,sw=texture(landscape,uv-t).rgb;
-vec3 nw=texture(landscape,uv+vec2(-t.x,t.y)).rgb,se=texture(landscape,uv+vec2(t.x,-t.y)).rgb;
+vec3 n=tap(uv+vec2(0.,t.y));
+vec3 s=tap(uv-vec2(0.,t.y));
+vec3 e=tap(uv+vec2(t.x,0.));
+vec3 w=tap(uv-vec2(t.x,0.));
+vec3 ne=tap(uv+t),sw=tap(uv-t);
+vec3 nw=tap(uv+vec2(-t.x,t.y)),se=tap(uv+vec2(t.x,-t.y));
 vec4 paint=region(original,n,w,nw)+region(original,n,e,ne)+region(original,s,w,sw)+region(original,s,e,se);
 vec3 c=paint.rgb/max(paint.a,.001);
 float gradient=length(e-w)+length(n-s);
 vec2 detail=vec2(pixelRatio)/resolution;
-vec3 dn=texture(landscape,uv+vec2(0.,detail.y)).rgb;
-vec3 ds=texture(landscape,uv-vec2(0.,detail.y)).rgb;
-vec3 de=texture(landscape,uv+vec2(detail.x,0.)).rgb;
-vec3 dw=texture(landscape,uv-vec2(detail.x,0.)).rgb;
+vec3 dn=tap(uv+vec2(0.,detail.y));
+vec3 ds=tap(uv-vec2(0.,detail.y));
+vec3 de=tap(uv+vec2(detail.x,0.));
+vec3 dw=tap(uv-vec2(detail.x,0.));
 float localGradient=length(de-dw)+length(dn-ds);
 float outline=smoothstep(.10,.42,localGradient);
 // Preserve structure where a wide paint kernel would mix road/roof/sky.
@@ -59,7 +62,7 @@ if(medium<.5){
   c=mix(c,vec3(band)+chroma*1.22,.33);
   float shade=1.-smoothstep(.28,.82,l);
   c=mix(c,c*vec3(.79,.91,1.13),shade*.42);
-  c+=vec3(.025,.012,-.012)*(1.-shade);
+  c+=vec3(.025,.012,-.012)*(1.-shade)*(1.-night);
   c*=.975+wash*.055;
   float water=step(original.r*1.18,original.b)*step(original.r*1.18,original.g)*step(original.g*.9,original.b);
   c=mix(c,vec3(.14,.23,.25),outline*.26*(1.-water*.88));
@@ -79,10 +82,11 @@ if(medium<.5){
   c=mix(paper*(1.-tone),vec3(.055,.065,.07),ink);
   c*=.985+fine*.023;
 }else{
-  vec3 paper=vec3(.985,.959,.895);
+  // Night paper is a deep blue wash; windows and lamps may exceed it.
+  vec3 paper=night>.5?vec3(.13,.14,.21):vec3(.985,.959,.895);
   vec3 pigment=clamp(c*vec3(1.025,1.015,.975),vec3(.035),vec3(.98));
   float density=.66+wash*.69;
-  c=paper*pow(clamp(pigment/paper,vec3(.025),vec3(1.)),vec3(density));
+  c=paper*pow(clamp(pigment/paper,vec3(.025),vec3(night>.5?7.:1.)),vec3(density));
   float reserve=smoothstep(.63,.9,wash)*.18;
   c=mix(c,paper,reserve);
   float pooling=outline*(.08+noise(px*.14)*.10);
@@ -90,6 +94,8 @@ if(medium<.5){
   c*=.973+fine*.046;
   c=mix(c,paper,.045);
 }
+// Manga at night: invert back, so the ink reads light on a dark blue paper.
+if(invert())c=vec3(.05,.06,.09)+(1.-c)*vec3(.76,.79,.84);
 result=vec4(clamp(c,0.,1.),1.);
 }`;
 
@@ -115,7 +121,7 @@ export function createVedutaFinish(readPreferences, readPoint, onError) {
         program = gl.createProgram(); gl.attachShader(program, vertex); gl.attachShader(program, fragment); gl.linkProgram(program);
         if (!gl.getProgramParameter(program, gl.LINK_STATUS)) throw new Error(`Veduta finish link: ${gl.getProgramInfoLog(program)}`);
         texture = gl.createTexture(); vao = gl.createVertexArray();
-        for (const name of ['landscape','resolution','pixelRatio','medium','marker','keepMarker']) uniforms[name] = gl.getUniformLocation(program, name);
+        for (const name of ['landscape','resolution','pixelRatio','medium','marker','keepMarker','night']) uniforms[name] = gl.getUniformLocation(program, name);
       } catch (error) { disabled = true; onError?.(error); }
       finally { if (vertex) gl.deleteShader(vertex); if (fragment) gl.deleteShader(fragment); }
     },
@@ -142,7 +148,8 @@ export function createVedutaFinish(readPreferences, readPoint, onError) {
         gl.useProgram(program); gl.bindVertexArray(vao);
         const ratio = map.getPixelRatio(), preferences = readPreferences();
         gl.uniform1i(uniforms.landscape,0); gl.uniform2f(uniforms.resolution,width,height); gl.uniform1f(uniforms.pixelRatio,ratio);
-        gl.uniform1f(uniforms.medium,Math.max(0,VEDUTA_STYLES.indexOf(preferences.style)));
+        gl.uniform1f(uniforms.medium,Math.max(0,VEDUTA_STYLES.indexOf(vedutaBaseStyle(preferences.style))));
+        gl.uniform1f(uniforms.night,vedutaIsNight(preferences.style) ? 1 : 0);
         const point = readPoint(), marker = point ? map.project([point.longitude,point.latitude]) : null;
         gl.uniform1f(uniforms.keepMarker,point && (preferences.vehicle === 'point' || !Number.isFinite(point.heading)) ? 1 : 0);
         gl.uniform2f(uniforms.marker,marker?.x ?? -100,marker ? height/ratio-marker.y : -100);

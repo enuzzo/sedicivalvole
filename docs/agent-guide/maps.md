@@ -91,8 +91,15 @@ hairline. VIEW shows the marker (Dot / Model 3 / Model Y) and opens a Night
 Instrument popover: CAMERA zoom keys and MARKER radio rows with the indicator
 bar, colour swatches only for car shapes. The status line appears only when
 not nominal. Credits follow Atlas: one quiet 13 px strip, links underlined only
-on focus/hover. DARK appearance still leaves the landscape in daylight; a night
-landscape is a new visual direction awaiting the two-direction gate.
+on focus/hover. DARK appearance selects the night medium (`<Style> Night`,
+owner-selected Lanterne, October 24): night paints, sky and water glints,
+emissive windows keyed per building, MapLibre-placed lamp pools and heads along
+streets (text-free icons, transparent by day), and a night-aware finish
+(Watercolor dark paper; Manga inverted to light ink). The switch is atomic like
+a style change and only the base style is persisted. In pinned MapLibre 6.7 a
+data-driven `match` colour or a changed `fill-pattern` keeps the previous
+medium in loaded tiles: vegetation uses constant-colour layers per class group,
+and each medium owns its own pattern layers with only the current set visible.
 
 ## Discover
 

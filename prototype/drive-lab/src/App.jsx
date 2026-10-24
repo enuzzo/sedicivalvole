@@ -3985,7 +3985,7 @@ export function App() {
           ) : environment.renderer === "veduta" ? (
             <Suspense fallback={<div className="atlas-waiting"><strong>VEDUTA</strong><span>Loading illustrated landscape</span></div>}>
               <VedutaField position={mapPosition} positionSamplesRef={atlasPositionSamplesRef} gpsState={gpsState}
-                speed={speed} theme={theme} reducedMotion={reducedMotion} onRenderer={setRenderer}
+                speed={speed} theme={theme} night={appearanceResolution.appearance === "dark"} reducedMotion={reducedMotion} onRenderer={setRenderer}
                 onFrame={recordRenderedFrame} onRuntimeError={handleEnvironmentError} onRetryLocation={startGps} />
             </Suspense>
           ) : environment.renderer === "atlas" ? (

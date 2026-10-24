@@ -6,7 +6,7 @@ import { advanceAtlasFollowCamera, atlasMapPixelRatio, validAtlasPosition } from
 import { createVedutaLayer } from './veduta-layer.js';
 import { createVedutaFinish } from './veduta-finish.js';
 import { installVedutaPatterns } from './veduta-patterns.js';
-import { createVedutaStyle, normalizeVedutaPreferences, VEDUTA_COLORS, VEDUTA_PREFERENCE_KEY, VEDUTA_STYLES, VEDUTA_VEHICLES, vedutaCamera, vedutaCameraCentre, vedutaDotColor, vedutaPosition, vedutaStatus } from './veduta-model.js';
+import { createVedutaStyle, normalizeVedutaPreferences, VEDUTA_COLORS, VEDUTA_PREFERENCE_KEY, VEDUTA_STYLES, VEDUTA_VEHICLES, vedutaCamera, vedutaCameraCentre, vedutaDotColor, vedutaMedium, vedutaPosition, vedutaStatus } from './veduta-model.js';
 import '../../vendor-maplibre.css';
 import './veduta.css';
 
@@ -25,7 +25,7 @@ function applyMedium(map, preferences) {
 }
 
 /** One map and one measured GPS stream. All persisted settings are non-geographic. */
-export default function VedutaField({ position, positionSamplesRef, gpsState, speed, theme, reducedMotion, onRenderer, onFrame, onRuntimeError, onRetryLocation }) {
+export default function VedutaField({ position, positionSamplesRef, gpsState, speed, theme, night = false, reducedMotion, onRenderer, onFrame, onRuntimeError, onRetryLocation }) {
   const host = useRef(null), mapRef = useRef(null), layerFactory = useRef(null), sceneLayerRef = useRef(null), pointRef = useRef(null);
   const latest = useRef(null), displayed = useRef(null), panel = useRef(null), controls = useRef(null), optionsButton = useRef(null);
   const contextual = useContextualControls();
@@ -37,8 +37,10 @@ export default function VedutaField({ position, positionSamplesRef, gpsState, sp
   const zoomRef = useRef(0);
   const canStart = validAtlasPosition(position);
   // The dot colour follows PALETTE and the medium; it is derived, never persisted.
-  const dotColor = vedutaDotColor(theme?.palette, preferences.style);
-  const layerPreferences = { ...preferences, dotColor };
+  // DARK appearance selects the night medium (Lanterne); only the base style is persisted.
+  const medium = vedutaMedium(preferences.style, night);
+  const dotColor = vedutaDotColor(theme?.palette, medium);
+  const layerPreferences = { ...preferences, style: medium, dotColor };
   latest.current = { position, positionSamplesRef, speed, theme, reducedMotion, preferences: layerPreferences, gpsState };
   const closeOptions = () => { setOptionsOpen(false); optionsButton.current?.focus({ preventScroll: true }); };
   useOutsideDismiss(controls, optionsOpen, closeOptions);
@@ -181,7 +183,7 @@ export default function VedutaField({ position, positionSamplesRef, gpsState, sp
     const map = mapRef.current; if (!map?.getLayer('veduta-ground')) return;
     // The completed scenery job atomically switches native paints and finish.
     sceneLayerRef.current?.updatePreferences(latest.current.preferences); map.triggerRepaint();
-  }, [preferences.style]);
+  }, [medium]);
   useEffect(() => {
     sceneLayerRef.current?.updatePreferences(latest.current.preferences); mapRef.current?.triggerRepaint();
   }, [preferences.vehicle, preferences.color, dotColor]);

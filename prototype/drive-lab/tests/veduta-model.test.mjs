@@ -45,7 +45,10 @@ test('illustrative media keep the existing geographic providers and source geome
     assert.deepEqual(style.sources['veduta-shading'].tiles, style.sources['veduta-terrain'].tiles);
     assert.equal(style.terrain.exaggeration, 1);
     assert.ok(style.sources['veduta-terrain'].attribution.includes('Mapterhorn'));
-    assert.ok(style.layers.every(layer => layer.type !== 'symbol'));
+    // No labels or POIs: the only symbols are text-free street-lamp icons.
+    const symbols = style.layers.filter(layer => layer.type === 'symbol');
+    assert.deepEqual(symbols.map(layer => layer.id), ['veduta-lamp-pools', 'veduta-lamp-heads']);
+    assert.ok(symbols.every(layer => !layer.layout['text-field'] && layer.paint['icon-opacity'] === 0));
     assert.deepEqual(style.layers.find(layer => layer.id === 'veduta-buildings').paint['fill-extrusion-height'], ['coalesce', ['get', 'render_height'], 5]);
   }
   assert.notEqual(createVedutaStyle('Anime', {}).layers[0].paint['background-color'], createVedutaStyle('Manga', {}).layers[0].paint['background-color']);
@@ -139,4 +142,23 @@ test('the GPS dot carries the palette accent with at least 3:1 against every med
   }
   assert.equal(vedutaDotColor({ accent: [0.2, 0.3, 0.8] }, 'Anime'), '#334dcc');
   assert.match(vedutaDotColor(undefined, 'Manga'), /^#[0-9a-f]{6}$/);
+});
+
+test('DARK selects a night medium that switches paints, lamps and dot together', async () => {
+  const { vedutaMedium, vedutaBaseStyle, vedutaIsNight, vedutaDotColor, VEDUTA_PAINT } = await import('../src/environments/veduta/veduta-model.js');
+  const { atlasContrastRatio } = await import('../src/environments/atlas/atlas-model.js');
+  const { FLUX_THEMES } = await import('../src/flux-themes.js');
+  const channels = hex => hex.match(/\w\w/g).map(pair => parseInt(pair, 16) / 255);
+  for (const style of VEDUTA_STYLES) {
+    const medium = vedutaMedium(style, true);
+    assert.equal(medium, `${style} Night`); assert.equal(vedutaBaseStyle(medium), style); assert.ok(vedutaIsNight(medium));
+    assert.equal(vedutaMedium(style, false), style); assert.ok(!vedutaIsNight(style));
+    const night = createVedutaStyle(medium, {}), day = createVedutaStyle(style, {});
+    assert.deepEqual(night.layers.map(layer => layer.id), day.layers.map(layer => layer.id));
+    assert.ok(night.layers.filter(layer => layer.type === 'symbol').every(layer => layer.paint['icon-opacity'] > 0));
+    // Night ground is dark: relative luminance contrast with black stays low.
+    assert.ok(atlasContrastRatio(channels(VEDUTA_PAINT[medium].ground), [0, 0, 0]) < 2);
+    for (const theme of FLUX_THEMES) assert.ok(atlasContrastRatio(channels(vedutaDotColor(theme.palette, medium)), channels(VEDUTA_PAINT[medium].ground)) >= 3, `${theme.id} ${medium}`);
+  }
+  assert.equal(vedutaMedium('Unknown', true), 'Anime Night');
 });

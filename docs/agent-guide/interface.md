@@ -17,6 +17,11 @@ The subsequent owner correction explicitly requires the established control
 language: shared two-line visual-cycle cells, direct STYLE cycle, real VIEW
 disclosure, Night Instrument popover, shared outside dismissal and keyboard lane.
 Do not restore the horizontal label/select controls or independent button chrome.
+On October 24 the owner selected the **Lanterne** night landscape for DARK
+appearance: the Codex CLI composition (lit windows, street-lamp pools, lit far
+shore) with the darker Magnific ground luminance (dark streets and plazas; light
+only from windows and lamps). Each medium has a night variant; Manga at night is
+light ink on dark paper. Stars and moon from the reference are not implemented.
 
 Before implementing a new visual direction, present exactly two carefully developed Image Gen directions and wait for the owner's selection. The September 20 owner instruction supersedes the former three-direction rule project-wide. Generate the directions with Codex CLI image generation, not the Magnific MCP (October 24 owner rule, chosen for cost). Ground both directions in actual product captures and the established design system; vary meaningful layout or interaction choices rather than merely recoloring the same screen. A selected direction or an explicit delegation for a named change resolves that gate only for that scope. Bug fixes and refinements within an already selected design do not restart selection. The current selections are Modular Aperture, refined Balanced Rail, Launch Cockpit with the September 10 compact Intro corrections, Engine Telemetry, the ATLAS/Stats remix, Travel Report, Air Atlas A and its A+C flight view, and the subtle spherical radar lens A. Night Glass's first curated composition and Launch Cockpit had explicit scoped design delegation; that is not blanket future delegation.
 

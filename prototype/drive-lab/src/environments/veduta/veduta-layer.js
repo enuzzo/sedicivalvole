@@ -3,14 +3,14 @@ import { createVedutaRepaintScheduler } from './veduta-repaint.js';
 import { createVedutaPolygonIndexJob } from './veduta-spatial.js';
 import { createVedutaBuildQueue, vedutaBuildScheduling } from './veduta-build.js';
 import { createVedutaGeometryBaker } from './veduta-geometry.js';
-import { VEDUTA_COLORS, VEDUTA_PAINT, VEDUTA_WORLD_METRES, pointInVedutaPolygon, vedutaCounterClockwiseRing, vedutaDistanceToSegment, vedutaGridCoordinate, vedutaHash, vedutaRoofFacets } from './veduta-model.js';
+import { VEDUTA_COLORS, VEDUTA_PAINT, VEDUTA_STYLES, VEDUTA_WORLD_METRES, vedutaBaseStyle, vedutaIsNight, pointInVedutaPolygon, vedutaCounterClockwiseRing, vedutaDistanceToSegment, vedutaGridCoordinate, vedutaHash, vedutaRoofFacets } from './veduta-model.js';
 
 const VERTEX = `varying vec3 vNormal; varying vec3 vWorld; varying vec2 vUv;
 varying vec3 vColor;
 void main(){vNormal=normalize(mat3(modelMatrix)*normal);vWorld=(modelMatrix*vec4(position,1.)).xyz;
 vUv=uv;vColor=color;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`;
 const FRAGMENT = `precision highp float; uniform vec3 base; uniform vec3 eye; uniform vec3 mist; uniform float medium; uniform float facade;
-uniform vec2 inkOffset; uniform float inkScale;
+uniform vec2 inkOffset; uniform float inkScale; uniform float night;
 varying vec3 vNormal; varying vec3 vWorld; varying vec2 vUv; varying vec3 vColor;
 float grain(vec2 p){return fract(sin(dot(mod(floor(p),64.),vec2(12.9898,78.233)))*43758.5453);}
 float pigment(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(grain(i),grain(i+vec2(1.,0.)),f.x),mix(grain(i+vec2(0.,1.)),grain(i+vec2(1.)),f.x),f.y);}
@@ -21,12 +21,15 @@ float shade=medium<.5?mix(.29,1.10,lit):mix(.55,1.04,smoothstep(.32,.65,light));
 if(facade<-.5){float leaves=pigment(ink.xy*.7+ink.z*.9)*.7+pigment(ink.xy*2.+ink.z*.9)*.3;
 c*=.75+leaves*.48;c=mix(c,c*vec3(1.14,1.1,.78),smoothstep(.58,.82,leaves)*light*.45);}
 float edge=1.-smoothstep(.08,.28,abs(dot(n,normalize(eye-vWorld))));
+float lamp=0.;
 if(facade>.5&&abs(n.z)<.25){vec2 cell=fract(vUv/vec2(3.5,3.2));
 float w=step(.29,cell.x)*step(cell.x,.67)*step(.28,cell.y)*step(cell.y,.7)*step(2.,vUv.y);
-c=mix(c,vec3(.22,.3,.29),w*.75);}
+if(night>.5){vec2 id=floor(vUv/vec2(3.5,3.2))+floor(vColor.rg*vec2(997.,613.));
+lamp=w*step(.5,fract(sin(dot(id,vec2(41.3,289.1)))*43758.5453));c=mix(c,c*.55,w-lamp);}
+else c=mix(c,vec3(.22,.3,.29),w*.75);}
 if(medium>1.5){vec2 paper=ink.xy+ink.z*.47;
 float wash=pigment(paper*.16)*.65+pigment(paper*.73)*.25+pigment(paper*2.2)*.1;
-c=mix(c,vec3(.96,.91,.78),smoothstep(.58,.87,wash)*.32);
+c=mix(c,night>.5?vec3(.13,.14,.21):vec3(.96,.91,.78),smoothstep(.58,.87,wash)*.32);
 c*=.88+wash*.24;c*=1.-edge*(.12+pigment(paper*1.7)*.14);}
 else if(medium>.5){float l=dot(c,vec3(.3,.58,.12));
 vec2 p=ink.xy+ink.z*.5;
@@ -36,6 +39,8 @@ c=vec3(mix(l*.93+.035,l*.35,hatch*(1.-light)*.68));
 if(facade<.5)c*=1.-edge*.7;}
 else {c*=mix(vec3(.66,.83,1.2),vec3(1.08,1.025,.87),lit);if(facade<.5)c*=1.-edge*.19;
 c*=.96+pigment((ink.xy+ink.z*.4)*.45)*.08;}
+// Lit windows are emissive: applied after the medium response and before mist.
+c=mix(c,vec3(1.,.8,.47),lamp*.95);
 c=mix(c,mist,smoothstep(600.,1800.,distance(eye,vWorld))*.2);
 gl_FragColor=vec4(clamp(c,0.,1.),1.);
 #include <colorspace_fragment>
@@ -43,7 +48,7 @@ gl_FragColor=vec4(clamp(c,0.,1.),1.);
 
 function material(color, style, facade = false) {
   return new THREE.ShaderMaterial({ vertexShader: VERTEX, fragmentShader: FRAGMENT, vertexColors: true,
-    uniforms: { base: { value: new THREE.Color(color) }, eye: { value: new THREE.Vector3(0, -300, 150) }, mist: { value: new THREE.Color(VEDUTA_PAINT[style].horizon) }, medium: { value: ['Anime', 'Manga', 'Watercolor'].indexOf(style) }, facade: { value: typeof facade === 'number' ? facade : facade ? 1 : 0 }, inkOffset: { value: new THREE.Vector2() }, inkScale: { value: 1 } } });
+    uniforms: { base: { value: new THREE.Color(color) }, eye: { value: new THREE.Vector3(0, -300, 150) }, mist: { value: new THREE.Color((VEDUTA_PAINT[style] ?? VEDUTA_PAINT.Anime).horizon) }, medium: { value: VEDUTA_STYLES.indexOf(vedutaBaseStyle(style)) }, night: { value: vedutaIsNight(style) ? 1 : 0 }, facade: { value: typeof facade === 'number' ? facade : facade ? 1 : 0 }, inkOffset: { value: new THREE.Vector2() }, inkScale: { value: 1 } } });
 }
 function mesh(geometry, paint, parent, position, scale) {
   const object = new THREE.Mesh(geometry, paint);
@@ -180,7 +185,7 @@ export function* createVedutaSceneryJob({ map, maplibre, point, origin, scale, s
       }
     }
     if (position.length) {
-      const baked = yield bakeGeometry(new Float32Array(position), style !== 'Watercolor', signal);
+      const baked = yield bakeGeometry(new Float32Array(position), vedutaBaseStyle(style) !== 'Watercolor', signal);
       const geometry = new THREE.BufferGeometry();
       geometry.setAttribute('position', new THREE.BufferAttribute(baked.position, 3));
       geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
@@ -193,7 +198,7 @@ export function* createVedutaSceneryJob({ map, maplibre, point, origin, scale, s
       if (baked.edges) {
         const edges = new THREE.BufferGeometry(); edges.setAttribute('position', new THREE.BufferAttribute(baked.edges, 3));
         edges.boundingSphere = new THREE.Sphere(new THREE.Vector3(...baked.edgeBounds.centre), baked.edgeBounds.radius);
-        nextScenery.add(new THREE.LineSegments(edges, worldMaterial('edges', style, () => new THREE.LineBasicMaterial({ color: c.ink, transparent: true, opacity: style === 'Manga' ? 0.52 : 0.16 }))));
+        nextScenery.add(new THREE.LineSegments(edges, worldMaterial('edges', style, () => new THREE.LineBasicMaterial({ color: c.ink, transparent: true, opacity: vedutaBaseStyle(style) === 'Manga' ? 0.52 : 0.16 }))));
       }
       yield;
     }
