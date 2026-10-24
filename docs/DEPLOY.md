@@ -119,6 +119,8 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 | Date | Record | Build |
 | --- | --- | --- |
+| 2026-10-24 22:15 | [Veduta frame pacing](#veduta-frame-pacing--2026-10-24) | `20261024-2206.079219a` |
+| 2026-10-24 13:55 | [Veduta night, polish and quality pass](#veduta-night-polish-and-quality-pass--2026-10-24) | `20261024-1349.c145da1` |
 | 2026-10-23 17:21 | [Veduta loading follow-up](#veduta-loading-follow-up--2026-10-23) | `20261023-1706.92cd1d7` |
 | 2026-10-23 16:07 | [Veduta realtime trial](#veduta-realtime-trial--2026-10-23) | `20261023-1537.4969ee2` |
 | 2026-10-04 20:14 | [GPS startup maintenance](#gps-startup-maintenance--2026-10-04) | `20261004-1955.2928503` |
@@ -334,6 +336,29 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 Earlier records, from [Night Instrument interface](archive/DEPLOY-HISTORY-2026-09-24.md#night-instrument-interface--2026-09-24)
 back, are kept verbatim in the archive.
+
+### Veduta frame pacing — 2026-10-24
+
+Canonical `20261024-2206.079219a`, VERSION `0.0.0`, fixes the choppiness the
+owner reported on the Lanterne build: Veduta no longer forces a full symbol
+placement every frame (`fadeDuration` 300 instead of 0), lamp pools use viewport
+rotation, and the finish skips Manga's unused wash. Built with
+`SEDICIVALVOLE_NO_LOCAL_ENV=1`. Tests pass 1,156 cases; visual regression 16/16
+on the dev server and on the compiled build; text fit 14/14; credits 189;
+package identity 840 hashes. Evidence:
+[frame pacing after Lanterne](VEDUTA-PERFORMANCE-2026-10-24.md).
+
+Read-only preflight passes with `remote_writes=NONE`. Preserve-existing
+publication uploads 43 files / 6,731,059 bytes, reuses 833 static files and all
+29 full-hash-verified recordings, retains one previous asset and reports
+`ROOT_UPLOAD_ONLY`. Bare and cache-busted roots are HTTP 200,
+no-store/no-cache, proxy MISS and carry the build marker. Main JS/CSS, Veduta
+field JS/CSS, the MapLibre runtime and the geometry worker match local SHA-256.
+The public Intro shows `BUILD 20261024-2206` with an empty console; no session
+was started on the canonical site, so no diagnostic was sent. Rollback tag
+`pre-veduta-pacing-20261024` points to the prior live `c145da1`. Read-only
+postflight passes with 13 root entries and `remote_writes=NONE`. Physical Tesla
+smoothness remains for the owner to confirm.
 
 ### Veduta night, polish and quality pass — 2026-10-24
 
