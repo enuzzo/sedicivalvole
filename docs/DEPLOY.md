@@ -335,6 +335,29 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 Earlier records, from [Night Instrument interface](archive/DEPLOY-HISTORY-2026-09-24.md#night-instrument-interface--2026-09-24)
 back, are kept verbatim in the archive.
 
+### Veduta night, polish and quality pass — 2026-10-24
+
+Canonical `20261024-1349.c145da1`, VERSION `0.0.0`, publishes the owner-selected
+Lanterne night landscape for DARK appearance, the Veduta polish round (roof/wall
+orientation, Night Instrument VIEW popover, palette GPS dot, quieter status and
+credits, Manga water, Watercolor roads) and the verified quality-pass fixes
+(single shared AudioContext for every launch, constant Gradient pixel density,
+Atlas resource-error tolerance, FRACTURE rebuild, shell state fixes). Tests pass
+1,158 cases, text fit 14/14, visual regression 16/16, credits 189 and package
+identity 840 hashes; public hygiene reports no findings.
+
+Read-only preflight passes with `remote_writes=NONE`. Preserve-existing
+publication uploads 43 files / 6,730,987 bytes, reuses 833 static files and all
+29 full-hash-verified recordings, retains one previous asset and reports
+`ROOT_UPLOAD_ONLY`. Bare and cache-busted roots are HTTP 200, no-store/no-cache,
+proxy MISS and carry the build marker; the main JS/CSS, Veduta field JS/CSS and
+geometry worker match local SHA-256. The public Intro shows `BUILD
+20261024-1349` with no console warning/error; no session was started on the
+canonical site, so no diagnostic was sent. Rollback tag
+`pre-veduta-night-20261024` points to prior live `92cd1d7`. Read-only postflight
+passes with 13 root entries and `remote_writes=NONE`. Physical Tesla night
+acceptance remains open.
+
 ### Veduta loading follow-up — 2026-10-23
 
 Canonical `20261023-1706.92cd1d7`, VERSION `0.0.0`, prepares scenery in finite
