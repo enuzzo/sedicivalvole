@@ -125,7 +125,10 @@ export default function VedutaField({ position, positionSamplesRef, gpsState, sp
           center: [vedutaCameraCentre(p).longitude, vedutaCameraCentre(p).latitude], bearing: Number.isFinite(p.heading) ? p.heading : 0, ...camera,
           minZoom: 13, maxZoom: 19, maxPitch: 75, interactive: false, attributionControl: false,
           canvasContextAttributes: { antialias: false }, pixelRatio: atlasMapPixelRatio(window.devicePixelRatio),
-          fadeDuration: 0, renderWorldCopies: false, cancelPendingTileRequestsWhileZooming: true });
+          // Pinned MapLibre 6.7 forces a full symbol placement on every frame when
+          // fadeDuration is 0. With the lamp layers that projected every lamp against
+          // terrain each frame; the default lets placement run every 300ms in budgeted slices.
+          fadeDuration: 300, renderWorldCopies: false, cancelPendingTileRequestsWhileZooming: true });
         mapRef.current = map;
         map.setVerticalFieldOfView(48);
         layerFactory.current = () => createVedutaLayer(maplibre, latest.current.preferences, () => pointRef.current, fail, style => {

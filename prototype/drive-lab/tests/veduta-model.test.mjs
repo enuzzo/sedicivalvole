@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { normalizeVedutaPreferences, createVedutaStyle, vedutaCamera, vedutaCameraCentre, vedutaRoofFacets, vedutaCounterClockwiseRing, vedutaPosition, vedutaStatus, pointInVedutaPolygon, vedutaDistanceToSegment, vedutaGridCoordinate, VEDUTA_STYLES } from '../src/environments/veduta/veduta-model.js';
+import { readFileSync } from 'node:fs';
+import { normalizeVedutaPreferences, createVedutaStyle, vedutaCamera, vedutaCameraCentre, vedutaRoofFacets, vedutaCounterClockwiseRing, vedutaPosition, vedutaStatus, pointInVedutaPolygon, vedutaDistanceToSegment, vedutaGridCoordinate, vedutaMedium, VEDUTA_STYLES } from '../src/environments/veduta/veduta-model.js';
 import { createVedutaRepaintScheduler } from '../src/environments/veduta/veduta-repaint.js';
 import { appendAtlasPositionSample, advanceAtlasFollowCamera } from '../src/environments/atlas/atlas-model.js';
 import { createVedutaVehicle, disposeVedutaTree } from '../src/environments/veduta/veduta-layer.js';
@@ -52,6 +53,19 @@ test('illustrative media keep the existing geographic providers and source geome
     assert.deepEqual(style.layers.find(layer => layer.id === 'veduta-buildings').paint['fill-extrusion-height'], ['coalesce', ['get', 'render_height'], 5]);
   }
   assert.notEqual(createVedutaStyle('Anime', {}).layers[0].paint['background-color'], createVedutaStyle('Manga', {}).layers[0].paint['background-color']);
+});
+// Pinned MapLibre 6.7 re-projects line-placed, map-rotated icons on every frame
+// and forces a full symbol placement every frame when fadeDuration is 0.
+test('street lamps avoid per-frame symbol projection and placement', () => {
+  for (const medium of VEDUTA_STYLES) for (const night of [false, true]) {
+    const lamps = createVedutaStyle(vedutaMedium(medium, night), {}).layers.filter(layer => layer.type === 'symbol');
+    assert.ok(lamps.every(layer => layer.layout['icon-rotation-alignment'] === 'viewport'));
+    assert.equal(lamps.find(layer => layer.id === 'veduta-lamp-pools').layout['icon-pitch-alignment'], 'map');
+  }
+  const style = readFileSync(new URL('../node_modules/maplibre-gl/src/style/style.ts', import.meta.url), 'utf8');
+  assert.match(style, /forceFullPlacement \|\|= this\._layerOrderChanged \|\| fadeDuration === 0;/);
+  const field = readFileSync(new URL('../src/environments/veduta/veduta-field.jsx', import.meta.url), 'utf8');
+  assert.match(field, /fadeDuration: 300,/);
 });
 test('GPS holds stale observations and never derives translation from speed', () => {
   assert.equal(vedutaPosition(null, [], 500), null);

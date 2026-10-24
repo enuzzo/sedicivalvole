@@ -132,11 +132,12 @@ export function createVedutaStyle(styleName = 'Anime', palette) {
     { id: 'veduta-roads', type: 'line', source: 'openfreemap', 'source-layer': 'transportation', filter: ['!=', ['get', 'class'], 'rail'], paint: { 'line-color': c.road, 'line-width': ['interpolate', ['linear'], ['zoom'], 12, 0.5, 17, 7, 20, 34] } },
     // Street-lamp light: map-aligned pools on the asphalt plus a small lamp head,
     // placed by MapLibre along streets. Day keeps them present but transparent so
-    // a medium switch only changes paint.
+    // a medium switch only changes paint. Both images are radially symmetric:
+    // viewport rotation avoids MapLibre re-projecting line-placed icons every frame.
     ...['veduta-lamp-pools', 'veduta-lamp-heads'].map(id => ({ id, type: 'symbol', source: 'openfreemap', 'source-layer': 'transportation', minzoom: 14,
       filter: ['in', ['get', 'class'], ['literal', ['primary', 'secondary', 'tertiary', 'minor', 'service']]],
       layout: { 'symbol-placement': 'line', 'symbol-spacing': 150, 'icon-image': id === 'veduta-lamp-pools' ? 'veduta-lamp-pool' : 'veduta-lamp-head',
-        'icon-pitch-alignment': id === 'veduta-lamp-pools' ? 'map' : 'viewport', 'icon-rotation-alignment': id === 'veduta-lamp-pools' ? 'map' : 'viewport',
+        'icon-pitch-alignment': id === 'veduta-lamp-pools' ? 'map' : 'viewport', 'icon-rotation-alignment': 'viewport',
         'icon-size': id === 'veduta-lamp-pools' ? ['interpolate', ['linear'], ['zoom'], 14, 0.5, 17, 1.5, 19, 3.4] : ['interpolate', ['linear'], ['zoom'], 14, 0.25, 17, 0.45, 19, 0.7],
         'icon-allow-overlap': true, 'icon-ignore-placement': true, 'icon-keep-upright': false },
       paint: { 'icon-opacity': night ? (id === 'veduta-lamp-pools' ? 0.7 : 0.9) : 0 } })),

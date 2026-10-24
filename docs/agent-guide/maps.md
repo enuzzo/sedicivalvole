@@ -100,6 +100,11 @@ a style change and only the base style is persisted. In pinned MapLibre 6.7 a
 data-driven `match` colour or a changed `fill-pattern` keeps the previous
 medium in loaded tiles: vegetation uses constant-colour layers per class group,
 and each medium owns its own pattern layers with only the current set visible.
+Keep Veduta's `fadeDuration` above 0: pinned 6.7 forces a full symbol placement
+on every frame at 0, which projected every lamp against terrain each frame and
+made the car choppy. Lamp icons use viewport rotation (their images are radially
+symmetric) so MapLibre does not re-project line-placed icons every frame. See
+[frame pacing after Lanterne](../VEDUTA-PERFORMANCE-2026-10-24.md).
 
 ## Discover
 

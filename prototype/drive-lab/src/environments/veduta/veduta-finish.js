@@ -55,7 +55,8 @@ float outline=smoothstep(.10,.42,localGradient);
 // Preserve structure where a wide paint kernel would mix road/roof/sky.
 if(medium<.5||medium>1.5)c=mix(c,original,smoothstep(.10,.32,gradient)*.84);
 float fine=hash(floor(px));
-float wash=noise(px*.025)*.55+noise(px*.083)*.3+noise(px*.19)*.15;
+// Paper wash is evaluated only by the media that use it (Manga does not).
+float wash=medium<.5||medium>1.5?noise(px*.025)*.55+noise(px*.083)*.3+noise(px*.19)*.15:0.;
 if(medium<.5){
   float l=lum(c);vec3 chroma=c-vec3(l);
   float band=floor(clamp(l,0.,.999)*7.)/7.;
