@@ -129,6 +129,7 @@ export default function AtlasField({
     let frame = 0;
     let loadTimeout = null;
     let interactionCleanup = () => {};
+    let resourceFailure = false, reloadFailedResources = () => {};
     setRoadName(null);
     if (!hostRef.current || !effectivePosition) {
       onRenderer("Atlas · waiting for GPS");
@@ -291,9 +292,23 @@ export default function AtlasField({
         canvas.removeEventListener("wheel", wheelManual);
       };
       map.on("error", (event) => {
+        // A failed tile or glyph after load leaves a gap, not a dead map: keep the
+        // camera, framing and places, and reload sources when the network returns.
+        if (mapReady && (event?.tile || event?.sourceId || Number.isFinite(event?.error?.status))) {
+          resourceFailure = true;
+          return;
+        }
         const error = event?.error instanceof Error ? event.error : new Error("Atlas map runtime error");
         fail(error);
       });
+      reloadFailedResources = () => {
+        if (!resourceFailure || failed || !mapReady) return;
+        resourceFailure = false;
+        for (const id of Object.keys(map.getStyle()?.sources ?? {})) {
+          try { map.refreshTiles(id); } catch { /* GeoJSON and image sources have no tiles to refresh. */ }
+        }
+      };
+      window.addEventListener("online", reloadFailedResources);
       map.on("render", () => {
         if (failed || !mapReady) return;
         try {
@@ -414,6 +429,7 @@ export default function AtlasField({
       clearTimeout(loadTimeout);
       cancelAnimationFrame(frame);
       interactionCleanup();
+      window.removeEventListener("online", reloadFailedResources);
       mapRef.current?.remove();
       mapRef.current = null;
       setMapObject(null);

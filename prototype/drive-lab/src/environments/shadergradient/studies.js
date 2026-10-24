@@ -207,9 +207,11 @@ export function shaderGradientResponse(settings, {
   });
 }
 
-export function shaderGradientPixelDensity(underwaterAmount = 0, reducedMotion = false) {
-  if (reducedMotion) return 1;
-  return clamp(underwaterAmount) >= 0.08 ? 0.8 : 1;
+// The pinned ShaderGradientCanvas keys its R3F <Canvas> by `pixelDensity + fov`,
+// so any density change destroys and recreates the WebGL context. A braking
+// fill-cost saving therefore cost a full remount on every UNDERWATER crossing.
+export function shaderGradientPixelDensity() {
+  return 1;
 }
 
 /** Keep Pearl's exact colors below the cosmic shader's clipped lighting range. */

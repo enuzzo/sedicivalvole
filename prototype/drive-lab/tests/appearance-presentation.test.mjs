@@ -79,8 +79,11 @@ test("appearance persistence, runtime resolution and diagnostics remain palette-
   assert.doesNotMatch(app, /appearanceRetainedFocus/);
   assert.match(app, /const changeAppearanceMenuOpen = useCallback\(\(open\) => \{[\s\S]*?setGpsHelpOpen\(false\);[\s\S]*?setNetworkPopoverOpen\(false\)/);
   assert.match(app, /const changeNetworkPopoverOpen = useCallback\(\(open\) => \{[\s\S]*?setAppearanceMenuOpen\(false\);[\s\S]*?setGpsHelpOpen\(false\)/);
-  assert.match(app, /const toggleGpsHelp = useCallback\(\(\) => \{[\s\S]*?setAppearanceMenuOpen\(false\);[\s\S]*?setNetworkPopoverOpen\(false\);[\s\S]*?setGpsHelpOpen\(\(current\) => !current\)/);
-  assert.match(app, /!appearanceMenuOpen[\s\S]*?atlasGpsPresentation\(gpsState, accuracy, source\)\.requiresHelp\) \{[\s\S]*?setGpsHelpOpen\(true\)/);
+  assert.match(app, /const toggleGpsHelp = useCallback\(\(\) => \{[\s\S]*?setAppearanceMenuOpen\(false\);[\s\S]*?setNetworkPopoverOpen\(false\);[\s\S]*?setGpsHelpOpen\(\(current\) => \{[\s\S]*?return !current;/);
+  assert.match(app, /!appearanceMenuOpen && !gpsHelpDismissedRef\.current[\s\S]*?atlasGpsPresentation\(gpsState, accuracy, source\)\.requiresHelp\) \{[\s\S]*?setGpsHelpOpen\(true\)/);
+  // A dismissed automatic help stays closed until a GPS retry or another visual.
+  assert.match(app, /const startGps = useCallback\(\(\) => \{\s*gpsHelpDismissedRef\.current = false;/);
+  assert.match(app, /onClose=\{dismissGpsHelp\}/);
   assert.match(app, /appearancePreference: appearanceModeRef\.current/);
   assert.match(app, /appearanceSource: appearanceResolutionRef\.current\.source/);
   assert.doesNotMatch(runtime, /data-palette|themeId|--accent/);

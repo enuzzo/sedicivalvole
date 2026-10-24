@@ -117,11 +117,8 @@ test("braking folds and densifies Gradient continuously, then restores the exact
   assert.match(fieldSource, /audioMacroAmount\(macroSnapshot, "underwater"\)/);
 });
 
-test("braking temporarily lowers Gradient fill cost without changing its authored response", () => {
-  assert.equal(shaderGradientPixelDensity(0), 1);
-  assert.equal(shaderGradientPixelDensity(0.079), 1);
-  assert.equal(shaderGradientPixelDensity(0.08), 0.8);
-  assert.equal(shaderGradientPixelDensity(1), 0.8);
+test("braking keeps one Gradient canvas: density is constant because the pinned canvas is keyed by it", () => {
+  for (const underwater of [0, 0.079, 0.08, 1]) assert.equal(shaderGradientPixelDensity(underwater), 1);
   assert.equal(shaderGradientPixelDensity(1, true), 1);
 });
 

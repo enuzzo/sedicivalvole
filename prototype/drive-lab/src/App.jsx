@@ -104,7 +104,7 @@ import {
   soundtrackMediaIsPlaying,
   soundtrackMediaPositionState,
 } from "./media-session.js";
-import { createAudioMacroSnapshot } from "./response-mapping.js";
+import { audioMacroAmount, createAudioMacroSnapshot } from "./response-mapping.js";
 import { createSoundtrackPreviewController } from "./soundtrack/preview-controller.js";
 import { createSoundtrackEffectsController } from "./soundtrack/effects-controller.js";
 import {
@@ -775,6 +775,7 @@ export function App() {
   const [jamendoPreviewEntries, setJamendoPreviewEntries] = useState([]);
   const [vehicleEffectsEnabled, setVehicleEffectsEnabled] = useState(initialPreferences.vehicleEffectsEnabled);
   const [soundtrackManualEffects, setSoundtrackManualEffects] = useState(initialPreferences.manualEffects);
+  const soundtrackManualEffectsRef = useRef(soundtrackManualEffects);
   const [networkNotice, setNetworkNotice] = useState(() => readNetworkUiNotice("app-start"));
   const [passengerAtlasOpen, setPassengerAtlasOpen] = useState(false);
   const [statsOpen, setStatsOpen] = useState(false);
@@ -788,6 +789,8 @@ export function App() {
   const [mapPosition, setMapPosition] = useState(null);
   const [radarInitialPosition, setRadarInitialPosition] = useState(null);
   const [gpsHelpOpen, setGpsHelpOpen] = useState(false);
+  // A dismissed automatic GPS help stays closed until a retry or another visual.
+  const gpsHelpDismissedRef = useRef(false);
   const [appearanceMode, setAppearanceMode] = useState(initialAppearanceMode);
   const [appearanceResolution, setAppearanceResolution] = useState(() => ({
     appearance: initialAppearanceMode === "auto"
@@ -1161,7 +1164,14 @@ export function App() {
   const toggleGpsHelp = useCallback(() => {
     setAppearanceMenuOpen(false);
     setNetworkPopoverOpen(false);
-    setGpsHelpOpen((current) => !current);
+    setGpsHelpOpen((current) => {
+      if (current) gpsHelpDismissedRef.current = true;
+      return !current;
+    });
+  }, []);
+  const dismissGpsHelp = useCallback(() => {
+    gpsHelpDismissedRef.current = true;
+    setGpsHelpOpen(false);
   }, []);
 
   const closeVoicePreview = useCallback(() => {
@@ -1197,12 +1207,14 @@ export function App() {
       onState: updateSoundtrackSnapshot,
       onTelemetry: logDiagnosticEvent,
     });
-    controller.setVehicleMaster(vehicleEffectsEnabled);
-    controller.setManualEffects(soundtrackManualEffects);
+    // First-creation values come from refs: an FX pad drag must not recreate this
+    // callback and, through it, the recovery loop and every dependent handler.
+    controller.setVehicleMaster(vehicleEffectsEnabledRef.current);
+    controller.setManualEffects(soundtrackManualEffectsRef.current);
     soundtrackRef.current = controller;
     updateSoundtrackSnapshot(controller.getSnapshot());
     return controller;
-  }, [logDiagnosticEvent, soundtrackManualEffects, updateSoundtrackSnapshot, vehicleEffectsEnabled]);
+  }, [logDiagnosticEvent, updateSoundtrackSnapshot]);
 
   const prepareSoundtrack = useCallback(({ force = false } = {}) => {
     const controller = soundtrackController();
@@ -1273,6 +1285,7 @@ export function App() {
   themeIdRef.current = themeId;
   mutedRef.current = muted;
   vehicleEffectsEnabledRef.current = vehicleEffectsEnabled;
+  soundtrackManualEffectsRef.current = soundtrackManualEffects;
   bpmRef.current = bpm;
   transportBpmRef.current = transportBpm;
   mapPositionRef.current = mapPosition;
@@ -1519,6 +1532,7 @@ export function App() {
   }, [source]);
 
   const startGps = useCallback(() => {
+    gpsHelpDismissedRef.current = false;
     gpsTelemetryRef.current = createGpsTelemetry(performance.now());
     lastGpsSampleAtRef.current = null;
     lastGpsEventAtRef.current = null;
@@ -1704,7 +1718,7 @@ export function App() {
 
   useEffect(() => {
     if (phase === "running" && environmentId === "atlas" && !mapPosition && !atlasDemoActive
-      && !appearanceMenuOpen
+      && !appearanceMenuOpen && !gpsHelpDismissedRef.current
       && atlasGpsPresentation(gpsState, accuracy, source).requiresHelp) {
       setGpsHelpOpen(true);
     }
@@ -1717,11 +1731,12 @@ export function App() {
   useEffect(() => {
     if (!gpsHelpOpen) return undefined;
     const closeOnEscape = (event) => {
-      if (event.key === "Escape") setGpsHelpOpen(false);
+      if (event.key === "Escape") dismissGpsHelp();
     };
     window.addEventListener("keydown", closeOnEscape);
     return () => window.removeEventListener("keydown", closeOnEscape);
-  }, [gpsHelpOpen]);
+  }, [dismissGpsHelp, gpsHelpOpen]);
+  useEffect(() => { gpsHelpDismissedRef.current = false; }, [environmentId]);
 
   const runAtlasDemo = useCallback(() => {
     setAtlasDemoActive(true);
@@ -2022,9 +2037,9 @@ export function App() {
         (nextEffect) => setActiveEffect(QA_EFFECT ?? nextEffect),
         handleScoreRecovery,
         {
-          audioContext: launchEngine || musicId === "soundtrack"
-            ? soundtrackRef.current?.getAudioContext?.() ?? null
-            : null,
+          // The intro already prepares Soundtrack and its context for every
+          // launch, so every launch shares it (one AudioContext contract).
+          audioContext: soundtrackRef.current?.getAudioContext?.() ?? null,
           deferScoreWorklets: launchEngine || musicId === "soundtrack",
         },
       );
@@ -2072,18 +2087,22 @@ export function App() {
       window.clearInterval(audioMeterTimerRef.current);
       audioMeterTimerRef.current = window.setInterval(() => {
         const engine = audioRef.current;
-        setAudioLevel(
-          experienceModeRef.current === "flux" && sessionMusicModeRef.current === "soundtrack"
-            ? soundtrackRef.current?.getLevel() ?? 0
-            : engine?.getLevel() ?? 0,
-        );
+        // Unchanged values keep the previous state so silence or a steady macro
+        // does not re-render the whole App 5.5 times per second.
+        const level = Math.round((experienceModeRef.current === "flux" && sessionMusicModeRef.current === "soundtrack"
+          ? soundtrackRef.current?.getLevel() ?? 0
+          : engine?.getLevel() ?? 0) * 100) / 100;
+        setAudioLevel(level);
         const snapshot = engine?.getMacroSnapshot() ?? createAudioMacroSnapshot({
           capturedAtMs: performance.now(),
         });
-        setAudioMacros(QA_EFFECT ? createAudioMacroSnapshot({
+        const next = QA_EFFECT ? createAudioMacroSnapshot({
           capturedAtMs: snapshot.capturedAtMs,
           underwater: QA_EFFECT === "UNDERWATER" ? 1 : 0,
-        }) : snapshot);
+        }) : snapshot;
+        setAudioMacros((previous) => (
+          Math.abs(audioMacroAmount(previous, "underwater") - audioMacroAmount(next, "underwater")) < 0.001 ? previous : next
+        ));
       }, 180);
     } catch (error) {
       audioRef.current?.destroy();
@@ -2215,6 +2234,8 @@ export function App() {
     transportActionQueueRef.current.invalidate();
     musicModeRevisionRef.current++;
     scoreSelectionRevisionRef.current++;
+    // A superseded music-mode switch returns early; clear its loading label here.
+    setMusicModeLoading(null);
     experienceModeRef.current = nextMode;
     mutedRef.current = modeMutesRef.current[nextMode];
     engineMotionRef.current.reset("experience-changed");
@@ -2329,6 +2350,7 @@ export function App() {
     transportActionQueueRef.current.invalidate();
     musicModeRevisionRef.current += 1;
     scoreSelectionRevisionRef.current += 1;
+    setMusicModeLoading(null);
     try {
       localStorage.removeItem(PREFERENCES_KEY);
       localStorage.removeItem(LEGACY_PREFERENCES_KEY);
@@ -4201,7 +4223,7 @@ export function App() {
           open={gpsHelpOpen}
           status={gpsState}
           accuracy={accuracy}
-          onClose={() => setGpsHelpOpen(false)}
+          onClose={dismissGpsHelp}
           onRetry={startGps}
           onDemo={runAtlasDemo}
         />

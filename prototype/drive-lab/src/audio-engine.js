@@ -266,6 +266,9 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
     fractureReadyError = error;
     const failedNode = node;
     node = null;
+    // The next FRACTURE request builds a fresh node instead of reusing the
+    // resolved promise of the processor that just failed.
+    fractureReady = null;
     if (failedNode) {
       failedNode.port.onmessage = null;
       failedNode.onprocessorerror = null;
@@ -303,7 +306,7 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
     }
   }
 
-  let fractureReady = null;
+  let fractureReady = null, fractureModuleLoaded = false;
   function prepareFracture() {
     if (fractureReady) return fractureReady;
     fractureReadyState = "loading";
@@ -311,12 +314,16 @@ export function createAudioEngine(onPulse, onEffectChange, onScoreRecovery, {
       if (typeof context.audioWorklet?.addModule !== "function") {
         throw new Error("AudioWorklet is unavailable");
       }
-      await withReadinessTimeout(context.audioWorklet.addModule(processorUrl), {
-        label: "FRACTURE AudioWorklet",
-        timeoutMs: AUDIO_WORKLET_READY_TIMEOUT_MS,
-        schedule: window.setTimeout ?? globalThis.setTimeout,
-        cancel: window.clearTimeout ?? globalThis.clearTimeout,
-      });
+      // registerProcessor runs once per context; a rebuilt node reuses the module.
+      if (!fractureModuleLoaded) {
+        await withReadinessTimeout(context.audioWorklet.addModule(processorUrl), {
+          label: "FRACTURE AudioWorklet",
+          timeoutMs: AUDIO_WORKLET_READY_TIMEOUT_MS,
+          schedule: window.setTimeout ?? globalThis.setTimeout,
+          cancel: window.clearTimeout ?? globalThis.clearTimeout,
+        });
+        fractureModuleLoaded = true;
+      }
       if (!running) return false;
       node = new AudioWorkletNode(context, "score-processor", { outputChannelCount: [2] });
       node.onprocessorerror = (event) => {
