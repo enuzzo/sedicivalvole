@@ -188,9 +188,10 @@ export default function AirAtlasField({position,gpsState,theme,reducedMotion,onR
     import('../../maplibre-runtime.js').then(gl=>{
       if(disposed)return;library.current=gl;
       const point=latest.current.position;
+      // fadeDuration above 0 stops MapLibre 6.7 placing every label on every frame.
       const instance=new gl.Map({container:host.current,style:createAirAtlasStyle(latest.current.theme.palette,appearance,labels),
         center:mapCamera.current?.center??[point.longitude,point.latitude],zoom:mapCamera.current?.zoom??9,bearing:mapCamera.current?.bearing??0,pitch:0,maxPitch:0,minZoom:5,maxZoom:14,
-        attributionControl:false,canvasContextAttributes:{antialias:false},fadeDuration:0,pixelRatio:atlasMapPixelRatio(window.devicePixelRatio),renderWorldCopies:false});
+        attributionControl:false,canvasContextAttributes:{antialias:false},fadeDuration:100,pixelRatio:atlasMapPixelRatio(window.devicePixelRatio),renderWorldCopies:false});
       mapRef.current=instance;setMap(instance);
       instance.dragRotate.disable();instance.touchZoomRotate.disableRotation();
       const home=document.createElement('div');home.className='air-atlas-home';home.setAttribute('aria-label','Your location');home.title='You · current GPS location';

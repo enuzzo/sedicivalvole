@@ -12,6 +12,8 @@ Air Atlas rounded-location forwarding to the fixed same-origin ADSB.lol adapter 
 
 MapLibre GL JS is pinned to 6.7.0 after the September 12 attribution sanitizer advisory. All map imports go through the lazy `src/maplibre-runtime.js` adapter, which configures the same-origin bundled worker. WebGL2 is required; ATLAS/Air Atlas fallback and report-map omission must remain truthful when GPU initialization fails. Fly With shares this runtime. Keep context attributes nested under `canvasContextAttributes`, including the report capture buffer. Browser checks do not establish physical Tesla/iPhone compatibility.
 
+Moving maps with symbol layers keep `fadeDuration` above 0: at 0, pinned 6.7 forces a full symbol placement on every frame. Atlas, Air Atlas and Fly With use `100` (placement at most ten times per second, near-instant label changes), Veduta `300` (see its section). The static report map keeps `0` so its capture has every label on the first frame. Evidence: [Atlas placement cost](../ATLAS-PERFORMANCE-2026-10-25.md).
+
 ## ATLAS and Stats
 
 ATLAS is an informative wider map; Stats for Nerds is a separate full-screen visual, Visual 09 in launch/running catalogues. Remove shared Map/Stats tabs. Preserve metrics and verify replacement parity before retiring an old view. The owner-selected remix combines Travel Observatory's pastel map/POIs and summary bands, Mission Control heading/network instruments, and Journey Magazine photo place card plus speed/altitude timeline. Heading bands curve outward. Natural and Palette remain distinct; manual/Area/Trip framing persists until Follow. Switching passenger views preserves audio mode.

@@ -151,7 +151,10 @@ export default function AtlasField({
         bearing: Number.isFinite(effectivePosition.heading) ? effectivePosition.heading : 22,
         attributionControl: false,
         canvasContextAttributes: { antialias: false },
-        fadeDuration: 0,
+        // At 0, pinned MapLibre 6.7 places every symbol on every frame (about 13% of
+        // main-thread time while following). 100ms bounds placement to ten per
+        // second and keeps label changes close to the former instant swap.
+        fadeDuration: 100,
         pixelRatio: atlasMapPixelRatio(window.devicePixelRatio),
         renderWorldCopies: false,
         cancelPendingTileRequestsWhileZooming: true,

@@ -112,7 +112,8 @@ over-weights vertex work, so these shares are not Tesla GPU numbers.
   the camera eases toward fix jitter. This is cost, not choppiness, and was left
   unchanged.
 - Atlas (`atlas-place-labels`) and Air Atlas (`radar-airports`) also combine
-  symbol layers with `fadeDuration: 0`. They were not measured here.
+  symbol layers with `fadeDuration: 0`. They were not measured here. Measured
+  and changed on 2026-10-25: [Atlas placement cost](ATLAS-PERFORMANCE-2026-10-25.md).
 - Physical Tesla evidence: identify build, medium, DARK/LIGHT and speed with the
   owner's observation; coordinate-free diagnostics already carry render-event
   intervals and long tasks.

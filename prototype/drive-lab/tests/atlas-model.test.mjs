@@ -843,3 +843,11 @@ test("follow camera crosses north and the dateline by the shortest arc and settl
   const north=advance(current,{...current,bearing:0},16);
   assert.ok(north.bearing>359 && north.bearing<360);
 });
+// Pinned MapLibre 6.7 forces a full symbol placement every frame when fadeDuration
+// is 0 (see veduta-model.test.mjs); place and airport labels keep a short fade.
+test("Atlas, Air Atlas and Fly With maps avoid per-frame symbol placement", () => {
+  for (const file of ["atlas/atlas-field.jsx", "radar/air-atlas-field.jsx", "radar/radar-flight-view.jsx"]) {
+    const source = readFileSync(new URL(`../src/environments/${file}`, import.meta.url), "utf8");
+    assert.match(source, /fadeDuration: ?100,/, file);
+  }
+});

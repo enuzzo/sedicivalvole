@@ -22,9 +22,10 @@ export default function RadarFlightView({gl,plane,readSample,palette,reducedMoti
     let cameraFov=radarFlightFov(zoomRef.current),lastSample=null;
     const p=latest.current.plane;
     let map;
+    // fadeDuration above 0 stops MapLibre 6.7 placing every label on every frame.
     try {map=new gl.Map({container:host.current,style:styleRef.current,center:[p.longitude,p.latitude],zoom:11,
       pitch:0,maxPitch:75,minZoom:2,maxZoom:18,centerClampedToGround:false,interactive:false,
-      attributionControl:false,canvasContextAttributes:{antialias:false},fadeDuration:0,renderWorldCopies:false,
+      attributionControl:false,canvasContextAttributes:{antialias:false},fadeDuration:100,renderWorldCopies:false,
       pixelRatio:atlasMapPixelRatio(window.devicePixelRatio)});
     } catch {
       setState({ready:false,message:'WebGL2 unavailable · return to radar'});
