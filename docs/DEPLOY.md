@@ -119,6 +119,7 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 | Date | Record | Build |
 | --- | --- | --- |
+| 2026-10-25 09:40 | [Atlas symbol placement](#atlas-symbol-placement--2026-10-25) | `20261025-0925.557022d` |
 | 2026-10-24 22:15 | [Veduta frame pacing](#veduta-frame-pacing--2026-10-24) | `20261024-2206.079219a` |
 | 2026-10-24 13:55 | [Veduta night, polish and quality pass](#veduta-night-polish-and-quality-pass--2026-10-24) | `20261024-1349.c145da1` |
 | 2026-10-23 17:21 | [Veduta loading follow-up](#veduta-loading-follow-up--2026-10-23) | `20261023-1706.92cd1d7` |
@@ -336,6 +337,27 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 Earlier records, from [Night Instrument interface](archive/DEPLOY-HISTORY-2026-09-24.md#night-instrument-interface--2026-09-24)
 back, are kept verbatim in the archive.
+
+### Atlas symbol placement — 2026-10-25
+
+Canonical `20261025-0925.557022d`, VERSION `0.0.0`: Atlas, Air Atlas and Fly
+With use `fadeDuration` 100 instead of 0, so pinned MapLibre 6.7 no longer
+places every label on every frame. Built with `SEDICIVALVOLE_NO_LOCAL_ENV=1`.
+Tests pass 1,157 cases; visual regression 16/16 on the dev server; text fit
+14/14; credits 189; package identity 840 hashes. Evidence:
+[Atlas placement cost](ATLAS-PERFORMANCE-2026-10-25.md).
+
+Read-only preflight passes with `remote_writes=NONE`. Preserve-existing
+publication uploads 43 files / 6,731,065 bytes, reuses 833 static files and all
+29 full-hash-verified recordings, retains one previous asset and reports
+`ROOT_UPLOAD_ONLY`. Bare and cache-busted roots are HTTP 200,
+no-store/no-cache, proxy MISS and carry the build marker. Main JS/CSS, the
+Atlas and Air Atlas field chunks and the MapLibre runtime match local SHA-256.
+The public Intro shows `BUILD 20261025-0925` with an empty console; no session
+was started on the canonical site, so no diagnostic was sent. Rollback tag
+`pre-atlas-placement-20261025` points to the prior live `079219a`. Read-only
+postflight passes with 13 root entries and `remote_writes=NONE`. Physical Tesla
+evidence remains with the owner.
 
 ### Veduta frame pacing — 2026-10-24
 
