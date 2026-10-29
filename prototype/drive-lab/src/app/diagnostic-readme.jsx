@@ -28,7 +28,7 @@ export function DiagnosticReadme() {
       <section>
         <h4>Telemetry and privacy</h4>
         <ul>
-          <li>No third-party analytics are enabled. Dev automatic reports are ON by default during this development phase; the visible switch turns them OFF.</li>
+          <li>Google Analytics 4 measures anonymous page visits; it never receives coordinates, routes or diagnostic packets. Dev automatic reports are ON by default during this development phase; the visible switch turns them OFF.</li>
           <li>Coordinates are not collected, stored, copied, or included in a diagnostic.</li>
           <li>GPS evidence is limited to status, speed confidence, accuracy, and bounded counts.</li>
           <li>Dev can automatically send coordinate-free reports every 15 minutes of active session time, late when the browser froze the page, and best-effort when the app is closed or hidden. Standard sends only with SEND DIAGNOSTIC. Automatic sending has a visible OFF switch.</li>

@@ -99,7 +99,7 @@ test("README carries privacy, provenance, licensing, and source details", () => 
   const app = readAppSurface();
 
   assert.match(app, /aria-controls="diagnostic-readme"/);
-  assert.match(app, /No third-party analytics are enabled/);
+  assert.match(app, /Google Analytics 4 measures anonymous page visits/);
   assert.match(app, /Coordinates are not collected, stored, copied, or included/);
   assert.match(app, /76 royalty-free MusicRadar source recordings/);
   assert.match(app, /source packs are not[\s\S]*?redistributed/);
