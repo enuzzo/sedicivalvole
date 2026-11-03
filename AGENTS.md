@@ -20,6 +20,12 @@ These instructions apply across this repository. Product code lives in `prototyp
 - Before implementing a new visual direction, present exactly two carefully developed Image Gen directions and wait for selection. Generate images with Codex CLI image generation, never the Magnific MCP (owner rule, October 24: Codex costs much less). Reproduce the selected reference as faithfully as possible, with the established design system taking precedence over generated artistic deviations. Selected designs, fidelity requirements and explicitly delegated changes are listed in [Design decisions](docs/agent-guide/interface.md#design-decisions); their scoped approval is not a new pending question or blanket redesign authority.
 - Standing September 5 authorization covers prompt verified deployment of agreed product work to `https://sedicivalvole.app/`. Use [Delivery](docs/agent-guide/delivery.md#canonical-publication), including build identity, secrets exception and canonical verification; no repeated deployment approval is needed. Do not send messages to people without explicit sending authority. The existing automatic diagnostic destination has its own narrow owner-authorized [delivery contract](docs/agent-guide/diagnostics-reports.md#automatic-delivery).
 
+## Optional internal Jev assistance
+
+- When semantic judgment could help our internal work, consider proposing Jev via `typesafe-ai`: classify observations, select or rank supplied candidates, or check a specific claim against supplied evidence, including bounded code-review hypotheses. Read the skill and current TypeSafe docs first. Jev returns typed judgments (`Noul`, `Choice`, `Score`), not explanations; do not use it for exact calculations, measured latency, broad root-cause analysis or proof that code is correct. Prefer deterministic code when sufficient.
+- Before remote inference, ask the owner with the concrete benefit, input to be sent, request/cost cap and independent verification plan. Approval covers that bounded experiment; ask again only when its scope changes. Use `typesafe-local-access` for Keychain-backed backend access; never expose credentials. Minimize transmitted data and prefer synthetic inputs. Local tooling still calls remote TypeSafe; this is not authorization for public-app integration or resuming paused work.
+- Treat answers as fallible review signals. Confidence is not correctness; retain an insufficient-evidence path and verify consequential findings through source inspection/tests. Report measured latency, usage and failures separately from provider claims. Do not propose Jev routinely when it adds no clear value.
+
 ## Read for the task
 
 Read the matching **section**, then only the supporting evidence needed for the change. Cross-subsystem work follows each affected owner; no task must read this whole table's destinations. Paths in the local AGENTS are relative to Drive Lab; paths below are relative to the repository root.
@@ -41,3 +47,14 @@ Read the matching **section**, then only the supporting evidence needed for the 
 For a requested backlog continuation, consult the relevant current-state/owner-decision section and verify its evidence before acting. Existing broad acceptance is recorded in `docs/OWNER-DECISIONS-2026-09-07.md`: reliability, then Engine, then iPhone was the ordered direction; it is not authorization to interrupt a scoped task. `docs/TECHNICAL-DIRECTION.md` is for architectural boundaries, `docs/MUSIC-CRAFT.md` for relevant musical knowledge, and `docs/DEPLOY.md` for release operations, not mandatory whole-document reading.
 
 Skills and plugins follow their actual task triggers and installed availability. Repository references do not activate API features or change model/tool configuration. If a skill causes a concrete stop or diversion, identify and link its exact instruction and explain the effect; do not modify or bypass global skills to resolve it. User instructions take precedence over skill guidelines within the applicable instruction hierarchy.
+
+
+## Generated folders stay out of Dropbox
+
+This repo lives in Dropbox, which must not sync generated folders: thousands of small files slow Dropbox down on every Mac and break across architectures. Each Mac makes its own: `__pycache__`, `build`, `dist`. On 2026-11-03 these were flagged on the Mac Studio:
+
+- `prototype/drive-lab/.sample-analysis-venv/lib/python3.11/site-packages/pip/_internal/operations/build/`
+- `prototype/drive-lab/dist/`
+- every `__pycache__/`
+
+On a Mac where one is missing, create the empty folder, flag it with `xattr -w 'com.apple.fileprovider.ignore#P' 1 <folder>`, check that `xattr -p` prints 1, and only then install or build into it. Flag any new generated folder the same way before its first build, keep it in `.gitignore`, and never commit it.
