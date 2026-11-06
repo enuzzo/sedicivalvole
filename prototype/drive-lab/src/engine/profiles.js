@@ -1,6 +1,7 @@
 import { bac_mono, ferr_458, procar } from "./upstream/configurations.ts";
 import inventory from "./source-inventory.json" with { type: "json" };
 import { VIRTUAL_WHEEL_RADIUS_M } from "./gearbox.js";
+import { COMBUSTION_ENGINES } from "./combustion/engines.js";
 
 const sources = new Map(inventory.audio.map(asset => [asset.source.replace(/^public\//, ""), asset]));
 const road = (gears, finalDrive, upshiftKmh, downshiftKmh, loadHoldKmh) => Object.freeze({
@@ -27,6 +28,8 @@ const VOICINGS = Object.freeze({
   touring: Object.freeze({ lowShelfHz: 120, lowShelfDb: 3, midHz: 460, midQ: 1, midDb: -3.5, presenceHz: 3000, presenceQ: 0.8, presenceDb: 3,
     air: 0.12, body: 0.15, bodyOrders: Object.freeze({ 2: 0.05, 3: 0.3, 6: 1, 12: 0.25 }), trimDb: 3 }),
 });
+// Voice gain bringing the combustion synthesizer near the published loop level.
+const COMBUSTION_MIX = 6; // +15.6 dB: road-route acceleration near Rosso, peaks about -3.5 dBFS (Nov 6)
 const make = (id, label, configuration, shifts, voice = null) => {
   const transmission = ROAD_TRANSMISSIONS[id] ?? ROAD_TRANSMISSIONS.mono;
   return Object.freeze({
@@ -53,7 +56,19 @@ export const ENGINE_PROFILES = Object.freeze([
   make("turbine", "Turbine", { ...bac_mono, sounds: {}, engine: { ...bac_mono.engine, limiter: 9000, soft_limiter: 8900 } },
     { up: 8000, kickdown: 5000, duration: .3, singleSpeed: true, boost: { enabled: true, thresholdRpm: 600, fullRpm: 8000 } },
     { turbine: true, spoolSeconds: 1.8, mix: 1.8 }),
+  ...combustionCandidates(),
 ]);
+// November 6 LAB-only candidates: the original physically informed synthesizer
+// (./combustion). Fully procedural (no recordings), neutral voicing; selectable
+// only in the protected LAB, never in the public catalogue.
+function combustionCandidates() {
+  return Object.entries(COMBUSTION_ENGINES).map(([engine, spec]) => make(engine, spec.label,
+    { ...bac_mono, sounds: {}, engine: { ...bac_mono.engine, limiter: spec.limiterRpm, soft_limiter: spec.limiterRpm - 100,
+      inertia: spec.firing.length >= 8 ? 1.15 : 1 } },
+    { up: Math.round(spec.redlineRpm * 0.93), kickdown: Math.round(spec.redlineRpm * 0.68), duration: spec.forced ? 0.24 : 0.2,
+      ...(spec.forced?.type === "turbo" ? { boost: { enabled: true, thresholdRpm: 1900, fullRpm: Math.round(spec.redlineRpm * 0.6) } } : {}) },
+    { model: "combustion", engine, mix: COMBUSTION_MIX }));
+}
 export function engineProfile(id) {
   const found = ENGINE_PROFILES.find(profile => profile.id === id);
   if (!found) throw new RangeError("Unknown Engine profile");

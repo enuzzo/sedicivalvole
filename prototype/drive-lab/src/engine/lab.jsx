@@ -2,8 +2,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { createEngineMotion } from "./motion.js";
 import { useEngine } from "./use-engine.js";
 import { EngineTelemetry } from "./telemetry-field.jsx";
-import { ENGINE_CATALOGUE, isEngineProfile } from "./catalogue.js";
-import { comparisonProfile, comparisonSpeed, COMPARISON_SECONDS, COMPARISON_CALIBRATIONS,
+import { ENGINE_CATALOGUE, ENGINE_LAB_CANDIDATES, isLabEngine } from "./catalogue.js";
+import { comparisonProfile, comparisonSpeed, COMPARISON_SECONDS, comparisonCalibrations,
   COMPARISON_STORAGE_KEY, readComparisonNotes, makeComparisonNote } from "./lab-comparison.js";
 
 /** Protected tuning surface. Manual selection is deliberately absent from the public mode. */
@@ -60,7 +60,7 @@ function EngineBench({ audioRef, prepareAudio, profile, onProfile, calibration, 
   return <section className="engine-lab">
     <div className="engine-lab-controls">
       {children}
-      <p aria-live="polite">{active ? (geaps.snapshot.prepared ? `${COMPARISON_CALIBRATIONS[calibration]} · ${Math.round(speed)} km/h` : "Preparing audio…") : notice || "Ready to compare"}</p>
+      <p aria-live="polite">{active ? (geaps.snapshot.prepared ? `${comparisonCalibrations(profile)[calibration]} · ${Math.round(speed)} km/h` : "Preparing audio…") : notice || "Ready to compare"}</p>
       <button type="button" disabled={!active} onClick={() => { setActive(false); setNotice("Replay stopped. Play A or B to restart."); }}>STOP AUDIO</button>
       <details className="engine-manual-bench"><summary>Manual bench / diagnostics</summary>
       <button type="button" onClick={() => active ? setActive(false) : void start()}>{active ? "STOP ENGINE" : "START ENGINE"}</button>
@@ -88,7 +88,7 @@ export function EngineLab({ audioRef, prepareAudio }) {
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; audioRef.current?.setMuted(true); audioRef.current?.setSourceMode("flux"); }; }, [audioRef]);
   const onProgress = useCallback((key, seconds) => setListened(current => current[key] === seconds ? current : { ...current, [key]: seconds }), []);
   const chooseProfile = id => {
-    if (!isEngineProfile(id)) return;
+    if (!isLabEngine(id)) return;
     if (pending.current) return;
     drafts.current[profile] = { note, preference, listened };
     const draft = drafts.current[id];
@@ -124,11 +124,15 @@ export function EngineLab({ audioRef, prepareAudio }) {
     <h2>Engine A/B Listening</h2>
     <p className="engine-comparison-build">Build {typeof __APP_BUILD__ === "undefined" ? "local" : __APP_BUILD__}</p>
     <p>Same 68-second route: city, 80–130 km/h, return. One take at a time, at its original level. No loudness matching.</p>
-    <label>Engine <select aria-label="Comparison engine" value={profile} disabled={busy} onChange={event => chooseProfile(event.target.value)}>{ENGINE_CATALOGUE.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
-    <div className="engine-comparison-buttons">{["A", "B"].map(key => <button key={key} type="button" disabled={busy} aria-pressed={replay && calibration === key} onClick={() => void play(key)}>PLAY {key}<small>{COMPARISON_CALIBRATIONS[key]}</small></button>)}</div>
+    <label>Engine <select aria-label="Comparison engine" value={profile} disabled={busy} onChange={event => chooseProfile(event.target.value)}>
+      <optgroup label="Published">{ENGINE_CATALOGUE.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</optgroup>
+      <optgroup label="Combustion candidates · vs published Rosso">{ENGINE_LAB_CANDIDATES.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</optgroup>
+    </select></label>
+    {ENGINE_LAB_CANDIDATES.some(item => item.id === profile) ? <p className="engine-comparison-candidate">{ENGINE_LAB_CANDIDATES.find(item => item.id === profile).description}. Original synthesized engine, no recordings. A is the published Rosso.</p> : null}
+    <div className="engine-comparison-buttons">{["A", "B"].map(key => <button key={key} type="button" disabled={busy} aria-pressed={replay && calibration === key} onClick={() => void play(key)}>PLAY {key}<small>{comparisonCalibrations(profile)[key]}</small></button>)}</div>
     <p>Listened: A {listened.A}s · B {listened.B}s / {COMPARISON_SECONDS}s each. Replaying starts that take again.</p>
     <details className="engine-listening-notes"><summary>Preference & notes · {notes.length} saved</summary>
-      <label>Preference <select aria-label="Listening preference" value={preference} onChange={event => setPreference(event.target.value)}><option value="">Choose…</option><option value="A">A · Refined</option><option value="B">B · Full body</option><option value="tie">No preference</option></select></label>
+      <label>Preference <select aria-label="Listening preference" value={preference} onChange={event => setPreference(event.target.value)}><option value="">Choose…</option><option value="A">A · {comparisonCalibrations(profile).A}</option><option value="B">B · {comparisonCalibrations(profile).B}</option><option value="tie">No preference</option></select></label>
       <label>What sounds better? <textarea aria-label="Listening note" maxLength={4000} value={note} onChange={event => setNote(event.target.value)} placeholder="Body, clarity, whistle, shifts…" /></label>
       <button type="button" onClick={save}>SAVE PREFERENCE</button>
       <button type="button" onClick={download} disabled={!notes.length}>EXPORT NOTES ({notes.length})</button>

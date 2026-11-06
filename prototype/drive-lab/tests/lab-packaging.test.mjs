@@ -79,6 +79,8 @@ test("the LAB bundle is inlined behind the gate and leaves no directly fetchable
   assert.match(deploySource, /LAB_SCORE_PROCESSOR_MARKERS/);
   assert.match(deploySource, /"score-processor\.js"/);
   assert.match(packageSource, /"procedural-processor\.js"/);
+  assert.match(packageSource, /"combustion-processor\.js"/);
+  assert.match(deploySource, /LAB_COMBUSTION_PROCESSOR_MARKERS/);
   assert.match(deploySource, /LAB_ENGINE_PROCESSOR_MARKERS/);
   assert.doesNotMatch(packageSource, /bloom-processor/);
   assert.doesNotMatch(packageSource, /soundtrack-repeat-processor/);

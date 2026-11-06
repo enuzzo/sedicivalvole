@@ -558,3 +558,18 @@ Tabler assets or MIT-licensed material. See the [asset inventory](docs/design/ph
 - Jan Eric Kyprianidis, Henry Kang and Jürgen Döllner, *Image and Video Abstraction by Anisotropic Kuwahara Filtering*, Computer Graphics Forum 28(7), 2009, pp. 1955–1963, [DOI](https://doi.org/10.1111/j.1467-8659.2009.01574.x), [author-hosted paper](https://www.kyprianidis.com/p/pg2009/jkyprian-pg2009.pdf). Research/concept study only. The original Veduta shader uses a smaller, axis-aligned four-region colour/variance abstraction; it is not the paper's anisotropic implementation. No paper text, image, shader or software asset is copied or bundled, and no media/software licence is inferred from access to the paper. Publication version as cited; byte hash is not applicable to an idea-only study.
 - MapLibre contributors, [CustomLayerInterface documentation](https://maplibre.org/maplibre-gl-js/docs/API/interfaces/CustomLayerInterface/) and the installed, unchanged 6.7.0 implementation. Public custom-layer integration and public WebGL2 framebuffer-copy operations informed the terminal same-context painter stage. No internal painter/terrain texture access, second context or CPU pixel readback is introduced. Existing BSD-3-Clause dependency notices and integrity pins remain unchanged.
 - The owner's separate GeoPoster laboratory was read only for semantic/material and medium-response principles. No laboratory runtime, proof image, private reference asset or source code was imported. The Veduta implementation remains original project code under the existing original-material scope.
+
+## Original combustion synthesizer — 2026-11-06
+
+`prototype/drive-lab/src/engine/combustion/` (`dsp.js`, `engines.js`,
+`combustion-processor.js`) and `scripts/render-combustion.mjs` are original
+sedicivalvole work under the existing PolyForm Noncommercial scope. Public
+engineering facts (firing orders, bank layouts, the speed of sound in hot gas,
+expansion-chamber behaviour) and published concepts informed the design: the
+physically informed engine model of Baldan, Lachambre, Delle Monache and
+Boussard (IEEE SIVE 2015) and its Sound Design Toolkit, Ange Yaghi's engine-sim,
+Doerfler and Wyse's pulse-train model (EUSIPCO 2026) and Farnell's *Designing
+Sound*. teslasound.io (© 2026 Lifemock, no licence) was studied for concept
+only. No third-party code, structure, parameter, preset, car table, recording
+or impulse response is admitted. Local recordings in `_references/` were used
+only as analysis references.

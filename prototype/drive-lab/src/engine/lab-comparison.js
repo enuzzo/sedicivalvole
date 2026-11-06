@@ -1,4 +1,5 @@
 import { engineProfile } from './profiles.js';
+import { isCombustionCandidate } from './catalogue.js';
 
 export const COMPARISON_ROUTE_ID = 'urban-road-return-v1';
 export const COMPARISON_SECONDS = 68;
@@ -15,8 +16,28 @@ export function comparisonSpeed(seconds) {
   const [a, start] = points[index - 1], [b, end] = points[index];
   return start + (end - start) * (time - a) / (b - a);
 }
-/** A is the earlier refined voicing; B is the published full-body default. */
+// November 6: a combustion candidate is heard against the published sound.
+// Bump COMBUSTION_CALIBRATION whenever the synthesizer or an engine changes.
+export const COMBUSTION_REFERENCE = 'rosso';
+export const COMBUSTION_CALIBRATION = 'combustion.v1';
+/** Labels for one profile's A/B pair. */
+export function comparisonCalibrations(id) {
+  if (!isCombustionCandidate(id)) return COMPARISON_CALIBRATIONS;
+  return Object.freeze({ A: 'Published · Rosso', B: `Combustion · ${engineProfile(id).label}` });
+}
+function sourceCalibrations(id) {
+  return isCombustionCandidate(id) ? { A: `${COMBUSTION_REFERENCE}:full-body.v1`, B: `${COMBUSTION_CALIBRATION}:${id}` } : { A: "b524cd4", B: "full-body.v1" };
+}
+/**
+ * A is the earlier refined voicing; B is the published full-body default.
+ * For a combustion candidate, A is the published Rosso and B the candidate.
+ */
 export function comparisonProfile(id, calibration) {
+  if (isCombustionCandidate(id)) {
+    if (calibration === 'A') return engineProfile(COMBUSTION_REFERENCE);
+    if (calibration === 'B') return engineProfile(id);
+    throw new RangeError('Unknown listening calibration');
+  }
   const profile = engineProfile(id);
   if (calibration === 'B') return profile;
   if (calibration !== 'A') throw new RangeError('Unknown listening calibration');
@@ -37,8 +58,8 @@ export function makeComparisonNote({ profile, preference, note, listened, build,
   if (!['A','B','tie'].includes(preference)) throw new Error('Choose a preference before saving.');
   engineProfile(profile);
   return { schema: 'engine-listening.v1', id: now.toISOString(), profile, preference,
-    note: String(note).slice(0,4000), route: COMPARISON_ROUTE_ID, calibrations: COMPARISON_CALIBRATIONS,
-    sourceCalibrations: { A: "b524cd4", B: "full-body.v1" },
+    note: String(note).slice(0,4000), route: COMPARISON_ROUTE_ID, calibrations: comparisonCalibrations(profile),
+    sourceCalibrations: sourceCalibrations(profile),
     listenedSeconds: Object.fromEntries(['A','B'].map(key => [key, Math.max(0,Math.min(68, Number(listened[key]) || 0))])),
     build, sampleRate, levels: 'Original calibration levels; not loudness matched', coordinates: 'Not collected' };
 }

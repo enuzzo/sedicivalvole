@@ -1,6 +1,8 @@
 import { ContextualRail, useContextualControls } from "../contextual-controls.jsx";
 import { useEffect, useRef, useState } from "react";
-import { ENGINE_CATALOGUE } from "./catalogue.js";
+import { ENGINE_CATALOGUE, ENGINE_LAB_CANDIDATES } from "./catalogue.js";
+// Names include LAB-only candidates; selection buttons stay public-only.
+const engineLabel = id => [...ENGINE_CATALOGUE, ...ENGINE_LAB_CANDIDATES].find(item => item.id === id)?.label ?? id;
 import "./telemetry-field.css";
 import { telemetrySignals } from "./telemetry-signals.js";
 import { EngineSignals } from "./telemetry-signals.jsx";
@@ -88,7 +90,7 @@ export function EngineTelemetry({ state: polled, runtimeRef, profileId, onProfil
   const limiterPulse = state.showOffPhase === "limiter";
   const motionLed = speedFreshness === "fresh" ? "live" : speedFreshness === "degraded" ? "aging" : "off";
   const driveEnd = traceEnd("drive"), decelEnd = traceEnd("decel");
-  const voice = ENGINE_CATALOGUE.find(item => item.id === profileId)?.label ?? profileId;
+  const voice = engineLabel(profileId);
   return <section ref={fieldRef} className="engine-telemetry" data-revving={Boolean(state.revving)} data-redline={redline} data-limiter={limiterPulse} aria-label="Engine Telemetry">
     <ContextualRail className="engine-contextual-rail"><div {...contextual} onPointerDown={event => event.stopPropagation()} className="engine-profiles" aria-label="Engine profile">
       {ENGINE_CATALOGUE.map(({ id, label, description }) => <button key={id} type="button" title={description} aria-pressed={profileId === id} onClick={() => onProfile(id)}>{label}</button>)}
@@ -159,8 +161,8 @@ export function EngineTelemetry({ state: polled, runtimeRef, profileId, onProfil
       <strong className="engine-rev-mirror" aria-hidden="true">TAMARRO<span className="engine-rev-emoji">🤘</span></strong>
     </button> : null}
     {state.status === "loading" || state.status === "retrying" || state.status === "error" ? <div className="engine-load-state" role="status" aria-live="polite" aria-atomic="true">
-      <strong>{state.status === "error" ? "ENGINE UNAVAILABLE" : `LOADING ${(ENGINE_CATALOGUE.find(item => item.id === profileId)?.label ?? profileId).toUpperCase()}…`}</strong>
-      <span>{state.status === "retrying" ? "Waiting for audio · retrying automatically" : state.status === "error" ? "Audio could not be prepared" : "Preparing engine audio"}{state.playing ? ` · ${ENGINE_CATALOGUE.find(item => item.id === state.profileId)?.label ?? state.profileId} continues` : ""}</span>
+      <strong>{state.status === "error" ? "ENGINE UNAVAILABLE" : `LOADING ${engineLabel(profileId).toUpperCase()}…`}</strong>
+      <span>{state.status === "retrying" ? "Waiting for audio · retrying automatically" : state.status === "error" ? "Audio could not be prepared" : "Preparing engine audio"}{state.playing ? ` · ${engineLabel(state.profileId)} continues` : ""}</span>
     </div> : null}
   </section>;
 }

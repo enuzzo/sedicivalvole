@@ -10,7 +10,8 @@ function bundle(entry) {
 }
 const profileModule = { exports: {} };
 vm.runInNewContext(bundle('src/engine/profiles.js'), { module: profileModule, exports: profileModule.exports });
-const profiles = profileModule.exports.ENGINE_PROFILES.filter(profile => profile.voice);
+// The earlier EngineSynth voices; combustion candidates have their own tests.
+const profiles = profileModule.exports.ENGINE_PROFILES.filter(profile => profile.voice && !profile.voice.model);
 const configuration = profile => ({ ...profile.voice, limiter: profile.configuration.engine.limiter });
 function render(profile, { rate = 48000, rpm = 3000, load = 1, seconds = 2, overrides = {} } = {}) {
   const synth = new EngineSynth(rate, { ...configuration(profile), ...overrides });

@@ -34,6 +34,10 @@ Ange Yaghi's engine-sim and Real Engine Simulator are central references. Distin
 
 The September 8 build-0807 listening report supported motion/progression/braking and high-volume Mono/Rosso/Touring, while requesting refinement. Subsequent Otto/Cinque/Turbine rejection did not identify its listening build. Preserve that uncertainty and distinguish historical evidence from current quality. New recording/voice changes need audible comparison before claiming improvement.
 
+## Combustion synthesizer candidates — November 6
+
+The owner judged the published loop-based voices not credible and asked for an original engine that beats teslasound.io. `src/engine/combustion/` is an original physically informed synthesizer: crank-angle exhaust pulses, per-cylinder valve-gated primaries, gas-temperature-tuned pipes, a valved muffler, intake, a mechanical layer, forced induction, clustered afterfire and limiter bursts. It is selected with `voice.model: "combustion"`. Eight architectures are **LAB-only candidates**: they are not in `ENGINE_CATALOGUE`, have neutral voicing and no assets, and the LAB plays each one as B against the published Rosso (A). teslasound.io (© Lifemock, no licence) was studied for concept only; never copy its code, structure, values or car tables. Recordings in `_references/` are measuring sticks only. Bump `COMBUSTION_CALIBRATION` in `lab-comparison.js` with any synthesizer or engine-definition change. Promotion to the public catalogue needs owner listening and car acceptance. Model, sources and evidence: [Combustion synthesizer](../ENGINE-COMBUSTION-2026-11-06.md).
+
 ## Protected listening LAB
 
 The owner selected A/B listening: identical route, two calibrations, locally saved preference and notes. Use the existing protected LAB, one take at a time, original levels, bounded local history/export and the public refined default. Keep dry output and motion/lifecycle contracts. A/B labels and source identifiers must change whenever their parameters change; an old identifier cannot silently describe a new sound. This is not a blind or loudness-matched comparison.
