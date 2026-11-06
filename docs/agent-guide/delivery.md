@@ -29,6 +29,13 @@ drives running, muted, brake-off, three visual families and Engine in both
 appearances and fails on any clipped top-bar, footer, Now Playing or Engine-rail
 text; a label that does not fit is shortened, not ellipsized.
 
+The browser QA scripts load Playwright from `PLAYWRIGHT_MODULE` (Playwright is
+not a project dependency) and may need `CHROME_EXECUTABLE`. Since the November
+6 move to a local, unsynchronized checkout, the old shared dependency store is
+gone. Point them at a local Playwright and its installed headless shell, for
+example an npx cache copy (`~/.npm/_npx/<hash>/node_modules/playwright/index.mjs`)
+and `~/Library/Caches/ms-playwright/chromium_headless_shell-<rev>/chrome-headless-shell-mac-arm64/chrome-headless-shell`.
+
 Report implemented, tested, committed/pushed, live, owner-accepted and physical-device-accepted separately. Browser rendering, headless-muted audio, signal measurements and a successful build do not prove cabin listening, physical iPhone touch, Tesla native media, reception or sustained GPU/endurance performance. Record device/software/build for physical evidence. Existing broad owner acceptance of Flux/Soundtrack/FX/interface/Discover does not require another generic acceptance round; later changes retain their relevant specific gates.
 
 ## Canonical publication

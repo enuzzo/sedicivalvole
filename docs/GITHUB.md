@@ -4,7 +4,7 @@ Public repository: [github.com/enuzzo/sedicivalvole](https://github.com/enuzzo/s
 
 ## Public repository policy
 
-- Publish only tracked project files from the real Dropbox workspace.
+- Publish only tracked project files from the local checkout (`~/Documents/Mitnick/sedicivalvole`, unsynchronized since November 6, 2026).
 - Never publish `.env`, `_references/`, local recipient configuration, generated builds, credentials, vehicle photos, or private bootstrap material.
 - Run a tracked-file secret and absolute-path scan before every first publication or visibility change.
 - Use normal `git push` from `main`; do not use `git push --all` because local archival branches may intentionally remain unpublished.

@@ -161,6 +161,39 @@ LAB_COMBUSTION_PROCESSOR_MARKERS = (b"AudioWorkletProcessor", b'registerProcesso
 RETIRED_ROOT_HASHES = {
     "index (Netmilk Studio's conflicted copy 2026-10-29).html": "81c7ba6ff6c3172036cdf5418927882b03adf50debc50de2fe56d1093115cfc1",
 }
+# The October 29 build was published from a Dropbox folder and carried Dropbox
+# conflicted copies of many files. The project no longer uses Dropbox. A remote
+# file is admitted (and, on --publish, deleted) as such debris only when its
+# name is exactly an expected file's name with this suffix before the extension,
+# in the same directory. Anything else unexpected still fails closed.
+DROPBOX_CONFLICT_SUFFIX = " (Netmilk Studio's conflicted copy 2026-10-29)"
+DROPBOX_CONFLICTED_COPIES: list[tuple[tuple[str, ...], str]] = []
+
+
+def dropbox_conflict_base(name: str) -> str | None:
+    """The original name of a recognized Dropbox conflicted copy, else None."""
+    stem, dot, extension = name.rpartition(".")
+    if not dot or not stem.endswith(DROPBOX_CONFLICT_SUFFIX):
+        return None
+    return f"{stem[: -len(DROPBOX_CONFLICT_SUFFIX)]}.{extension}"
+
+
+def admit_dropbox_copies(names: set[str], expected: set[str], path: tuple[str, ...]) -> set[str]:
+    """Record conflicted copies of expected files and return what is left."""
+    copies = {name for name in names if dropbox_conflict_base(name) in expected}
+    DROPBOX_CONFLICTED_COPIES.extend((path, name) for name in sorted(copies))
+    return names - copies
+
+
+# Dropbox conflicted copies that the October 29 build left inside static trees,
+# keyed by (tree, path inside the tree). Retired by exact hash only.
+RETIRED_STATIC_HASHES = {
+    ("report-support", "delivery (Netmilk Studio's conflicted copy 2026-10-29).php"): "fd1ec923974205182ac940086533f59556c8cdec4a621879ed6143a2824d577f",
+    ("report-support", "report (Netmilk Studio's conflicted copy 2026-10-29).php"): "1e7c1688f2668d604305c8293d452666a09261c34ce29f14b1034deffa006c46",
+    ("report-support", "report-mark (Netmilk Studio's conflicted copy 2026-10-29).png"): "b96842fb2493d07b79866d83766b3606fcdab4fd1d61f22f5d9773f7a7157d49",
+    ("report-support", "report-mark-pistons (Netmilk Studio's conflicted copy 2026-10-29).png"): "0a1f65814650eedc37f08edf60cbba79881ae3bebe951cab072965c80d673093",
+    ("report-support", "report-mark-pistons-transparent (Netmilk Studio's conflicted copy 2026-10-29).png"): "eb75820d588ceaba995e346d888ac6fd0b03a84767d271b98e3df25a8c1a7b3e",
+}
 RETIRED_LAB_HASHES = {
     # Dropbox conflicted copy of the LAB page from the October 29 build; the owner
     # authorized its exact-hash removal (November 6).
@@ -397,6 +430,16 @@ def verify_remote_static_tree(
         raise ValueError(f"incomplete {tree_name} upload")
     if not require_complete:
         unexpected_names = remote_names - expected_names
+        retired = set()
+        for name in unexpected_names:
+            expected_hash = RETIRED_STATIC_HASHES.get((tree_name, (relative_root / name).as_posix()))
+            if expected_hash is None:
+                continue
+            if sha256_bytes(remote_bytes(ftp, name)) != expected_hash:
+                raise ValueError(f"retired {tree_name} entry identity mismatch")
+            retired.add(name)
+        unexpected_names -= retired
+        unexpected_names = admit_dropbox_copies(unexpected_names, expected_names, (tree_name, *relative_root.parts))
         recognized_overlap = (
             tree_name == "fonts"
             and all(
@@ -419,7 +462,13 @@ def verify_remote_static_tree(
             )
         )
         if unexpected_names and not recognized_overlap:
-            raise ValueError(f"unexpected {tree_name} entry")
+            # Name a conflicted copy (with its hash) so its retirement can be
+            # reviewed; anything else stays unnamed. Read-only either way.
+            conflicted = [
+                f"{name} sha256 {sha256_bytes(remote_bytes(ftp, name))}"
+                for name in sorted(unexpected_names) if "conflicted copy" in name.lower()
+            ]
+            raise ValueError(f"unexpected {tree_name} entry" + (f": {','.join(conflicted)}" if conflicted else ""))
 
     names_to_verify = expected_names if require_complete else remote_names & expected_names
     for name in names_to_verify:
@@ -1044,7 +1093,8 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
         for path in BUILD.iterdir()
         if path.is_file() and path.name not in {STATIC_ROOT_ENTRY, DYNAMIC_ROOT_ENTRY}
     )
-    unexpected_root_names = root_names - allowed_root_names
+    DROPBOX_CONFLICTED_COPIES.clear()
+    unexpected_root_names = admit_dropbox_copies(root_names - allowed_root_names, allowed_root_names, ())
     if unexpected_root_names:
         unexpected = ",".join(sorted(unexpected_root_names))
         raise ValueError(f"unexpected canonical-root entry: {unexpected}")
@@ -1174,7 +1224,7 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
                 "combustion-processor.js",
                 LAB_AUTH_CONFIG,
             } | RETIRED_LAB_HASHES.keys()
-            unexpected_lab_names = sorted(lab_names - admitted_lab_names)
+            unexpected_lab_names = sorted(admit_dropbox_copies(lab_names - admitted_lab_names, admitted_lab_names, (LAB_DIRECTORY,)))
             if unexpected_lab_names:
                 # A conflicted copy is reported with its hash so its exact-hash
                 # retirement can be reviewed; nothing is written or deleted.
@@ -1451,6 +1501,51 @@ def remove_retired_illobo_artwork(ftp: ftplib.FTP) -> int:
         ftp.cwd("..")
 
 
+def remove_dropbox_conflicted_copies(ftp: ftplib.FTP) -> int:
+    """Delete exactly the conflicted copies the read-only audit recorded."""
+    deleted = 0
+    for path, name in list(DROPBOX_CONFLICTED_COPIES):
+        if dropbox_conflict_base(name) is None:
+            raise ValueError("conflicted copy record mismatch")
+        entered = 0
+        try:
+            for part in path:
+                ftp.cwd(part)
+                entered += 1
+            if name in safe_names(ftp):
+                ftp.delete(name)
+                deleted += 1
+        finally:
+            for _ in range(entered):
+                ftp.cwd("..")
+    return deleted
+
+
+def remove_retired_static_entries(ftp: ftplib.FTP) -> int:
+    """Delete only exact retired files inside static trees, admitted read-only first."""
+    deleted = 0
+    for (tree, relative), expected_hash in RETIRED_STATIC_HASHES.items():
+        parts = [tree, *Path(relative).parent.parts]
+        name = Path(relative).name
+        entered = 0
+        try:
+            for part in parts:
+                if part not in safe_names(ftp):
+                    break
+                ftp.cwd(part)
+                entered += 1
+            else:
+                if name in safe_names(ftp):
+                    if sha256_bytes(remote_bytes(ftp, name)) != expected_hash:
+                        raise ValueError("retired static entry identity mismatch")
+                    ftp.delete(name)
+                    deleted += 1
+        finally:
+            for _ in range(entered):
+                ftp.cwd("..")
+    return deleted
+
+
 def remove_retired_root_entries(ftp: ftplib.FTP) -> int:
     """Delete only exact retired root files admitted by the read-only audit."""
     deleted = 0
@@ -1644,6 +1739,9 @@ def main() -> int:
         stage = "read_only_identity"
         obsolete_root_assets = verify_remote_root(ftp)
         print("read_only_identity=PASS root_and_legacy_targets_verified")
+        print(f"dropbox_conflicted_copies={len(DROPBOX_CONFLICTED_COPIES)}")
+        for path, name in DROPBOX_CONFLICTED_COPIES:
+            print(f"  conflicted_copy {'/'.join((*path, name))}")
         if arguments.verify_only:
             remote_count = len(safe_names(ftp))
             ftp.quit()
@@ -1763,6 +1861,8 @@ def main() -> int:
         retired_illobo_artwork = remove_retired_illobo_artwork(ftp)
         retired_lab_assets = remove_retired_lab_assets(ftp)
         retired_root_entries = remove_retired_root_entries(ftp)
+        retired_static_entries = remove_retired_static_entries(ftp)
+        removed_conflicted_copies = remove_dropbox_conflicted_copies(ftp)
         removed_macos_metadata = remove_recognized_macos_metadata(ftp)
 
         verify_completed_upload(ftp, recipient_config, lab_auth_config, jamendo_config)
@@ -1792,6 +1892,8 @@ def main() -> int:
         print(f"lab_runtime_migration=PASS retired_worklets={retired_lab_assets}")
         print(f"root_metadata_cleanup=PASS removed={str(removed_macos_metadata).lower()}")
         print(f"root_retired_cleanup=PASS removed={retired_root_entries}")
+        print(f"static_retired_cleanup=PASS removed={retired_static_entries}")
+        print(f"dropbox_conflicted_cleanup=PASS removed={removed_conflicted_copies}")
         print(f"dynamic_root=PASS staged={str(stage_php_entry).lower()} static_entry_removed={str(switched_entry).lower()}")
         if preserve_existing:
             print("legacy_cleanup=SKIPPED preserve_existing=true")

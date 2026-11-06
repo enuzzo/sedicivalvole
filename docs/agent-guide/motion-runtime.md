@@ -58,7 +58,7 @@ Check published build identity every **five minutes** and on online/foreground r
 
 ## Environment portability
 
-Do not trust native `node_modules` copied between machines/architectures through Dropbox. Establish the lockfile/environment and use the existing `native:check`, `test:native` and `build:native` wrappers from `prototype/drive-lab`; prepare missing native packages only when actually required and within the task's permissions. Do not rewrite dependency versions merely to work around a host mismatch. `scripts/native-toolchain.mjs` and [Drive Lab instructions](../../prototype/drive-lab/AGENTS.md#local-work) provide the local entry points. This is environment repair guidance, not a requirement to install or test on every documentation edit.
+Do not trust native `node_modules` copied between machines or architectures; install them locally with `npm ci`. Establish the lockfile/environment and use the existing `native:check`, `test:native` and `build:native` wrappers from `prototype/drive-lab`; prepare missing native packages only when actually required and within the task's permissions. Do not rewrite dependency versions merely to work around a host mismatch. `scripts/native-toolchain.mjs` and [Drive Lab instructions](../../prototype/drive-lab/AGENTS.md#local-work) provide the local entry points. This is environment repair guidance, not a requirement to install or test on every documentation edit.
 
 ## Isolated motion feasibility
 
