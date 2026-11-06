@@ -162,6 +162,9 @@ RETIRED_ROOT_HASHES = {
     "index (Netmilk Studio's conflicted copy 2026-10-29).html": "81c7ba6ff6c3172036cdf5418927882b03adf50debc50de2fe56d1093115cfc1",
 }
 RETIRED_LAB_HASHES = {
+    # Dropbox conflicted copy of the LAB page from the October 29 build; the owner
+    # authorized its exact-hash removal (November 6).
+    "index (Netmilk Studio's conflicted copy 2026-10-29).php": "40d78c4dcc59753518cfd5941fe909f407291d040499434a13bf464301bd00d3",
     "soundtrack-repeat-processor.js": "4394837a3bebf6e065cd1dabc6b43e73f302bbead98bf43af830f9df15620aad",
     "bloom-processor.js": "6561b35a7ee7c753ee858e4682894adacc7010001f073210844b93bb102f222a",
 }
