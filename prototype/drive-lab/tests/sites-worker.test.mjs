@@ -60,7 +60,8 @@ test("falls back to index.html for an unknown app route", async () => {
   assert.equal(response.status, 200);
   assert.deepEqual(calls, ["/flow/step-two?source=share", "/index.html"]);
   const html = await response.text();
-  const entryReference = html.match(/<script[^>]+src="([^"]+)"/)?.[1];
+  // The app entry is the module script; third-party tags such as GA4 load first.
+  const entryReference = html.match(/<script[^>]*type="module"[^>]*src="([^"]+)"/)?.[1];
   assert.match(entryReference, /^\/assets\//);
   assert.match(new URL(entryReference, "https://example.test/flow/step-two").pathname, /^\/assets\//);
 });
