@@ -131,14 +131,14 @@ test("the worklet mutes after a bounded fade, clears one-shots and stops after d
   assert.equal(node.process([], [channels], params), false);
 });
 
-test("combustion candidates are LAB-only, neutral, procedural and heard against the published Rosso", () => {
+test("combustion voices are public, neutral, procedural and heard in the LAB against Rosso", () => {
   const { ENGINE_PROFILES } = load("src/engine/profiles.js");
-  const { ENGINE_CATALOGUE, ENGINE_LAB_CANDIDATES, isEngineProfile, isLabEngine } = load("src/engine/catalogue.js");
+  const { ENGINE_CATALOGUE, ENGINE_COMBUSTION_VOICES, isEngineProfile, isCombustionVoice } = load("src/engine/catalogue.js");
   const { comparisonProfile, comparisonCalibrations, makeComparisonNote } = load("src/engine/lab-comparison.js");
-  assert.equal(JSON.stringify(ENGINE_CATALOGUE.map(item => item.id)), JSON.stringify(["mono", "rosso", "touring"]));
-  assert.equal(JSON.stringify(ENGINE_LAB_CANDIDATES.map(item => item.id)), JSON.stringify(COMBUSTION_ENGINE_IDS));
+  assert.equal(JSON.stringify(ENGINE_CATALOGUE.map(item => item.id)), JSON.stringify(["mono", "rosso", "touring", ...COMBUSTION_ENGINE_IDS]));
+  assert.equal(JSON.stringify(ENGINE_COMBUSTION_VOICES.map(item => item.id)), JSON.stringify(COMBUSTION_ENGINE_IDS));
   for (const id of COMBUSTION_ENGINE_IDS) {
-    assert.equal(isEngineProfile(id), false); assert.equal(isLabEngine(id), true);
+    assert.equal(isEngineProfile(id), true); assert.equal(isCombustionVoice(id), true);
     const profile = ENGINE_PROFILES.find(item => item.id === id);
     assert.equal(profile.voice.model, "combustion"); assert.equal(profile.voice.engine, id);
     assert.equal(profile.assets.length, 0); assert.equal(profile.voicing, null);

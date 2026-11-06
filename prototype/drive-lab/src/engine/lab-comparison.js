@@ -1,5 +1,5 @@
 import { engineProfile } from './profiles.js';
-import { isCombustionCandidate } from './catalogue.js';
+import { isCombustionVoice } from './catalogue.js';
 
 export const COMPARISON_ROUTE_ID = 'urban-road-return-v1';
 export const COMPARISON_SECONDS = 68;
@@ -22,18 +22,18 @@ export const COMBUSTION_REFERENCE = 'rosso';
 export const COMBUSTION_CALIBRATION = 'combustion.v4';
 /** Labels for one profile's A/B pair. */
 export function comparisonCalibrations(id) {
-  if (!isCombustionCandidate(id)) return COMPARISON_CALIBRATIONS;
+  if (!isCombustionVoice(id)) return COMPARISON_CALIBRATIONS;
   return Object.freeze({ A: 'Published · Rosso', B: `Combustion · ${engineProfile(id).label}` });
 }
 function sourceCalibrations(id) {
-  return isCombustionCandidate(id) ? { A: `${COMBUSTION_REFERENCE}:full-body.v1`, B: `${COMBUSTION_CALIBRATION}:${id}` } : { A: "b524cd4", B: "full-body.v1" };
+  return isCombustionVoice(id) ? { A: `${COMBUSTION_REFERENCE}:full-body.v1`, B: `${COMBUSTION_CALIBRATION}:${id}` } : { A: "b524cd4", B: "full-body.v1" };
 }
 /**
  * A is the earlier refined voicing; B is the published full-body default.
  * For a combustion candidate, A is the published Rosso and B the candidate.
  */
 export function comparisonProfile(id, calibration) {
-  if (isCombustionCandidate(id)) {
+  if (isCombustionVoice(id)) {
     if (calibration === 'A') return engineProfile(COMBUSTION_REFERENCE);
     if (calibration === 'B') return engineProfile(id);
     throw new RangeError('Unknown listening calibration');

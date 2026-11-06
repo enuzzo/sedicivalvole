@@ -202,3 +202,13 @@
 
 .app.phase-running[data-phone-layout="landscape"] .engine-primary .engine-speed-metric { gap: 2px; }
 }
+
+/* Engine voice stepper (November 7): one lane-height row; the full list opens below it. */
+.app.phase-running .contextual-rail .engine-voice-picker { position: relative; flex-wrap: nowrap; }
+.app.phase-running .contextual-rail .engine-voice-step { min-width: 48px; padding: 0; font-size: 26px; line-height: 1; }
+.app.phase-running .contextual-rail .engine-voice-current { display: inline-flex; align-items: center; gap: 8px; min-width: 176px; justify-content: center; padding: 0 14px; }
+.app.phase-running .contextual-rail .engine-voice-current strong { font-weight: 600; white-space: nowrap; }
+.app.phase-running .contextual-rail .engine-voice-current small { font-size: 13px; opacity: .7; font-variant-numeric: tabular-nums; }
+.app.phase-running .contextual-rail .engine-voice-current[aria-expanded="true"] { background: var(--ui-selected-surface); color: var(--ui-selected-text); }
+.app.phase-running .contextual-rail .engine-voice-menu { position: absolute; top: calc(100% + 6px); right: 0; z-index: 8; display: grid; grid-template-columns: repeat(3, minmax(150px, 1fr)); gap: 6px; padding: 8px; border-radius: 10px; background: var(--ui-surface-strong); box-shadow: 0 12px 32px rgb(0 0 0 / .28), inset 0 0 0 1px var(--ui-line-soft); }
+.app.phase-running .contextual-rail .engine-voice-menu button { white-space: nowrap; }

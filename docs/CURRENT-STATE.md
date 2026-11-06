@@ -96,9 +96,9 @@ the product remains experimental.
   a predicted GPS speed between samples, clutch slip on pull-away, a race
   cluster (LED tachometer, closing shift lights, equal plates, oscilloscope
   traces) and one TAMARRO show-off key; the protected LAB compares Refined and
-  Full body. Since November 6 the LAB also offers eight LAB-only candidates
-  from an original combustion synthesizer, each heard against the published
-  Rosso; they await owner listening and are not public.
+  Full body. Since November 7 eight more voices from an original combustion
+  synthesizer are public too (owner decision), and the LAB still compares each
+  against Rosso; car listening remains open.
   [Engine](agent-guide/engine.md).
 - **Maps and places.** Atlas and Air Atlas on MapLibre, Discover's nearby
   Wikipedia/OSM index with send-to-navigation, and Stats for Nerds, under the

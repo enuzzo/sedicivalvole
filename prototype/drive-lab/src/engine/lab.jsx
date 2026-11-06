@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createEngineMotion } from "./motion.js";
 import { useEngine } from "./use-engine.js";
-import { ENGINE_CATALOGUE, ENGINE_LAB_CANDIDATES, isLabEngine, isCombustionCandidate } from "./catalogue.js";
+import { ENGINE_CATALOGUE, ENGINE_SAMPLE_VOICES, ENGINE_COMBUSTION_VOICES, isEngineProfile, isCombustionVoice } from "./catalogue.js";
 import { comparisonProfile, comparisonSpeed, COMPARISON_SECONDS, comparisonCalibrations,
   COMPARISON_STORAGE_KEY, readComparisonNotes, makeComparisonNote } from "./lab-comparison.js";
 import "./lab.css";
@@ -20,7 +20,7 @@ const clock = seconds => `${Math.floor(seconds / 60)}:${String(Math.floor(second
 const routePoint = (seconds, width, height) => [seconds / COMPARISON_SECONDS * width, height - comparisonSpeed(seconds) / 130 * (height - 6) - 3];
 const ROUTE_PATH = Array.from({ length: COMPARISON_SECONDS + 1 }, (_, second) => routePoint(second, 560, 96))
   .map(([x, y], index) => `${index ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`).join(" ");
-const describe = id => [...ENGINE_CATALOGUE, ...ENGINE_LAB_CANDIDATES].find(item => item.id === id);
+const describe = id => ENGINE_CATALOGUE.find(item => item.id === id);
 
 function EngineIcon() {
   return <svg className="elab-icon" viewBox="0 0 48 32" aria-hidden="true"><path d="M8 10h6l3-4h12l3 4h5v4h3v-3h4v12h-4v-3h-3v5l-4 4H17l-5-5H8v-4H4v6H1V10h3v6h4z" /></svg>;
@@ -168,7 +168,7 @@ export function EngineLab({ audioRef, prepareAudio }) {
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; audioRef.current?.setMuted(true); audioRef.current?.setSourceMode("flux"); }; }, [audioRef]);
   const onProgress = useCallback((key, seconds) => setListened(current => current[key] === seconds ? current : { ...current, [key]: seconds }), []);
   const chooseProfile = id => {
-    if (!isLabEngine(id) || id === profile) return;
+    if (!isEngineProfile(id) || id === profile) return;
     if (pending.current) return;
     drafts.current[profile] = { note, preference, listened };
     const draft = drafts.current[id];
@@ -207,18 +207,18 @@ export function EngineLab({ audioRef, prepareAudio }) {
   const choose = <>
     <h2>Choose an engine</h2>
     <div className="elab-engines">
-      <h3>PUBLISHED · {ENGINE_CATALOGUE.length}</h3>
-      <ul>{ENGINE_CATALOGUE.map(engineRow)}</ul>
-      <h3>CANDIDATES · {ENGINE_LAB_CANDIDATES.length}</h3>
-      <ul>{ENGINE_LAB_CANDIDATES.map(engineRow)}</ul>
+      <h3>SAMPLE VOICES · {ENGINE_SAMPLE_VOICES.length}</h3>
+      <ul>{ENGINE_SAMPLE_VOICES.map(engineRow)}</ul>
+      <h3>COMBUSTION · {ENGINE_COMBUSTION_VOICES.length}</h3>
+      <ul>{ENGINE_COMBUSTION_VOICES.map(engineRow)}</ul>
     </div>
     {/* Keyboard and QA path to the same choice. */}
     <label className="sr-only">Comparison engine <select aria-label="Comparison engine" value={profile} disabled={busy} onChange={event => chooseProfile(event.target.value)}>
-      {[...ENGINE_CATALOGUE, ...ENGINE_LAB_CANDIDATES].map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
+      {ENGINE_CATALOGUE.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
   </>;
   const verdict = <>
     <h2>Your verdict</h2>
-    <p className="elab-lede">{isCombustionCandidate(profile) ? `Rosso vs ${selected?.label}` : `${selected?.label}: Refined vs Full body`}</p>
+    <p className="elab-lede">{isCombustionVoice(profile) ? `Rosso vs ${selected?.label}` : `${selected?.label}: Refined vs Full body`}</p>
     <h3 className="elab-choice-title" id="elab-choice-title">Which sounds better?</h3>
     <div className="elab-choice" role="group" aria-labelledby="elab-choice-title">
       {[["A", "A"], ["B", "B"], ["tie", "No preference"]].map(([value, label]) => <button key={value} type="button" aria-pressed={preference === value}
@@ -244,6 +244,6 @@ export function EngineLab({ audioRef, prepareAudio }) {
       <span className="elab-build">Build {typeof __APP_BUILD__ === "undefined" ? "local" : __APP_BUILD__}</span>
     </header>
     <EngineBench key={`${profile}-${serial}`} {...{ audioRef, prepareAudio, profile, calibration, onProgress, choose, verdict }}
-      autoReplay={replay} transport={{ play, busy, labels, listened, candidate: isCombustionCandidate(profile) }} />
+      autoReplay={replay} transport={{ play, busy, labels, listened, candidate: isCombustionVoice(profile) }} />
   </section>;
 }

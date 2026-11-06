@@ -194,3 +194,12 @@
  to{visibility:visible;opacity:1}
 }
 }
+
+/* Eleven Engine choices (November 7): compact one-line tiles keep START visible at 773 × 601. */
+.cockpit-engine-body{grid-template-rows:auto 30px}
+.cockpit-engine-intro{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.cockpit-engine-profiles{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.cockpit-engine-profiles button{min-height:50px;padding:4px 12px;gap:2px;flex-direction:column;align-items:flex-start;justify-content:center;min-width:0}
+.cockpit-engine-profiles strong{font-size:18px;line-height:1.15}
+.cockpit-engine-profiles small{font-size:13px;line-height:1.2;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:650px){.cockpit-engine-profiles{grid-template-columns:repeat(2,minmax(0,1fr))}}

@@ -5,8 +5,8 @@
 The owner judged the published Engine voices (Mono, Rosso, Touring: pitched
 `markeasting/engine-audio` loops plus EQ and an earlier procedural layer) not
 credible — "carelessly synthesized". The owner found teslasound.io credible and
-asked for an original engine that raises the bar. This is a LAB prototype for
-listening; the public catalogue is unchanged.
+asked for an original engine that raises the bar. It began as a LAB prototype for
+listening; since November 7 its eight voices are public (see [Public release](#public-release--november-7)).
 
 ## What was studied, and what was not taken
 
@@ -158,8 +158,8 @@ offline, with lifts 3–7 dB below.
   `voice.model`.
 - **Profiles.** Each candidate is a fully procedural profile in `profiles.js`:
   no assets, neutral voicing, mono road ratios, limiter from its definition.
-- **Catalogue.** `catalogue.js` lists the candidates as `ENGINE_LAB_CANDIDATES`.
-  `isEngineProfile` and the public `ENGINE_CATALOGUE` are untouched.
+- **Catalogue.** `catalogue.js` lists them as `ENGINE_COMBUSTION_VOICES`; since
+  November 7 they are also in the public `ENGINE_CATALOGUE`.
 - **LAB.** A candidate's A/B is **A · Published Rosso** (full-body) against
   **B · Combustion · <engine>**, on the same 68-second route. Saved notes record
   `rosso:full-body.v1` and `combustion.v1:<engine>`. Bump
@@ -269,3 +269,22 @@ idle.
 
 - Owner listening, Tesla cabin playback, CPU headroom on the car's browser, and
   any claim that it beats the reference. Those need the LAB and the car.
+
+## Public release — November 7
+
+The owner asked to hear the voices driving, on real GPS, and chose "Mettili
+pubblici" over a LAB-session-only unlock. All eight voices are now in the public
+`ENGINE_CATALOGUE`, after Mono, Rosso and Touring, so the launch grid, the
+running stepper, the steering-wheel previous/next cycle and the phone remote
+all offer eleven voices. The LAB keeps the same A/B (Rosso against the chosen
+combustion voice) and lists them under "COMBUSTION".
+
+- **Launch.** Compact one-line tiles in three columns; START stays visible at
+  773 × 601 without scrolling. The selected tile is now visibly marked in the
+  Night Instrument appearance, which had lost that state.
+- **Running.** The eleven-button row overlapped the voice title, so the lane
+  holds a stepper: previous, the voice name with its position, next. The name
+  opens every voice in a grid that closes on choice, outside tap or Escape.
+- **Not yet established.** Car listening, CPU headroom on the Tesla browser,
+  and road behaviour of the higher idles remain the owner's acceptance.
+

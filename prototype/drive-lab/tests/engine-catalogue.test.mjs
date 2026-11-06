@@ -2,8 +2,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {ENGINE_CATALOGUE,isEngineProfile} from '../src/engine/catalogue.js';
-test('only the three owner-accepted engines are selectable',()=>{
- assert.deepEqual(ENGINE_CATALOGUE.map(x=>x.id),['mono','rosso','touring']);
+test('three sample voices and eight combustion voices are selectable',()=>{
+ assert.deepEqual(ENGINE_CATALOGUE.map(x=>x.id),['mono','rosso','touring','v8-crossplane','v8-flatplane','flat-six','v10','v12','five-turbo','boxer-rumble','straight-six']);
  for(const id of ['otto','cinque','turbine','unknown']) assert.equal(isEngineProfile(id),false);
 });
 test('Intro, running surface and LAB use the same admitted catalogue',()=>{

@@ -56,12 +56,12 @@ export const ENGINE_PROFILES = Object.freeze([
   make("turbine", "Turbine", { ...bac_mono, sounds: {}, engine: { ...bac_mono.engine, limiter: 9000, soft_limiter: 8900 } },
     { up: 8000, kickdown: 5000, duration: .3, singleSpeed: true, boost: { enabled: true, thresholdRpm: 600, fullRpm: 8000 } },
     { turbine: true, spoolSeconds: 1.8, mix: 1.8 }),
-  ...combustionCandidates(),
+  ...combustionVoices(),
 ]);
-// November 6 LAB-only candidates: the original physically informed synthesizer
-// (./combustion). Fully procedural (no recordings), neutral voicing; selectable
-// only in the protected LAB, never in the public catalogue.
-function combustionCandidates() {
+// November 6 combustion voices: the original physically informed synthesizer
+// (./combustion). Fully procedural (no recordings), neutral voicing; public since
+// the owner's November 7 decision to test them on the road.
+function combustionVoices() {
   return Object.entries(COMBUSTION_ENGINES).map(([engine, spec]) => make(engine, spec.label,
     { ...bac_mono, sounds: {}, engine: { ...bac_mono.engine, limiter: spec.limiterRpm, soft_limiter: spec.limiterRpm - 100,
       inertia: spec.firing.length >= 8 ? 1.15 : 1 } },

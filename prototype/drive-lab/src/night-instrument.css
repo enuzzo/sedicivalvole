@@ -1180,6 +1180,7 @@
 }
 .app[data-appearance] .launch-cockpit button:not(.coffee-support-button):not(:disabled):active { transform: scale(.97); }
 .app[data-appearance] .launch-cockpit .coffee-support-button { border: 0; border-radius: var(--ni-radius-housing); }
+.app[data-appearance] .launch-cockpit .cockpit-engine-profiles button[aria-pressed="true"] { background: var(--ui-selected-surface); color: var(--ui-selected-text); box-shadow: inset 0 -3px var(--ui-selected-accent); }
 
 /* Mode and source: sliding switches with one thumb. */
 .app[data-appearance] .ni-switch {

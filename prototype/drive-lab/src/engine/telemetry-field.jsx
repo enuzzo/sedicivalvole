@@ -1,8 +1,7 @@
 import { ContextualRail, useContextualControls } from "../contextual-controls.jsx";
 import { useEffect, useRef, useState } from "react";
-import { ENGINE_CATALOGUE, ENGINE_LAB_CANDIDATES } from "./catalogue.js";
-// Names include LAB-only candidates; selection buttons stay public-only.
-const engineLabel = id => [...ENGINE_CATALOGUE, ...ENGINE_LAB_CANDIDATES].find(item => item.id === id)?.label ?? id;
+import { ENGINE_CATALOGUE } from "./catalogue.js";
+const engineLabel = id => ENGINE_CATALOGUE.find(item => item.id === id)?.label ?? id;
 import "./telemetry-field.css";
 import { telemetrySignals } from "./telemetry-signals.js";
 import { EngineSignals } from "./telemetry-signals.jsx";
@@ -24,6 +23,34 @@ const SHOW_OFF_PHASES = Object.freeze({ rev: "REV", release: "RELEASE", limiter:
 // The cluster reads these fast-moving fields itself on each display frame, so
 // the tachometer, gear and response traces move with the sound.
 const LIVE_FIELDS = Object.freeze(["rpm", "drive", "deceleration", "gear", "shift", "shiftPhase", "revving", "showOffPhase", "idleBlip"]);
+
+// Eleven voices no longer fit the reserved lane as a button row: a stepper keeps
+// one-tap changes while driving, and the name opens every voice at once.
+function EngineVoicePicker({ contextual, profileId, onProfile }) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef(null);
+  const hidden = Boolean(contextual["aria-hidden"]);
+  const index = Math.max(0, ENGINE_CATALOGUE.findIndex(item => item.id === profileId));
+  const step = direction => onProfile(ENGINE_CATALOGUE[(index + direction + ENGINE_CATALOGUE.length) % ENGINE_CATALOGUE.length].id);
+  useEffect(() => { if (hidden) setOpen(false); }, [hidden]);
+  useEffect(() => {
+    if (!open) return undefined;
+    const close = event => { if (!rootRef.current?.contains(event.target)) setOpen(false); };
+    const escape = event => { if (event.key === "Escape") setOpen(false); };
+    document.addEventListener("pointerdown", close, true);
+    document.addEventListener("keydown", escape);
+    return () => { document.removeEventListener("pointerdown", close, true); document.removeEventListener("keydown", escape); };
+  }, [open]);
+  return <div {...contextual} ref={rootRef} onPointerDown={event => event.stopPropagation()} className="engine-profiles engine-voice-picker" role="group" aria-label="Engine profile">
+    <button type="button" className="engine-voice-step" aria-label="Previous engine" onClick={() => step(-1)}><span aria-hidden="true">‹</span></button>
+    <button type="button" className="engine-voice-current" aria-haspopup="true" aria-expanded={open} onClick={() => setOpen(value => !value)}>
+      <strong>{ENGINE_CATALOGUE[index].label}</strong><small>{index + 1}/{ENGINE_CATALOGUE.length}</small></button>
+    <button type="button" className="engine-voice-step" aria-label="Next engine" onClick={() => step(1)}><span aria-hidden="true">›</span></button>
+    {open ? <div className="engine-voice-menu" role="group" aria-label="All engines">
+      {ENGINE_CATALOGUE.map(({ id, label, description }) => <button key={id} type="button" title={description} aria-pressed={profileId === id} onClick={() => { onProfile(id); setOpen(false); }}>{label}</button>)}
+    </div> : null}
+  </div>;
+}
 
 export function EngineTelemetry({ state: polled, runtimeRef, profileId, onProfile, onRev, onRelease, speed = 0, speedSource = "GPS", speedFreshness = polled.motion, onFrame }) {
   const contextual = useContextualControls();
@@ -92,9 +119,7 @@ export function EngineTelemetry({ state: polled, runtimeRef, profileId, onProfil
   const driveEnd = traceEnd("drive"), decelEnd = traceEnd("decel");
   const voice = engineLabel(profileId);
   return <section ref={fieldRef} className="engine-telemetry" data-revving={Boolean(state.revving)} data-redline={redline} data-limiter={limiterPulse} aria-label="Engine Telemetry">
-    <ContextualRail className="engine-contextual-rail"><div {...contextual} onPointerDown={event => event.stopPropagation()} className="engine-profiles" aria-label="Engine profile">
-      {ENGINE_CATALOGUE.map(({ id, label, description }) => <button key={id} type="button" title={description} aria-pressed={profileId === id} onClick={() => onProfile(id)}>{label}</button>)}
-    </div></ContextualRail>
+    <ContextualRail className="engine-contextual-rail"><EngineVoicePicker contextual={contextual} profileId={profileId} onProfile={onProfile} /></ContextualRail>
     <header>
       <span className="engine-voice-title">{voice} <small>ENGINE / TELEMETRY</small></span>
       <span className="engine-status">
