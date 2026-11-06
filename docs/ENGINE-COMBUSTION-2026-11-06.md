@@ -109,6 +109,47 @@ rather than continuous and at a steeper muffler. Measured causes and changes:
   contract keeps a dry path without reverb or delay, so body comes from fixed
   resonances.
 
+## Second listening and v3 — November 6
+
+The owner's verdict on v2: very good progression and rhythm, but at high rpm
+or flat out the V8 Flat-plane, V10, V12 and Straight Six were "wind" or
+"someone blowing into a microphone" rather than a roaring engine. Shifts in the
+V12 sounded like breaths. The owner also asked for the occasional bang of a
+modified car.
+
+**Measurements at full load and 85 % of redline.** The metric is the share of
+40 Hz–6 kHz energy within ±1.5 % of cam-rate multiples. It was −1.7 to −3.2 dB,
+against −1.1 for the real Audi R8 recording. Removing one source at a time
+pinned it on exhaust grit: with it gone the share rose to −0.5.
+
+**Changes.**
+
+- Valve-opening bursts scale with √(160 / firing events per second), so many
+  cylinders at high rpm no longer fuse into a steady hiss. They also follow
+  combustion strength^1.5, so weak cycles in shifts and overrun crack softly.
+- Grit drops for the V8 Flat-plane (0.30), V10 (0.30), V12 (0.32), Straight Six
+  (0.36) and Flat-Six (0.45).
+- Radiation leans on the pipe's near-field body as revs rise.
+- Induction roar is thinned by firing density, and the plenum carries more
+  under load.
+- Throttle-plate hiss builds over 0.7 s of closed throttle, never in a shift.
+- The V10, V12 and Flat-plane get more bank asymmetry (spread 0.13, skew
+  0.09, merge 0.2) for low-order roar. The V12 and Flat-plane also get
+  stronger cylinder trims and a main pipe 35 % longer.
+
+**Result.** Full-load harmonic share is now −0.4 to −1.6 dB. Energy below
+600 Hz rose: V10 −5.2 → −2.2 dB, V12 −8.7 → −4.9 dB.
+
+**Bang.** `overrun.bang` gives the probability that a hard lift (an upshift or
+lift-off above half redline) ends in a backfire 60–260 ms later. The backfire
+is a large ignition with a long thump that rings the pipes and shakes the body
+modes. It is enabled on the V8 Cross-plane (0.35), Five Turbo (0.30), Boxer
+Rumble (0.30) and V8 Flat-plane (0.15). Like every one-shot it is suppressed
+on stale evidence.
+
+**Levels.** Per-engine gains are matched so the road pull sits at −23 ± 0.5 dB
+offline, with lifts 3–7 dB below.
+
 ## Integration
 
 - **Worklet.** `combustion/combustion-processor.js` registers `sedicivalvole-combustion`

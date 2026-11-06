@@ -90,6 +90,20 @@ test("lifting off a hard run releases a cluster of afterfire that dies away", ()
   assert.ok(perSecond.reduce((a, b) => a + b, 0) < 40, `bounded: ${perSecond}`);
 });
 
+test("tuned maps end some hard lifts in a backfire bang, never with stale evidence", () => {
+  for (const [events, check] of [[1, n => n >= 2 && n <= 14], [0, n => n === 0]]) {
+    const spec = COMBUSTION_ENGINES["v8-crossplane"], engine = new CombustionEngine(48000, spec), l = new Float32Array(128), r = new Float32Array(128);
+    for (let lift = 0; lift < 20; lift++) {
+      for (let i = 0; i < 48000 * 1.2 / 128; i++) engine.process(l, r, 128, [5200], [1], [0], 1, events);
+      for (let i = 0; i < 48000 * 0.8 / 128; i++) engine.process(l, r, 128, [4800], [0.05], [0], 1, events);
+    }
+    assert.ok(check(engine.bangs), `events ${events}: ${engine.bangs} bangs`);
+  }
+  const plain = new CombustionEngine(48000, COMBUSTION_ENGINES.v12), l = new Float32Array(128), r = new Float32Array(128);
+  for (let lift = 0; lift < 10; lift++) { for (let i = 0; i < 450; i++) plain.process(l, r, 128, [7000], [1], [0], 1, 1); for (let i = 0; i < 300; i++) plain.process(l, r, 128, [6500], [0.05], [0], 1, 1); }
+  assert.equal(plain.bangs, 0);
+});
+
 test("sustained load heats the gas and raises the pipe resonances", () => {
   const { engine } = steady("v10", { rpm: 7000, load: 1, seconds: 8, settle: 0 });
   assert.ok(engine.temperature > 950, `${engine.temperature}`);
@@ -132,7 +146,7 @@ test("combustion candidates are LAB-only, neutral, procedural and heard against 
     assert.equal(comparisonProfile(id, "A").id, "rosso"); assert.equal(comparisonProfile(id, "B").id, id);
     assert.match(comparisonCalibrations(id).B, /^Combustion · /);
     const note = makeComparisonNote({ profile: id, preference: "B", note: "", listened: { A: 68, B: 68 }, build: "test", sampleRate: 48000 });
-    assert.equal(note.sourceCalibrations.A, "rosso:full-body.v1"); assert.equal(note.sourceCalibrations.B, `combustion.v2:${id}`);
+    assert.equal(note.sourceCalibrations.A, "rosso:full-body.v1"); assert.equal(note.sourceCalibrations.B, `combustion.v3:${id}`);
   }
   assert.throws(() => comparisonProfile("v10", "C"));
 });

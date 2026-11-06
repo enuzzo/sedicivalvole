@@ -137,7 +137,7 @@ const DEFAULTS = Object.freeze({
   mechanical: { level: 0.12, modes: [[820, 14, 0.5], [1450, 18, 0.4], [2500, 22, 0.3], [4100, 28, 0.2]],
     combustion: 0.6, valves: 0.35, whineOrder: 0, whine: 0, injector: 0 },
   forced: null,
-  overrun: { crackle: 0.4, pop: 0.5, burble: 0.25, body: 0.3 },
+  overrun: { crackle: 0.4, pop: 0.5, burble: 0.25, body: 0.3, bang: 0, bangLevel: 1.6 },
   shiftCrack: 0.35,
   cabin: 0.3, bodyHz: 52, bodyDb: 3,
   bankSkew: 0.045, idleLift: 1.5, lightLift: 0.6, near: 0.85, far: 0.7, width: 0.55, drive: 1.6, gain: 0.5,
@@ -225,11 +225,13 @@ export class CombustionEngine {
     this.drift = 0; this.wander = 0; this.wanderTarget = 0;
     this.spool = 0; this.releaseEnvelope = 0; this.releasePhase = 0; this.surge = 0;
     this.whinePhase = 0; this.whistlePhase = 0; this.whistleDrift = 0;
-    this.pops = new Float64Array(16); // [age, amp, bank, decay] × 4
+    this.pops = new Float64Array(30); // [age, amp, bank, decay, thump] × 6
+    // A tuned map's backfire: a timed bang after a hard lift (seconds to go, size).
+    this.bangTimer = -1; this.bangSize = 0; this.bangs = 0;
     // Afterfire comes in clusters: a hard run recharges it, each pop spends it.
     this.popReady = 0;
     this.popCount = 0;
-    this.crackArmed = false; this.lastCrack = -1;
+    this.crackArmed = false; this.lastCrack = -1; this.hissEnvelope = 0;
     this.excite = 0; this.injector = 0;
     this.frame = 0; this.retune = 0; this.fade = 0; this.cycles = 0;
     this.limiterHold = false; this.limiterClock = 0; this.limiterPeriod = 0.07;
@@ -298,7 +300,12 @@ export class CombustionEngine {
     this.exhaustWidth[i] = clamp(1 + 0.12 * random.gauss() - 0.05 * this.memory[i], 0.75, 1.3);
     // The valve cracks open on high cylinder pressure: a short noise burst
     // rides the opening edge and dies within milliseconds.
-    this.burst[i] = this.exhaustAmp[i] * spec.pulse.grit * (0.5 + 0.5 * throttle) * (0.7 + 0.6 * random.next());
+    // Weak cycles (shifts, overrun) crack open softly. Many cylinders at high rpm
+    // would otherwise fuse their bursts into a steady hiss: scale by firing density
+    // so the turbulence stays a texture under the harmonics, not on top of them.
+    const density = Math.sqrt(160 / Math.max(160, rpm * this.count / 120));
+    const crack = Math.pow(clamp(this.exhaustAmp[i], 0, 1.5), 1.5);
+    this.burst[i] = crack * spec.pulse.grit * (0.5 + 0.5 * throttle) * density * (0.7 + 0.6 * random.next());
     const speed = clamp(rpm / spec.redlineRpm, 0.05, 1.2);
     this.displacementAmp[i] = spec.pulse.displacement * (0.55 + 0.45 * Math.sqrt(speed));
     this.gritAmp[i] = spec.pulse.grit * (0.6 + 0.4 * throttle) * (1 + 0.5 * random.gauss() * cov);
@@ -312,15 +319,30 @@ export class CombustionEngine {
   /** Muted or hidden: drop transient one-shots so nothing outlives the audio owner. */
   quiet() {
     this.spool = 0; this.releaseEnvelope = 0; this.popReady = 0; this.crackArmed = true;
-    for (let p = 1; p < 16; p += 4) this.pops[p] = 0;
+    for (let p = 1; p < 30; p += 5) this.pops[p] = 0;
+    this.bangTimer = -1;
   }
 
   firePop(bank, amp, brightness) { this.popReady *= 0.7; this.pop(bank, amp, brightness); }
 
   pop(bank, amp, brightness) {
-    const slot = (this.popCount++ % 4) * 4;
+    this.emit(bank, amp, 0.0012 + 0.0035 * (1 - brightness), 0.007);
+  }
+
+  /** One ignition in the pipe: bright crack decay and low thump decay, in seconds. */
+  emit(bank, amp, decay, thump) {
+    const slot = (this.popCount++ % 6) * 5;
     this.pops[slot] = 0; this.pops[slot + 1] = amp; this.pops[slot + 2] = this.dualBank ? bank : (this.random.next() < 0.5 ? 0 : 1);
-    this.pops[slot + 3] = 0.0012 + 0.0035 * (1 - brightness);
+    this.pops[slot + 3] = decay; this.pops[slot + 4] = thump;
+  }
+
+  /** The backfire of a modified car: a big ignition that rings the whole system. */
+  bang(size) {
+    const amp = this.spec.overrun.bangLevel * size;
+    this.emit(0, amp, 0.0045 + 0.002 * this.random.next(), 0.016 + 0.008 * this.random.next());
+    if (this.dualBank) this.emit(1, amp * 0.8, 0.004, 0.014);
+    this.excite += 2.5 * size;
+    this.bangs++;
   }
 
   /** Renders `frames` samples into left/right. Param arrays may have length 1. */
@@ -331,6 +353,7 @@ export class CombustionEngine {
     const kRpm = coefficient(rate, 0.008), kThrottle = coefficient(rate, 0.02), kFast = coefficient(rate, 0.004);
     const kOverUp = coefficient(rate, 0.09), kOverDown = coefficient(rate, 0.35), kValve = coefficient(rate, 0.18), kValveClose = coefficient(rate, 3);
     const kFade = 1 / (rate * 0.01), dcPole = Math.exp(-TAU * 18 / rate);
+    const kHissUp = coefficient(rate, 0.7), kHissDown = coefficient(rate, 0.05);
     const mufflerQuiet = spec.muffler.quiet;
     this.events = events > 0.5 ? 1 : 0;
     for (let n = 0; n < frames; n++) {
@@ -368,6 +391,14 @@ export class CombustionEngine {
       if (this.peakThrottle > 0.6 && this.throttleFast < 0.15 && rpm > spec.redlineRpm * 0.5 && !this.crackArmed) {
         this.crackArmed = true;
         if (this.events && random.next() < spec.shiftCrack) { this.pop(0, spec.overrun.pop * 1.3, 0.85); this.pop(1, spec.overrun.pop * 1.1, 0.8); }
+        // Tuned maps: now and then the lift ends in a bang, 60-260 ms later.
+        if (this.events && spec.overrun.bang > 0 && random.next() < spec.overrun.bang) {
+          this.bangTimer = 0.06 + 0.2 * random.next(); this.bangSize = 0.7 + 0.3 * random.next();
+        }
+      }
+      if (this.bangTimer >= 0) {
+        this.bangTimer -= 1 / rate;
+        if (this.bangTimer < 0) { if (this.events) this.bang(this.bangSize); this.bangTimer = -1; }
       }
       if (this.throttleFast > 0.4) this.crackArmed = false;
       if (this.throttle > 0.55 && rpm > spec.redlineRpm * 0.4) this.popReady = Math.min(1, this.popReady + 1 / (rate * 1.5));
@@ -459,16 +490,16 @@ export class CombustionEngine {
       }
       // Pops ignite in the main pipe ahead of the muffler.
       let pop0 = 0, pop1 = 0, crack = 0;
-      for (let p = 0; p < 16; p += 4) {
+      for (let p = 0; p < 30; p += 5) {
         const amp = this.pops[p + 1]; if (amp <= 1e-4) continue;
         const age = this.pops[p]; this.pops[p] = age + 1 / rate;
-        const env = Math.exp(-age / this.pops[p + 3]), thump = Math.exp(-age / 0.007);
+        const env = Math.exp(-age / this.pops[p + 3]), thump = Math.exp(-age / this.pops[p + 4]);
         const value = amp * (env * random.white() * 1.4 + thump * 0.9);
         if (this.pops[p + 2]) pop1 += value; else pop0 += value;
         crack += amp * env * random.white();
         if (env < 1e-3 && thump < 1e-3) this.pops[p + 1] = 0;
       }
-      const muffler = spec.muffler, valve = this.valve;
+      const muffler = spec.muffler, valve = this.valve, revs = clamp(rpm / spec.redlineRpm, 0, 1);
       for (let bank = 0; bank < 2; bank++) {
         const into = (bank ? c1 : c0) + (bank ? pop1 : pop0);
         const main = this.mains[bank].step(into);
@@ -479,7 +510,9 @@ export class CombustionEngine {
         const through = quiet * (mufflerQuiet + (1 - mufflerQuiet) * 0.4 * valve) * 1.6 + open * valve * 0.85 + crack * 0.18;
         const tail = this.tails[bank].step(through);
         // Near field keeps the pulse body; far field radiates its derivative.
-        const radiated = spec.near * tail + spec.far * (tail - this.radiation[bank]);
+        // Short high-rpm pulses push the derivative term up the spectrum; lean on
+        // the pipe's near-field body as revs rise so the roar keeps its weight.
+        const radiated = spec.near * (1 + 0.9 * revs) * tail + spec.far * (1 - 0.4 * revs) * (tail - this.radiation[bank]);
         this.radiation[bank] = tail;
         this.output[bank] = this.cabinMode[bank].step(this.body[bank].step(this.cabinLow[bank].step(radiated)));
       }
@@ -489,13 +522,18 @@ export class CombustionEngine {
       const runner = this.runner.step(suction);
       const plenum = this.plenum.step(runner);
       // Induction roar comes in gulps, one per intake stroke, not as a steady hiss.
-      const roar = this.roar.step(random.white() * gulp * (0.3 + throttle)) * intake.roar;
-      const hiss = this.hiss.step(random.white()) * intake.hiss * (1 - throttle) * speed * (0.4 + this.overrun);
-      const induction = (plenum * 0.55 + runner * 0.2 + roar * 2.6 + hiss) * intake.level * (0.35 + 0.65 * throttle);
+      const intakeDensity = Math.sqrt(160 / Math.max(160, rpm * this.count / 120));
+      const roar = this.roar.step(random.white() * gulp * (0.3 + throttle)) * intake.roar * intakeDensity;
+      // Throttle-plate hiss builds over a held lift, never in the instant of a shift.
+      this.hissEnvelope += ((this.throttleFast < 0.06 ? 1 : 0) - this.hissEnvelope) * (this.throttleFast < 0.06 ? kHissUp : kHissDown);
+      const hiss = this.hiss.step(random.white()) * intake.hiss * this.hissEnvelope * speed * 0.6;
+      const induction = (plenum * (0.55 + 0.5 * throttle) + runner * 0.2 + roar * 2.6 + hiss) * intake.level * (0.35 + 0.65 * throttle);
 
       // --- Mechanical ----------------------------------------------------
       let mechanical = 0;
-      const kick = excite > 0 ? excite * (0.5 + 0.5 * random.next()) * (0.4 + 0.6 * Math.sqrt(speed)) : 0;
+      // A bang shakes the body too (this.excite is its one-sample shove).
+      const kick = (excite > 0 ? excite * (0.5 + 0.5 * random.next()) * (0.4 + 0.6 * Math.sqrt(speed)) : 0) + this.excite;
+      this.excite = 0;
       for (let m = 0; m < this.modes.length; m++) mechanical += this.modes[m].step(kick) * this.modeGain[m];
       if (mech.whineOrder > 0 && mech.whine > 0) {
         this.whinePhase += mech.whineOrder * rpm / 60 / rate; this.whinePhase -= Math.floor(this.whinePhase);
