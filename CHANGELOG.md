@@ -1189,3 +1189,9 @@ No dated releases exist yet.
   - **Dropbox.** The project left Dropbox: active instructions now describe the local, unsynchronized checkout. The deploy removed 17 Dropbox conflicted copies left on the server by the October 29 build (owner-authorized, exact-name or exact-hash only).
   - **Verification.** 1,168 tests; visual 16/16; text fit 14/14; 47 files / 6,834,695 bytes uploaded; canonical roots and assets verified. Rollback tag `pre-combustion-lab-20261106` → `f24736b`.
   - **Still open.** LAB, Tesla cabin and CPU acceptance remain with the owner.
+
+- 2026-11-06 15:35 `[e46af67]` `build 20261106-1529.e46af67`: Reorganized the whole protected LAB on the owner-selected Listening Console pattern.
+  - **PRTCL.** Choose a visual, another tool or the test audio on the left. The live preview sits in the centre with the Underwater macro, speed and audio-level signals, Start audio and Drive FX. Tune & send is on the right.
+  - **ShaderGradient.** Its workbench uses the same light sheet and keeps its side inspector at 773 × 601. Its tool label is now `SHADERGRADIENT`.
+  - **Clean-up.** Dead rail, drawer and footer styles were removed.
+  - **Verification.** Tests 1,168; visual 16/16; text fit 14/14. Published and verified on the canonical root; postflight wrote nothing.

@@ -119,6 +119,7 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 | Date | Record | Build |
 | --- | --- | --- |
+| 2026-11-06 15:35 | [LAB-wide Listening Console](#lab-wide-listening-console--2026-11-06) | `20261106-1529.e46af67` |
 | 2026-11-06 14:50 | [Combustion engine LAB and Dropbox cleanup](#combustion-engine-lab-and-dropbox-cleanup--2026-11-06) | `20261106-1444.ad080f8` |
 | 2026-10-25 09:40 | [Atlas symbol placement](#atlas-symbol-placement--2026-10-25) | `20261025-0925.557022d` |
 | 2026-10-24 22:15 | [Veduta frame pacing](#veduta-frame-pacing--2026-10-24) | `20261024-2206.079219a` |
@@ -338,6 +339,29 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 Earlier records, from [Night Instrument interface](archive/DEPLOY-HISTORY-2026-09-24.md#night-instrument-interface--2026-09-24)
 back, are kept verbatim in the archive.
+
+### LAB-wide Listening Console — 2026-11-06
+
+Canonical `20261106-1529.e46af67`, VERSION `0.0.0`. The owner's Engine LAB
+direction A is extended to the whole protected LAB:
+
+- PRTCL now has a Choose column, a live preview with drive controls, and a Tune
+  & send column.
+- ShaderGradient sits on the same sheet and keeps its side inspector at
+  773 × 601.
+
+**Gates.** Built with `SEDICIVALVOLE_NO_LOCAL_ENV=1`. Tests 1,168; visual
+16/16; text fit 14/14; credits 189; hygiene clean; package identity 841.
+
+**Publication.** Read-only preflight passes with zero conflicted copies.
+Preserve-existing publication uploaded 47 files / 6,846,053 bytes, reused 833
+static files and all 29 recordings, and reported `ROOT_UPLOAD_ONLY`.
+
+**Canonical checks.** Bare and cache-busted roots are HTTP 200, proxy MISS,
+with the build marker. Main JS/CSS and the LAB combustion worklet match local
+SHA-256. `/lab/` serves its login gate. Postflight reports `remote_writes=NONE`.
+
+**Still open.** Authenticated LAB review remains with the owner.
 
 ### Combustion engine LAB and Dropbox cleanup — 2026-11-06
 
