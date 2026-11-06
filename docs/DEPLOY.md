@@ -119,6 +119,7 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 | Date | Record | Build |
 | --- | --- | --- |
+| 2026-11-06 14:50 | [Combustion engine LAB and Dropbox cleanup](#combustion-engine-lab-and-dropbox-cleanup--2026-11-06) | `20261106-1444.ad080f8` |
 | 2026-10-25 09:40 | [Atlas symbol placement](#atlas-symbol-placement--2026-10-25) | `20261025-0925.557022d` |
 | 2026-10-24 22:15 | [Veduta frame pacing](#veduta-frame-pacing--2026-10-24) | `20261024-2206.079219a` |
 | 2026-10-24 13:55 | [Veduta night, polish and quality pass](#veduta-night-polish-and-quality-pass--2026-10-24) | `20261024-1349.c145da1` |
@@ -337,6 +338,54 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 Earlier records, from [Night Instrument interface](archive/DEPLOY-HISTORY-2026-09-24.md#night-instrument-interface--2026-09-24)
 back, are kept verbatim in the archive.
+
+### Combustion engine LAB and Dropbox cleanup — 2026-11-06
+
+Canonical `20261106-1444.ad080f8`, VERSION `0.0.0`.
+
+**Contents.** The original combustion synthesizer (v4) arrives as eight
+LAB-only candidates, heard against the published Rosso. The Engine LAB is
+redesigned as the owner-selected "Listening Console", and the checkout is
+consolidated outside Dropbox. The public catalogue is unchanged. Evidence:
+[Combustion synthesizer](ENGINE-COMBUSTION-2026-11-06.md).
+
+**Gates before publication.**
+
+- Built with `SEDICIVALVOLE_NO_LOCAL_ENV=1`.
+- Tests: 1,168 cases.
+- Visual regression: 16/16. Text fit: 14/14.
+- Credits: 189. Public hygiene: no findings. Package identity: 841 hashes.
+
+**Preflight.** It first failed closed on Dropbox conflicted copies that the
+October 29 build had carried to the server. The owner authorized removing all
+17: one root copy of `index.html`, one LAB `index.php`, five `report-support`
+files (not web-reachable) and ten `brand` icons and logos. The audit now admits
+only exact-hash or exact-name conflicted copies of expected files; any other
+unexpected entry still fails, and builds refuse conflicted copies.
+
+**Publication.** Preserve-existing publication uploaded 47 files /
+6,834,695 bytes. It reused 833 static files and all 29 full-hash-verified
+recordings, removed the 17 copies, retained one previous asset and reported
+`ROOT_UPLOAD_ONLY`.
+
+**Canonical checks.**
+
+- Bare and cache-busted roots are HTTP 200, no-store, proxy MISS, and carry the
+  build marker.
+- Main JS/CSS, `procedural-voice`, the public `combustion-processor` and the
+  LAB `combustion-processor.js` match local SHA-256.
+- The removed LAB and brand copies return 404. The root copy returns 404 at
+  origin, but the bare URL was still a SiteGround edge `HIT` from October 29;
+  provider cache was not bypassed.
+- The public Intro shows `BUILD 20261106-1444` with an empty console. No
+  session was started, so no diagnostic was sent.
+
+**Rollback.** Tag `pre-combustion-lab-20261106` points to the prior live
+`f24736b`. Read-only postflight passes with 15 root entries, zero conflicted
+copies and `remote_writes=NONE`.
+
+**Still open.** Protected-LAB login and listening, Tesla cabin listening and
+CPU headroom on the car remain with the owner.
 
 ### Atlas symbol placement — 2026-10-25
 

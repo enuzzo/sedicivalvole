@@ -1176,3 +1176,16 @@ No dated releases exist yet.
 - 2026-10-25 09:42 `[557022d]` `build 20261025-0925.557022d`: Published the Atlas, Air Atlas and Fly With symbol-placement change to the canonical root. Preserve-existing publication uploaded 43 files / 6,731,065 bytes, reused 833 static files and 29 verified recordings; bare and cache-busted roots are HTTP 200 no-store with the build marker and matching asset hashes; read-only preflight/postflight report `remote_writes=NONE`. Rollback tag `pre-atlas-placement-20261025` → `079219a`. Physical Tesla evidence remains open.
 
 - 2026-10-29 16:05 `[f24736b]` `build 20261029-1558.f24736b`: Owner-approved Google Analytics 4 (`G-2FH5FK7CYZ`, property Sedicivalvole) and Google Search Console for the Instagram launch. The tag measures page visits only; coordinates, routes and diagnostic packets never reach it, and the session report and README now say so. Added `sitemap.xml` and the Search Console HTML verification file beside the meta tag. Full suite passes (1,157 cases); preserve-existing publication uploaded 87 files / 13,930,366 bytes and reused 833 static files and 29 recordings. Bare and cache-busted roots serve the new build with the tag; the verification file and sitemap return 200. Search Console verified the URL-prefix property, accepted the sitemap and is linked to the GA4 web stream; GA4 Realtime received the first page_view.
+
+- 2026-11-06 14:50 `[4a6cdc3]` `[d8ea57b]` `[fdf68a5]` `[593550b]` `[ad080f8]` `build 20261106-1444.ad080f8`:
+  - **Engine.** Added an original, physically informed combustion synthesizer (`src/engine/combustion/`). It models:
+    - crank-angle exhaust pulses with cycle-to-cycle variation and valve-gated per-cylinder primaries;
+    - gas-temperature-tuned pipes and a valved, fourth-order muffler;
+    - intake, a mechanical layer and forced induction;
+    - clustered afterfire, shift cracks, limiter bursts and tuned-map backfire bangs;
+    - slow life at a held throttle, and cabin pressure gain for the owner's 17-speaker, two-subwoofer Tesla.
+  - **Owner listening, three rounds.** First too much hiss and a monotonous steady rpm, then wind instead of roar at high rpm. v2–v4 address both; every change is measured against recordings in `docs/ENGINE-COMBUSTION-2026-11-06.md`.
+  - **Engine LAB.** Eight architectures are LAB-only candidates heard against the published Rosso; the public catalogue is unchanged. The page is redesigned as the owner-selected "Listening Console".
+  - **Dropbox.** The project left Dropbox: active instructions now describe the local, unsynchronized checkout. The deploy removed 17 Dropbox conflicted copies left on the server by the October 29 build (owner-authorized, exact-name or exact-hash only).
+  - **Verification.** 1,168 tests; visual 16/16; text fit 14/14; 47 files / 6,834,695 bytes uploaded; canonical roots and assets verified. Rollback tag `pre-combustion-lab-20261106` → `f24736b`.
+  - **Still open.** LAB, Tesla cabin and CPU acceptance remain with the owner.
