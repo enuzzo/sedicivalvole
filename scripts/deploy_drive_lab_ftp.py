@@ -156,6 +156,11 @@ LAB_SEND_MARKERS = (b"sedicivalvole.lab-mail.v1", b"labRequireCsrf", b"buildLabP
 LAB_SCORE_PROCESSOR_MARKERS = (b"AudioWorkletProcessor", b'registerProcessor("score-processor"')
 LAB_ENGINE_PROCESSOR_MARKERS = (b"AudioWorkletProcessor", b'registerProcessor("sedicivalvole-engine"')
 LAB_COMBUSTION_PROCESSOR_MARKERS = (b"AudioWorkletProcessor", b'registerProcessor("sedicivalvole-combustion"')
+# A Dropbox conflicted copy of the October 25 index.html reached the root with
+# the October 29 build. The owner authorized its exact-hash removal (November 6).
+RETIRED_ROOT_HASHES = {
+    "index (Netmilk Studio's conflicted copy 2026-10-29).html": "81c7ba6ff6c3172036cdf5418927882b03adf50debc50de2fe56d1093115cfc1",
+}
 RETIRED_LAB_HASHES = {
     "soundtrack-repeat-processor.js": "4394837a3bebf6e065cd1dabc6b43e73f302bbead98bf43af830f9df15620aad",
     "bloom-processor.js": "6561b35a7ee7c753ee858e4682894adacc7010001f073210844b93bb102f222a",
@@ -682,6 +687,8 @@ def static_build_files() -> list[Path]:
         for path in directory.iterdir():
             if path.is_symlink() or is_forbidden_static_name(path.name):
                 raise ValueError(STATIC_SAFETY_ERROR)
+            if "conflicted copy" in path.name.lower():
+                raise ValueError("Dropbox conflicted copy in the production build")
             if path.is_dir():
                 pending.append(path)
             elif path.is_file():
@@ -1028,7 +1035,7 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
         "ui",
         LAB_DIRECTORY,
         MACOS_METADATA_ROOT_ENTRY,
-    }
+    } | RETIRED_ROOT_HASHES.keys()
     allowed_root_names.update(
         path.name
         for path in BUILD.iterdir()
@@ -1038,6 +1045,9 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
     if unexpected_root_names:
         unexpected = ",".join(sorted(unexpected_root_names))
         raise ValueError(f"unexpected canonical-root entry: {unexpected}")
+    for name, expected_hash in RETIRED_ROOT_HASHES.items():
+        if name in root_names and sha256_bytes(remote_bytes(ftp, name)) != expected_hash:
+            raise ValueError("retired canonical-root entry identity mismatch")
 
     if (
         MACOS_METADATA_ROOT_ENTRY in root_names
@@ -1163,7 +1173,13 @@ def verify_remote_root(ftp: ftplib.FTP) -> set[str]:
             } | RETIRED_LAB_HASHES.keys()
             unexpected_lab_names = sorted(lab_names - admitted_lab_names)
             if unexpected_lab_names:
-                raise ValueError(f"unexpected LAB entry: {','.join(unexpected_lab_names)}")
+                # A conflicted copy is reported with its hash so its exact-hash
+                # retirement can be reviewed; nothing is written or deleted.
+                reported = [
+                    f"{name} sha256 {sha256_bytes(remote_bytes(ftp, name))}" if "conflicted copy" in name.lower() else name
+                    for name in unexpected_lab_names
+                ]
+                raise ValueError(f"unexpected LAB entry: {','.join(reported)}")
             marker_sets = {
                 "index.php": LAB_PAGE_MARKERS,
                 "bootstrap.php": LAB_BOOTSTRAP_MARKERS,
@@ -1430,6 +1446,19 @@ def remove_retired_illobo_artwork(ftp: ftplib.FTP) -> int:
             ftp.cwd("..")
     finally:
         ftp.cwd("..")
+
+
+def remove_retired_root_entries(ftp: ftplib.FTP) -> int:
+    """Delete only exact retired root files admitted by the read-only audit."""
+    deleted = 0
+    for name, expected_hash in RETIRED_ROOT_HASHES.items():
+        if name not in safe_names(ftp):
+            continue
+        if sha256_bytes(remote_bytes(ftp, name)) != expected_hash:
+            raise ValueError("retired canonical-root entry identity mismatch")
+        ftp.delete(name)
+        deleted += 1
+    return deleted
 
 
 def remove_retired_lab_assets(ftp: ftplib.FTP) -> int:
@@ -1730,6 +1759,7 @@ def main() -> int:
 
         retired_illobo_artwork = remove_retired_illobo_artwork(ftp)
         retired_lab_assets = remove_retired_lab_assets(ftp)
+        retired_root_entries = remove_retired_root_entries(ftp)
         removed_macos_metadata = remove_recognized_macos_metadata(ftp)
 
         verify_completed_upload(ftp, recipient_config, lab_auth_config, jamendo_config)
@@ -1758,6 +1788,7 @@ def main() -> int:
         print(f"illobo_artwork_migration=PASS retired_png_files={retired_illobo_artwork}")
         print(f"lab_runtime_migration=PASS retired_worklets={retired_lab_assets}")
         print(f"root_metadata_cleanup=PASS removed={str(removed_macos_metadata).lower()}")
+        print(f"root_retired_cleanup=PASS removed={retired_root_entries}")
         print(f"dynamic_root=PASS staged={str(stage_php_entry).lower()} static_entry_removed={str(switched_entry).lower()}")
         if preserve_existing:
             print("legacy_cleanup=SKIPPED preserve_existing=true")

@@ -132,7 +132,7 @@ test("combustion candidates are LAB-only, neutral, procedural and heard against 
     assert.equal(comparisonProfile(id, "A").id, "rosso"); assert.equal(comparisonProfile(id, "B").id, id);
     assert.match(comparisonCalibrations(id).B, /^Combustion · /);
     const note = makeComparisonNote({ profile: id, preference: "B", note: "", listened: { A: 68, B: 68 }, build: "test", sampleRate: 48000 });
-    assert.equal(note.sourceCalibrations.A, "rosso:full-body.v1"); assert.equal(note.sourceCalibrations.B, `combustion.v1:${id}`);
+    assert.equal(note.sourceCalibrations.A, "rosso:full-body.v1"); assert.equal(note.sourceCalibrations.B, `combustion.v2:${id}`);
   }
   assert.throws(() => comparisonProfile("v10", "C"));
 });

@@ -32,6 +32,8 @@ const finite = (x, fallback) => (Number.isFinite(x) ? x : fallback);
 const smoothstep = x => { const t = clamp(x, 0, 1); return t * t * (3 - 2 * t); };
 const coefficient = (rate, seconds) => 1 - Math.exp(-1 / (rate * Math.max(1e-5, seconds)));
 const onePoleHz = (rate, hz) => 1 - Math.exp(-TAU * Math.min(hz, rate * 0.45) / rate);
+/** One step of unit-variance low-passed noise: a one-pole keeps only sqrt(k/(2-k)) of the input. */
+const slowNoise = (state, k, g) => state + (g * Math.sqrt((2 - k) / k) - state) * k;
 
 /** xorshift32: deterministic and allocation free. */
 class Random {
@@ -128,7 +130,8 @@ const DEFAULTS = Object.freeze({
   muffler: { chamber: 0.4, rho: 0.5, lowpassHz: 1500, openHz: 4200, resonatorHz: 0, resonatorQ: 3,
     valveRpm: 3500, valveLoad: 0.45, quiet: 0.55 },
   tail: { lengths: [0.6, 0.64], loop: -0.4, lossHz: 3000 },
-  pulse: { degrees: 58, widen: 0.55, attack: 0.11, displacement: 0.22, grit: 0.6, flowGrit: 0.2, turbulence: 0.05 },
+  pulse: { degrees: 58, widen: 0.55, attack: 0.11, displacement: 0.22, grit: 0.6, flowGrit: 0.2, turbulence: 0.012 },
+  life: { foot: 0.05, road: 0.003 },
   combustion: { cov: 0.035, idleCov: 0.1, memory: 0.5, trim: 0.05, misfire: 0, jitterDeg: 1.2, idleStrength: 0.34, wander: 0.012, bankSpread: 0.06 },
   intake: { level: 0.25, plenumHz: 85, plenumQ: 2.2, roarHz: 900, roarQ: 0.9, roar: 0.35, hiss: 0.04, runner: 0.32 },
   mechanical: { level: 0.12, modes: [[820, 14, 0.5], [1450, 18, 0.4], [2500, 22, 0.3], [4100, 28, 0.2]],
@@ -177,6 +180,12 @@ export class CombustionEngine {
     this.exhaustAmp = new Float64Array(this.count);
     this.exhaustJitter = new Float64Array(this.count);
     this.exhaustAttack = new Float64Array(this.count).fill(spec.pulse.attack);
+    // Per cycle: pulse width and the valve-opening noise burst.
+    this.exhaustWidth = new Float64Array(this.count).fill(1);
+    this.burst = new Float64Array(this.count);
+    this.burstDecay = 0.99;
+    // Slow life at a steady speed: the driver's foot and the road.
+    this.foot = 0; this.footSlow = 0; this.road = 0; this.lash = 0;
     this.displacementAmp = new Float64Array(this.count);
     this.gritAmp = new Float64Array(this.count);
     this.intakeAmp = new Float64Array(this.count);
@@ -192,8 +201,9 @@ export class CombustionEngine {
     this.chambers = [new Pipe(rate, 0.01), new Pipe(rate, 0.01)];
     this.tails = [new Pipe(rate, 0.01), new Pipe(rate, 0.01)];
     this.runner = new Pipe(rate, 0.01);
-    this.mufflerLow = [new Biquad(), new Biquad()];
-    this.openLow = [new Biquad(), new Biquad()];
+    // Two stages each: real exhausts roll off steeply above a few kHz.
+    this.mufflerLow = [new Biquad(), new Biquad()]; this.mufflerLow2 = [new Biquad(), new Biquad()];
+    this.openLow = [new Biquad(), new Biquad()]; this.openLow2 = [new Biquad(), new Biquad()];
     this.resonator = [new Biquad(), new Biquad()];
     this.turbine = [0, 0];
     this.radiation = [0, 0];
@@ -251,7 +261,9 @@ export class CombustionEngine {
       this.tails[bank].tune(rate, (tail.lengths[bank] ?? tail.lengths[0]) / soundSpeed(this.temperature * 0.55 + 140), tail.loop, tail.lossHz);
       const lowHz = muffler.lowpassHz * (0.85 + 0.3 * this.throttle);
       this.mufflerLow[bank].design("lowpass", rate, lowHz, 0.6);
+      this.mufflerLow2[bank].design("lowpass", rate, lowHz * 1.2, 0.55);
       this.openLow[bank].design("lowpass", rate, muffler.openHz, 0.55);
+      this.openLow2[bank].design("lowpass", rate, muffler.openHz * 1.25, 0.55);
       if (muffler.resonatorHz > 0) this.resonator[bank].design("notch", rate, muffler.resonatorHz * (cooler / 420), muffler.resonatorQ);
       const cabin = clamp(spec.cabin, 0, 1), cabinHz = 9000 * Math.pow(1400 / 9000, cabin);
       this.cabinLow[bank].design("lowpass", rate, cabinHz, 0.6);
@@ -283,6 +295,10 @@ export class CombustionEngine {
     this.exhaustJitter[i] = c.jitterDeg * (0.4 + idleness) * random.gauss();
     // A stronger, faster burn also opens with a sharper edge.
     this.exhaustAttack[i] = spec.pulse.attack * clamp(1 - 0.22 * this.memory[i] - 0.25 * (throttle - 0.5), 0.55, 1.5);
+    this.exhaustWidth[i] = clamp(1 + 0.12 * random.gauss() - 0.05 * this.memory[i], 0.75, 1.3);
+    // The valve cracks open on high cylinder pressure: a short noise burst
+    // rides the opening edge and dies within milliseconds.
+    this.burst[i] = this.exhaustAmp[i] * spec.pulse.grit * (0.5 + 0.5 * throttle) * (0.7 + 0.6 * random.next());
     const speed = clamp(rpm / spec.redlineRpm, 0.05, 1.2);
     this.displacementAmp[i] = spec.pulse.displacement * (0.55 + 0.45 * Math.sqrt(speed));
     this.gritAmp[i] = spec.pulse.grit * (0.6 + 0.4 * throttle) * (1 + 0.5 * random.gauss() * cov);
@@ -323,11 +339,15 @@ export class CombustionEngine {
       const load = clamp(finite(loadIn.length > 1 ? loadIn[n] : loadIn[0], 0), 0, 1);
       const boost = clamp(finite(boostIn.length > 1 ? boostIn[n] : boostIn[0], 0), 0, 1);
       this.rpm += kRpm * (rpmTarget - this.rpm);
-      const throttleTarget = clamp((load - 0.07) / 0.93, 0, 1);
+      const demand = clamp((load - 0.07) / 0.93, 0, 1);
+      // A held throttle is never perfectly still; a closed or floored one is.
+      const held = smoothstep(demand / 0.08) * (1 - smoothstep((demand - 0.75) / 0.2));
+      const throttleTarget = clamp(demand + spec.life.foot * held * (0.5 * this.foot + 0.85 * this.footSlow), 0, 1);
       this.throttle += kThrottle * (throttleTarget - this.throttle);
       this.throttleFast += kFast * (throttleTarget - this.throttleFast);
       this.peakThrottle = Math.max(this.throttleFast, this.peakThrottle - 1 / (rate * 0.25));
-      const rpm = this.rpm * (1 + this.wander);
+      const moving = smoothstep((this.rpm - spec.idleRpm * 1.15) / (spec.idleRpm * 0.5));
+      const rpm = this.rpm * (1 + this.wander + moving * spec.life.road * (0.9 * this.road + 0.3 * this.lash));
       // Overrun depth in absolute rpm above idle: road lifts at 3,000–4,000 rpm
       // are full overrun for a 6,500 or a 9,000 rpm engine alike.
       const overrunTarget = this.throttleFast < 0.06 && rpm > spec.idleRpm * 1.6
@@ -356,7 +376,15 @@ export class CombustionEngine {
       if ((this.retune++ & 63) === 0) {
         const workTarget = 560 + 520 * Math.pow(this.throttle, 0.7) * (0.45 + 0.55 * clamp(rpm / spec.redlineRpm, 0, 1));
         this.temperature += (workTarget - this.temperature) * (1 - Math.exp(-64 / (rate * (workTarget > this.temperature ? 3.5 : 9))));
-        this.drift += (random.gauss() * 0.7 - this.drift) * (1 - Math.exp(-64 / (rate * 0.4)));
+        this.drift = slowNoise(this.drift, 1 - Math.exp(-64 / (rate * 0.4)), random.gauss() * 0.7);
+        this.burstDecay = Math.exp(-1 / (rate * (0.0042 - 0.003 * clamp(rpm / spec.redlineRpm, 0, 1))));
+        // Life: the foot wanders (0.15 and 0.7 Hz) and the road and driveline
+        // move the crank a little (1.5 and 6 Hz). Slow, random, never periodic.
+        const step64 = rate / 64;
+        this.footSlow = slowNoise(this.footSlow, 1 - Math.exp(-TAU * 0.15 / step64), random.gauss());
+        this.foot = slowNoise(this.foot, 1 - Math.exp(-TAU * 0.7 / step64), random.gauss());
+        this.road = slowNoise(this.road, 1 - Math.exp(-TAU * 1.5 / step64), random.gauss());
+        this.lash = slowNoise(this.lash, 1 - Math.exp(-TAU * 6 / step64), random.gauss());
         const idle = (1 - smoothstep((rpm - spec.idleRpm) / spec.idleRpm)) * (1 - this.throttle);
         if (random.next() < 64 / (rate * 0.7)) this.wanderTarget = random.gauss() * spec.combustion.wander * idle;
         this.wander += (this.wanderTarget - this.wander) * (1 - Math.exp(-64 / (rate * 0.35)));
@@ -379,7 +407,8 @@ export class CombustionEngine {
       const step = rpm * 6 / rate;
       this.theta += step; if (this.theta >= 720) this.theta -= 720;
       const blowSpan = pulse.degrees * (1 + pulse.widen * clamp(rpm / spec.redlineRpm, 0, 1.2));
-      let bank0 = 0, bank1 = 0, suction = 0, excite = 0;
+      const burstDecay = this.burstDecay;
+      let bank0 = 0, bank1 = 0, suction = 0, gulp = 0, excite = 0;
       for (let i = 0; i < count; i++) {
         let fired = this.theta - angles[i]; if (fired < 0) fired += 720;
         if (fired < this.lastFiring[i]) excite += mech.combustion * (0.25 + 0.75 * this.exhaustAmp[i]) * (this.cut ? 0.1 : 1);
@@ -390,14 +419,17 @@ export class CombustionEngine {
         this.lastExhaust[i] = a;
         let flow = 0;
         if (a < EXHAUST_SPAN) {
-          const t = (a - this.exhaustJitter[i]) / blowSpan;
+          const t = (a - this.exhaustJitter[i]) / (blowSpan * this.exhaustWidth[i]);
           const blow = t > 0 && t < 1 ? blowdownShape(t, this.exhaustAttack[i]) * this.exhaustAmp[i] : 0;
           const s = Math.sin(Math.PI * a / EXHAUST_SPAN);
           const displacement = s * s * this.displacementAmp[i];
           this.noiseLow[i] += this.noiseColour * (random.white() - this.noiseLow[i]);
-          const turbulence = this.noiseLow[i] * 2.6 + random.white() * 0.35;
-          flow = (blow + displacement + turbulence * (blow * this.gritAmp[i] + displacement * pulse.flowGrit)) * this.bankTrim[banks[i]];
-        }
+          const noise = this.noiseLow[i] * 2.2 + random.white() * 0.45;
+          // Burst on the opening edge; only a trace of turbulence rides the rest.
+          const grit = this.burst[i] * 2.4 + blow * this.gritAmp[i] * 0.18 + displacement * pulse.flowGrit * 0.3;
+          this.burst[i] *= burstDecay;
+          flow = (blow + displacement + noise * grit) * this.bankTrim[banks[i]];
+        } else this.burst[i] = 0;
         // An open exhaust valve absorbs the returning wave; a closed one reflects it.
         this.primaries[i].loop = spec.header.collector * (a < EXHAUST_SPAN ? 0.15 : 0.9);
         const out = this.primaries[i].step(flow);
@@ -409,7 +441,7 @@ export class CombustionEngine {
           if (mech.injector) this.injector += mech.injector * (1 - smoothstep((rpm - spec.idleRpm) / (spec.idleRpm * 2.5)));
         }
         this.lastIntake[i] = b;
-        if (b < INTAKE_SPAN) { const s = Math.sin(Math.PI * b / INTAKE_SPAN); suction += s * s * this.intakeAmp[i]; }
+        if (b < INTAKE_SPAN) { const s = Math.sin(Math.PI * b / INTAKE_SPAN), s2 = s * s; suction += s2 * this.intakeAmp[i]; gulp += s2 * s2 * s2 * this.intakeAmp[i]; }
       }
       bank0 /= Math.sqrt(this.perBank[0]); bank1 /= Math.sqrt(this.perBank[1]);
       if (!this.dualBank) bank1 = bank0;
@@ -442,8 +474,8 @@ export class CombustionEngine {
         const main = this.mains[bank].step(into);
         let quiet = this.chambers[bank].step(main);
         if (muffler.resonatorHz > 0) quiet = this.resonator[bank].step(quiet);
-        quiet = this.mufflerLow[bank].step(quiet);
-        const open = this.openLow[bank].step(main);
+        quiet = this.mufflerLow2[bank].step(this.mufflerLow[bank].step(quiet));
+        const open = this.openLow2[bank].step(this.openLow[bank].step(main));
         const through = quiet * (mufflerQuiet + (1 - mufflerQuiet) * 0.4 * valve) * 1.6 + open * valve * 0.85 + crack * 0.18;
         const tail = this.tails[bank].step(through);
         // Near field keeps the pulse body; far field radiates its derivative.
@@ -456,9 +488,10 @@ export class CombustionEngine {
       const throttle = this.throttle, speed = clamp(rpm / spec.redlineRpm, 0, 1.2);
       const runner = this.runner.step(suction);
       const plenum = this.plenum.step(runner);
-      const roar = this.roar.step(random.white() * suction * (0.3 + throttle)) * intake.roar;
+      // Induction roar comes in gulps, one per intake stroke, not as a steady hiss.
+      const roar = this.roar.step(random.white() * gulp * (0.3 + throttle)) * intake.roar;
       const hiss = this.hiss.step(random.white()) * intake.hiss * (1 - throttle) * speed * (0.4 + this.overrun);
-      const induction = (plenum * 0.55 + runner * 0.2 + roar * 3.2 + hiss) * intake.level * (0.35 + 0.65 * throttle);
+      const induction = (plenum * 0.55 + runner * 0.2 + roar * 2.6 + hiss) * intake.level * (0.35 + 0.65 * throttle);
 
       // --- Mechanical ----------------------------------------------------
       let mechanical = 0;

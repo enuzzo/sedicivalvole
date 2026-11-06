@@ -82,6 +82,33 @@ Eight original architectures (`engines.js`):
 
 Their names are architectures, not car replicas.
 
+## Owner listening and v2 — November 6
+
+The owner's first listen to v1: "not bad", but some engines (the Flat-Six
+above all) had too much hiss, and a steady rpm sounded monotonous. A second,
+concept-only reading of teslasound.io pointed at noise that is impulsive
+rather than continuous and at a steeper muffler. Measured causes and changes:
+
+- **Hiss.** v1 noise rode the whole blowdown pulse and the collector carried
+  steady turbulence. High-band energy was continuous: the 0.7 ms envelope of
+  2–8 kHz had a peak/mean of 2.5, against 3.3–14.6 in real recordings. v2 moves
+  the noise into a burst on the valve-opening edge. The burst decays in about
+  4.2 ms at idle and 1.2 ms at redline. Only a trace of turbulence rides the
+  rest of the pulse. The muffler, both shut and valved-open, is fourth order.
+  Induction roar arrives in gulps, one per intake stroke. Flat-Six cruise:
+  4 kHz share −21.4 → −26.4 dB, 8 kHz −26.1 → −31.2 dB, peak/mean 2.6 → 3.4.
+- **Monotony.** v1 had slow drifts, but its one-pole low-passed noise kept only
+  √(k/(2−k)) of its amplitude, about 5 %, so they were inaudible. v2 normalizes
+  slow noise to unit variance and adds life at a held throttle: the driver's
+  foot (0.15 and 0.7 Hz, ±5 % throttle) and the road and driveline (1.5 and
+  6 Hz, ±0.3 % rpm). There is none at idle (which has its own wander), at a
+  closed throttle or flat out. Over 10 s at 3,000 rpm the level now breathes
+  2–3 dB instead of 1–1.9 dB.
+- **Per-cycle pulse width** varies ±12 % on top of strength and edge sharpness.
+- **Not taken.** teslasound adds short damped cabin reflections; the Engine
+  contract keeps a dry path without reverb or delay, so body comes from fixed
+  resonances.
+
 ## Integration
 
 - **Worklet.** `combustion/combustion-processor.js` registers `sedicivalvole-combustion`
