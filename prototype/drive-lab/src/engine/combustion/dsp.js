@@ -58,6 +58,11 @@ class Biquad {
     if (type === "lowpass") { b0 = (1 - cos) / 2; b1 = 1 - cos; b2 = b0; a0 = 1 + alpha; a1 = -2 * cos; a2 = 1 - alpha; }
     else if (type === "highpass") { b0 = (1 + cos) / 2; b1 = -(1 + cos); b2 = b0; a0 = 1 + alpha; a1 = -2 * cos; a2 = 1 - alpha; }
     else if (type === "bandpass") { b0 = alpha; b1 = 0; b2 = -alpha; a0 = 1 + alpha; a1 = -2 * cos; a2 = 1 - alpha; }
+    else if (type === "lowshelf") {
+      const rootA = Math.sqrt(A);
+      b0 = A * ((A + 1) - (A - 1) * cos + 2 * rootA * alpha); b1 = 2 * A * ((A - 1) - (A + 1) * cos); b2 = A * ((A + 1) - (A - 1) * cos - 2 * rootA * alpha);
+      a0 = (A + 1) + (A - 1) * cos + 2 * rootA * alpha; a1 = -2 * ((A - 1) + (A + 1) * cos); a2 = (A + 1) + (A - 1) * cos - 2 * rootA * alpha;
+    }
     else if (type === "notch") { b0 = 1; b1 = -2 * cos; b2 = 1; a0 = 1 + alpha; a1 = -2 * cos; a2 = 1 - alpha; }
     else { // peaking
       b0 = 1 + alpha * A; b1 = -2 * cos; b2 = 1 - alpha * A; a0 = 1 + alpha / A; a1 = -2 * cos; a2 = 1 - alpha / A;
@@ -139,7 +144,7 @@ const DEFAULTS = Object.freeze({
   forced: null,
   overrun: { crackle: 0.4, pop: 0.5, burble: 0.25, body: 0.3, bang: 0, bangLevel: 1.6 },
   shiftCrack: 0.35,
-  cabin: 0.3, bodyHz: 52, bodyDb: 3,
+  cabin: 0.3, bodyHz: 52, bodyDb: 3, cabinGainHz: 65, cabinGainDb: 8,
   bankSkew: 0.045, idleLift: 1.5, lightLift: 0.6, near: 0.85, far: 0.7, width: 0.55, drive: 1.6, gain: 0.5,
 });
 
@@ -210,6 +215,10 @@ export class CombustionEngine {
     this.cabinLow = [new Biquad(), new Biquad()];
     this.body = [new Biquad(), new Biquad()];
     this.cabinMode = [new Biquad(), new Biquad()];
+    // A sealed cabin's pressure rises below its first mode: the chest-deep
+    // boom of a car you sit in. Then protect the subwoofers from infrasound.
+    this.cabinGain = [new Biquad(), new Biquad()];
+    this.subGuard = [new Biquad(), new Biquad()];
     this.plenum = new Biquad().design("bandpass", rate, spec.intake.plenumHz, spec.intake.plenumQ);
     this.roar = new Biquad().design("bandpass", rate, spec.intake.roarHz, spec.intake.roarQ);
     this.hiss = new Biquad().design("highpass", rate, 2600, 0.7);
@@ -271,6 +280,8 @@ export class CombustionEngine {
       this.cabinLow[bank].design("lowpass", rate, cabinHz, 0.6);
       this.body[bank].design("peaking", rate, spec.bodyHz, 1.1, spec.bodyDb);
       this.cabinMode[bank].design("peaking", rate, spec.bodyHz * 2.15, 1.6, spec.bodyDb * 0.8);
+      this.cabinGain[bank].design("lowshelf", rate, spec.cabinGainHz, 0.7, spec.cabinGainDb);
+      this.subGuard[bank].design("highpass", rate, 16, 0.707);
     }
     this.runner.tune(rate, spec.intake.runner / 345, -0.5, 3000);
   }
@@ -352,7 +363,7 @@ export class CombustionEngine {
     const pulse = spec.pulse, intake = spec.intake, mech = spec.mechanical, forced = spec.forced;
     const kRpm = coefficient(rate, 0.008), kThrottle = coefficient(rate, 0.02), kFast = coefficient(rate, 0.004);
     const kOverUp = coefficient(rate, 0.09), kOverDown = coefficient(rate, 0.35), kValve = coefficient(rate, 0.18), kValveClose = coefficient(rate, 3);
-    const kFade = 1 / (rate * 0.01), dcPole = Math.exp(-TAU * 18 / rate);
+    const kFade = 1 / (rate * 0.01);
     const kHissUp = coefficient(rate, 0.7), kHissDown = coefficient(rate, 0.05);
     const mufflerQuiet = spec.muffler.quiet;
     this.events = events > 0.5 ? 1 : 0;
@@ -579,8 +590,8 @@ export class CombustionEngine {
       const light = 1 - throttle;
       const level = spec.gain * (0.72 + 0.28 * valve) * (1 + (spec.idleLift - 1) * idleness) * (1 + spec.lightLift * light * light);
       l *= level; r *= level;
-      this.dc[0] = l - this.dc[1] + dcPole * this.dc[0]; this.dc[1] = l;
-      this.dc[2] = r - this.dc[3] + dcPole * this.dc[2]; this.dc[3] = r;
+      this.dc[0] = this.subGuard[0].step(this.cabinGain[0].step(l));
+      this.dc[2] = this.subGuard[1].step(this.cabinGain[1].step(r));
       const drive = spec.drive;
       const sl = saturate(this.dc[0] * drive) / drive, sr = saturate(this.dc[2] * drive) / drive;
       this.fade = clamp(this.fade + (active > 0.5 ? kFade : -kFade), 0, 1);

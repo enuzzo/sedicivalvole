@@ -15,7 +15,7 @@ export const COMBUSTION_ENGINES = Object.freeze({
   // Cross-plane V8, 1-8-7-2-6-5-4-3. Each bank fires unevenly
   // (90-180-270-180°), the source of the off-beat burble.
   "v8-crossplane": {
-    label: "V8 Cross-plane", description: "6.2 L pushrod V8, long-tube headers, dual exhaust",
+    label: "V8 Cross-plane", description: "6.2 L pushrod V8, dual exhaust",
     firing: even([1, 8, 7, 2, 6, 5, 4, 3], c => (c % 2 ? 0 : 1)),
     idleRpm: 720, redlineRpm: 6500, limiterRpm: 6650,
     header: { length: 0.86, spread: 0.162, collector: -0.36, lossHz: 3600 },
@@ -33,7 +33,7 @@ export const COMBUSTION_ENGINES = Object.freeze({
   // Flat-plane V8, 1-5-3-7-4-8-2-6: banks alternate every 90°, each bank an
   // even 180° four. Short equal headers, high revs: a hard wail.
   "v8-flatplane": {
-    label: "V8 Flat-plane", description: "4.5 L, 9,000 rpm, equal-length headers",
+    label: "V8 Flat-plane", description: "4.5 L, 9,000 rpm, equal headers",
     firing: even([1, 5, 3, 7, 4, 8, 2, 6], c => (c <= 4 ? 0 : 1)),
     idleRpm: 1000, redlineRpm: 9000, limiterRpm: 9200,
     header: { length: 0.58, spread: 0.054, collector: -0.34, lossHz: 5200 },
@@ -52,7 +52,7 @@ export const COMBUSTION_ENGINES = Object.freeze({
   // Flat-six, 1-6-2-4-3-5, 120°. Cylinders 1-3 one bank, 4-6 the other.
   // Intake and valvetrain are a large part of its voice.
   "flat-six": {
-    label: "Flat-Six", description: "4.0 L boxer six, 9,000 rpm, loud intake",
+    label: "Flat-Six", description: "4.0 L boxer six, 9,000 rpm",
     firing: even([1, 6, 2, 4, 3, 5], c => (c <= 3 ? 0 : 1)),
     idleRpm: 880, redlineRpm: 9000, limiterRpm: 9150,
     header: { length: 0.64, spread: 0.072, collector: -0.33, lossHz: 4800 },
@@ -106,7 +106,7 @@ export const COMBUSTION_ENGINES = Object.freeze({
   // Inline five, 1-2-4-5-3, a firing every 144°: the off-beat warble.
   // Turbocharged with a blow-off valve, single manifold, split tailpipes.
   "five-turbo": {
-    label: "Five Turbo", description: "2.5 L inline-five turbo, blow-off valve",
+    label: "Five Turbo", description: "2.5 L inline-five turbo",
     firing: even([1, 2, 4, 5, 3], () => 0),
     idleRpm: 820, redlineRpm: 7000, limiterRpm: 7150,
     header: { length: 0.42, spread: 0.216, collector: -0.3, lossHz: 4200 },
@@ -125,7 +125,7 @@ export const COMBUSTION_ENGINES = Object.freeze({
   // single collector unevenly, the source of the rumble. Turbo, no blow-off
   // valve, so lifting off surges the compressor (flutter).
   "boxer-rumble": {
-    label: "Boxer Rumble", description: "2.5 L flat-four turbo, unequal headers",
+    label: "Boxer Rumble", description: "2.5 L flat-four turbo, rumble",
     firing: [[0, 1, 0], [180, 3, 0], [360, 2, 0], [540, 4, 0]],
     idleRpm: 780, redlineRpm: 7000, limiterRpm: 7150,
     header: { lengths: [0.38, 0.97, 0.41, 0.93], collector: -0.32, lossHz: 3800 },
@@ -143,7 +143,7 @@ export const COMBUSTION_ENGINES = Object.freeze({
   // Inline six, 1-5-3-6-2-4, 120°, two 3-into-1 collectors (front 1-3, rear 4-6).
   // Naturally aspirated, silky, with a chain-driven twin-cam whine.
   "straight-six": {
-    label: "Straight Six", description: "3.0 L inline-six, 8,000 rpm, twin-cam",
+    label: "Straight Six", description: "3.0 L inline-six, 8,000 rpm",
     firing: even([1, 5, 3, 6, 2, 4], c => (c <= 3 ? 0 : 1)),
     idleRpm: 760, redlineRpm: 8000, limiterRpm: 8150,
     header: { length: 0.66, spread: 0.072, collector: -0.33, lossHz: 4600 },

@@ -169,6 +169,45 @@ offline, with lifts 3–7 dB below.
   41-second scenes to `output/combustion-preview/`: idle, blips, limiter,
   four-gear pull, overrun, cruise, kickdown, coast.
 
+## Cabin bass for the owner's car — v4, November 6
+
+The owner's Tesla has 17 speakers and two subwoofers, so deep bass reaches the
+cabin. A sealed cabin's pressure rises below its first acoustic mode, which is
+where a sports car's chest-deep boom comes from. v4 adds that pressure gain as
+a +8 dB low shelf at 65 Hz on the output (`cabinGainDb`, `cabinGainHz`). The
+earlier first-order 18 Hz DC block becomes a second-order 16 Hz high-pass, so
+the subwoofers get no infrasound. No subharmonics are synthesized; only the
+engine's own low orders gain.
+
+Measured share below 40 Hz:
+
+- V8 Cross-plane cruise: −20.3 → −12.2 dB
+- V12 pull: −16.1 → −9.1 dB
+- Five Turbo idle: −7.5 → −3.2 dB (its 34 Hz firing fundamental)
+
+Peaks are unchanged at about −4 to −5 dBFS. The offline road pull stays
+level-matched at −21.5 to −22.9 dB, with lifts 1–6 dB below.
+
+## Engine LAB redesign — November 6
+
+The owner found the LAB visually broken and unclear about where to click. Two
+Codex CLI Image Gen directions were presented, and the owner selected A,
+"Listening Console" (references in `output/lab-redesign/`, not versioned).
+
+- `src/engine/lab.jsx` and `src/engine/lab.css` implement it on the Launch
+  Cockpit tokens: a light sheet; engines grouped Published/Candidates on the
+  left; Play A/Play B, a 68-second route timeline with phase bands and a
+  progress marker, Stop and a compact live readout in the centre; the verdict
+  (A/B/No preference, note, save, export, recent notes) on the right.
+- The manual bench (start, speed, drive input, transmission, gears, hold to
+  rev) and diagnostics sit under Advanced controls.
+- The LAB no longer embeds the public telemetry cluster, which overlapped its
+  own labels at LAB sizes.
+- The layout has three columns from 1,180 px, two below that and one below
+  860 px; at the Tesla 773 × 601 view nothing is clipped.
+- `scripts/qa-engine-lab.mjs` predates this redesign (and still selects the
+  retired Otto) and is historical until it is rewritten.
+
 ## Measured evidence (not listening acceptance)
 
 **Recordings vs renders**
