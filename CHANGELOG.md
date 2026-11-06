@@ -1195,3 +1195,10 @@ No dated releases exist yet.
   - **ShaderGradient.** Its workbench uses the same light sheet and keeps its side inspector at 773 × 601. Its tool label is now `SHADERGRADIENT`.
   - **Clean-up.** Dead rail, drawer and footer styles were removed.
   - **Verification.** Tests 1,168; visual 16/16; text fit 14/14. Published and verified on the canonical root; postflight wrote nothing.
+
+- 2026-11-07 00:55 `[d1a5e3b]` `build 20261107-0048.d1a5e3b`: Made the eight combustion voices public at the owner's request ("Mettili pubblici"), to hear them in the car on real GPS.
+  - **Catalogue.** Eleven voices: Mono, Rosso, Touring, then V8 Cross-plane, V8 Flat-plane, Flat-Six, V10, V12, Five Turbo, Boxer Rumble and Straight Six. Launch, running lane, steering-wheel previous/next and the phone remote all offer them. The LAB keeps its Rosso A/B.
+  - **Launch.** Compact one-line tiles keep START visible at 773 × 601. The selected tile is visibly marked again in Night Instrument.
+  - **Running.** The lane holds a previous / name / next stepper; the name opens every voice in a grid.
+  - **Verification.** Tests 1,168; visual 16/16; text fit 14/14; credits 189. 47 files / 6,849,407 bytes uploaded; bare and cache-busted roots serve the build, main JS/CSS and the combustion worklet match local SHA-256, and V12 starts live with no console error. Postflight wrote nothing. Rollback tag `pre-public-combustion-20261107` → `758b942`.
+  - **Still open.** Car listening and CPU headroom on the Tesla browser.

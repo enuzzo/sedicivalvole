@@ -119,6 +119,7 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 | Date | Record | Build |
 | --- | --- | --- |
+| 2026-11-07 00:55 | [Public combustion voices](#public-combustion-voices--2026-11-07) | `20261107-0048.d1a5e3b` |
 | 2026-11-06 15:35 | [LAB-wide Listening Console](#lab-wide-listening-console--2026-11-06) | `20261106-1529.e46af67` |
 | 2026-11-06 14:50 | [Combustion engine LAB and Dropbox cleanup](#combustion-engine-lab-and-dropbox-cleanup--2026-11-06) | `20261106-1444.ad080f8` |
 | 2026-10-25 09:40 | [Atlas symbol placement](#atlas-symbol-placement--2026-10-25) | `20261025-0925.557022d` |
@@ -339,6 +340,28 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 Earlier records, from [Night Instrument interface](archive/DEPLOY-HISTORY-2026-09-24.md#night-instrument-interface--2026-09-24)
 back, are kept verbatim in the archive.
+
+### Public combustion voices — 2026-11-07
+
+Canonical `20261107-0048.d1a5e3b`, VERSION `0.0.0`. The eight combustion voices
+join the public catalogue (owner decision); launch grid and running stepper
+adapted to eleven voices.
+
+**Gates.** Built with `SEDICIVALVOLE_NO_LOCAL_ENV=1`. Tests 1,168; visual
+16/16; text fit 14/14; credits 189; package identity 841.
+
+**Publication.** Read-only preflight passes with zero conflicted copies.
+Preserve-existing publication uploaded 47 files / 6,849,407 bytes, reused 833
+static files and all 29 recordings, and reported `ROOT_UPLOAD_ONLY`.
+
+**Canonical checks.** Bare and cache-busted roots are HTTP 200, proxy MISS,
+with the build marker. Main JS/CSS and the public combustion worklet match
+local SHA-256. Live 773 × 601: eleven launch tiles without scrolling; V12
+starts as a procedural engine with no console error. `/lab/` serves its gate.
+Postflight reports `remote_writes=NONE`. Rollback tag
+`pre-public-combustion-20261107` → `758b942`.
+
+**Still open.** Car listening and Tesla CPU headroom remain with the owner.
 
 ### LAB-wide Listening Console — 2026-11-06
 
