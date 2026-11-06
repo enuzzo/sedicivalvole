@@ -1,0 +1,159 @@
+/* LAB "Listening Console" pattern for every tool (owner direction, November 6):
+   a light sheet under the dark LAB header; Choose on the left, the live work in
+   the centre, tune/inspect and save on the right. Same tokens as the Engine LAB
+   (src/engine/lab.css) and the public Launch Cockpit. */
+@layer instrument {
+.lab-shell.is-console { grid-template-rows: var(--lab-chrome-size) minmax(0, 1fr); }
+.lab-shell.is-console > .lab-header { grid-template-columns: minmax(240px, 1.3fr) minmax(170px, 1fr) auto auto auto; }
+.lab-shell.is-console .lab-wordmark { font-size: 17px; }
+@media (max-width: 900px) {
+  .lab-shell.is-console > .lab-header { grid-template-columns: minmax(200px, 1.2fr) minmax(160px, 1fr) auto auto; }
+  .lab-shell.is-console .lab-build { display: none; }
+}
+@media (max-width: 700px) { .lab-shell.is-console .lab-connected-copy { display: none; } }
+.lab-shell.is-console > .lsh, .lab-shell.is-console > .elab { grid-column: 1 / -1; grid-row: 2; min-height: 0; overflow: auto; }
+
+.lsh {
+  --e-surface: #f4f4f4; --e-control: #e6e6e6; --e-control-hover: #dcdcdc; --e-ink: #171a20;
+  --e-muted: rgba(23, 26, 32, .72); --e-subtle: rgba(23, 26, 32, .6); --e-line: rgba(23, 26, 32, .16);
+  --e-accent: #ef4136; --e-accent-text: #a61c16; --e-accent-soft: rgba(239, 65, 54, .14); --e-radius: 12px;
+  box-sizing: border-box; margin: 12px; padding: 22px 24px 18px; color: var(--e-ink); background: var(--e-surface);
+  border-radius: 18px; font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+}
+.lsh *, .lsh *::before, .lsh *::after { box-sizing: border-box; }
+.lsh h1, .lsh h2, .lsh h3, .lsh p { margin: 0; }
+.lsh button, .lsh select, .lsh input { font: inherit; color: inherit; }
+.lsh button { min-height: var(--touch-target); border: 0; border-radius: var(--e-radius); background: var(--e-control); cursor: pointer; touch-action: manipulation; }
+.lsh button:where(:hover:not(:disabled)) { background: var(--e-control-hover); }
+.lsh button:where(:disabled) { opacity: .45; cursor: default; }
+.lsh :focus-visible { outline: 3px solid var(--e-accent-text); outline-offset: 2px; }
+
+.lsh-header { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px; padding-bottom: 18px; }
+.lsh-icon { width: 54px; height: 36px; fill: none; stroke: var(--e-accent); stroke-width: 2.4; stroke-linejoin: round; stroke-linecap: round; }
+.lsh-header h1 { font-size: 34px; line-height: 1.05; letter-spacing: -.02em; }
+.lsh-header p { margin-top: 4px; color: var(--e-muted); font-size: 16px; }
+.lsh-build { align-self: start; color: var(--e-subtle); font-size: var(--type-meta); }
+
+.lsh-columns { display: grid; grid-template-columns: minmax(230px, .8fr) minmax(420px, 1.8fr) minmax(280px, 1fr); gap: 22px; align-items: start; }
+.lsh-column { min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+.lsh-column > h2 { font-size: 24px; letter-spacing: -.01em; }
+.lsh-lede { margin-top: -6px !important; color: var(--e-muted); font-size: var(--type-body); }
+.lsh-meta { color: var(--e-subtle); font-size: var(--type-meta); }
+
+/* Choose */
+.lsh-list { padding: 12px 10px; background: var(--e-control); border-radius: 16px; }
+.lsh-list h3 { margin: 6px 6px 8px; color: var(--e-muted); font-size: var(--type-meta); letter-spacing: .1em; }
+.lsh-list ul + h3 { margin-top: 14px; }
+.lsh-list ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.lsh-list li button { width: 100%; min-height: 52px; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 7px 14px; text-align: left; background: var(--e-surface); border-radius: 10px; }
+.lsh-list li button strong { display: block; font-size: 16px; line-height: 1.2; }
+.lsh-list li button small { display: block; color: var(--e-muted); font-size: var(--type-meta); line-height: 1.3; }
+.lsh-list li button i { color: var(--e-subtle); font-style: normal; font-size: 20px; }
+.lsh-list li button.is-selected { background: var(--e-ink); color: var(--e-surface); }
+.lsh-list li button.is-selected small, .lsh-list li button.is-selected i { color: rgba(244, 244, 244, .74); }
+
+/* Live preview */
+.lsh-stage { position: relative; height: clamp(320px, 52vh, 560px); overflow: hidden; border-radius: 16px; background: #020307; isolation: isolate; }
+.lsh-stage:focus-visible { outline: 3px solid var(--e-accent-text); outline-offset: 3px; }
+.lsh-stage .field-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
+.lsh .lab-macro-strip { position: absolute; z-index: 3; left: 50%; bottom: 12px; transform: translateX(-50%); display: flex; gap: 6px; width: auto; margin: 0; }
+.lsh .lab-macro-strip button { min-height: var(--touch-target); padding: 0 16px; color: #f4f3ee; border: 1px solid rgba(244, 243, 238, .3); border-radius: 10px; background: rgba(7, 9, 10, .78); font-size: var(--type-label); font-weight: 700; letter-spacing: .08em; }
+.lsh .lab-macro-strip button.is-active { color: #fff; border-color: var(--e-accent); background: rgba(239, 65, 54, .5); }
+
+.lsh-drive { display: grid; grid-template-columns: 1fr 1fr auto auto; gap: 10px; }
+.lsh .lab-signal { position: relative; display: flex; align-items: baseline; gap: 8px; min-height: var(--touch-primary); padding: 8px 16px 12px; border-radius: var(--e-radius); background: var(--e-control); font-variant-numeric: tabular-nums; cursor: ew-resize; overflow: hidden; }
+.lsh .lab-signal strong { font-size: var(--type-value); font-weight: 650; line-height: 1; }
+.lsh .lab-signal span { color: var(--e-accent-text); font-size: var(--type-label); font-weight: 700; letter-spacing: .06em; }
+.lsh .lab-signal input { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: .001; cursor: ew-resize; }
+.lsh .lab-signal::after { content: ""; position: absolute; right: 14px; bottom: 8px; left: 14px; height: 3px; border-radius: 2px; background: var(--e-accent); opacity: .5; }
+.lsh .lab-action { min-width: 120px; min-height: var(--touch-target); padding: 0 18px; border: 0; border-radius: var(--e-radius); background: var(--e-control); color: var(--e-ink); font-size: var(--type-action); font-weight: 700; letter-spacing: .04em; }
+.lsh .lab-action.is-audio { background: var(--e-ink); color: var(--e-surface); }
+.lsh .lab-action.is-drive-fx.is-active { background: var(--e-accent-soft); box-shadow: inset 0 0 0 2px var(--e-accent); }
+.lsh .lab-action.is-primary { min-height: var(--touch-primary); background: var(--e-accent); color: #fff; }
+
+.lsh .lab-soundtrack-card { position: static; display: grid; grid-template-columns: 68px minmax(0, 1fr) auto; align-items: center; gap: 12px 14px; width: auto; padding: 12px 14px; color: var(--e-ink); background: var(--e-control); border: 0; border-radius: 16px; box-shadow: none; backdrop-filter: none; }
+.lsh .lab-soundtrack-credit small { color: var(--e-muted); font-size: var(--type-meta); letter-spacing: .08em; }
+.lsh .lab-soundtrack-credit strong { color: var(--e-ink); }
+.lsh .lab-soundtrack-credit span, .lsh .lab-soundtrack-credit a { color: var(--e-muted); }
+.lsh .lab-soundtrack-actions button { min-width: 64px; color: var(--e-ink); border: 0; border-radius: 10px; background: var(--e-surface); }
+.lsh .lab-soundtrack-effects { border-top: 1px solid var(--e-line); }
+.lsh .lab-soundtrack-effects label { color: var(--e-muted); }
+.lsh .lab-soundtrack-effects output { color: var(--e-ink); }
+
+/* Tune & send */
+.lsh-tune { padding: 18px; background: var(--e-control); border-radius: 16px; }
+.lsh-groups { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; padding: 4px; background: var(--e-surface); border-radius: var(--e-radius); }
+.lsh-groups button { display: grid; justify-items: center; gap: 2px; padding: 6px 2px; background: transparent; font-size: var(--type-meta); font-weight: 700; letter-spacing: .06em; }
+.lsh-groups button svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+.lsh-groups button.is-selected { background: var(--e-ink); color: var(--e-surface); }
+.lsh-controls { display: grid; gap: 4px; }
+.lsh .lab-range { display: block; min-height: 0; padding: 10px 12px 4px; border: 0; border-radius: 10px; background: var(--e-surface); }
+.lsh .lab-range-heading { display: flex; justify-content: space-between; margin: 0 0 2px; color: var(--e-ink); font-size: var(--type-label); font-weight: 700; letter-spacing: .04em; }
+.lsh .lab-range-heading output { color: var(--e-ink); font-variant-numeric: tabular-nums; }
+.lsh .lab-range input { width: 100%; height: var(--touch-target); margin: 0; accent-color: var(--e-accent); }
+.lsh .lab-macro-list { display: grid; gap: 4px; background: none; }
+.lsh .lab-macro-list button { min-height: 56px; color: var(--e-ink); border: 0; border-radius: 10px; background: var(--e-surface); font-size: var(--type-active); font-weight: 700; box-shadow: none; }
+.lsh .lab-macro-list button.is-active { color: #fff; background: var(--e-accent); }
+.lsh-send { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding-top: 12px; border-top: 1px solid var(--e-line); }
+.lsh-send .is-primary { grid-column: 1 / -1; }
+.lsh-send .lab-action:not(.is-primary) { background: var(--e-surface); }
+.lsh .lab-status { display: block; min-height: 0; padding: 0; color: var(--e-muted); font-size: var(--type-meta); letter-spacing: .02em; }
+.lsh .lab-status.is-sent { color: #12663f; }
+.lsh .lab-status.is-error { color: var(--e-accent-text); }
+
+@media (max-width: 1180px) {
+  .lsh-columns { grid-template-columns: minmax(220px, .8fr) minmax(0, 1.7fr); }
+  .lsh-choose { grid-row: span 2; }
+  .lsh-tune { grid-column: 2; }
+}
+@media (max-width: 860px) {
+  .lsh { margin: 8px; padding: 16px 14px 12px; border-radius: 14px; }
+  .lsh-header h1 { font-size: 28px; }
+  .lsh-columns { grid-template-columns: 1fr; gap: 18px; }
+  .lsh-choose, .lsh-tune { grid-column: auto; grid-row: auto; }
+  .lsh-list ul { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+  .lsh-stage { height: clamp(280px, 46vh, 420px); }
+  .lsh-drive { grid-template-columns: 1fr 1fr; }
+  .lsh .lab-soundtrack-card { grid-template-columns: 52px minmax(0, 1fr); }
+  .lsh .lab-soundtrack-card img { width: 52px; height: 52px; }
+  .lsh .lab-soundtrack-actions { grid-column: 1 / -1; grid-template-columns: repeat(3, 1fr); }
+  .lsh .lab-soundtrack-effects { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* ShaderGradient inside the sheet: the stage stays a dark canvas card, the
+   inspector takes the light Console controls. Standalone workbench unchanged. */
+.lsh-shadergradient { display: flex; flex-direction: column; }
+.lsh-shadergradient .shadergradient-lab.is-embedded { height: auto; min-height: 640px; grid-template-columns: minmax(0, 1fr) clamp(320px, 30vw, 420px); gap: 22px; background: transparent; }
+.lsh-shadergradient .sg-stage { min-height: 600px; border-radius: 16px; }
+.lsh-shadergradient .sg-inspector { height: auto; max-height: none; padding: 18px; overflow: visible; color: var(--e-ink); background: var(--e-control); border: 0; border-radius: 16px; }
+.lsh-shadergradient .sg-inspector .sg-kicker { color: var(--e-muted); }
+.lsh-shadergradient .sg-section { border-top: 1px solid var(--e-line); }
+.lsh-shadergradient .sg-presets button, .lsh-shadergradient .sg-segmented button, .lsh-shadergradient .sg-toggle-row button,
+.lsh-shadergradient .sg-toggle-grid button, .lsh-shadergradient .sg-toggle-column button, .lsh-shadergradient .sg-button {
+  color: var(--e-ink); background: var(--e-surface); border: 1px solid var(--e-line); border-radius: 10px;
+}
+.lsh-shadergradient .sg-presets button small { color: var(--e-muted); }
+.lsh-shadergradient .sg-presets button.is-active, .lsh-shadergradient .sg-segmented button.is-active, .lsh-shadergradient .sg-toggle-row button.is-active,
+.lsh-shadergradient .sg-toggle-grid button.is-active, .lsh-shadergradient .sg-toggle-column button.is-active {
+  color: var(--e-surface); background: var(--e-ink); border-color: var(--e-ink);
+}
+.lsh-shadergradient .sg-presets button.is-active small { color: rgba(244, 244, 244, .74); }
+.lsh-shadergradient .sg-segmented button + button, .lsh-shadergradient .sg-toggle-row button + button { border-left: 1px solid var(--e-line); }
+.lsh-shadergradient .sg-select span, .lsh-shadergradient .sg-range span, .lsh-shadergradient .sg-color span,
+.lsh-shadergradient .sg-text-control span, .lsh-shadergradient .sg-url-control span, .lsh-shadergradient .sg-note { color: var(--e-muted); }
+.lsh-shadergradient .sg-select select, .lsh-shadergradient .sg-text-control input, .lsh-shadergradient .sg-url-control textarea, .lsh-shadergradient .sg-color input {
+  color: var(--e-ink); background: var(--e-surface); border: 1px solid var(--e-line); border-radius: 10px;
+}
+.lsh-shadergradient .sg-range output, .lsh-shadergradient .sg-color code, .lsh-shadergradient .sg-subgroup h4 { color: var(--e-ink); }
+.lsh-shadergradient .sg-range input { accent-color: var(--e-accent); }
+.lsh-shadergradient .sg-subgroup { background: var(--e-surface); border: 1px solid var(--e-line); border-radius: 12px; }
+.lsh-shadergradient .sg-section h3, .lsh-shadergradient .sg-details > summary { color: var(--e-ink); }
+.lsh-shadergradient [class*="sg-"] a { color: var(--e-accent-text); }
+.lsh-shadergradient .sg-details > summary span, .lsh-shadergradient .sg-details > summary::after, .lsh-shadergradient .sg-note.is-warning { color: var(--e-accent-text); border-color: var(--e-accent-text); }
+/* The embedded workbench keeps its side inspector at the Tesla viewport. */
+@media (max-width: 900px) {
+  .lsh-shadergradient .shadergradient-lab.is-embedded { grid-template-columns: minmax(0, 1fr) 300px; gap: 12px; min-height: 520px; }
+  .lsh-shadergradient .sg-stage { min-height: 480px; }
+  .lsh-shadergradient .sg-inspector { padding: 14px; }
+}
+}

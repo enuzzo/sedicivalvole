@@ -19,6 +19,7 @@ import {
   importLabPreset,
 } from "./lab-model.js";
 import "./styles.css";
+import "./console.css";
 import "../engine/telemetry-metrics.css";
 
 const APP = Object.freeze({
@@ -67,7 +68,7 @@ const MUSIC = Object.freeze([
 const LAB_SURFACES = Object.freeze([
   Object.freeze({ id: "engine", label: "ENGINE / TELEMETRY" }),
   ...Object.values(PRTCL_TYPES).map((entry) => Object.freeze({ id: `prtcl:${entry.id}`, label: `PRTCL / ${entry.label}` })),
-  Object.freeze({ id: "shadergradient", label: "SHADERGRADIENT / LAB" }),
+  Object.freeze({ id: "shadergradient", label: "SHADERGRADIENT" }),
 ]);
 
 const SOUNDTRACK_MANUAL_CONTROLS = Object.freeze([
@@ -152,6 +153,12 @@ function Icon({ group }) {
   if (group === "response") return <svg viewBox="0 0 24 24"><path d="M3 13h4l2-7 4 12 2-6h6"/></svg>;
   if (group === "macros") return <svg viewBox="0 0 24 24"><path d="M7 5 3 9l4 4M17 5l4 4-4 4M9 19h6"/></svg>;
   return <svg viewBox="0 0 24 24"><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9L12 3Zm0 0v9m8-4.5L12 12 4 7.5"/></svg>;
+}
+
+function LabMark({ kind }) {
+  return kind === "gradient"
+    ? <svg className="lsh-icon" viewBox="0 0 48 32" aria-hidden="true"><path d="M3 24c8-14 14 4 21-8s13-6 21-10M3 30h42" /></svg>
+    : <svg className="lsh-icon" viewBox="0 0 48 32" aria-hidden="true"><circle cx="14" cy="16" r="2" /><circle cx="24" cy="9" r="2" /><circle cx="34" cy="16" r="2" /><circle cx="24" cy="23" r="2" /><path d="M14 16 24 9l10 7-10 7z" /></svg>;
 }
 
 function RangeControl({ definition, value, onChange }) {
@@ -619,7 +626,7 @@ function LabApp() {
   }, [preset, renderer, soundtrackPreview, summary, values]);
 
   return (
-    <main className={`lab-shell${drawerOpen ? " is-drawer-open" : ""}${labSurface !== "prtcl" ? " is-shadergradient" : ""}`}>
+    <main className="lab-shell is-console">
       <header className="lab-header">
         <div className="lab-wordmark"><strong className="lab-brand-name">sedicivalvole</strong><span>/ LAB</span></div>
         <SelectControl
@@ -628,12 +635,6 @@ function LabApp() {
           options={LAB_SURFACES}
           onChange={selectLabSurface}
         />
-        {labSurface !== "engine" && <SelectControl
-          label="Independent test audio"
-          value={testMusic}
-          options={MUSIC}
-          onChange={selectMusic}
-        />}
         <div className="lab-build">{APP.version} · {APP.build}</div>
         <div className="lab-connected">
           <span className="lab-connected-dot" aria-hidden="true" />
@@ -646,183 +647,215 @@ function LabApp() {
       </header>
 
       {labSurface === "engine" ? <EngineLab audioRef={audioRef} prepareAudio={prepareEngineAudio} /> : labSurface === "shadergradient" ? (
-        <ShaderGradientLab embedded />
+        <section className="lsh lsh-shadergradient" aria-label="ShaderGradient LAB">
+          <header className="lsh-header">
+            <LabMark kind="gradient" />
+            <div><h1>ShaderGradient LAB</h1><p>Shape the field: starting points, geometry, colour and drive response.</p></div>
+            <span className="lsh-build">Build {APP.build}</span>
+          </header>
+          <ShaderGradientLab embedded />
+        </section>
       ) : (
-        <>
+        <section className="lsh" aria-label="PRTCL visual LAB">
+          <header className="lsh-header">
+            <LabMark kind="visual" />
+            <div><h1>Visual LAB</h1><p>Tune a PRTCL visual against speed and test audio, then send the preset.</p></div>
+            <span className="lsh-build">Build {APP.build}</span>
+          </header>
+          <div className="lsh-columns">
+            <aside className="lsh-column lsh-choose" aria-label="Choose a visual and test audio">
+              <h2>Choose</h2>
+              <div className="lsh-list">
+                <h3>VISUAL · PRTCL</h3>
+                <ul>{Object.values(PRTCL_TYPES).map((entry) => {
+                  const on = values["context.prtclType"] === entry.id;
+                  return <li key={entry.id}><button type="button" className={on ? "is-selected" : ""} aria-pressed={on}
+                    onClick={() => selectLabSurface(`prtcl:${entry.id}`)}><span><strong>{entry.label}</strong><small>Particle field</small></span><i aria-hidden="true">{on ? "✓" : "›"}</i></button></li>;
+                })}</ul>
+                <h3>OTHER TOOLS</h3>
+                <ul>
+                  <li><button type="button" onClick={() => selectLabSurface("shadergradient")}><span><strong>ShaderGradient</strong><small>Gradient field workbench</small></span><i aria-hidden="true">›</i></button></li>
+                  <li><button type="button" onClick={() => selectLabSurface("engine")}><span><strong>Engine</strong><small>A/B listening console</small></span><i aria-hidden="true">›</i></button></li>
+                </ul>
+                <h3>TEST AUDIO</h3>
+                <ul>{MUSIC.map((entry) => {
+                  const on = testMusic === entry.id;
+                  return <li key={entry.id}><button type="button" className={on ? "is-selected" : ""} aria-pressed={on}
+                    onClick={() => selectMusic(entry.id)}><span><strong>{entry.label.replace(/^GENERATIVE \/ /, "").replace(/^SOUNDTRACK \/ /, "Soundtrack · ")}</strong>
+                    <small>{entry.id === "mute" ? "Visual only, no sound" : entry.id === "soundtrack" ? "Jamendo preview with FX" : "Generative score"}</small></span>
+                    <i aria-hidden="true">{on ? "✓" : "›"}</i></button></li>;
+                })}</ul>
+              </div>
+              <label className="sr-only">Independent test audio <select aria-label="Independent test audio" value={testMusic} onChange={(event) => selectMusic(event.target.value)}>
+                {MUSIC.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}</select></label>
+            </aside>
 
-      <section
-        className="lab-stage"
-        aria-label="Live PRTCL preview; hold Arrow Up to accelerate and Arrow Down to brake"
-        title="Hold Arrow Up to accelerate; hold Arrow Down or Space to brake"
-        tabIndex={0}
-      >
-        <PrtclField
-          speed={smoothSpeed}
-          audioLevel={liveAudioLevel ?? values["context.audioLevel"]}
-          theme={theme}
-          effect={activeMacro}
-          settings={prtclSettings}
-          calibration={calibration}
-          reducedMotion={false}
-          onRenderer={setRenderer}
-          onFrame={onFrame}
-          onRuntimeError={handleRuntimeError}
-        />
-        {testMusic === "soundtrack" && soundtrackPreview?.current && (
-          <section className="lab-soundtrack-card" aria-label="Jamendo Soundtrack preview">
-            {soundtrackPreview.current.imageUrl && (
-              <img src={soundtrackPreview.current.imageUrl} alt="" width="68" height="68" />
-            )}
-            <div className="lab-soundtrack-credit">
-              <small>SOUNDTRACK · FX-READY PREVIEW</small>
-              <strong>{soundtrackPreview.current.title}</strong>
-              <span>{soundtrackPreview.current.artistName}</span>
-              <a href={soundtrackPreview.current.shareUrl} target="_blank" rel="noreferrer">
-                {soundtrackPreview.current.providerCredit} · {soundtrackPreview.current.licenceLabel}
-              </a>
-            </div>
-            <div className="lab-soundtrack-actions">
-              <button
-                type="button"
-                aria-label="Previous Jamendo track"
-                disabled={!soundtrackPreview.hasPrevious || audioStatus === "loading"}
-                onClick={() => void soundtrackRef.current?.move("previous")}
-              >PREV</button>
-              <button
-                type="button"
-                aria-label={audioStatus === "playing" ? "Pause Jamendo track" : "Resume Jamendo track"}
-                onClick={() => audioStatus === "playing"
-                  ? soundtrackRef.current?.pause()
-                  : void soundtrackRef.current?.resume()}
-              >{audioStatus === "playing" ? "PAUSE" : "PLAY"}</button>
-              <button
-                type="button"
-                aria-label="Next Jamendo track"
-                disabled={!soundtrackPreview.hasNext || audioStatus === "loading"}
-                onClick={() => void soundtrackRef.current?.move("next")}
-              >NEXT</button>
-            </div>
-            <div className="lab-soundtrack-effects" aria-label="Manual Soundtrack effects">
-              {SOUNDTRACK_MANUAL_CONTROLS.map((effect) => (
-                <label key={effect.id}>
-                  <span>{effect.label}</span>
-                  <output>{Math.round(soundtrackManualEffects[effect.id] * 100)}</output>
+            <section className="lsh-column lsh-work" aria-label="Live preview">
+              <h2>Live preview · {selectedType.label}</h2>
+              <p className="lsh-lede">Hold Arrow Up to accelerate; hold Arrow Down or Space to brake.</p>
+              <section
+                className="lsh-stage"
+                aria-label="Live PRTCL preview; hold Arrow Up to accelerate and Arrow Down to brake"
+                title="Hold Arrow Up to accelerate; hold Arrow Down or Space to brake"
+                tabIndex={0}
+              >
+                <PrtclField
+                  speed={smoothSpeed}
+                  audioLevel={liveAudioLevel ?? values["context.audioLevel"]}
+                  theme={theme}
+                  effect={activeMacro}
+                  settings={prtclSettings}
+                  calibration={calibration}
+                  reducedMotion={false}
+                  onRenderer={setRenderer}
+                  onFrame={onFrame}
+                  onRuntimeError={handleRuntimeError}
+                />
+                <div className="lab-macro-strip" aria-label="Macro states">
+                  {MACROS.map((macro) => (
+                    <button
+                      type="button"
+                      key={macro.id}
+                      className={values[macro.id] ? "is-active" : ""}
+                      aria-pressed={values[macro.id]}
+                      onClick={() => {
+                        for (const item of MACROS) setParam(item.id, item.id === macro.id ? !values[macro.id] : false);
+                      }}
+                    >{macro.label}</button>
+                  ))}
+                </div>
+              </section>
+              {testMusic === "soundtrack" && soundtrackPreview?.current && (
+                <section className="lab-soundtrack-card" aria-label="Jamendo Soundtrack preview">
+                  {soundtrackPreview.current.imageUrl && (
+                    <img src={soundtrackPreview.current.imageUrl} alt="" width="68" height="68" />
+                  )}
+                  <div className="lab-soundtrack-credit">
+                    <small>SOUNDTRACK · FX-READY PREVIEW</small>
+                    <strong>{soundtrackPreview.current.title}</strong>
+                    <span>{soundtrackPreview.current.artistName}</span>
+                    <a href={soundtrackPreview.current.shareUrl} target="_blank" rel="noreferrer">
+                      {soundtrackPreview.current.providerCredit} · {soundtrackPreview.current.licenceLabel}
+                    </a>
+                  </div>
+                  <div className="lab-soundtrack-actions">
+                    <button
+                      type="button"
+                      aria-label="Previous Jamendo track"
+                      disabled={!soundtrackPreview.hasPrevious || audioStatus === "loading"}
+                      onClick={() => void soundtrackRef.current?.move("previous")}
+                    >PREV</button>
+                    <button
+                      type="button"
+                      aria-label={audioStatus === "playing" ? "Pause Jamendo track" : "Resume Jamendo track"}
+                      onClick={() => audioStatus === "playing"
+                        ? soundtrackRef.current?.pause()
+                        : void soundtrackRef.current?.resume()}
+                    >{audioStatus === "playing" ? "PAUSE" : "PLAY"}</button>
+                    <button
+                      type="button"
+                      aria-label="Next Jamendo track"
+                      disabled={!soundtrackPreview.hasNext || audioStatus === "loading"}
+                      onClick={() => void soundtrackRef.current?.move("next")}
+                    >NEXT</button>
+                  </div>
+                  <div className="lab-soundtrack-effects" aria-label="Manual Soundtrack effects">
+                    {SOUNDTRACK_MANUAL_CONTROLS.map((effect) => (
+                      <label key={effect.id}>
+                        <span>{effect.label}</span>
+                        <output>{Math.round(soundtrackManualEffects[effect.id] * 100)}</output>
+                        <input
+                          type="range"
+                          min="0"
+                          max="1"
+                          step="0.01"
+                          value={soundtrackManualEffects[effect.id]}
+                          onChange={(event) => setSoundtrackManualEffects((current) => ({
+                            ...current,
+                            [effect.id]: Number(event.target.value),
+                          }))}
+                        />
+                      </label>
+                    ))}
+                  </div>
+                </section>
+              )}
+              <div className="lsh-drive">
+                <label className="lab-signal" title="Hold Arrow Up to accelerate; hold Arrow Down or Space to brake">
+                  <span className="sr-only">Manual speed in kilometres per hour</span>
+                  <strong>{Math.round(values["context.speedKmh"])}</strong><span>KM/H</span>
+                  <input type="range" min="0" max="130" step="1" value={values["context.speedKmh"]} onChange={(event) => setParam("context.speedKmh", Number(event.target.value))} />
+                </label>
+                <label className="lab-signal">
+                  <span className="sr-only">Visual audio-level test signal</span>
+                  <strong>{Math.round((liveAudioLevel ?? values["context.audioLevel"]) * 100)}</strong><span>AUDIO</span>
                   <input
                     type="range"
                     min="0"
                     max="1"
                     step="0.01"
-                    value={soundtrackManualEffects[effect.id]}
-                    onChange={(event) => setSoundtrackManualEffects((current) => ({
-                      ...current,
-                      [effect.id]: Number(event.target.value),
-                    }))}
+                    value={liveAudioLevel ?? values["context.audioLevel"]}
+                    disabled={liveAudioLevel != null}
+                    onChange={(event) => setParam("context.audioLevel", Number(event.target.value))}
                   />
                 </label>
-              ))}
-            </div>
-          </section>
-        )}
-      </section>
-
-      <nav className="lab-rail" aria-label="LAB control groups">
-        {LAB_GROUPS.map((group) => (
-          <button
-            type="button"
-            key={group.id}
-            className={activeGroup === group.id && drawerOpen ? "is-active" : ""}
-            onClick={() => {
-              setActiveGroup(group.id);
-              setDrawerOpen(true);
-            }}
-            aria-expanded={activeGroup === group.id && drawerOpen}
-          >
-            <Icon group={group.id} />
-            <span>{group.label}</span>
-          </button>
-        ))}
-      </nav>
-
-      <aside className="lab-inspector" aria-label={`${activeGroup} controls`} aria-hidden={!drawerOpen}>
-        <div className="lab-inspector-heading">
-          <strong>{activeGroup.toUpperCase()} <span>/ {selectedType.label}</span></strong>
-          <button type="button" aria-label="Close inspector" onClick={() => setDrawerOpen(false)}>×</button>
-        </div>
-        <div className="lab-inspector-controls">
-          {controls?.map((definition) => (
-            <RangeControl key={definition.id} definition={definition} value={values[definition.id]} onChange={setParam} />
-          ))}
-          {activeGroup === "macros" && (
-            <div className="lab-macro-list">
-              {MACROS.map((macro) => (
+                <button className="lab-action is-audio" type="button" onClick={toggleAudio} disabled={audioStatus === "loading"}>
+                  {audioStatus === "loading" ? "LOADING" : audioStatus === "playing" ? "MUTE AUDIO" : "START AUDIO"}
+                </button>
                 <button
-                  key={macro.id}
+                  className={`lab-action is-drive-fx${soundtrackDriveFx ? " is-active" : ""}`}
                   type="button"
-                  className={values[macro.id] ? "is-active" : ""}
-                  aria-pressed={values[macro.id]}
-                  onClick={() => {
-                    for (const item of MACROS) setParam(item.id, item.id === macro.id ? !values[macro.id] : false);
-                  }}
-                >{macro.label}</button>
-              ))}
-            </div>
-          )}
-        </div>
-        <div className="lab-capture-count">All {Object.keys(LAB_PARAMETER_MANIFEST).length} options captured</div>
-      </aside>
+                  disabled={testMusic !== "soundtrack"}
+                  aria-pressed={soundtrackDriveFx}
+                  onClick={() => setSoundtrackDriveFx((current) => !current)}
+                >DRIVE FX</button>
+              </div>
+              <p className="lsh-meta">{renderer}{summary.samples ? ` · ${summary.fps.toFixed(0)} fps · p95 ${summary.p95Ms.toFixed(1)} ms` : ""}</p>
+            </section>
 
-      <div className="lab-macro-strip" aria-label="Macro states">
-        {MACROS.map((macro) => (
-          <button
-            type="button"
-            key={macro.id}
-            className={values[macro.id] ? "is-active" : ""}
-            aria-pressed={values[macro.id]}
-            onClick={() => {
-              for (const item of MACROS) setParam(item.id, item.id === macro.id ? !values[macro.id] : false);
-            }}
-          >{macro.label}</button>
-        ))}
-      </div>
-
-      <footer className="lab-footer">
-        <label className="lab-signal" title="Hold Arrow Up to accelerate; hold Arrow Down or Space to brake">
-          <span className="sr-only">Manual speed in kilometres per hour</span>
-          <strong>{Math.round(values["context.speedKmh"])}</strong><span>KM/H</span>
-          <input type="range" min="0" max="130" step="1" value={values["context.speedKmh"]} onChange={(event) => setParam("context.speedKmh", Number(event.target.value))} />
-        </label>
-        <label className="lab-signal">
-          <span className="sr-only">Visual audio-level test signal</span>
-          <strong>{Math.round((liveAudioLevel ?? values["context.audioLevel"]) * 100)}</strong><span>AUDIO</span>
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
-            value={liveAudioLevel ?? values["context.audioLevel"]}
-            disabled={liveAudioLevel != null}
-            onChange={(event) => setParam("context.audioLevel", Number(event.target.value))}
-          />
-        </label>
-        <div className={`lab-status is-${sendState}`} role="status">{notice}</div>
-        <input ref={fileRef} className="sr-only" type="file" accept="application/json,.json" onChange={importJson} />
-        <button className="lab-action is-audio" type="button" onClick={toggleAudio} disabled={audioStatus === "loading"}>
-          {audioStatus === "loading" ? "LOADING" : audioStatus === "playing" ? "MUTE AUDIO" : "START AUDIO"}
-        </button>
-        <button
-          className={`lab-action is-drive-fx${soundtrackDriveFx ? " is-active" : ""}`}
-          type="button"
-          disabled={testMusic !== "soundtrack"}
-          aria-pressed={soundtrackDriveFx}
-          onClick={() => setSoundtrackDriveFx((current) => !current)}
-        >DRIVE FX</button>
-        <button className="lab-action" type="button" onClick={() => fileRef.current?.click()}>IMPORT</button>
-        <button className="lab-action" type="button" onClick={copyJson}>COPY JSON</button>
-        <button className="lab-action is-primary" type="button" onClick={sendJson} disabled={sendState === "sending"}>
-          {sendState === "sending" ? "SENDING" : "SEND JSON"}
-        </button>
-      </footer>
-        </>
+            <aside className="lsh-column lsh-tune" aria-label={`${activeGroup} controls`}>
+              <h2>Tune &amp; send</h2>
+              <p className="lsh-lede">{selectedType.label} · all {Object.keys(LAB_PARAMETER_MANIFEST).length} options captured</p>
+              <nav className="lsh-groups" aria-label="LAB control groups">
+                {LAB_GROUPS.map((group) => (
+                  <button type="button" key={group.id} className={activeGroup === group.id ? "is-selected" : ""}
+                    aria-pressed={activeGroup === group.id} onClick={() => { setActiveGroup(group.id); setDrawerOpen(true); }}>
+                    <Icon group={group.id} /><span>{group.label}</span>
+                  </button>
+                ))}
+              </nav>
+              <div className="lsh-controls">
+                {controls?.map((definition) => (
+                  <RangeControl key={definition.id} definition={definition} value={values[definition.id]} onChange={setParam} />
+                ))}
+                {activeGroup === "macros" && (
+                  <div className="lab-macro-list">
+                    {MACROS.map((macro) => (
+                      <button
+                        key={macro.id}
+                        type="button"
+                        className={values[macro.id] ? "is-active" : ""}
+                        aria-pressed={values[macro.id]}
+                        onClick={() => {
+                          for (const item of MACROS) setParam(item.id, item.id === macro.id ? !values[macro.id] : false);
+                        }}
+                      >{macro.label}</button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="lsh-send">
+                <input ref={fileRef} className="sr-only" type="file" accept="application/json,.json" onChange={importJson} />
+                <button className="lab-action" type="button" onClick={() => fileRef.current?.click()}>IMPORT</button>
+                <button className="lab-action" type="button" onClick={copyJson}>COPY JSON</button>
+                <button className="lab-action is-primary" type="button" onClick={sendJson} disabled={sendState === "sending"}>
+                  {sendState === "sending" ? "SENDING" : "SEND JSON"}
+                </button>
+              </div>
+              <div className={`lab-status is-${sendState}`} role="status">{notice}</div>
+            </aside>
+          </div>
+        </section>
       )}
     </main>
   );

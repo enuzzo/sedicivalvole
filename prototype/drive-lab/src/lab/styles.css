@@ -91,8 +91,6 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
 .lab-select { padding: 0; }
 .lab-select select { width: 100%; height: 100%; padding: 0 42px 0 18px; border: 0; border-radius: 0; color: var(--lab-paper); background: #050607; font-size: var(--type-action); font-weight: 650; letter-spacing: .04em; appearance: auto; }
 
-.lab-stage { position: relative; z-index: 1; grid-column: 1 / -1; grid-row: 2; min-width: 0; min-height: 0; background: #020307; }
-.lab-stage:focus-visible { outline: 2px solid rgba(244, 243, 238, .72); outline-offset: -3px; }
 .field-canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
 
 .lab-soundtrack-card {
@@ -127,89 +125,15 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
 .lab-soundtrack-effects output { color: var(--lab-paper); font-variant-numeric: tabular-nums; }
 .lab-soundtrack-effects input { grid-column: 1 / -1; width: 100%; height: var(--touch-target); margin: 0; accent-color: var(--lab-accent); cursor: pointer; }
 
-.lab-rail {
-  z-index: 10;
-  grid-column: 1;
-  grid-row: 2;
-  display: grid;
-  grid-template-rows: repeat(4, 1fr);
-  align-self: stretch;
-  background: rgba(8, 10, 11, .92);
-  border-right: 1px solid var(--lab-line);
-}
-.lab-rail button {
-  display: grid;
-  place-items: center;
-  align-content: center;
-  gap: 10px;
-  padding: 8px 4px;
-  color: var(--lab-muted);
-  border: 0;
-  border-bottom: 1px solid var(--lab-line);
-  background: transparent;
-  cursor: pointer;
-  font-size: var(--type-label);
-  font-weight: 650;
-  letter-spacing: .09em;
-}
-.lab-rail button:last-child { border-bottom: 0; }
-.lab-rail button.is-active { color: var(--lab-accent); box-shadow: inset -3px 0 var(--lab-accent); }
-.lab-rail svg { width: 32px; height: 32px; padding: 7px; border: 1px solid currentColor; border-radius: 4px; fill: currentColor; stroke: currentColor; stroke-width: 1.4; fill-opacity: .9; }
-.lab-rail path { fill: none; stroke-linecap: square; stroke-linejoin: miter; }
-
-.lab-inspector {
-  z-index: 12;
-  grid-column: 3;
-  grid-row: 2;
-  display: grid;
-  grid-template-rows: 76px minmax(0, 1fr) 48px;
-  min-width: 0;
-  background: var(--lab-panel);
-  border-left: 1px solid var(--lab-line);
-  transform: translateX(100%);
-  transition: transform 180ms ease;
-}
-.is-drawer-open .lab-inspector { transform: translateX(0); }
-.lab-inspector-heading { display: flex; align-items: center; justify-content: space-between; padding: 0 22px; border-bottom: 1px solid var(--lab-line); }
-.lab-inspector-heading strong { color: var(--lab-accent); font-size: var(--type-title); letter-spacing: .04em; }
-.lab-inspector-heading strong span { color: var(--lab-paper); }
-.lab-inspector-heading button { width: 48px; color: var(--lab-paper); border: 0; background: transparent; font-size: 28px; font-weight: 400; cursor: pointer; }
-.lab-inspector-controls { min-height: 0; overflow: auto; overscroll-behavior: contain; }
 .lab-range { display: block; min-height: 110px; padding: 24px 22px 18px; border-bottom: 1px solid var(--lab-line); }
 .lab-range-heading { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 26px; color: var(--lab-paper); font-size: var(--type-label); font-weight: 650; letter-spacing: .07em; text-transform: uppercase; }
 .lab-range-heading output { color: var(--lab-paper); font-variant-numeric: tabular-nums; }
 .lab-range input { width: 100%; height: var(--touch-target); margin: 0; accent-color: var(--lab-accent); cursor: pointer; }
-.lab-capture-count { display: flex; align-items: center; padding: 0 22px; color: var(--lab-muted); border-top: 1px solid var(--lab-line); font-size: var(--type-meta); letter-spacing: .035em; }
+
 .lab-macro-list { display: grid; gap: 1px; background: var(--lab-line); }
 .lab-macro-list button { min-height: 60px; color: var(--lab-paper); border: 0; background: #0b0d0e; font-size: var(--type-active); font-weight: 650; letter-spacing: .06em; cursor: pointer; }
 .lab-macro-list button.is-active { color: var(--lab-accent); box-shadow: inset 3px 0 var(--lab-accent); }
 
-.lab-macro-strip {
-  z-index: 11;
-  position: relative;
-  grid-column: 2;
-  grid-row: 2;
-  align-self: end;
-  justify-self: center;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(92px, 1fr));
-  gap: 6px;
-  width: min(calc(100% - 24px), 360px);
-  margin-bottom: 12px;
-}
-.lab-macro-strip button { min-height: var(--touch-target); padding: 0 14px; color: var(--lab-muted); border: 1px solid var(--lab-line); border-radius: 4px; background: rgba(7, 9, 10, .88); font-size: var(--type-action); font-weight: 650; letter-spacing: .06em; cursor: pointer; }
-.lab-macro-strip button.is-active { color: var(--lab-accent); border-color: var(--lab-accent); }
-
-.lab-footer {
-  z-index: 20;
-  grid-column: 1 / -1;
-  grid-row: 3;
-  display: grid;
-  grid-template-columns: 140px 140px minmax(180px, 1fr) auto auto auto auto auto;
-  align-items: stretch;
-  background: rgba(8, 10, 11, .98);
-  border-top: 1px solid var(--lab-line);
-}
 .lab-signal { position: relative; display: flex; align-items: baseline; gap: 8px; padding: 0 20px; border-right: 1px solid var(--lab-line); font-variant-numeric: tabular-nums; cursor: ew-resize; overflow: hidden; }
 .lab-signal strong { font-size: var(--type-value); font-weight: 520; }
 .lab-signal span { color: var(--lab-accent); font-size: var(--type-label); font-weight: 700; }
@@ -223,7 +147,6 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
 .lab-action.is-drive-fx.is-active { color: #fff; background: rgba(239, 65, 54, .24); box-shadow: inset 0 3px var(--lab-accent); }
 .lab-action:disabled { opacity: .55; cursor: progress; }
 
-@media (prefers-reduced-motion: reduce) { .lab-inspector { transition: none; } }
 
 @media (max-width: 900px) {
   .lab-shell { grid-template-columns: 96px minmax(0, 1fr) 300px; }
@@ -234,14 +157,11 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
   .lab-connected { justify-content: center; padding: 0 8px; font-size: var(--type-label); }
   .lab-connected-copy small { display: none; }
   .lab-logout { padding: 0 14px; }
-  .lab-inspector { grid-template-rows: 60px minmax(0, 1fr) 36px; }
-  .lab-inspector-heading { padding: 0 16px; }
-  .lab-inspector-heading strong { font-size: var(--type-active); }
+
   .lab-range { min-height: 80px; padding: 15px 16px 10px; }
   .lab-range-heading { margin-bottom: 10px; font-size: var(--type-label); }
   .lab-range input { height: var(--touch-target); }
-  .lab-capture-count { padding: 0 16px; font-size: var(--type-meta); }
-  .lab-footer { grid-template-columns: 110px 113px minmax(80px, 1fr) 96px 88px 76px 92px 98px; }
+
   .lab-signal { gap: 5px; padding: 0 10px; }
   .lab-signal strong { font-size: 30px; }
   .lab-status { padding: 0 14px; font-size: var(--type-meta); }
@@ -263,15 +183,7 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
   .lab-connected, .lab-logout, .lab-build { position: absolute; top: 2px; min-height: var(--touch-target); border: 0; }
   .lab-connected { right: 76px; font-size: 0; }
   .lab-logout { right: 4px; padding: 0 8px; font-size: var(--type-action); }
-  .lab-stage { grid-column: 1; grid-row: 2; }
-  .lab-rail { grid-column: 1; grid-row: 3; grid-template-columns: repeat(4, 1fr); grid-template-rows: 1fr; border-right: 0; border-top: 1px solid var(--lab-line); }
-  .lab-rail button { grid-template-columns: auto auto; border-right: 1px solid var(--lab-line); border-bottom: 0; }
-  .lab-rail button.is-active { box-shadow: inset 0 3px var(--lab-accent); }
-  .lab-rail svg { width: 28px; height: 28px; }
-  .lab-inspector { position: absolute; inset: auto 0 88px; max-height: 62%; transform: translateY(100%); border-left: 0; border-top: 1px solid var(--lab-line); }
-  .is-drawer-open .lab-inspector { transform: translateY(0); }
-  .lab-macro-strip { display: none; }
-  .lab-footer { grid-column: 1; grid-row: 4; grid-template-columns: repeat(8, 96px); overflow-x: auto; }
+
   .lab-status { display: none; }
   .lab-action.is-primary { grid-column: auto; }
   .lab-soundtrack-card { top: 10px; right: 10px; left: 10px; width: auto; grid-template-columns: 44px minmax(0, 1fr); }
@@ -281,7 +193,4 @@ button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible
   .lab-soundtrack-effects { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-/* Swiss Compact keeps the protected instrument dense without coupling type to
-   hit area. The inspector and footer scroll before controls fall below 48 px. */
-.lab-inspector { overflow-y: auto; }
 }

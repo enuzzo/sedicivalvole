@@ -23,7 +23,7 @@ test('ShaderGradient Lab is a reusable local and protected-LAB tool', async () =
   assert.match(entry, /ShaderGradientLab/)
   assert.match(source, /from '@shadergradient\/react'/)
   assert.match(source, /Protected experiment/)
-  assert.match(lab, /SHADERGRADIENT \/ LAB/)
+  assert.match(lab, /SHADERGRADIENT"/)
   assert.match(lab, /<ShaderGradientLab embedded/)
   assert.doesNotMatch(app, /@shadergradient\/react/)
 })

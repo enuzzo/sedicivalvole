@@ -31,7 +31,7 @@ The normal `npm run dev` server also serves the same route at its current local
 port, for example <http://127.0.0.1:5173/lab/>. The standalone comparison entry
 remains available at `/shadergradient-lab.html` for isolated renderer work.
 
-Inside the existing owner LAB, choose `SHADERGRADIENT / LAB` from the
+Inside the existing owner LAB, choose `SHADERGRADIENT` (called `SHADERGRADIENT / LAB` before November 6, 2026) from the
 first header selector. Choose any `PRTCL / …` option in the same selector to
 return to the calibration surface. The embedded layout keeps a full-height
 side inspector on desktop and at the agreed `773 × 601` Tesla viewport; the

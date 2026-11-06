@@ -16,6 +16,7 @@ const sendSource = await read("../server/lab-send.php");
 const packageSource = await read("../scripts/package-lab.mjs");
 const viteSource = await read("../vite.lab.config.mjs");
 const deploySource = await read("../../../scripts/deploy_drive_lab_ftp.py");
+const consoleSource = await read("../src/lab/console.css");
 const appSource = await read("../src/lab/main.jsx");
 const stylesSource = await read("../src/lab/styles.css");
 
@@ -97,10 +98,11 @@ test("LAB audio is a disposable test source and never enters the visual preset",
   assert.doesNotMatch(appSource, /setParam\("context\.music"/);
 });
 
-test("the live macro strip stays inside the preview column at the Tesla viewport", () => {
-  assert.match(stylesSource, /\.lab-macro-strip\s*\{[\s\S]*grid-column:\s*2;/);
-  assert.match(stylesSource, /width:\s*min\(calc\(100% - 24px\), 360px\)/);
-  assert.doesNotMatch(stylesSource, /\.lab-macro-strip\s*\{[\s\S]*?left:\s*50%/);
+test("the live macro strip stays inside the preview stage at every viewport", () => {
+  // November 6 Console layout: the strip overlays the bottom of the stage card.
+  assert.match(appSource, /<section\s+className="lsh-stage"[\s\S]*?className="lab-macro-strip"[\s\S]*?<\/section>/);
+  assert.match(consoleSource, /\.lsh-stage \{[^}]*position: relative;[^}]*overflow: hidden;/);
+  assert.match(consoleSource, /\.lsh \.lab-macro-strip \{[^}]*position: absolute;[^}]*bottom: 12px;/);
 });
 
 test("the LAB keyboard drives the shared vehicle motion model without stealing control focus", () => {
