@@ -19,7 +19,7 @@ export function comparisonSpeed(seconds) {
 // November 6: a combustion candidate is heard against the published sound.
 // Bump COMBUSTION_CALIBRATION whenever the synthesizer or an engine changes.
 export const COMBUSTION_REFERENCE = 'rosso';
-export const COMBUSTION_CALIBRATION = 'combustion.v6';
+export const COMBUSTION_CALIBRATION = 'combustion.v7';
 /** Labels for one profile's A/B pair. */
 export function comparisonCalibrations(id) {
   if (!isCombustionVoice(id)) return COMPARISON_CALIBRATIONS;

@@ -72,7 +72,12 @@ export function planEngineShift({ at, fromRpm, toRpm, fromLoad = 0.5, toLoad = f
   const syncFraction = clamp(finite(config.shiftSyncFraction, 0.65), releaseFraction + 0.2, 0.85);
   const releaseAt = at + seconds * releaseFraction, syncAt = at + seconds * syncFraction, endAt = at + seconds;
   const downward = toGear < fromGear;
-  const releasedLoad = Math.min(initialLoad, 0.06);
+  // A modern automatic upshifts on an ignition torque cut with the throttle still
+  // open, so the engine never drops into fuel-cut overrun mid-shift. A profile's
+  // upshiftLoadHold keeps that fraction of the load (at least 0.15) through the
+  // shift; zero keeps the full release of the sample voices.
+  const hold = clamp(finite(config.upshiftLoadHold, 0), 0, 0.9);
+  const releasedLoad = !downward && hold > 0 ? Math.min(initialLoad, Math.max(0.15, initialLoad * hold)) : Math.min(initialLoad, 0.06);
   const releasedRpm = Math.max(600, from * 0.985);
   const blipLoad = downward ? clamp(finite(config.revMatchLoad, 0.7), 0.25, 0.95) : releasedLoad;
   // A power downshift (kickdown, or a downshift under load) never cuts the

@@ -44,8 +44,8 @@ listening; since November 7 its eight voices are public (see [Public release](#p
    (a cube of throttle) and piston speed, so idle and cruise carry only a trace.
 3. **Combustion per cycle**: an AR(1) random variable per cylinder plus a slow
    global drift sets strength *and* edge sharpness. Idle has a higher
-   coefficient of variation, optional misfire and rpm wander. Overrun cuts fuel,
-   with occasional late burns.
+   coefficient of variation, optional misfire and rpm wander. Overrun cuts fuel
+   (since v7 after 0.4 s of closed throttle), with occasional late burns.
 4. **Primaries**: one waveguide per cylinder, with lengths that differ between
    cylinders. The reflection at the valve end is high while the valve is shut
    and low while it is open.
@@ -66,8 +66,9 @@ listening; since November 7 its eight voices are public (see [Public release](#p
    damping of the pulses. A blow-off valve or compressor surge flutter on lift.
    Or a supercharger whine locked to rpm.
 10. **Events**:
-    - Clustered afterfire: a hard run recharges it, each pop spends it.
-    - Shift crack on a full-throttle upshift.
+    - Clustered afterfire: a hard run recharges it, each pop spends it. Since v7
+      only the V8 Cross-plane and the Five Turbo carry it.
+    - Shift crack on a full-throttle lift (the same two engines).
     - Rev limiter cutting ignition in 55–95 ms bursts while on the limit.
     - None of these fire while motion evidence is stale (`events = 0`).
 11. **Cabin**: low-pass plus two body/cabin modes, DC block, soft saturation.
@@ -426,3 +427,67 @@ CPU stays at 1.6–2.4 % of one development-Mac core.
 **Test.** `engine-combustion.test.mjs` pins the contract for all eight engines:
 noise below −22 dBA at idle and −20 dBA at 50 km/h and on lifts, below −15 dBA at
 110 km/h, and flat out at least 8 dB above cruise.
+
+## Owner listening and v7 — November 7
+
+The owner's verdict on v6: "not bad", but "remove the constant explosions in
+every engine, keep them in a couple, otherwise they all sound the same". Also:
+"make sure the mix works and there are no interruptions; now and then it is like
+pulling a microphone out and plugging it back in, with 'engagements'". Calibration
+id `combustion.v7`.
+
+**Evidence.** No diagnostic report from the car was available (the mailed reports
+of November 7 came from desk verification). A drive replay was built instead:
+the real runtime (mock `AudioContext`) and the real motion model, fed a
+Tesla-like GPS trace (10 Hz, whole km/h, ±0.25 km/h noise), drive the
+synthesizer; the master gain and a model of the master compressor (−8 dB, 20:1,
+3 ms / 150 ms) follow. The 100 s route has a stop, a pull-away through three
+upshifts, cruises, lifts and a stop.
+
+**Causes.**
+
+- **Every upshift cut the engine out.** The shift plan released the load to
+  0.06 for about 90 ms. The synthesizer read that as a lift: overrun reached
+  0.65–0.75, the sound fell 5–11 dB, afterfire fired, and the load returning
+  set off a full tip-in bark. Out, then back in: the "microphone".
+- **False lifts at cruise.** At the end of an acceleration a single sample 1 km/h
+  low fires the speed tracker's lift cue; the load dips to about 0.1 for half a
+  second. Town cruise load is low (about 0.2), so every dip crossed the fuel-cut
+  threshold: 1–5 entries into overrun per engine in 35 s of steady cruise.
+- **Afterfire everywhere.** 28–43 pops per 100 s in every engine, at every
+  upshift and lift; the burble's own pops ignored `overrun.pop`. Pops pushed the
+  master compressor to 2–3 dB of gain reduction.
+
+**Changes.**
+
+- **Afterfire in two engines.** The V8 Cross-plane (muscle burble and bang) and
+  the Five Turbo (rally crackle and blow-off) keep their sporting maps. The other
+  six have a stock map: no crackle, pops, bang or shift crack, and a trace of
+  burble (0.05). Burble pops now scale with `overrun.pop`.
+- **Upshifts cut torque, not the throttle.** Combustion profiles carry
+  `powertrain.upshiftLoadHold: 0.5`: an upshift keeps half the load (at least
+  0.15, never more than it had), as a modern automatic's ignition cut does.
+  Coasting downshifts and the sample voices keep the full release.
+- **Fuel-cut delay.** Overrun engages only after the throttle has been shut for
+  0.4 s, as an ECU's deceleration cut-off delay does. Shifts and GPS dips stay
+  fuelled; a held lift reaches overrun about 0.5 s after the pedal.
+- **Tip-in from vacuum.** The bark fades out as the throttle it opens from
+  approaches 0.35: a pedal snapped from closed still barks, the end of a shift
+  or a dip from part load does not.
+
+**Result (drive replay, all eight engines).**
+
+| Measure | v6 | v7 |
+| --- | --- | --- |
+| Pops per 100 s | 28–43 | 0 (six engines), 23 V8 Cross-plane, 21 Five Turbo |
+| Overrun during upshifts | 0.65–0.75 | 0 |
+| Tip-in bark after upshifts | 1.0 | at most 0.06 |
+| Level dip through an upshift | −4.6 to −10.7 dB | −2.9 to −5.6 dB (mostly the rpm drop) |
+| Fuel-cut entries in 35 s of cruise | 1–5 | 0 |
+| Master compressor gain reduction | 1.0–2.9 dB | at most 0.2 dB (six engines), 0.6 Five Turbo, 1.2 V8 Cross-plane |
+
+A held lift still reaches full overrun; the remaining fall at the end of an
+acceleration is the engine unloading (about 5 dB over 0.4 s), not a cut.
+
+**Tests.** `engine-combustion.test.mjs` pins afterfire to the two engines, the
+fuel-cut delay, the tip-in gate and the upshift load hold; each fails on v6.

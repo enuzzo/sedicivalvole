@@ -66,6 +66,8 @@ function combustionVoices() {
     { ...bac_mono, sounds: {}, engine: { ...bac_mono.engine, idle: spec.idleRpm, limiter: spec.limiterRpm, soft_limiter: spec.limiterRpm - 100,
       inertia: spec.firing.length >= 8 ? 1.15 : 1 } },
     { up: Math.round(spec.redlineRpm * 0.93), kickdown: Math.round(spec.redlineRpm * 0.68), duration: spec.forced ? 0.24 : 0.2,
+      // Upshifts cut torque, not the throttle: no overrun, pops or re-engagement bark mid-shift.
+      powertrain: { upshiftLoadHold: 0.5 },
       ...(spec.forced?.type === "turbo" ? { boost: { enabled: true, thresholdRpm: 1900, fullRpm: Math.round(spec.redlineRpm * 0.6) } } : {}) },
     { model: "combustion", engine, mix: COMBUSTION_MIX }, combustionRoadScale(spec)));
 }

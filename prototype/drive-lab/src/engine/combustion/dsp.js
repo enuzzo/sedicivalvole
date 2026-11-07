@@ -132,6 +132,10 @@ const LIMITER_FALL = 5200, LIMITER_RISE = 7000, LIMITER_DIP = 320;
 // The intake sits under the bonnet, so the cabin hears it through the bulkhead,
 // whose transmission loss rises with frequency: a fourth-order low-pass.
 const JET_FLOOR = 0.06, ROAR_FLOOR = 0.04, BULKHEAD_HZ = 2200;
+// Tip-in bark fades out as the throttle it opens from approaches this opening.
+const TIP_VACUUM = 0.35;
+// Seconds of closed throttle before deceleration fuel cut (overrun) engages.
+const FUEL_CUT_DELAY = 0.4;
 const jetNoise = throttle => JET_FLOOR + (1 - JET_FLOOR) * throttle * throttle * throttle;
 const roarNoise = throttle => ROAR_FLOOR + (1.3 - ROAR_FLOOR) * throttle * throttle;
 
@@ -251,7 +255,7 @@ export class CombustionEngine {
     // Global state.
     this.theta = random.next() * 720;
     this.rpm = spec.idleRpm; this.throttle = 0; this.throttleFast = 0; this.peakThrottle = 0;
-    this.overrun = 0; this.valve = 0; this.cut = false; this.temperature = 620;
+    this.overrun = 0; this.closedFor = 0; this.valve = 0; this.cut = false; this.temperature = 620;
     this.drift = 0; this.wander = 0; this.wanderTarget = 0;
     this.spool = 0; this.releaseEnvelope = 0; this.releasePhase = 0; this.surge = 0;
     this.whinePhase = 0; this.whistlePhase = 0; this.whistleDrift = 0;
@@ -344,7 +348,7 @@ export class CombustionEngine {
       const burn = random.next() < overrun.burble * this.overrun * 0.7;
       // Pumping keeps a hollow pulse; a sporting map keeps the pipes burbling.
       strength = burn ? 0.35 + 0.45 * random.next() : overrun.body + 0.22 * (1 - this.overrun) * (c.idleStrength + 0.6 * throttle);
-      if (burn && this.events && random.next() < 0.35 * this.popReady) this.firePop(this.banks[i], 0.25 + 0.45 * random.next(), 0.5);
+      if (burn && overrun.pop > 0 && this.events && random.next() < 0.35 * this.popReady) this.firePop(this.banks[i], overrun.pop * (0.5 + 0.9 * random.next()), 0.5);
     } else strength = (c.idleStrength + (1 - c.idleStrength) * Math.pow(throttle, 0.8)) * (1 + spec.tipIn.strength * this.tip);
     if (!this.cut && this.overrun <= 0.05) strength *= 1 + idleness * (spec.idleLife.breath * this.breath + this.accessory * spec.idleLife.accessoryLoad / Math.max(0.2, c.idleStrength));
     let amp = strength * this.trim[i] * (1 + cov * (this.memory[i] + 0.6 * this.drift));
@@ -448,7 +452,10 @@ export class CombustionEngine {
       this.throttleFast += kFast * (throttleTarget - this.throttleFast);
       this.peakThrottle = Math.max(this.throttleFast, this.peakThrottle - 1 / (rate * 0.25));
       // The fast throttle leads the slow one only while the pedal is opening fast.
-      const tipTarget = clamp((this.throttleFast - this.throttle) / 0.15, 0, 1);
+      // Only a throttle opening from nearly shut barks: the bark is the manifold
+      // filling from vacuum, and an opening from part load (the end of a shift)
+      // has little vacuum left to fill.
+      const tipTarget = clamp((this.throttleFast - this.throttle) / 0.15, 0, 1) * (1 - smoothstep(this.throttle / TIP_VACUUM));
       this.tip = tipTarget > this.tip ? tipTarget : this.tip * kTip;
       const moving = smoothstep((this.rpm - spec.idleRpm * 1.15) / (spec.idleRpm * 0.5));
       const steadyRpm = this.rpm * (1 + this.wander + this.idleTrim + moving * spec.life.road * (0.9 * this.road + 0.3 * this.lash));
@@ -466,7 +473,11 @@ export class CombustionEngine {
       const rpm = steadyRpm + this.limiterDip;
       // Overrun depth in absolute rpm above idle: road lifts at 3,000–4,000 rpm
       // are full overrun for a 6,500 or a 9,000 rpm engine alike.
-      const overrunTarget = this.throttleFast < 0.06 && rpm > spec.idleRpm * 1.6
+      // Deceleration fuel cut waits until the throttle has stayed shut (an ECU's
+      // cut-off delay), so a shift or a brief GPS dip never flicks the engine
+      // into overrun and back: only a held lift does.
+      this.closedFor = this.throttleFast < 0.06 ? this.closedFor + 1 / rate : 0;
+      const overrunTarget = this.closedFor >= FUEL_CUT_DELAY && rpm > spec.idleRpm * 1.6
         ? smoothstep((rpm - spec.idleRpm * 1.6) / 1800) : 0;
       this.overrun += (overrunTarget > this.overrun ? kOverUp : kOverDown) * (overrunTarget - this.overrun);
       // Sport exhaust valve: opens quickly under load, stays open on overrun

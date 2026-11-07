@@ -141,6 +141,53 @@ test("lifting off a hard run releases a cluster of afterfire that dies away", ()
   assert.ok(perSecond.reduce((a, b) => a + b, 0) < 40, `bounded: ${perSecond}`);
 });
 
+// November 7 owner listening: "keep the explosions in a couple of engines, otherwise they all sound the same".
+test("only the V8 Cross-plane and the Five Turbo pop; the other six lift off clean, even off the limiter", () => {
+  for (const id of COMBUSTION_ENGINE_IDS) {
+    const spec = COMBUSTION_ENGINES[id], engine = new CombustionEngine(48000, spec), l = new Float32Array(128), r = new Float32Array(128);
+    const run = (rpm, loadValue, seconds) => { for (let i = 0; i < 48000 * seconds / 128; i++) engine.process(l, r, 128, [rpm], [loadValue], [spec.forced ? loadValue : 0], 1, 1); };
+    for (let lift = 0; lift < 4; lift++) { run(spec.redlineRpm * 0.8, 1, 1.5); run(spec.redlineRpm * 0.7, 0.05, 1.5); }
+    run(spec.limiterRpm, 1, 1.5); run(spec.redlineRpm * 0.6, 0.05, 1.5);
+    if (["v8-crossplane", "five-turbo"].includes(id)) assert.ok(engine.popCount > 5, `${id}: ${engine.popCount} pops`);
+    else { assert.equal(engine.popCount, 0, `${id} pops`); assert.equal(engine.bangs, 0, `${id} bangs`); }
+  }
+});
+
+test("a brief throttle dip never reaches fuel cut; a held lift does after the cut-off delay", () => {
+  const engine = new CombustionEngine(48000, COMBUSTION_ENGINES.v10), l = new Float32Array(128), r = new Float32Array(128);
+  const run = (loadValue, seconds) => { let most = 0; for (let i = 0; i < Math.round(48000 * seconds / 128); i++) { engine.process(l, r, 128, [3000], [loadValue], [0], 1, 1); most = Math.max(most, engine.overrun); } return most; };
+  run(0.3, 1);
+  // A shift's release or a GPS undershoot: a quarter second with the throttle shut.
+  assert.ok(run(0.05, 0.25) < 0.02 && run(0.3, 0.5) < 0.02, "a dip stays fuelled");
+  assert.ok(run(0.05, 0.35) < 0.02, "no fuel cut in the first 0.35 s of a lift");
+  assert.ok(run(0.05, 1.2) > 0.8, "a held lift reaches overrun");
+});
+
+test("only a throttle opening from nearly shut barks, not the end of a shift from part load", () => {
+  const tipFrom = (fromLoad, toLoad) => {
+    const engine = new CombustionEngine(48000, COMBUSTION_ENGINES.v12), l = new Float32Array(128), r = new Float32Array(128);
+    for (let i = 0; i < 375; i++) engine.process(l, r, 128, [3000], [fromLoad], [0], 1, 1);
+    let most = 0; for (let i = 0; i < 40; i++) { engine.process(l, r, 128, [3000], [toLoad], [0], 1, 1); most = Math.max(most, engine.tip); }
+    return most;
+  };
+  assert.ok(tipFrom(0.08, 0.7) > 0.8, "a snapped pedal from closed barks");
+  assert.ok(tipFrom(0.55, 1) < 0.05, "re-engaging from half load does not");
+});
+
+test("combustion upshifts cut torque with the throttle held; sample voices keep their full release", () => {
+  const { ENGINE_PROFILES } = load("src/engine/profiles.js");
+  const { planEngineShift } = load("src/engine/powertrain.js");
+  const lowest = (profile, fromLoad, toGear = 3) => Math.min(...planEngineShift({ at: 1, fromRpm: 4000, toRpm: toGear > 2 ? 3000 : 5000, fromLoad, toLoad: fromLoad,
+    fromGear: 2, toGear, reason: toGear > 2 ? "upshift" : "downshift", profile, duration: profile.duration }).points.map(point => point.load));
+  for (const profile of ENGINE_PROFILES.filter(item => item.voice?.model === "combustion")) {
+    assert.equal(lowest(profile, 0.9), 0.45, profile.id);
+    assert.equal(lowest(profile, 0.25), 0.15, profile.id);
+    assert.equal(lowest(profile, 0.1), 0.1, profile.id);
+    assert.equal(lowest(profile, 0.08, 1), 0.06, `${profile.id} coasting downshift`);
+  }
+  for (const id of ["mono", "rosso", "touring"]) assert.equal(lowest(ENGINE_PROFILES.find(item => item.id === id), 0.9), 0.06, id);
+});
+
 test("tuned maps end some hard lifts in a backfire bang, never with stale evidence", () => {
   for (const [events, check] of [[1, n => n >= 2 && n <= 14], [0, n => n === 0]]) {
     const spec = COMBUSTION_ENGINES["v8-crossplane"], engine = new CombustionEngine(48000, spec), l = new Float32Array(128), r = new Float32Array(128);
@@ -197,7 +244,7 @@ test("combustion voices are public, neutral, procedural and heard in the LAB aga
     assert.equal(comparisonProfile(id, "A").id, "rosso"); assert.equal(comparisonProfile(id, "B").id, id);
     assert.match(comparisonCalibrations(id).B, /^Combustion · /);
     const note = makeComparisonNote({ profile: id, preference: "B", note: "", listened: { A: 68, B: 68 }, build: "test", sampleRate: 48000 });
-    assert.equal(note.sourceCalibrations.A, "rosso:full-body.v1"); assert.equal(note.sourceCalibrations.B, `combustion.v6:${id}`);
+    assert.equal(note.sourceCalibrations.A, "rosso:full-body.v1"); assert.equal(note.sourceCalibrations.B, `combustion.v7:${id}`);
   }
   assert.throws(() => comparisonProfile("v10", "C"));
 });

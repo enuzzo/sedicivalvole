@@ -4,6 +4,11 @@
 // each engine architecture. Pipe lengths, resonances and every tuning value are
 // Sedicivalvole's own, chosen by ear-informed measurement against recordings
 // used only for analysis. These are architectures, not replicas of a car.
+//
+// Afterfire (November 7, owner: "keep the explosions in a couple of engines,
+// otherwise they all sound the same"): only the V8 Cross-plane and the Five
+// Turbo carry a sporting map that pops, crackles and bangs. The others have a
+// stock map: a clean overrun with a trace of burble and no shift crack.
 
 /** Evenly spaced firing events: order lists cylinders, bankOf maps cylinder → 0/1. */
 function even(order, bankOf) {
@@ -45,9 +50,9 @@ export const COMBUSTION_ENGINES = Object.freeze({
     combustion: { cov: 0.045, idleCov: 0.112, memory: 0.45, trim: 0.173, misfire: 0, jitterDeg: 1.6, idleStrength: 0.32, wander: 0.01, bankSpread: 0.13 },
     intake: { level: 0.3, plenumHz: 110, plenumQ: 2.4, roarHz: 1150, roarQ: 0.9, roar: 0.45, runner: 0.22 },
     mechanical: { level: 0.12, modes: [[960, 14, 0.45], [1750, 18, 0.4], [2900, 24, 0.3], [4700, 30, 0.2]], combustion: 0.55, valves: 0.4, whineOrder: 0, whine: 0, injector: 0.4 },
-    overrun: { crackle: 0.42, pop: 0.5, burble: 0.22, body: 0.4, bang: 0.15 },
+    overrun: { crackle: 0, pop: 0, burble: 0.05, body: 0.4, bang: 0 },
     bankSkew: 0.09,
-    shiftCrack: 0.5, cabin: 0.25, bodyHz: 58, bodyDb: 2.5, width: 0.5, drive: 1.7, gain: 0.601,
+    shiftCrack: 0, cabin: 0.25, bodyHz: 58, bodyDb: 2.5, width: 0.5, drive: 1.7, gain: 0.601,
   },
   // Flat-six, 1-6-2-4-3-5, 120°. Cylinders 1-3 one bank, 4-6 the other.
   // Intake and valvetrain are a large part of its voice.
@@ -64,8 +69,8 @@ export const COMBUSTION_ENGINES = Object.freeze({
     combustion: { cov: 0.045, idleCov: 0.126, memory: 0.5, trim: 0.135, misfire: 0, jitterDeg: 1.76, idleStrength: 0.33, wander: 0.012 },
     intake: { level: 0.38, plenumHz: 120, plenumQ: 2.6, roarHz: 1350, roarQ: 1, roar: 0.55, runner: 0.2 },
     mechanical: { level: 0.15, modes: [[1100, 14, 0.4], [1900, 18, 0.45], [3200, 24, 0.35], [5200, 30, 0.22]], combustion: 0.5, valves: 0.55, whineOrder: 0, whine: 0, injector: 0.5 },
-    overrun: { crackle: 0.32, pop: 0.42, burble: 0.18, body: 0.4 },
-    shiftCrack: 0.4, cabin: 0.28, bodyHz: 62, bodyDb: 2, width: 0.45, drive: 1.6, gain: 0.551,
+    overrun: { crackle: 0, pop: 0, burble: 0.05, body: 0.4 },
+    shiftCrack: 0, cabin: 0.28, bodyHz: 62, bodyDb: 2, width: 0.45, drive: 1.6, gain: 0.551,
   },
   // V10, 1-6-5-10-2-7-3-8-4-9, even 72° firing. Bank 0 = 1-5.
   "v10": {
@@ -81,9 +86,9 @@ export const COMBUSTION_ENGINES = Object.freeze({
     combustion: { cov: 0.045, idleCov: 0.112, memory: 0.45, trim: 0.121, misfire: 0, jitterDeg: 1.6, idleStrength: 0.32, wander: 0.01, bankSpread: 0.13 },
     intake: { level: 0.32, plenumHz: 105, plenumQ: 2.4, roarHz: 1250, roarQ: 0.9, roar: 0.45, runner: 0.22 },
     mechanical: { level: 0.12, modes: [[1000, 14, 0.45], [1800, 18, 0.4], [3000, 24, 0.3], [4900, 30, 0.2]], combustion: 0.55, valves: 0.4, whineOrder: 0, whine: 0, injector: 0.35 },
-    overrun: { crackle: 0.42, pop: 0.5, burble: 0.22, body: 0.42 },
+    overrun: { crackle: 0, pop: 0, burble: 0.05, body: 0.42 },
     bankSkew: 0.09,
-    shiftCrack: 0.45, cabin: 0.26, bodyHz: 56, bodyDb: 2.5, width: 0.5, drive: 1.7, gain: 0.735,
+    shiftCrack: 0, cabin: 0.26, bodyHz: 56, bodyDb: 2.5, width: 0.5, drive: 1.7, gain: 0.735,
   },
   // 60° V12, 1-7-5-11-3-9-6-12-2-8-4-10: a firing every 60°, smooth and dense.
   "v12": {
@@ -99,9 +104,9 @@ export const COMBUSTION_ENGINES = Object.freeze({
     combustion: { cov: 0.038, idleCov: 0.098, memory: 0.45, trim: 0.152, misfire: 0, jitterDeg: 1.44, idleStrength: 0.32, wander: 0.008, bankSpread: 0.13 },
     intake: { level: 0.32, plenumHz: 115, plenumQ: 2.4, roarHz: 1450, roarQ: 1, roar: 0.45, runner: 0.22 },
     mechanical: { level: 0.12, modes: [[1050, 14, 0.4], [1950, 18, 0.4], [3300, 24, 0.3], [5300, 30, 0.2]], combustion: 0.45, valves: 0.4, whineOrder: 0, whine: 0, injector: 0.3 },
-    overrun: { crackle: 0.3, pop: 0.42, burble: 0.16, body: 0.45 },
+    overrun: { crackle: 0, pop: 0, burble: 0.05, body: 0.45 },
     bankSkew: 0.09,
-    shiftCrack: 0.35, cabin: 0.26, bodyHz: 58, bodyDb: 2.5, width: 0.5, drive: 1.6, gain: 0.802,
+    shiftCrack: 0, cabin: 0.26, bodyHz: 58, bodyDb: 2.5, width: 0.5, drive: 1.6, gain: 0.802,
   },
   // Inline five, 1-2-4-5-3, a firing every 144°: the off-beat warble.
   // Turbocharged with a blow-off valve, single manifold, split tailpipes.
@@ -137,8 +142,8 @@ export const COMBUSTION_ENGINES = Object.freeze({
     intake: { level: 0.2, plenumHz: 80, plenumQ: 2, roarHz: 800, roarQ: 0.8, roar: 0.28, runner: 0.34 },
     mechanical: { level: 0.13, modes: [[780, 12, 0.5], [1400, 16, 0.4], [2400, 22, 0.3], [4000, 26, 0.2]], combustion: 0.65, valves: 0.45, whineOrder: 0, whine: 0, injector: 0.45 },
     forced: { type: "turbo", spool: 1.0, turbineDamp: 0.28, whistleHz: 1300, whistleSpan: 2900, whistle: 0.4, whoosh: 0.15, blowOff: false, release: 0.4 },
-    overrun: { crackle: 0.35, pop: 0.45, burble: 0.3, bang: 0.3 },
-    shiftCrack: 0.25, cabin: 0.32, bodyHz: 50, bodyDb: 3, width: 0.35, drive: 1.7, gain: 0.269,
+    overrun: { crackle: 0, pop: 0, burble: 0.06, bang: 0 },
+    shiftCrack: 0, cabin: 0.32, bodyHz: 50, bodyDb: 3, width: 0.35, drive: 1.7, gain: 0.269,
   },
   // Inline six, 1-5-3-6-2-4, 120°, two 3-into-1 collectors (front 1-3, rear 4-6).
   // Naturally aspirated, silky, with a chain-driven twin-cam whine.
@@ -155,8 +160,8 @@ export const COMBUSTION_ENGINES = Object.freeze({
     combustion: { cov: 0.042, idleCov: 0.098, memory: 0.45, trim: 0.095, misfire: 0, jitterDeg: 1.6, idleStrength: 0.32, wander: 0.009 },
     intake: { level: 0.3, plenumHz: 100, plenumQ: 2.4, roarHz: 1200, roarQ: 0.9, roar: 0.42, runner: 0.25 },
     mechanical: { level: 0.13, modes: [[950, 14, 0.4], [1700, 18, 0.4], [2900, 24, 0.3], [4700, 30, 0.2]], combustion: 0.5, valves: 0.45, whineOrder: 22, whine: 0.02, injector: 0.25 },
-    overrun: { crackle: 0.3, pop: 0.42, burble: 0.16, body: 0.38 },
-    shiftCrack: 0.35, cabin: 0.28, bodyHz: 56, bodyDb: 2.5, width: 0.45, drive: 1.6, gain: 0.542,
+    overrun: { crackle: 0, pop: 0, burble: 0.05, body: 0.38 },
+    shiftCrack: 0, cabin: 0.28, bodyHz: 56, bodyDb: 2.5, width: 0.45, drive: 1.6, gain: 0.542,
   },
 });
 
