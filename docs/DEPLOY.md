@@ -119,6 +119,7 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 | Date | Record | Build |
 | --- | --- | --- |
+| 2026-11-07 02:15 | [Combustion voices v5](#combustion-voices-v5--2026-11-07) | `20261107-0207.94e3d15` |
 | 2026-11-07 00:55 | [Public combustion voices](#public-combustion-voices--2026-11-07) | `20261107-0048.d1a5e3b` |
 | 2026-11-06 15:35 | [LAB-wide Listening Console](#lab-wide-listening-console--2026-11-06) | `20261106-1529.e46af67` |
 | 2026-11-06 14:50 | [Combustion engine LAB and Dropbox cleanup](#combustion-engine-lab-and-dropbox-cleanup--2026-11-06) | `20261106-1444.ad080f8` |
@@ -340,6 +341,28 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 Earlier records, from [Night Instrument interface](archive/DEPLOY-HISTORY-2026-09-24.md#night-instrument-interface--2026-09-24)
 back, are kept verbatim in the archive.
+
+### Combustion voices v5 — 2026-11-07
+
+Canonical `20261107-0207.94e3d15`, VERSION `0.0.0`. Behaviour, synthesizer and
+GPS-response refinement of the eight combustion voices
+([Refinement v5](ENGINE-COMBUSTION-2026-11-06.md#refinement-v5--november-7)).
+
+**Gates.** Built with `SEDICIVALVOLE_NO_LOCAL_ENV=1`. Tests 1,175; visual
+16/16; text fit 14/14; credits 189; package identity 841.
+
+**Publication.** Read-only preflight passes with zero conflicted copies.
+Preserve-existing publication uploaded 47 files / 6,859,224 bytes, reused 833
+static files and all 29 recordings, and reported `ROOT_UPLOAD_ONLY`.
+
+**Canonical checks.** Bare and cache-busted roots are HTTP 200, proxy MISS,
+with the build marker. Main JS/CSS and the combustion worklet match local
+SHA-256. Live 773 × 601: the V8 Flat-plane starts as a procedural engine, and
+TAMARRO reaches 9,200 rpm and settles at its own 1,000 rpm idle, with no
+console error. `/lab/` serves its gate. Postflight reports
+`remote_writes=NONE`. Rollback tag `pre-combustion-v5-20261107` → `b19552c`.
+
+**Still open.** Car listening and Tesla CPU headroom remain with the owner.
 
 ### Public combustion voices — 2026-11-07
 

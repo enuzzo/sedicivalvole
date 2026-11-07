@@ -1202,3 +1202,10 @@ No dated releases exist yet.
   - **Running.** The lane holds a previous / name / next stepper; the name opens every voice in a grid.
   - **Verification.** Tests 1,168; visual 16/16; text fit 14/14; credits 189. 47 files / 6,849,407 bytes uploaded; bare and cache-busted roots serve the build, main JS/CSS and the combustion worklet match local SHA-256, and V12 starts live with no console error. Postflight wrote nothing. Rollback tag `pre-public-combustion-20261107` → `758b942`.
   - **Still open.** Car listening and CPU headroom on the Tesla browser.
+
+- 2026-11-07 02:15 `[94e3d15]` `build 20261107-0207.94e3d15`: Refined the combustion voices before car listening (`combustion.v5`), informed by the owner's August GEAPS study, research on real engine acoustics and a replay of the GPS path.
+  - **Behaviour.** Each combustion voice idles at its own idle (720–1,000 rpm), and its final drive follows its redline within the September road contract. Idle blips carry a pedal and vary their pause (4–7.5 s) and peak (70–100 %). Kickdowns keep the throttle open and flare. Neutral falls ease out like friction.
+  - **Synthesizer.** The crank bounces about 220 rpm with each limiter cut. A snapped throttle barks (blip rise 3–4 dB above idle, was 2 dB below). Idle hunts, cycles accessories and breathes (rpm span 61–100 rpm over 40 s, was 23–48). Turbo whistle stays within 4.5 kHz.
+  - **GPS.** The speed tracker follows a lift at once: 480 → 280 ms at 10 Hz, 1.7 → 0.7 s at 1 Hz. It never fires on a pull or a cruise.
+  - **Verification.** Tests 1,175; visual 16/16; text fit 14/14; credits 189. 47 files / 6,859,224 bytes uploaded; bare and cache-busted roots serve the build, and main JS/CSS and the combustion worklet match local SHA-256. Live V8 Flat-plane TAMARRO reaches 9,200 rpm and settles at 1,000, with no console error. Postflight wrote nothing. Rollback tag `pre-combustion-v5-20261107` → `b19552c`.
+  - **Still open.** Car listening, Tesla CPU headroom, and research leads deferred until that listening (bank summation, two-speed gas temperature, high-rpm steepening, cabin shelf).
