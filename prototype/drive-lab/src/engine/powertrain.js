@@ -75,6 +75,22 @@ export function planEngineShift({ at, fromRpm, toRpm, fromLoad = 0.5, toLoad = f
   const releasedLoad = Math.min(initialLoad, 0.06);
   const releasedRpm = Math.max(600, from * 0.985);
   const blipLoad = downward ? clamp(finite(config.revMatchLoad, 0.7), 0.25, 0.95) : releasedLoad;
+  // A power downshift (kickdown, or a downshift under load) never cuts the
+  // throttle: the box slips the off-going clutch, the crank flares a little past
+  // the new gear's speed and the on-going clutch pulls it back.
+  const power = downward && (reason === "kickdown" || initialLoad >= 0.5);
+  if (power) {
+    const held = Math.max(0.6, initialLoad), flare = Math.min(limiter, to + Math.max(60, (to - from) * 0.08));
+    const points = [
+      { at, rpm: from, load: initialLoad, clutch: 1, phase: "release" },
+      { at: releaseAt, rpm: lerp(from, to, 0.18), load: held, clutch: 0.35, phase: "synchronize" },
+      { at: (releaseAt + syncAt) / 2, rpm: lerp(from, flare, 0.62), load: held, clutch: 0.2, phase: "synchronize" },
+      { at: syncAt, rpm: flare, load: held, clutch: 0.5, phase: "engage" },
+      { at: endAt, rpm: to, load: Math.max(destinationLoad, 0.5), clutch: 1, phase: "complete" },
+    ].map(Object.freeze);
+    return Object.freeze({ fromGear, toGear, reason: reason ?? "downshift", power: true,
+      startAt: at, releaseAt, syncAt, commitAt: syncAt, endAt, duration: seconds, points: Object.freeze(points) });
+  }
   const points = [
     { at, rpm: from, load: initialLoad, clutch: 1, phase: "release" },
     { at: releaseAt, rpm: releasedRpm, load: releasedLoad, clutch: 0, phase: "synchronize" },

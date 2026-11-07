@@ -257,9 +257,9 @@ background tab.
 
 **Known compromise**
 
-The runtime's confirmed standstill is 600 rpm. Some candidates idle higher
-(the flat-plane at 1,000 rpm), so their standstill sounds slower than their own
-idle.
+The runtime's confirmed standstill was 600 rpm, below some engines' own idle
+(the flat-plane idles at 1,000 rpm). Resolved in v5: each combustion voice now
+stands at its own idle.
 
 **Rendering speed**
 
@@ -288,3 +288,86 @@ combustion voice) and lists them under "COMBUSTION".
 - **Not yet established.** Car listening, CPU headroom on the Tesla browser,
   and road behaviour of the higher idles remain the owner's acceptance.
 
+
+## Refinement v5 — November 7
+
+The owner asked for a deeper refinement pass before car listening: re-read the
+owner's August GEAPS study (`_references/sedicivalvole_engine_study`, read only,
+nothing copied), research how real engines sound and behave, improve the GPS
+response, and keep a stationary engine from sounding monotonous. Calibration id
+`combustion.v5`.
+
+**Engine behaviour**
+
+- **Idle per architecture.** A combustion voice idles at its own idle
+  (720–1,000 rpm) at a confirmed stop, during the no-speed fallback and at the
+  end of TAMARRO; moving road rpm never falls below it. Sample voices keep 600.
+- **Road rpm per architecture.** The shared road table put every engine at the
+  same rpm for a given speed. The final drive now scales with the redline,
+  bounded to 0.88–1.025 so the owner's September contract holds in absolute rpm
+  (20–40 km/h ≤ 3,000 rpm, second at 30 km/h ≤ 2,800, 80 km/h ≥ 3,500). At
+  100 km/h the flat-plane turns about 4,640 rpm, the cross-plane about 3,950.
+  The full-load shift points stay km/h-based: the owner's contract keeps first
+  and second below 22 and 40 km/h even flat out.
+- **Idle blips** carry a pedal (0.6 for 0.22 s), rise in 0.3 s and fall on a
+  closed throttle. Before, the rise ran with the throttle shut, so the voice read
+  it as an overrun and the blip was about 2 dB *quieter* than idle. After the
+  first blip at five seconds, pauses vary 4–7.5 s and peaks 70–100 % of +1,200 rpm.
+- **Power downshifts.** A kickdown, or any downshift above half load, keeps the
+  throttle open: the crank flares about 8 % of the rpm step past the new gear
+  and settles. Overrun stays at 0 and the level within 1 dB (offline V10, 5→4).
+- **Neutral falls.** TAMARRO's closed-throttle segments fall fast at first and
+  slow toward idle (ease-out, 25 % longer), as friction and pumping do, instead
+  of a symmetric ease.
+
+**Synthesizer**
+
+- **Limiter bounce.** While the limiter holds, the crank falls at 5,200 rpm/s
+  during each ignition cut and recovers at 7,000 rpm/s, bounded to 320 rpm: about
+  220 rpm deep at 10–18 Hz. Combustion voices no longer receive TAMARRO's authored
+  8 Hz flutter, which was uncorrelated with the cut; sample voices keep it.
+- **Tip-in bark.** A throttle snapped open boosts combustion strength (+45 %),
+  intake roar (×2.2) and level (+30 %) on an envelope decaying in 0.15 s. The rise
+  of an idle blip now sits 3–4 dB above idle; steady levels move by under 0.4 dB.
+- **Idle life.** ECU hunt (0.45 Hz, 1.2 % rpm), accessory cycling (on 3–8 s, off
+  6–18 s; a 6 % sag on engagement, a 3 % flare on release, +8 % load) and a slow
+  burn breath (0.12 Hz, ±7 % strength, ±12 % edge). Over 40 s of idle the rpm
+  span rises from 23–48 to 61–100 rpm and the level breathes about 1 dB (sd), up
+  from 0.35–0.75 dB. None of it acts once the engine works.
+- **Turbo whistle** now tops out at 4.5 kHz (Five Turbo) and 4.2 kHz (Boxer
+  Rumble), within the 1.2–4.5 kHz shaft-frequency range reported for real turbos.
+- **Fixed filters** (valved-open path, cabin) are designed once; the muffler is
+  retuned only when gas temperature or throttle have moved enough to be heard.
+
+**GPS response**
+
+- **Asymmetric trust in the speed tracker.** See [engine guide](agent-guide/engine.md).
+  Offline, a lift is followed in 280 ms instead of 480 at 10 Hz, and in 0.7 s
+  instead of 1.7 at 1 Hz.
+- **Not taken:** holding load through a degraded (1.8–5 s) GPS gap. The tested
+  contract is that untrusted GPS requests no load, and gaps that long are rare
+  with the Tesla's ~10 Hz callbacks.
+
+**Measured, not changed**
+
+- **CPU.** One core of the development Mac: 1.5 % (Boxer Rumble) to 2.4 % (V12)
+  in every scene. The cost is spread over the pipes and filters of the model;
+  there was no single waste to remove. Tesla CPU headroom is still unmeasured.
+- **Master compressor.** Offline at the real chain gain (×6 voice mix, ×0.16
+  master), peaks reach −5 to −7 dBFS on the limiter; the −8 dB, 20:1 compressor
+  takes at most 0.5 dB. It does not flatten the pulses.
+- **Load span** at 3,000 rpm: full load sits 6.5–11 dB above light load. Coast
+  is 2–5 dB above light load because of the burble, consistent with the owner's
+  rule that lifts keep their level.
+
+**Research leads deferred until car listening** (they would move a timbre the
+owner has not heard in the car yet):
+
+- Physical summation of banks and tailpipes: half orders should come from path
+  asymmetry, about −10 to −20 dB below the firing order.
+- Two-speed gas temperature: primaries following load in about 0.3 s, downstream
+  sections dominated by walls (30–90 s).
+- Shock steepening at high rpm for a harmonic, not noisy, rasp.
+- The +8 dB cabin shelf may double the Tesla cabin's own low-frequency gain;
+  check it in the car before keeping it.
+- A torque-return thump at shift re-engagement, and S-curved shift ramps.

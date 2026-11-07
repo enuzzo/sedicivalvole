@@ -118,6 +118,9 @@ const EXHAUST_OPENS = 132; // crank degrees after firing TDC (≈ 48° before BD
 const EXHAUST_SPAN = 250;  // valve open duration, degrees
 const INTAKE_OPENS = 348;  // ≈ 12° before overlap TDC
 const INTAKE_SPAN = 236;
+// Limiter bounce: crank deceleration without ignition and recovery with it
+// (rpm/s), bounded to a few hundred rpm below the limit.
+const LIMITER_FALL = 5200, LIMITER_RISE = 7000, LIMITER_DIP = 320;
 
 /** Shape of the blowdown pulse over its span t ∈ [0, 1): steep opening, long decay. */
 function blowdownShape(t, attack) {
@@ -144,6 +147,11 @@ const DEFAULTS = Object.freeze({
   forced: null,
   overrun: { crackle: 0.4, pop: 0.5, burble: 0.25, body: 0.3, bang: 0, bangLevel: 1.6 },
   shiftCrack: 0.35,
+  tipIn: { strength: 0.45, roar: 1.2, level: 0.3 },
+  // Idle is never still: the ECU's idle control hunts slowly, accessories (air
+  // conditioning compressor, radiator fan) cut in and out and sag the crank,
+  // and the burn itself breathes. Fractions of rpm and of combustion strength.
+  idleLife: { hunt: 0.012, sag: 0.06, flare: 0.03, accessoryLoad: 0.08, breath: 0.07, edge: 0.12 },
   cabin: 0.3, bodyHz: 52, bodyDb: 3, cabinGainHz: 65, cabinGainDb: 8,
   bankSkew: 0.045, idleLift: 1.5, lightLift: 0.6, near: 0.85, far: 0.7, width: 0.55, drive: 1.6, gain: 0.5,
 });
@@ -242,8 +250,14 @@ export class CombustionEngine {
     this.popCount = 0;
     this.crackArmed = false; this.lastCrack = -1; this.hissEnvelope = 0;
     this.excite = 0; this.injector = 0;
+    // Tip-in: a throttle snapped open fills the manifold and the first cycles bark.
+    this.tip = 0;
+    // Idle life: ECU hunt, accessory cycling (on/off, seconds to the next change)
+    // and a slow breath of the burn.
+    this.hunt = 0; this.breath = 0; this.accessory = 0; this.accessoryOn = false;
+    this.accessoryTimer = 4 + 8 * random.next(); this.idleTrim = 0; this.sagKick = 0;
     this.frame = 0; this.retune = 0; this.fade = 0; this.cycles = 0;
-    this.limiterHold = false; this.limiterClock = 0; this.limiterPeriod = 0.07;
+    this.limiterHold = false; this.limiterClock = 0; this.limiterPeriod = 0.07; this.limiterDip = 0;
     this.output = [0, 0];
     // Start mid-cycle without a burst of spurious events on the first sample.
     for (let i = 0; i < this.count; i++) {
@@ -252,11 +266,35 @@ export class CombustionEngine {
       this.lastExhaust[i] = (fired - EXHAUST_OPENS + 720) % 720;
       this.lastIntake[i] = (fired - INTAKE_OPENS + 720) % 720;
     }
-    this.tune();
+    this.tunedTemperature = NaN; this.tunedThrottle = NaN;
+    this.designFixed();
+    this.tune(true);
   }
 
-  /** Slow-rate retuning of pipe delays and muffler filters (gas temperature, valve). */
-  tune() {
+  /** Filters that never move: the valved-open path and the cabin perspective. */
+  designFixed() {
+    const { rate, spec } = this, muffler = spec.muffler;
+    for (let bank = 0; bank < 2; bank++) {
+      this.openLow[bank].design("lowpass", rate, muffler.openHz, 0.55);
+      this.openLow2[bank].design("lowpass", rate, muffler.openHz * 1.25, 0.55);
+      const cabin = clamp(spec.cabin, 0, 1), cabinHz = 9000 * Math.pow(1400 / 9000, cabin);
+      this.cabinLow[bank].design("lowpass", rate, cabinHz, 0.6);
+      this.body[bank].design("peaking", rate, spec.bodyHz, 1.1, spec.bodyDb);
+      this.cabinMode[bank].design("peaking", rate, spec.bodyHz * 2.15, 1.6, spec.bodyDb * 0.8);
+      this.cabinGain[bank].design("lowshelf", rate, spec.cabinGainHz, 0.7, spec.cabinGainDb);
+      this.subGuard[bank].design("highpass", rate, 16, 0.707);
+    }
+    this.runner.tune(rate, spec.intake.runner / 345, -0.5, 3000);
+  }
+
+  /**
+   * Slow-rate retuning of pipe delays and muffler filters from gas temperature
+   * and throttle. Skipped while neither has moved enough to be heard (0.5 K is
+   * a 0.04 % pitch change; 0.004 throttle moves the muffler corner by 0.1 %).
+   */
+  tune(force = false) {
+    if (!force && Math.abs(this.temperature - this.tunedTemperature) < 0.5 && Math.abs(this.throttle - this.tunedThrottle) < 0.004) return;
+    this.tunedTemperature = this.temperature; this.tunedThrottle = this.throttle;
     const { rate, spec } = this;
     const hot = soundSpeed(this.temperature), cooler = soundSpeed(this.temperature * 0.72 + 80);
     const header = spec.header;
@@ -273,17 +311,8 @@ export class CombustionEngine {
       const lowHz = muffler.lowpassHz * (0.85 + 0.3 * this.throttle);
       this.mufflerLow[bank].design("lowpass", rate, lowHz, 0.6);
       this.mufflerLow2[bank].design("lowpass", rate, lowHz * 1.2, 0.55);
-      this.openLow[bank].design("lowpass", rate, muffler.openHz, 0.55);
-      this.openLow2[bank].design("lowpass", rate, muffler.openHz * 1.25, 0.55);
       if (muffler.resonatorHz > 0) this.resonator[bank].design("notch", rate, muffler.resonatorHz * (cooler / 420), muffler.resonatorQ);
-      const cabin = clamp(spec.cabin, 0, 1), cabinHz = 9000 * Math.pow(1400 / 9000, cabin);
-      this.cabinLow[bank].design("lowpass", rate, cabinHz, 0.6);
-      this.body[bank].design("peaking", rate, spec.bodyHz, 1.1, spec.bodyDb);
-      this.cabinMode[bank].design("peaking", rate, spec.bodyHz * 2.15, 1.6, spec.bodyDb * 0.8);
-      this.cabinGain[bank].design("lowshelf", rate, spec.cabinGainHz, 0.7, spec.cabinGainDb);
-      this.subGuard[bank].design("highpass", rate, 16, 0.707);
     }
-    this.runner.tune(rate, spec.intake.runner / 345, -0.5, 3000);
   }
 
   /** Called once per exhaust event of cylinder i: draws its combustion for this cycle. */
@@ -301,13 +330,14 @@ export class CombustionEngine {
       // Pumping keeps a hollow pulse; a sporting map keeps the pipes burbling.
       strength = burn ? 0.35 + 0.45 * random.next() : overrun.body + 0.22 * (1 - this.overrun) * (c.idleStrength + 0.6 * throttle);
       if (burn && this.events && random.next() < 0.35 * this.popReady) this.firePop(this.banks[i], 0.25 + 0.45 * random.next(), 0.5);
-    } else strength = c.idleStrength + (1 - c.idleStrength) * Math.pow(throttle, 0.8);
+    } else strength = (c.idleStrength + (1 - c.idleStrength) * Math.pow(throttle, 0.8)) * (1 + spec.tipIn.strength * this.tip);
+    if (!this.cut && this.overrun <= 0.05) strength *= 1 + idleness * (spec.idleLife.breath * this.breath + this.accessory * spec.idleLife.accessoryLoad / Math.max(0.2, c.idleStrength));
     let amp = strength * this.trim[i] * (1 + cov * (this.memory[i] + 0.6 * this.drift));
     if (c.misfire > 0 && random.next() < c.misfire * idleness) amp *= 0.12;
     this.exhaustAmp[i] = Math.max(0, amp);
     this.exhaustJitter[i] = c.jitterDeg * (0.4 + idleness) * random.gauss();
     // A stronger, faster burn also opens with a sharper edge.
-    this.exhaustAttack[i] = spec.pulse.attack * clamp(1 - 0.22 * this.memory[i] - 0.25 * (throttle - 0.5), 0.55, 1.5);
+    this.exhaustAttack[i] = spec.pulse.attack * clamp(1 - 0.22 * this.memory[i] - 0.25 * (throttle - 0.5) - spec.idleLife.edge * idleness * this.breath, 0.55, 1.5);
     this.exhaustWidth[i] = clamp(1 + 0.12 * random.gauss() - 0.05 * this.memory[i], 0.75, 1.3);
     // The valve cracks open on high cylinder pressure: a short noise burst
     // rides the opening edge and dies within milliseconds.
@@ -325,6 +355,28 @@ export class CombustionEngine {
       this.firePop(this.banks[i], overrun.pop * (0.3 + 0.7 * random.next()), random.next());
     }
     if (this.cut && this.events && random.next() < overrun.crackle * 0.1 * this.popReady) this.firePop(this.banks[i], overrun.pop * 0.8, 0.8);
+  }
+
+  /**
+   * Idle life, every 64 samples. `idle` is 1 at a closed-throttle idle and 0
+   * once the engine is working, so none of this touches the road voice.
+   */
+  updateIdleLife(dt, idle) {
+    const { spec, random } = this, life = spec.idleLife;
+    this.hunt = slowNoise(this.hunt, 1 - Math.exp(-TAU * 0.45 * dt), random.gauss());
+    this.breath = slowNoise(this.breath, 1 - Math.exp(-TAU * 0.12 * dt), random.gauss());
+    // An accessory cuts in for 3-8 s, then rests 6-18 s; only counted at idle.
+    if (idle > 0.5) this.accessoryTimer -= dt;
+    if (this.accessoryTimer <= 0) {
+      this.accessoryOn = !this.accessoryOn;
+      this.accessoryTimer = this.accessoryOn ? 3 + 5 * random.next() : 6 + 12 * random.next();
+      // The load lands before the ECU catches it (a sag); release gives a flare.
+      this.sagKick = this.accessoryOn ? -life.sag : life.flare;
+    }
+    this.accessory += ((this.accessoryOn ? 1 : 0) - this.accessory) * (1 - Math.exp(-dt / 0.25));
+    this.sagKick *= Math.exp(-dt / 0.6);
+    const target = idle * (life.hunt * this.hunt + this.sagKick);
+    this.idleTrim += (target - this.idleTrim) * (1 - Math.exp(-dt / 0.08));
   }
 
   /** Muted or hidden: drop transient one-shots so nothing outlives the audio owner. */
@@ -365,6 +417,7 @@ export class CombustionEngine {
     const kOverUp = coefficient(rate, 0.09), kOverDown = coefficient(rate, 0.35), kValve = coefficient(rate, 0.18), kValveClose = coefficient(rate, 3);
     const kFade = 1 / (rate * 0.01);
     const kHissUp = coefficient(rate, 0.7), kHissDown = coefficient(rate, 0.05);
+    const kTip = Math.exp(-1 / (rate * 0.15));
     const mufflerQuiet = spec.muffler.quiet;
     this.events = events > 0.5 ? 1 : 0;
     for (let n = 0; n < frames; n++) {
@@ -380,19 +433,28 @@ export class CombustionEngine {
       this.throttle += kThrottle * (throttleTarget - this.throttle);
       this.throttleFast += kFast * (throttleTarget - this.throttleFast);
       this.peakThrottle = Math.max(this.throttleFast, this.peakThrottle - 1 / (rate * 0.25));
+      // The fast throttle leads the slow one only while the pedal is opening fast.
+      const tipTarget = clamp((this.throttleFast - this.throttle) / 0.15, 0, 1);
+      this.tip = tipTarget > this.tip ? tipTarget : this.tip * kTip;
       const moving = smoothstep((this.rpm - spec.idleRpm * 1.15) / (spec.idleRpm * 0.5));
-      const rpm = this.rpm * (1 + this.wander + moving * spec.life.road * (0.9 * this.road + 0.3 * this.lash));
+      const steadyRpm = this.rpm * (1 + this.wander + this.idleTrim + moving * spec.life.road * (0.9 * this.road + 0.3 * this.lash));
+      // Rev limiter: the ECU cuts and restores ignition in bursts while the
+      // engine sits on the limit, whatever the runtime does with the rpm. Judged
+      // on the runtime's rpm, so the bounce below cannot release its own hold.
+      if (steadyRpm >= spec.limiterRpm * 0.99) this.limiterHold = true; else if (steadyRpm < spec.limiterRpm * 0.965) this.limiterHold = false;
+      if (this.limiterHold) { this.limiterClock += 1 / rate; if (this.limiterClock > this.limiterPeriod) { this.limiterClock = 0; this.limiterPeriod = 0.055 + 0.04 * random.next(); } }
+      else this.limiterClock = 0;
+      this.cut = this.limiterHold && this.limiterClock < this.limiterPeriod * 0.5;
+      // Without ignition the crank decelerates on pumping and friction, and it
+      // picks up again when the sparks return: the classic bounce off the limit.
+      if (this.limiterHold) this.limiterDip = clamp(this.limiterDip + (this.cut ? -LIMITER_FALL : LIMITER_RISE) / rate, -LIMITER_DIP, 0);
+      else this.limiterDip = Math.min(0, this.limiterDip + 2 * LIMITER_RISE / rate);
+      const rpm = steadyRpm + this.limiterDip;
       // Overrun depth in absolute rpm above idle: road lifts at 3,000–4,000 rpm
       // are full overrun for a 6,500 or a 9,000 rpm engine alike.
       const overrunTarget = this.throttleFast < 0.06 && rpm > spec.idleRpm * 1.6
         ? smoothstep((rpm - spec.idleRpm * 1.6) / 1800) : 0;
       this.overrun += (overrunTarget > this.overrun ? kOverUp : kOverDown) * (overrunTarget - this.overrun);
-      // Rev limiter: the ECU cuts and restores ignition in bursts while the
-      // engine sits on the limit, whatever the runtime does with the rpm.
-      if (rpm >= spec.limiterRpm * 0.99) this.limiterHold = true; else if (rpm < spec.limiterRpm * 0.965) this.limiterHold = false;
-      if (this.limiterHold) { this.limiterClock += 1 / rate; if (this.limiterClock > this.limiterPeriod) { this.limiterClock = 0; this.limiterPeriod = 0.055 + 0.04 * random.next(); } }
-      else this.limiterClock = 0;
-      this.cut = this.limiterHold && this.limiterClock < this.limiterPeriod * 0.5;
       // Sport exhaust valve: opens quickly under load, stays open on overrun
       // above its rpm (lifts keep their voice), closes slowly.
       const valveTarget = clamp((rpm - spec.muffler.valveRpm * 0.8) / (spec.muffler.valveRpm * 0.4), 0, 1)
@@ -430,6 +492,7 @@ export class CombustionEngine {
         const idle = (1 - smoothstep((rpm - spec.idleRpm) / spec.idleRpm)) * (1 - this.throttle);
         if (random.next() < 64 / (rate * 0.7)) this.wanderTarget = random.gauss() * spec.combustion.wander * idle;
         this.wander += (this.wanderTarget - this.wander) * (1 - Math.exp(-64 / (rate * 0.35)));
+        this.updateIdleLife(64 / rate, idle);
         this.tune();
         if (forced) {
           const spoolTarget = forced.type === "super" ? this.throttle * clamp(rpm / spec.redlineRpm, 0, 1) : boost;
@@ -534,7 +597,7 @@ export class CombustionEngine {
       const plenum = this.plenum.step(runner);
       // Induction roar comes in gulps, one per intake stroke, not as a steady hiss.
       const intakeDensity = Math.sqrt(160 / Math.max(160, rpm * this.count / 120));
-      const roar = this.roar.step(random.white() * gulp * (0.3 + throttle)) * intake.roar * intakeDensity;
+      const roar = this.roar.step(random.white() * gulp * (0.3 + throttle)) * intake.roar * intakeDensity * (1 + spec.tipIn.roar * this.tip);
       // Throttle-plate hiss builds over a held lift, never in the instant of a shift.
       this.hissEnvelope += ((this.throttleFast < 0.06 ? 1 : 0) - this.hissEnvelope) * (this.throttleFast < 0.06 ? kHissUp : kHissDown);
       const hiss = this.hiss.step(random.white()) * intake.hiss * this.hissEnvelope * speed * 0.6;
@@ -588,7 +651,7 @@ export class CombustionEngine {
       const idleness = (1 - smoothstep((rpm - spec.idleRpm) / spec.idleRpm)) * (1 - throttle);
       // Light load is lifted a little too, so town and lifts keep a voice.
       const light = 1 - throttle;
-      const level = spec.gain * (0.72 + 0.28 * valve) * (1 + (spec.idleLift - 1) * idleness) * (1 + spec.lightLift * light * light);
+      const level = spec.gain * (0.72 + 0.28 * valve) * (1 + (spec.idleLift - 1) * idleness) * (1 + spec.lightLift * light * light) * (1 + spec.tipIn.level * this.tip);
       l *= level; r *= level;
       this.dc[0] = this.subGuard[0].step(this.cabinGain[0].step(l));
       this.dc[2] = this.subGuard[1].step(this.cabinGain[1].step(r));

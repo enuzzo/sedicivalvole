@@ -149,7 +149,8 @@ test("small periodic idle blips stop on movement, manual rev and disable", async
   const f = fixture(); f.runtime.setEnabled(true); await f.runtime.load();
   f.evidence.trustedStationary = true;
   let maximum = 0, blips = 0, previous = false;
-  for (let i = 0; i < 480; i++) {
+  // First gesture at 5 s, the next one 4-7.5 s after it ends: exactly two in 15 s.
+  for (let i = 0; i < 600; i++) {
     f.tick(); const s = f.runtime.getState(); maximum = Math.max(maximum, s.rpm);
     if (s.idleBlip && !previous) blips++; previous = s.idleBlip;
   }
@@ -340,8 +341,12 @@ test("confirmed idle is 600 RPM at 70 percent; show-off and real motion restore 
 
 test("automatic idle gestures last 1.2 seconds and peak 1200 RPM above idle", async () => {
  const {createIdleBlip}=await import('../src/engine/idle-blip.js');const blip=createIdleBlip();
- assert.equal(blip.sample(0,true),0);assert.ok(blip.sample(5.6,true)>1199);
- assert.ok(blip.sample(6.1,true)>0);assert.equal(blip.sample(6.21,true),0);
+ assert.equal(blip.sample(0,true),0);assert.equal(blip.throttle(),null);
+ // A throttle stab: the pedal opens first, the crank rises fast and falls back slower.
+ assert.ok(blip.sample(5.1,true)>0);assert.equal(blip.throttle(),0.6);
+ assert.ok(blip.sample(5.3,true)>1199);assert.equal(blip.throttle(),0);
+ const falling=blip.sample(5.6,true);assert.ok(falling>100&&falling<700);
+ assert.ok(blip.sample(6.1,true)>0);assert.equal(blip.sample(6.21,true),0);assert.equal(blip.throttle(),null);
  assert.equal(blip.sample(6.3,false),0);
 });
 
@@ -740,4 +745,19 @@ test("a rapid cached return waits for retiring PCM without network or a larger m
   assert.equal(f.requests, requests);
   assert.ok(f.runtime.getState().peakUnionBytes <= 128 * 1024 * 1024);
   f.runtime.destroy();
+});
+
+test("automatic idle blips vary their pause and their peak after the first gesture", async () => {
+  const {createIdleBlip}=await import('../src/engine/idle-blip.js');
+  let seed=7;const random=()=>{seed=(seed*16807)%2147483647;return seed/2147483647;};
+  const blip=createIdleBlip(random);const starts=[],peaks=[];let peak=0,active=false;
+  for(let at=0;at<120;at+=0.01){const rpm=blip.sample(at,true);
+    if(rpm>0&&!active){starts.push(at);active=true;peak=0;}
+    if(rpm>0)peak=Math.max(peak,rpm);
+    if(rpm===0&&active){active=false;peaks.push(peak);}}
+  assert.ok(Math.abs(starts[0]-5)<0.02);assert.ok(Math.abs(peaks[0]-1200)<2);
+  const pauses=starts.slice(1).map((at,i)=>at-starts[i]-1.2);
+  assert.ok(pauses.every(p=>p>=3.95&&p<=7.55),pauses.join());
+  assert.ok(Math.max(...pauses)-Math.min(...pauses)>1.5);
+  assert.ok(peaks.every(p=>p>=830&&p<=1201));assert.ok(Math.max(...peaks)-Math.min(...peaks)>150);
 });

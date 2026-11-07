@@ -49,3 +49,9 @@ export function decideAutomaticGear({ gear, speedKmh, drive, canShift, heldSecon
   return null;
 }
 export function boundedRpm(rpm, profile) { return clamp(rpm, 600, profile.configuration.engine.limiter); }
+// Confirmed-standstill idle: 600 rpm for the sample voices (September contract);
+// a combustion voice idles at its own architecture's idle (November 7).
+export function idleRpmFor(profile) {
+  const idle = Number(profile?.configuration?.engine?.idle);
+  return Number.isFinite(idle) && idle >= 600 && idle <= 1500 ? idle : 600;
+}

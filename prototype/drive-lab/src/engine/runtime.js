@@ -9,7 +9,7 @@ import { drivelineAudibility } from "./driveline-audio.js";
 import { prepareEngineLoopSeam } from "./loop-seam.js";
 import { engineProfile } from "./profiles.js";
 import { createEngineVoicing } from "./voicing.js";
-import { boundedRpm, decideAutomaticGear, virtualRpm, engineRoadSpeed, selectRoadGear } from "./gearbox.js";
+import { boundedRpm, decideAutomaticGear, virtualRpm, engineRoadSpeed, selectRoadGear, idleRpmFor } from "./gearbox.js";
 import { engineSampleCents } from "./sample-pitch.js";
 import { advanceEngineDemand, planEngineShift, sampleEngineShift, transmissionCents, boostDemand, followRoadSpeed, launchSlipRpm } from "./powertrain.js";
 
@@ -233,22 +233,23 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
     const blipRpm = idleBlip.sample(at, state.trustedStationary && !revving && !shift);
     state.idleBlip = blipRpm > 0;
     const dt = Math.min(0.08, elapsed);
-    demandState = advanceEngineDemand(demandState, activeEvidence, profile, dt, { throttleOverride: gesture?.throttle ?? null });
+    demandState = advanceEngineDemand(demandState, activeEvidence, profile, dt, { throttleOverride: gesture?.throttle ?? idleBlip.throttle() ?? null });
     const demand = gesture ? gesture.throttle : demandState.load;
     state.drive = demand; state.throttle = demandState.throttle; state.roadLoad = demandState.roadLoad; state.coast = demandState.coast;
     engine.throttle = demand;
     engine.integrate(drivetrain.inertia, at * 1000, dt);
     const acousticSpeed = roadSpeed?.value ?? activeEvidence.speedKmh ?? 0;
     const slipRpm = launchSlipRpm({ gear: state.gear, speedKmh: acousticSpeed, load: demand, stationary: state.trustedStationary }, profile);
-    const coupledRpm = activeEvidence.freshness === "lost" ? (quietStop ? 600 : 1000)
-      : boundedRpm(Math.max(slipRpm, profile.singleSpeed ? 1000 + engineRoadSpeed(acousticSpeed) / 130 * 7000 : virtualRpm(acousticSpeed, state.gear, drivetrain)), profile);
+    const idleRpm = idleRpmFor(profile), fallbackRpm = Math.max(1000, idleRpm);
+    const coupledRpm = activeEvidence.freshness === "lost" ? (quietStop ? idleRpm : fallbackRpm)
+      : boundedRpm(Math.max(idleRpm, slipRpm, profile.singleSpeed ? 1000 + engineRoadSpeed(acousticSpeed) / 130 * 7000 : virtualRpm(acousticSpeed, state.gear, drivetrain)), profile);
     if (!revving) {
       drivetrain.omega = coupledRpm * 2 * Math.PI / 60;
       engine.solveVel(drivetrain, dt);
     }
     if (gesture) engine.omega = gesture.rpm * 2 * Math.PI / 60;
-    if (state.trustedStationary && !revving) engine.omega = (600 + blipRpm) * 2 * Math.PI / 60;
-    engine.rpm = boundedRpm(Math.max(quietStop || revving ? 600 : 1000, engine.omega * 60 / (2 * Math.PI)), profile);
+    if (state.trustedStationary && !revving) engine.omega = (idleRpm + blipRpm) * 2 * Math.PI / 60;
+    engine.rpm = boundedRpm(Math.max(quietStop || revving ? idleRpm : fallbackRpm, engine.omega * 60 / (2 * Math.PI)), profile);
     engine.omega = engine.rpm * 2 * Math.PI / 60;
     state.rpm = Math.round(engine.rpm);
     const decision = profile.singleSpeed ? null : !revving && transmissionMode === "MANUAL" && manualGear != null && activeEvidence.canShift && !shift
@@ -437,7 +438,9 @@ export function createGeapsRuntime({ context, destination, motion, now = () => p
       if (!held) releaseRev();
       else if (manualAvailable(motion.snapshot(now())) && heldSince == null) {
         heldSince = now();
-        showOff.start(context.currentTime, engine.rpm, profile.configuration.engine.limiter);
+        // A combustion voice cuts and bounces off its own limiter; only the sample
+        // voices need the phrase's authored rpm flutter.
+        showOff.start(context.currentTime, engine.rpm, profile.configuration.engine.limiter, idleRpmFor(profile), { flutter: profile.voice?.model !== "combustion" });
       }
       return heldSince != null;
     },

@@ -22,7 +22,7 @@ TAMARRO with English SHOW-OFF subtitle is a varied bounded neutral phrase: up, r
 
 Automatic idle requires an actual exact-zero watch observation. A bounded `12-second` stationary watch hold bridges the roughly `10-second` cadence observed in the owner's report; hidden state, missing/invalid live speed and movement cancel it. Live watch events use the shared receiver's monotonic clock, while one-shot renewals retain acquisition/replay checks. The older road report lacked acquisition timestamps and Engine reasons; it does not prove a provider-clock defect. For implementation details use [road feedback](../ROAD-FEEDBACK-2026-09-07.md) and `src/engine/motion.js`, `stationary-refresh.js`, `show-off.js`, `idle-blip.js` under Drive Lab.
 
-Confirmed standstill uses `600 RPM` and `70%` of normal Engine master. Manual TAMARRO overrides the quiet level for the whole phrase then returns to 600 RPM. Fresh accepted speed `>= 1 km/h` restores full level; sub-threshold jitter, stale/invalid evidence or GPS loss cannot falsely restore it after a stop. Initial no-speed fallback is `1000 RPM`, never a fabricated stop. Automatic idle blips rise to about `1800 RPM` (`1200` above idle) over `1.2 seconds`, with `five seconds` between gestures, remaining at 70%. Manual rev, movement, mute and lifecycle loss interrupt automatic idle. Preserve dry audio and upstream bytes throughout.
+Confirmed standstill uses `600 RPM` and `70%` of normal Engine master. Manual TAMARRO overrides the quiet level for the whole phrase then returns to 600 RPM. Fresh accepted speed `>= 1 km/h` restores full level; sub-threshold jitter, stale/invalid evidence or GPS loss cannot falsely restore it after a stop. Initial no-speed fallback is `1000 RPM`, never a fabricated stop. Automatic idle blips rise to about `1800 RPM` (`1200` above idle) over `1.2 seconds`, with `five seconds` between gestures, remaining at 70%. Manual rev, movement, mute and lifecycle loss interrupt automatic idle. Preserve dry audio and upstream bytes throughout. **November 7 refinement (owner: a stationary engine must not sound monotonous):** a combustion voice idles at its own architecture's idle (720–1,000 rpm, `idleRpmFor`), and moving road rpm never falls below it; the sample voices keep 600 rpm. After the first blip at five seconds, pauses vary 4–7.5 s and peaks 70–100 % of +1,200 rpm. A blip carries a short pedal (0.6 for 0.22 s), rises in 0.3 s and falls on a closed throttle. Inside the combustion synthesizer, idle also hunts slowly (ECU control), accessories cycle every 6–18 s with a sag and a flare, and the burn breathes.
 
 ## Research and campaign scope
 
@@ -94,6 +94,8 @@ the 5 s loss window still lose motion.
 
 The owner found the sound clean but wanted it higher resolution, fuller and
 more powerful, and above all a more predictive, dynamic response from GPS.
+
+**November 7 asymmetric trust.** A sample clearly below the prediction whose two-sample slope also falls (one whole-km/h quantum of allowance) is followed at once and drops positive acceleration, so a lift stops "pulling" sooner: offline 480 → 280 ms at 10 Hz and 1.7 → 0.7 s at 1 Hz. Pulls, launches and a wandering cruise never fire it (`tests/engine-speed-tracker.test.mjs`). Degraded GPS still requests no load.
 
 **Response.** `src/engine/speed-tracker.js` treats a repeated speed inside the
 provider's own update interval as no new information (the owner's Tesla trace

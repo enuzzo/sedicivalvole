@@ -13,6 +13,14 @@ const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
  * the last informative sample (with decay) so RPM flows between updates and
  * leads the GPS latency slightly. Predictions never go below zero and never
  * extend beyond the bounded horizon; they are an acoustic estimate, not speed.
+ *
+ * Trust is asymmetric (November 7). A constant-acceleration tracker keeps
+ * "pulling" for about a second after the driver lifts, which is the most
+ * audible wrong-direction error: the engine still works while the car slows.
+ * When a sample falls clearly below the prediction *and* the newest two-sample
+ * slope is falling too (with one whole-km/h quantum of allowance), the tracker
+ * follows the measurement at once and drops any positive acceleration. Speeding
+ * up still uses the gentle gains, so a launch or a pull is never exaggerated.
  */
 export const SPEED_TRACKER_POLICY = Object.freeze({
   leadSeconds: 0.25,
@@ -20,6 +28,8 @@ export const SPEED_TRACKER_POLICY = Object.freeze({
   decaySeconds: 1.0,
   minWindowMs: 120,
   maxWindowMs: 1500,
+  liftResidualKmh: 1.5,
+  quantumKmh: 1,
 });
 
 export function createSpeedTracker(policy = SPEED_TRACKER_POLICY) {
@@ -31,7 +41,7 @@ export function createSpeedTracker(policy = SPEED_TRACKER_POLICY) {
     observe(speedKmh, atMs, reacquired = false) {
       if (!Number.isFinite(speedKmh) || !Number.isFinite(atMs)) return false;
       if (reacquired || !state || atMs < state.at) {
-        state = { v: speedKmh, a: 0, at: atMs, lastValue: speedKmh, lastChangeAt: atMs, changeMs: null };
+        state = { v: speedKmh, a: 0, at: atMs, lastValue: speedKmh, lastChangeAt: atMs, changeMs: null, sample: speedKmh, lifts: state?.lifts ?? 0 };
         return true;
       }
       const changed = speedKmh !== state.lastValue;
@@ -45,11 +55,14 @@ export function createSpeedTracker(policy = SPEED_TRACKER_POLICY) {
       const dt = clamp(since / 1000, 0.02, 2);
       const predicted = state.v + state.a * 3.6 * dt;
       const residual = speedKmh - predicted;
-      const alpha = clamp(dt / 0.35, 0.3, 0.85);
-      const beta = alpha * alpha / (2 - alpha);
+      const slope = (speedKmh + policy.quantumKmh - state.sample) / 3.6 / dt;
+      const lifting = residual < -policy.liftResidualKmh && slope < Math.min(0.3, state.a - 1);
+      const alpha = lifting ? 0.95 : clamp(dt / 0.35, 0.3, 0.85);
+      const beta = lifting ? 1 : alpha * alpha / (2 - alpha);
       state.v = Math.max(0, predicted + alpha * residual);
       state.a = clamp(state.a + beta * residual / 3.6 / dt, -10, 6);
-      state.at = atMs;
+      if (lifting) { state.a = Math.min(state.a, 0); state.lifts++; }
+      state.at = atMs; state.sample = speedKmh;
       return true;
     },
     /** Seconds since the last change, used to bound the outlier test to the provider's interval. */
@@ -67,6 +80,8 @@ export function createSpeedTracker(policy = SPEED_TRACKER_POLICY) {
       return Math.max(0, state.v + state.a * 3.6 * reach);
     },
     get accelerationMps2() { return state?.a ?? 0; },
+    /** How many lift cues fired since creation (diagnostics and tests). */
+    get liftCues() { return state?.lifts ?? 0; },
     get intervalMs() { return state?.changeMs ?? null; },
   };
 }

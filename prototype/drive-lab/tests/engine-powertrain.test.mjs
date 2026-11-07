@@ -212,3 +212,16 @@ test("gradual throttle closure still releases stored boost once after smoothing"
   assert.equal(events.length, 1);
   assert.ok(events[0].level > 0.16 && events[0].at > 2.5);
 });
+
+test("a kickdown or a downshift under load keeps the throttle open and flares past the new gear", () => {
+  for (const input of [{ reason: "kickdown", fromLoad: 1 }, { fromLoad: 0.7 }]) {
+    const plan = shift({ fromGear: 5, toGear: 4, fromRpm: 3200, toRpm: 4300, toLoad: input.fromLoad, ...input });
+    assert.equal(plan.power, true);
+    for (const point of plan.points) assert.ok(point.load >= 0.5, `${plan.reason}: load ${point.load}`);
+    assert.ok(sampleEngineShift(plan, plan.syncAt).rpm > 4300);
+    assert.equal(sampleEngineShift(plan, plan.endAt).rpm, 4300);
+    for (let i = 1; i < plan.points.length; i++) assert.ok(plan.points[i].at > plan.points[i - 1].at);
+  }
+  // A coasting downshift still blips with the clutch open and releases the load.
+  assert.equal(shift({ fromGear: 3, toGear: 2, fromRpm: 3200, toRpm: 5200, fromLoad: 0.08 }).power, undefined);
+});

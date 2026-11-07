@@ -146,7 +146,52 @@ test("combustion voices are public, neutral, procedural and heard in the LAB aga
     assert.equal(comparisonProfile(id, "A").id, "rosso"); assert.equal(comparisonProfile(id, "B").id, id);
     assert.match(comparisonCalibrations(id).B, /^Combustion · /);
     const note = makeComparisonNote({ profile: id, preference: "B", note: "", listened: { A: 68, B: 68 }, build: "test", sampleRate: 48000 });
-    assert.equal(note.sourceCalibrations.A, "rosso:full-body.v1"); assert.equal(note.sourceCalibrations.B, `combustion.v4:${id}`);
+    assert.equal(note.sourceCalibrations.A, "rosso:full-body.v1"); assert.equal(note.sourceCalibrations.B, `combustion.v5:${id}`);
   }
   assert.throws(() => comparisonProfile("v10", "C"));
+});
+
+test("a combustion voice idles at its own architecture's idle; sample voices keep 600 rpm", () => {
+  const { ENGINE_PROFILES } = load("src/engine/profiles.js");
+  const { idleRpmFor } = load("src/engine/gearbox.js");
+  const { createShowOff } = load("src/engine/show-off.js");
+  for (const id of ["mono", "rosso", "touring"]) assert.equal(idleRpmFor(ENGINE_PROFILES.find(item => item.id === id)), 600);
+  for (const id of COMBUSTION_ENGINE_IDS) {
+    const profile = ENGINE_PROFILES.find(item => item.id === id);
+    assert.equal(idleRpmFor(profile), COMBUSTION_ENGINES[id].idleRpm, id);
+    // TAMARRO settles back to that idle, not to the sample voices' 600 rpm.
+    const gesture = createShowOff(() => 0.5); gesture.start(0, idleRpmFor(profile), profile.configuration.engine.limiter, idleRpmFor(profile));
+    let last = null; for (let at = 0; at < 8; at += 0.01) { const sample = gesture.sample(at); if (!sample) break; last = sample; }
+    assert.ok(Math.abs(last.rpm - COMBUSTION_ENGINES[id].idleRpm) < 15, `${id} ends at ${last.rpm}`);
+  }
+  assert.equal(idleRpmFor({ configuration: { engine: { idle: 50 } } }), 600);
+});
+
+test("high-revving combustion voices turn more road rpm than the pushrod V8, within the road contract", () => {
+  const { ENGINE_PROFILES, combustionRoadScale } = load("src/engine/profiles.js");
+  const { virtualRpm } = load("src/engine/gearbox.js");
+  const at = (id, speed, gear) => virtualRpm(speed, gear, ENGINE_PROFILES.find(item => item.id === id).configuration.drivetrain);
+  assert.ok(at("v8-flatplane", 100, 5) > at("v8-crossplane", 100, 5) * 1.12);
+  assert.ok(at("v10", 80, 4) > at("five-turbo", 80, 4));
+  for (const id of COMBUSTION_ENGINE_IDS) {
+    const scale = combustionRoadScale(COMBUSTION_ENGINES[id]);
+    assert.ok(scale >= 0.88 && scale <= 1.025, `${id}: ${scale}`);
+  }
+});
+
+test("on the limiter the crank bounces with the ignition cut, a few hundred rpm deep", () => {
+  const spec = COMBUSTION_ENGINES["v8-flatplane"], engine = new CombustionEngine(48000, spec);
+  const left = new Float32Array(128), right = new Float32Array(128);
+  let deepest = 0, cutDip = 0, cutBlocks = 0, liveDip = 0, liveBlocks = 0;
+  for (let block = 0; block < 900; block++) {
+    engine.process(left, right, 128, [spec.limiterRpm], [1], [0], 1, 1);
+    if (block < 300) continue;
+    deepest = Math.min(deepest, engine.limiterDip);
+    if (engine.cut) { cutDip += engine.limiterDip; cutBlocks++; } else { liveDip += engine.limiterDip; liveBlocks++; }
+  }
+  assert.ok(deepest < -150 && deepest >= -320, `deepest ${deepest}`);
+  assert.ok(cutBlocks > 0 && liveBlocks > 0);
+  // Off the limit the dip recovers fully.
+  for (let block = 0; block < 200; block++) engine.process(left, right, 128, [spec.limiterRpm * 0.8], [0.5], [0], 1, 1);
+  assert.equal(engine.limiterDip, 0);
 });

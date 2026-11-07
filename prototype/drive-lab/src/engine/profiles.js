@@ -30,14 +30,14 @@ const VOICINGS = Object.freeze({
 });
 // Voice gain bringing the combustion synthesizer near the published loop level.
 const COMBUSTION_MIX = 6; // +15.6 dB: road-route acceleration near Rosso, peaks about -3.5 dBFS (Nov 6)
-const make = (id, label, configuration, shifts, voice = null) => {
+const make = (id, label, configuration, shifts, voice = null, roadScale = 1) => {
   const transmission = ROAD_TRANSMISSIONS[id] ?? ROAD_TRANSMISSIONS.mono;
   return Object.freeze({
     id, label, ...shifts, voice, textureLevel: 1, voicing: VOICINGS[id] ?? null,
     crossover: id === "touring" ? [2600, 5700] : id === "rosso" ? [3900, 7300] : [2600, 5900],
     upshiftKmh: transmission.upshiftKmh, downshiftKmh: transmission.downshiftKmh, loadHoldKmh: transmission.loadHoldKmh,
     configuration: { ...configuration, drivetrain: { ...configuration.drivetrain,
-      final_drive: transmission.finalDrive, gears: transmission.gears, wheelRadiusM: VIRTUAL_WHEEL_RADIUS_M } },
+      final_drive: transmission.finalDrive * roadScale, gears: transmission.gears, wheelRadiusM: VIRTUAL_WHEEL_RADIUS_M } },
     assets: Object.entries(configuration.sounds).map(([role, sound]) => ({ ...sound, role, ...sources.get(sound.source) })),
   });
 };
@@ -63,11 +63,21 @@ export const ENGINE_PROFILES = Object.freeze([
 // the owner's November 7 decision to test them on the road.
 function combustionVoices() {
   return Object.entries(COMBUSTION_ENGINES).map(([engine, spec]) => make(engine, spec.label,
-    { ...bac_mono, sounds: {}, engine: { ...bac_mono.engine, limiter: spec.limiterRpm, soft_limiter: spec.limiterRpm - 100,
+    { ...bac_mono, sounds: {}, engine: { ...bac_mono.engine, idle: spec.idleRpm, limiter: spec.limiterRpm, soft_limiter: spec.limiterRpm - 100,
       inertia: spec.firing.length >= 8 ? 1.15 : 1 } },
     { up: Math.round(spec.redlineRpm * 0.93), kickdown: Math.round(spec.redlineRpm * 0.68), duration: spec.forced ? 0.24 : 0.2,
       ...(spec.forced?.type === "turbo" ? { boost: { enabled: true, thresholdRpm: 1900, fullRpm: Math.round(spec.redlineRpm * 0.6) } } : {}) },
-    { model: "combustion", engine, mix: COMBUSTION_MIX }));
+    { model: "combustion", engine, mix: COMBUSTION_MIX }, combustionRoadScale(spec)));
+}
+// November 7: the shared road table put every architecture at the same rpm for a
+// given speed, so a 9,000 rpm flat-plane never sang above ~5,700 rpm on the road
+// and a 6,500 rpm pushrod V8 cruised at 77 % of its range. Scaling the final drive
+// with the redline moves each engine toward the same *fraction* of its own range.
+// The bounds keep the owner's September road contract in absolute rpm: 20-40 km/h
+// stay at or below 3,000 rpm (second at 30 km/h <= 2,800; 3,700 flat out at 40) and 80 km/h starts at
+// 3,500 rpm or more.
+export function combustionRoadScale(spec) {
+  return Math.min(1.025, Math.max(0.88, spec.redlineRpm / 8000));
 }
 export function engineProfile(id) {
   const found = ENGINE_PROFILES.find(profile => profile.id === id);

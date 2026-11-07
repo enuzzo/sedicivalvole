@@ -87,3 +87,43 @@ test("the acoustic road speed glides to a correction and pull-away slips the clu
   assert.equal(launchSlipRpm({ gear: 1, speedKmh: 6, load: 1, stationary: true }, profile), 0);
   assert.equal(launchSlipRpm({ gear: 1, speedKmh: 25, load: 1 }, profile), 0);
 });
+
+// November 7 asymmetric trust: a lift is followed at once, a pull never jumps.
+function liftDrive(stepMs) {
+  // 40 km/h, 2.5 m/s² for 4 s, then 8 m/s³ down to -1.5 m/s² (a lift with regen).
+  let v = 40, a = 2.5; const samples = []; let crossedAt = null;
+  for (let ms = 0; ms <= 8000; ms += 10) {
+    if (ms > 4000) a = Math.max(-1.5, a - 8 * 0.01);
+    if (crossedAt == null && a <= 0) crossedAt = ms;
+    v += a * 3.6 * 0.01;
+    if (ms % stepMs === 0) samples.push([ms, Math.round(v)]);
+  }
+  return { samples, crossedAt };
+}
+function reactionMs(stepMs, policy) {
+  const tracker = createSpeedTracker(policy), { samples, crossedAt } = liftDrive(stepMs);
+  let reacted = null;
+  for (const [ms, value] of samples) { tracker.observe(value, ms); if (ms > crossedAt && reacted == null && tracker.accelerationMps2 <= 0) reacted = ms - crossedAt; }
+  return { reacted, lifts: tracker.liftCues };
+}
+const symmetric = { leadSeconds: .25, horizonSeconds: 1.2, decaySeconds: 1, minWindowMs: 120, maxWindowMs: 1500, liftResidualKmh: Infinity, quantumKmh: 1 };
+
+test("a lift-off is followed sooner than the symmetric tracker, at 10 Hz and at 1 Hz", () => {
+  for (const step of [100, 1000]) {
+    const asymmetric = reactionMs(step), before = reactionMs(step, symmetric);
+    assert.ok(asymmetric.lifts >= 1, `${step} ms: no lift cue`);
+    assert.ok(asymmetric.reacted <= before.reacted * 0.8, `${step} ms: ${asymmetric.reacted} vs ${before.reacted} ms`);
+  }
+});
+
+test("a pull, a launch and a wandering cruise never fire the lift cue", () => {
+  const pull = createSpeedTracker();
+  for (let ms = 0; ms <= 8000; ms += 100) pull.observe(Math.round(truth(ms)), ms);
+  assert.equal(pull.liftCues, 0);
+  const hourly = createSpeedTracker();
+  for (let ms = 0; ms <= 8000; ms += 1000) hourly.observe(truth(ms), ms);
+  assert.equal(hourly.liftCues, 0);
+  const cruise = createSpeedTracker();
+  for (let ms = 0; ms <= 20000; ms += 100) cruise.observe(Math.round(80 + 0.8 * Math.sin(ms / 900) + 0.4 * Math.sin(ms / 230)), ms);
+  assert.equal(cruise.liftCues, 0);
+});
