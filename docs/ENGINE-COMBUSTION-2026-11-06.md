@@ -172,6 +172,9 @@ offline, with lifts 3–7 dB below.
 - **Offline audition.** `node scripts/render-combustion.mjs [engine …]` writes
   41-second scenes to `output/combustion-preview/`: idle, blips, limiter,
   four-gear pull, overrun, cruise, kickdown, coast.
+- **Drive replay and noise share.** `npm run qa:engine-acoustics -- drive|noise
+  [--baseline <ref>]` measures cut-outs, pops, compression and noise against
+  any earlier release; see [Acoustic QA tools](agent-guide/engine.md#acoustic-qa-tools--november-7).
 
 ## Cabin bass for the owner's car — v4, November 6
 
@@ -383,7 +386,8 @@ beautiful bass", but a steady "rustle / wind" was always there. A real car has
 none: "only engine, bass and mids, except when you accelerate and the dynamics
 grow". Calibration id `combustion.v6`.
 
-**Measurement.** The v2/v3 checks used unweighted energy and full load, where
+**Measurement** (reproduce with `npm run qa:engine-acoustics -- noise --baseline
+pre-combustion-v6-20261107`). The v2/v3 checks used unweighted energy and full load, where
 the firing orders own the spectrum. The noise lives at 0.6–2 kHz, where the ear
 is most sensitive, and at part load. The new check silences every aperiodic
 source on the same random sequence, subtracts, and weighs the difference
@@ -437,7 +441,8 @@ pulling a microphone out and plugging it back in, with 'engagements'". Calibrati
 id `combustion.v7`.
 
 **Evidence.** No diagnostic report from the car was available (the mailed reports
-of November 7 came from desk verification). A drive replay was built instead:
+of November 7 came from desk verification). A drive replay was built instead,
+now `npm run qa:engine-acoustics -- drive --baseline pre-combustion-v7-20261107`:
 the real runtime (mock `AudioContext`) and the real motion model, fed a
 Tesla-like GPS trace (10 Hz, whole km/h, ±0.25 km/h noise), drive the
 synthesizer; the master gain and a model of the master compressor (−8 dB, 20:1,
@@ -475,16 +480,17 @@ upshifts, cruises, lifts and a stop.
   approaches 0.35: a pedal snapped from closed still barks, the end of a shift
   or a dip from part load does not.
 
-**Result (drive replay, all eight engines).**
+**Result (drive replay, all eight engines; the committed tool on its default
+100 s route, which has 43 s of steady cruise).**
 
 | Measure | v6 | v7 |
 | --- | --- | --- |
-| Pops per 100 s | 28–43 | 0 (six engines), 23 V8 Cross-plane, 21 Five Turbo |
-| Overrun during upshifts | 0.65–0.75 | 0 |
-| Tip-in bark after upshifts | 1.0 | at most 0.06 |
-| Level dip through an upshift | −4.6 to −10.7 dB | −2.9 to −5.6 dB (mostly the rpm drop) |
-| Fuel-cut entries in 35 s of cruise | 1–5 | 0 |
-| Master compressor gain reduction | 1.0–2.9 dB | at most 0.2 dB (six engines), 0.6 Five Turbo, 1.2 V8 Cross-plane |
+| Pops per 100 s | 30–51 | 0 (six engines), 25 V8 Cross-plane, 20 Five Turbo |
+| Overrun during upshifts | 0.65–0.78 | 0 |
+| Tip-in bark after upshifts | 1.0 | at most 0.05 |
+| Level dip through an upshift | −4.1 to −10.6 dB | −2.8 to −6.6 dB (mostly the rpm drop) |
+| Fuel-cut entries in steady cruise | 0–7 | 0–2 (see v8) |
+| Master compressor gain reduction | 0.7–2.4 dB | at most 0.1 dB (six engines and Five Turbo), 0.6 V8 Cross-plane |
 
 A held lift still reaches full overrun; the remaining fall at the end of an
 acceleration is the engine unloading (about 5 dB over 0.4 s), not a cut.
