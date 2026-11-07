@@ -119,6 +119,7 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 | Date | Record | Build |
 | --- | --- | --- |
+| 2026-11-07 19:45 | [Combustion voices v8](#combustion-voices-v8--2026-11-07) | `20261107-1937.722ae72` |
 | 2026-11-07 18:50 | [Combustion voices v7](#combustion-voices-v7--2026-11-07) | `20261107-1840.dac5286` |
 | 2026-11-07 16:30 | [Combustion voices v6](#combustion-voices-v6--2026-11-07) | `20261107-1624.08196f2` |
 | 2026-11-07 02:15 | [Combustion voices v5](#combustion-voices-v5--2026-11-07) | `20261107-0207.94e3d15` |
@@ -343,6 +344,28 @@ onward carry their source commit (`YYYYMMDD-HHMM.commit`).
 
 Earlier records, from [Night Instrument interface](archive/DEPLOY-HISTORY-2026-09-24.md#night-instrument-interface--2026-09-24)
 back, are kept verbatim in the archive.
+
+### Combustion voices v8 — 2026-11-07
+
+Canonical `20261107-1937.722ae72`, VERSION `0.0.0`. No false lifts at a steady
+cruise ([Repository QA tool and v8](ENGINE-COMBUSTION-2026-11-06.md#repository-qa-tool-and-v8--november-7)).
+
+**Gates.** Built with `SEDICIVALVOLE_NO_LOCAL_ENV=1`. Tests 1,187; credits 189;
+package identity 841; `qa:engine-acoustics drive --baseline` on the v7 tree.
+Audio and motion only: visual and text-fit gates not rerun.
+
+**Publication.** Read-only preflight passes with zero conflicted copies.
+Preserve-existing publication uploaded 47 files / 6,859,835 bytes and reported
+`ROOT_UPLOAD_ONLY`.
+
+**Canonical checks.** Bare and cache-busted roots are HTTP 200 with the build
+marker. Main JS/CSS and the combustion worklet match local SHA-256. Live
+773 × 601, with automatic diagnostic sending paused in the checking browser:
+Mono starts, then the V12 loads from the running grid as a procedural engine,
+with no console error. `/lab/` answers 200. Postflight reports
+`remote_writes=NONE`. Rollback tag `pre-combustion-v8-20261107` → `91f0ca8`.
+
+**Still open.** Car listening of v8 remains with the owner.
 
 ### Combustion voices v7 — 2026-11-07
 

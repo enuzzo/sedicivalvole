@@ -1223,3 +1223,16 @@ No dated releases exist yet.
   - **Result.** No overrun or bark through upshifts, no fuel cut at steady cruise, pops only in the two engines (21–23 per 100 s), master compression at most 0.2 dB elsewhere. A held lift still reaches overrun.
   - **Verification.** Tests 1,180; credits 189; package identity 841. Audio-only change: visual gates not rerun. 47 files / 6,859,595 bytes uploaded; bare and cache-busted roots serve the build, and main JS/CSS and the combustion worklet match local SHA-256. Live V10 starts as a procedural engine with no console error. Postflight wrote nothing. Rollback tag `pre-combustion-v7-20261107` → `53baa76`.
   - **Still open.** Car listening of v7.
+
+- 2026-11-07 19:25 `[91f0ca8]`: Moved the acoustic QA behind the v6 and v7 evidence into the repository (it had run from throwaway session scripts): `npm run qa:engine-acoustics -- drive|noise [--baseline <ref>]`.
+  - **drive.** The real runtime and motion model on Tesla-like GPS (10 Hz, whole km/h, seeded noise), rendered through the combustion synthesizer, the master gain and a model of the master compressor built from the runtime's settings. Per engine: upshifts, pops and bangs; dip, overrun and bark through upshifts; fuel-cut entries and dips in steady cruise; peak compression. Optional WAVs, before/after excerpts and a 50 ms trace.
+  - **noise.** A-weighted share of aperiodic noise in six steady scenes, optionally per source.
+  - **Baseline.** `--baseline` measures any Git ref (the `pre-combustion-*` tags) from a `git archive` extract, removed afterwards.
+  - **Consolidation.** Shared measurements live in `scripts/engine-acoustics/measure.mjs`; the combustion tests import them. The engine guide says which of the three acoustic instruments answers which question.
+
+- 2026-11-07 19:45 `[722ae72]` `build 20261107-1937.722ae72`: No false lifts at a steady cruise (`combustion.v8`), found by the committed drive replay.
+  - **Cause.** At a round cruise speed one whole-km/h rounding flip after a long hold read as −0.58 m/s², and the tracker trusted the following samples only after about a second: a closed throttle longer than v7's 0.4 s fuel-cut delay.
+  - **Change.** The speed tracker bounds the trend after a one-quantum step to twice one quantum per hold (one flip now peaks at −0.15 to −0.21 m/s²; real accelerations pass). The fuel-cut delay is 1 s, about an ECU's.
+  - **Result.** Default route: no fuel cut at steady cruise (was 0–2). With ±0.5 km/h GPS over 110 s of cruise: 0–1 (was 8–12). A few >3 dB load wobbles remain with noisy GPS.
+  - **Verification.** Tests 1,187; credits 189; package identity 841. 47 files / 6,859,835 bytes uploaded; bare and cache-busted roots serve the build, and main JS/CSS and the combustion worklet match local SHA-256. Live V12 loads as a procedural engine with no console error, diagnostic sending paused in the checking browser. Postflight wrote nothing. Rollback tag `pre-combustion-v8-20261107` → `91f0ca8`.
+  - **Still open.** Car listening of v8, and how noisy the Tesla's speed really is.
