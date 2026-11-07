@@ -22,6 +22,36 @@ function steady(id, { rate = 48000, rpm = 3000, load = 0.5, boost = 0, seconds =
 }
 const rms = samples => Math.sqrt(samples.reduce((sum, value) => sum + value * value, 0) / samples.length);
 
+/** A-weighted energy in dB (Hann windows of 8,192 samples, half overlap): the level as the ear weighs it. */
+function aWeighted(samples, rate = 48000) {
+  const size = 8192, weight = hz => { const f2 = hz * hz, ra = 12194 ** 2 * f2 * f2 / ((f2 + 20.6 ** 2) * Math.sqrt((f2 + 107.7 ** 2) * (f2 + 737.9 ** 2)) * (f2 + 12194 ** 2)); return ra * ra; };
+  let energy = 0;
+  for (let start = 0; start + size <= samples.length; start += size / 2) {
+    const re = new Float64Array(size), im = new Float64Array(size);
+    for (let i = 0; i < size; i++) re[i] = samples[start + i] * (0.5 - 0.5 * Math.cos(2 * Math.PI * i / size));
+    for (let i = 1, j = 0; i < size; i++) { let bit = size >> 1; for (; j & bit; bit >>= 1) j ^= bit; j ^= bit; if (i < j) { [re[i], re[j]] = [re[j], re[i]]; [im[i], im[j]] = [im[j], im[i]]; } }
+    for (let span = 2; span <= size; span <<= 1) {
+      const angle = -2 * Math.PI / span, wr = Math.cos(angle), wi = Math.sin(angle);
+      for (let i = 0; i < size; i += span) {
+        let cr = 1, ci = 0;
+        for (let k = 0; k < span / 2; k++) {
+          const h = i + k + span / 2, ar = re[h] * cr - im[h] * ci, ai = re[h] * ci + im[h] * cr;
+          re[h] = re[i + k] - ar; im[h] = im[i + k] - ai; re[i + k] += ar; im[i + k] += ai;
+          const next = cr * wr - ci * wi; ci = cr * wi + ci * wr; cr = next;
+        }
+      }
+    }
+    for (let k = 1; k < size / 2; k++) energy += (re[k] * re[k] + im[k] * im[k]) * weight(k * rate / size);
+  }
+  return 10 * Math.log10(energy + 1e-30);
+}
+/** The same engine with every aperiodic source silenced; random draws keep their order, so the difference is the noise. */
+const silenced = id => {
+  const spec = COMBUSTION_ENGINES[id];
+  return { pulse: { ...spec.pulse, grit: 0, flowGrit: 0, turbulence: 0 }, intake: { ...spec.intake, roar: 0 },
+    ...(spec.forced ? { forced: { ...spec.forced, whoosh: 0, whistle: 0 } } : {}) };
+};
+
 test("every engine fires once per cylinder per four-stroke cycle at both output rates", () => {
   for (const rate of [44100, 48000]) for (const id of COMBUSTION_ENGINE_IDS) for (const rpm of [900, 4200]) {
     const { engine } = steady(id, { rate, rpm, load: 0.4, seconds: 2, settle: 0 });
@@ -49,6 +79,27 @@ test("full load is louder than idle, and lifting off at the same rpm is quieter 
     const coast = rms(steady(id, { rpm, load: 0.05, events: 0 }).mono);
     assert.ok(pull > idle * 1.6, `${id}: pull ${pull} idle ${idle}`);
     assert.ok(coast < pull * 0.8, `${id}: coast ${coast} pull ${pull}`);
+  }
+});
+
+// November 7 road listening: a cabin hears the firing orders (bass and mids) at
+// idle and cruise, never a bed of wind; flow noise grows only as the throttle opens.
+test("flow noise stays far under the firing orders at idle, cruise and lifts, and grows as the throttle opens", () => {
+  const { ENGINE_PROFILES } = load("src/engine/profiles.js");
+  const { boostDemand } = load("src/engine/powertrain.js");
+  for (const id of COMBUSTION_ENGINE_IDS) {
+    const profile = ENGINE_PROFILES.find(item => item.id === id);
+    const share = (rpm, loadValue) => {
+      const options = { rpm, load: loadValue, boost: boostDemand({ rpm, load: loadValue }, profile), seconds: 1.4, settle: 0.6, events: 0 };
+      const full = steady(id, options).mono, clean = steady(id, { ...options, spec: silenced(id) }).mono;
+      return aWeighted(full.map((value, i) => value - clean[i])) - aWeighted(full);
+    };
+    // Load as the runtime drives it: idle, 50 km/h, 110 km/h, a lift at 3,000 rpm, flat out.
+    const idle = share(COMBUSTION_ENGINES[id].idleRpm, 0.08), town = share(1800, 0.25), cruise = share(2700, 0.45);
+    const lift = share(3000, 0.08), pull = share(4200, 0.95);
+    assert.ok(idle < -22 && town < -20 && lift < -20, `${id}: idle ${idle.toFixed(1)} town ${town.toFixed(1)} lift ${lift.toFixed(1)} dBA`);
+    assert.ok(cruise < -15, `${id}: cruise ${cruise.toFixed(1)} dBA`);
+    assert.ok(pull > cruise + 8, `${id}: pull ${pull.toFixed(1)} cruise ${cruise.toFixed(1)} dBA`);
   }
 });
 
@@ -146,7 +197,7 @@ test("combustion voices are public, neutral, procedural and heard in the LAB aga
     assert.equal(comparisonProfile(id, "A").id, "rosso"); assert.equal(comparisonProfile(id, "B").id, id);
     assert.match(comparisonCalibrations(id).B, /^Combustion · /);
     const note = makeComparisonNote({ profile: id, preference: "B", note: "", listened: { A: 68, B: 68 }, build: "test", sampleRate: 48000 });
-    assert.equal(note.sourceCalibrations.A, "rosso:full-body.v1"); assert.equal(note.sourceCalibrations.B, `combustion.v5:${id}`);
+    assert.equal(note.sourceCalibrations.A, "rosso:full-body.v1"); assert.equal(note.sourceCalibrations.B, `combustion.v6:${id}`);
   }
   assert.throws(() => comparisonProfile("v10", "C"));
 });

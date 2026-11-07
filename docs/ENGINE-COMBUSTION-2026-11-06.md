@@ -40,7 +40,8 @@ listening; since November 7 its eight voices are public (see [Public release](#p
 2. **Exhaust flow per cylinder**, shaped in crank degrees: a sonic blowdown with
    a sharp opening edge, then the displacement hump. The pulse therefore
    shortens in time as rpm rises, while the resonances stay put. Turbulence is
-   coloured noise riding on the pulse.
+   coloured noise riding on the pulse; since v6 it follows cylinder pressure
+   (a cube of throttle) and piston speed, so idle and cruise carry only a trace.
 3. **Combustion per cycle**: an AR(1) random variable per cylinder plus a slow
    global drift sets strength *and* edge sharpness. Idle has a higher
    coefficient of variation, optional misfire and rpm wander. Overrun cuts fuel,
@@ -55,8 +56,10 @@ listening; since November 7 its eight voices are public (see [Public release](#p
 6. **Gas temperature** follows sustained load (heating ≈ 3.5 s, cooling ≈ 9 s)
    and sets the speed of sound in every pipe: resonances rise as the engine
    works.
-7. **Intake**: per-cylinder suction, plenum and runner resonance, induction roar
-   noise, closed-throttle hiss.
+7. **Intake**: per-cylinder suction, plenum and runner resonance, and induction
+   roar rising with the square of the throttle, all heard through the engine-bay
+   bulkhead (fourth-order low-pass at 2.2 kHz). The closed-throttle hiss of
+   v1–v5 was removed in v6.
 8. **Mechanical**: block modes excited by combustion and valve seating, an
    optional cam-drive whine, injector ticks fading with rpm.
 9. **Forced induction**: a turbo with spool inertia, whistle, whoosh and turbine
@@ -371,3 +374,55 @@ owner has not heard in the car yet):
 - The +8 dB cabin shelf may double the Tesla cabin's own low-frequency gain;
   check it in the car before keeping it.
 - A torque-return thump at shift re-engagement, and S-curved shift ramps.
+
+## Road listening and v6 — November 7
+
+The owner's first drive on the public voices: "all excellent, very deep and
+beautiful bass", but a steady "rustle / wind" was always there. A real car has
+none: "only engine, bass and mids, except when you accelerate and the dynamics
+grow". Calibration id `combustion.v6`.
+
+**Measurement.** The v2/v3 checks used unweighted energy and full load, where
+the firing orders own the spectrum. The noise lives at 0.6–2 kHz, where the ear
+is most sensitive, and at part load. The new check silences every aperiodic
+source on the same random sequence, subtracts, and weighs the difference
+A-weighted against the whole voice. Road scenes use the runtime's load and boost
+(50 km/h ≈ 1,800 rpm at load 0.25, 110 km/h ≈ 2,700 rpm at 0.45).
+
+| Scene | v5 noise share | v6 noise share |
+| --- | --- | --- |
+| Idle | −9 to −14 dBA | −28 to −33 dBA |
+| 50 km/h | −7 to −11 dBA | −25 to −30 dBA |
+| 110 km/h | −5 to −8 dBA | −17 to −23 dBA |
+| Lift at 3,000 rpm | −9 to −15 dBA | −26 to −32 dBA |
+| Accelerating (3,000 rpm, load 0.7) | −3 to −6 dBA | −9 to −13 dBA |
+| Flat out (4,200 rpm) | −2 to −6 dBA | −3 to −7 dBA |
+
+**Causes, one source at a time.**
+
+- **Valve-opening jet (exhaust grit)**, −4 to −16 dBA in every scene, the
+  largest. Its burst followed `0.5 + 0.5 × throttle`, so a cruise kept most of a
+  full-load rasp. Real jet noise follows cylinder pressure at exhaust opening
+  (about 2–3 bar on a throttled cruise, twice that on a full charge) with a high
+  power of flow speed. The burst and the turbulence riding the pulse now follow
+  `0.06 + 0.94 × throttle³`; full load is unchanged.
+- **Displacement-flow noise**, −25 to −29 dBA at idle and load-independent: it now
+  follows piston speed (rpm / redline).
+- **Induction roar**, −8 to −23 dBA at part load in the high-revving engines
+  (V8 Flat-plane, Flat-Six, V10, V12, Straight Six), centred at 1.1–1.9 kHz: the
+  "breath". It followed `0.3 + throttle`; orifice noise past the throttle plate
+  now follows `0.04 + 1.26 × throttle²`. The intake also reached the cabin with
+  no filtering while the exhaust passed the cabin low-pass; it now passes the
+  bulkhead low-pass.
+- **Throttle-plate hiss**, −29 to −40 dBA at idle and on lifts, high-passed at
+  2.6 kHz: removed. It never reaches a cabin from under the bonnet.
+- **Collector turbulence** (−35 to −43 dBA) and **turbo whoosh** (−28 dBA at
+  110 km/h, −11 flat out) stay: the whoosh belongs to boost.
+
+**Unchanged.** Bass below 250 Hz and A-weighted level move within ±1 dB (the
+removed hiss shifts the random sequence, so single takes differ by that much).
+CPU stays at 1.6–2.4 % of one development-Mac core.
+
+**Test.** `engine-combustion.test.mjs` pins the contract for all eight engines:
+noise below −22 dBA at idle and −20 dBA at 50 km/h and on lifts, below −15 dBA at
+110 km/h, and flat out at least 8 dB above cruise.

@@ -10,14 +10,15 @@
 //   crank angle (720° four-stroke cycle)
 //   → per cylinder: exhaust flow pulse shaped in crank degrees (blowdown +
 //     displacement), cycle-to-cycle combustion variation with memory, and
-//     turbulent flow noise riding on the pulse
+//     turbulent flow noise riding on the pulse (it follows cylinder pressure:
+//     faint at idle and cruise, a rasp only as the throttle opens)
 //   → per cylinder primary pipe (waveguide; lengths differ per cylinder)
 //   → bank collectors (+ optional turbine damping, crossover pipe)
 //   → main pipe waveguide → muffler (expansion chamber, drone resonator,
 //     absorptive low-pass) with a load-opened bypass valve → tailpipes
 //   → radiation (near-field flow + far-field derivative)
-//   + intake (per-cylinder suction pulses, plenum resonance, induction roar,
-//     closed-throttle hiss), mechanical layer (block modes excited by
+//   + intake behind the engine-bay bulkhead (per-cylinder suction pulses,
+//     plenum resonance, induction roar), mechanical layer (block modes excited by
 //     combustion and valve events, cam-drive whine, injector ticks), forced
 //     induction (turbo whistle/whoosh/blow-off or surge flutter, supercharger
 //     whine), overrun afterfire, shift crack and limiter cut
@@ -121,6 +122,18 @@ const INTAKE_SPAN = 236;
 // Limiter bounce: crank deceleration without ignition and recovery with it
 // (rpm/s), bounded to a few hundred rpm below the limit.
 const LIMITER_FALL = 5200, LIMITER_RISE = 7000, LIMITER_DIP = 320;
+// Flow noise follows the flow (November 7 road listening: "wind" at every load,
+// where a real cabin hears only the firing orders until the throttle opens).
+// The valve-opening jet scales with cylinder pressure at exhaust opening, about
+// 2-3 bar on a throttled cruise against twice that on a full charge, and jet
+// noise power climbs with a high power of flow speed: a cube of throttle keeps a
+// trace at idle and cruise and the full rasp flat out. Induction roar is the
+// orifice noise past the throttle plate: it rises with the square of the opening.
+// The intake sits under the bonnet, so the cabin hears it through the bulkhead,
+// whose transmission loss rises with frequency: a fourth-order low-pass.
+const JET_FLOOR = 0.06, ROAR_FLOOR = 0.04, BULKHEAD_HZ = 2200;
+const jetNoise = throttle => JET_FLOOR + (1 - JET_FLOOR) * throttle * throttle * throttle;
+const roarNoise = throttle => ROAR_FLOOR + (1.3 - ROAR_FLOOR) * throttle * throttle;
 
 /** Shape of the blowdown pulse over its span t ∈ [0, 1): steep opening, long decay. */
 function blowdownShape(t, attack) {
@@ -141,7 +154,7 @@ const DEFAULTS = Object.freeze({
   pulse: { degrees: 58, widen: 0.55, attack: 0.11, displacement: 0.22, grit: 0.6, flowGrit: 0.2, turbulence: 0.012 },
   life: { foot: 0.05, road: 0.003 },
   combustion: { cov: 0.035, idleCov: 0.1, memory: 0.5, trim: 0.05, misfire: 0, jitterDeg: 1.2, idleStrength: 0.34, wander: 0.012, bankSpread: 0.06 },
-  intake: { level: 0.25, plenumHz: 85, plenumQ: 2.2, roarHz: 900, roarQ: 0.9, roar: 0.35, hiss: 0.04, runner: 0.32 },
+  intake: { level: 0.25, plenumHz: 85, plenumQ: 2.2, roarHz: 900, roarQ: 0.9, roar: 0.35, runner: 0.32 },
   mechanical: { level: 0.12, modes: [[820, 14, 0.5], [1450, 18, 0.4], [2500, 22, 0.3], [4100, 28, 0.2]],
     combustion: 0.6, valves: 0.35, whineOrder: 0, whine: 0, injector: 0 },
   forced: null,
@@ -229,7 +242,7 @@ export class CombustionEngine {
     this.subGuard = [new Biquad(), new Biquad()];
     this.plenum = new Biquad().design("bandpass", rate, spec.intake.plenumHz, spec.intake.plenumQ);
     this.roar = new Biquad().design("bandpass", rate, spec.intake.roarHz, spec.intake.roarQ);
-    this.hiss = new Biquad().design("highpass", rate, 2600, 0.7);
+    this.bulkhead = [new Biquad(), new Biquad()];
     this.modes = spec.mechanical.modes.map(([hz, q]) => new Biquad().design("bandpass", rate, hz, q));
     this.modeGain = spec.mechanical.modes.map(([, , gain]) => gain);
     this.injectorMode = new Biquad().design("bandpass", rate, 6400, 9);
@@ -248,7 +261,7 @@ export class CombustionEngine {
     // Afterfire comes in clusters: a hard run recharges it, each pop spends it.
     this.popReady = 0;
     this.popCount = 0;
-    this.crackArmed = false; this.lastCrack = -1; this.hissEnvelope = 0;
+    this.crackArmed = false; this.lastCrack = -1;
     this.excite = 0; this.injector = 0;
     // Tip-in: a throttle snapped open fills the manifold and the first cycles bark.
     this.tip = 0;
@@ -285,6 +298,8 @@ export class CombustionEngine {
       this.subGuard[bank].design("highpass", rate, 16, 0.707);
     }
     this.runner.tune(rate, spec.intake.runner / 345, -0.5, 3000);
+    this.bulkhead[0].design("lowpass", rate, BULKHEAD_HZ, 0.6);
+    this.bulkhead[1].design("lowpass", rate, BULKHEAD_HZ * 1.25, 0.55);
   }
 
   /**
@@ -345,11 +360,11 @@ export class CombustionEngine {
     // would otherwise fuse their bursts into a steady hiss: scale by firing density
     // so the turbulence stays a texture under the harmonics, not on top of them.
     const density = Math.sqrt(160 / Math.max(160, rpm * this.count / 120));
-    const crack = Math.pow(clamp(this.exhaustAmp[i], 0, 1.5), 1.5);
-    this.burst[i] = crack * spec.pulse.grit * (0.5 + 0.5 * throttle) * density * (0.7 + 0.6 * random.next());
+    const crack = Math.pow(clamp(this.exhaustAmp[i], 0, 1.5), 1.5), jet = jetNoise(throttle);
+    this.burst[i] = crack * spec.pulse.grit * jet * density * (0.7 + 0.6 * random.next());
     const speed = clamp(rpm / spec.redlineRpm, 0.05, 1.2);
     this.displacementAmp[i] = spec.pulse.displacement * (0.55 + 0.45 * Math.sqrt(speed));
-    this.gritAmp[i] = spec.pulse.grit * (0.6 + 0.4 * throttle) * (1 + 0.5 * random.gauss() * cov);
+    this.gritAmp[i] = spec.pulse.grit * jet * (1 + 0.5 * random.gauss() * cov);
     // Afterfire: unburnt mixture lighting off in the hot pipe.
     if (this.overrun > 0.2 && this.events && random.next() < overrun.crackle * 0.07 * this.overrun * speed * this.popReady) {
       this.firePop(this.banks[i], overrun.pop * (0.3 + 0.7 * random.next()), random.next());
@@ -416,7 +431,6 @@ export class CombustionEngine {
     const kRpm = coefficient(rate, 0.008), kThrottle = coefficient(rate, 0.02), kFast = coefficient(rate, 0.004);
     const kOverUp = coefficient(rate, 0.09), kOverDown = coefficient(rate, 0.35), kValve = coefficient(rate, 0.18), kValveClose = coefficient(rate, 3);
     const kFade = 1 / (rate * 0.01);
-    const kHissUp = coefficient(rate, 0.7), kHissDown = coefficient(rate, 0.05);
     const kTip = Math.exp(-1 / (rate * 0.15));
     const mufflerQuiet = spec.muffler.quiet;
     this.events = events > 0.5 ? 1 : 0;
@@ -511,7 +525,9 @@ export class CombustionEngine {
       // --- Crank and cylinder events -------------------------------------
       const step = rpm * 6 / rate;
       this.theta += step; if (this.theta >= 720) this.theta -= 720;
-      const blowSpan = pulse.degrees * (1 + pulse.widen * clamp(rpm / spec.redlineRpm, 0, 1.2));
+      const revsNow = clamp(rpm / spec.redlineRpm, 0, 1.2), blowSpan = pulse.degrees * (1 + pulse.widen * revsNow);
+      // The piston pushes the rest out at piston speed: that flow's turbulence follows rpm.
+      const pushNoise = pulse.flowGrit * 0.3 * revsNow;
       const burstDecay = this.burstDecay;
       let bank0 = 0, bank1 = 0, suction = 0, gulp = 0, excite = 0;
       for (let i = 0; i < count; i++) {
@@ -531,7 +547,7 @@ export class CombustionEngine {
           this.noiseLow[i] += this.noiseColour * (random.white() - this.noiseLow[i]);
           const noise = this.noiseLow[i] * 2.2 + random.white() * 0.45;
           // Burst on the opening edge; only a trace of turbulence rides the rest.
-          const grit = this.burst[i] * 2.4 + blow * this.gritAmp[i] * 0.18 + displacement * pulse.flowGrit * 0.3;
+          const grit = this.burst[i] * 2.4 + blow * this.gritAmp[i] * 0.18 + displacement * pushNoise;
           this.burst[i] *= burstDecay;
           flow = (blow + displacement + noise * grit) * this.bankTrim[banks[i]];
         } else this.burst[i] = 0;
@@ -592,16 +608,15 @@ export class CombustionEngine {
       }
 
       // --- Intake --------------------------------------------------------
-      const throttle = this.throttle, speed = clamp(rpm / spec.redlineRpm, 0, 1.2);
+      const throttle = this.throttle, speed = revsNow;
       const runner = this.runner.step(suction);
       const plenum = this.plenum.step(runner);
       // Induction roar comes in gulps, one per intake stroke, not as a steady hiss.
       const intakeDensity = Math.sqrt(160 / Math.max(160, rpm * this.count / 120));
-      const roar = this.roar.step(random.white() * gulp * (0.3 + throttle)) * intake.roar * intakeDensity * (1 + spec.tipIn.roar * this.tip);
-      // Throttle-plate hiss builds over a held lift, never in the instant of a shift.
-      this.hissEnvelope += ((this.throttleFast < 0.06 ? 1 : 0) - this.hissEnvelope) * (this.throttleFast < 0.06 ? kHissUp : kHissDown);
-      const hiss = this.hiss.step(random.white()) * intake.hiss * this.hissEnvelope * speed * 0.6;
-      const induction = (plenum * (0.55 + 0.5 * throttle) + runner * 0.2 + roar * 2.6 + hiss) * intake.level * (0.35 + 0.65 * throttle);
+      const roar = this.roar.step(random.white() * gulp * roarNoise(throttle)) * intake.roar * intakeDensity * (1 + spec.tipIn.roar * this.tip);
+      // No throttle-plate hiss: under the bonnet it never reaches the cabin.
+      const induction = this.bulkhead[1].step(this.bulkhead[0].step(
+        (plenum * (0.55 + 0.5 * throttle) + runner * 0.2 + roar * 2.6) * intake.level * (0.35 + 0.65 * throttle)));
 
       // --- Mechanical ----------------------------------------------------
       let mechanical = 0;
