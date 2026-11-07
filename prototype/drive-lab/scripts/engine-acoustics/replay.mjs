@@ -146,9 +146,14 @@ export async function replayDrive(sources, { profileId, gps, seconds }) {
   return { rows, events, output };
 }
 
+// The GPS chain (callback, tracker, demand) trails the route by about a second:
+// a steady stretch counts as cruise once the change before it has settled.
+export const CRUISE_SETTLE_SECONDS = 1.5;
+
 /**
  * Drive metrics. Upshift windows run 0.45 s from scheduling; cruise windows
- * are the route's steady stretches, where the true acceleration is zero.
+ * are the route's steady stretches, where the true acceleration is zero, from
+ * CRUISE_SETTLE_SECONDS after they begin.
  */
 export function driveMetrics({ rows, events }, cruise) {
   const upshifts = events.filter(event => event.type === "engine.shift.scheduled" && event.toGear > event.fromGear);
@@ -163,7 +168,7 @@ export function driveMetrics({ rows, events }, cruise) {
   let fuelCuts = 0, dips = 0;
   for (let i = 10; i < rows.length; i++) {
     const row = rows[i], previous = rows[i - 1];
-    if (!cruise.some(([from, to]) => row.t >= from && row.t < to)) continue;
+    if (!cruise.some(([from, to]) => row.t >= from + CRUISE_SETTLE_SECONDS && row.t < to)) continue;
     if (row.overrun >= 0.5 && previous.overrun < 0.5) fuelCuts++;
     const median = rows.slice(i - 10, i).map(item => item.db).sort((a, b) => a - b)[5];
     if (row.db < median - 3 && previous.db >= median - 3) dips++;

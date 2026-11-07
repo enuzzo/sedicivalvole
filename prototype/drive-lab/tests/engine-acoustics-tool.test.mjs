@@ -55,3 +55,12 @@ test("a drive replay runs the real runtime: upshifts hold the throttle, a held l
   assert.ok(replay.rows.some(row => row.t > 16 && row.t < 22 && row.overrun > 0.5), "the lift reaches overrun");
   assert.ok(replay.output.every(Number.isFinite));
 });
+
+test("a steady cruise at a round speed never flicks into fuel cut, even with noisy whole-km/h GPS", async () => {
+  const route = [[0, 0], [3, 0], [9, 54], [45, 54]];
+  const sources = await loadEngineSources(root);
+  for (const id of ["v10", "v8-crossplane"]) {
+    const replay = await replayDrive(sources, { profileId: id, gps: teslaGps(route, { noise: 0.5, seed: 11 }), seconds: 45 });
+    assert.equal(driveMetrics(replay, [[12, 45]]).cruiseFuelCuts, 0, id);
+  }
+});

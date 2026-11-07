@@ -127,3 +127,17 @@ test("a pull, a launch and a wandering cruise never fire the lift cue", () => {
   for (let ms = 0; ms <= 20000; ms += 100) cruise.observe(Math.round(80 + 0.8 * Math.sin(ms / 900) + 0.4 * Math.sin(ms / 230)), ms);
   assert.equal(cruise.liftCues, 0);
 });
+
+test("one whole-km/h flip after a steady hold reads as a rounding step, not a lift", () => {
+  for (const flipAt of [7600, 7700, 7800, 7900, 8000]) {
+    const tracker = createSpeedTracker();
+    // Slowing from 73 to 54 km/h at about -1 m/s², then a steady 54 km/h with one 53.
+    for (let ms = 0; ms <= 5000; ms += 100) tracker.observe(Math.round(73 - 3.8 * ms / 1000), ms);
+    let ms = 5100, worst = 0;
+    for (; ms < flipAt; ms += 100) tracker.observe(54, ms);
+    tracker.observe(53, ms); worst = Math.min(worst, tracker.accelerationMps2);
+    for (ms += 100; ms <= flipAt + 2000; ms += 100) { tracker.observe(54, ms); worst = Math.min(worst, tracker.accelerationMps2); }
+    // Unbounded, the flip read as up to -0.58 m/s² for about a second: a fuel-cut lift at a town cruise.
+    assert.ok(worst > -0.25, `flip at ${flipAt} ms: trend ${worst.toFixed(2)} m/s²`);
+  }
+});

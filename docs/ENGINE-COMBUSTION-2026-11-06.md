@@ -45,7 +45,7 @@ listening; since November 7 its eight voices are public (see [Public release](#p
 3. **Combustion per cycle**: an AR(1) random variable per cylinder plus a slow
    global drift sets strength *and* edge sharpness. Idle has a higher
    coefficient of variation, optional misfire and rpm wander. Overrun cuts fuel
-   (since v7 after 0.4 s of closed throttle), with occasional late burns.
+   (after 1 s of closed throttle since v8, 0.4 s in v7), with occasional late burns.
 4. **Primaries**: one waveguide per cylinder, with lengths that differ between
    cylinders. The reflection at the valve end is high while the valve is shut
    and low while it is open.
@@ -497,3 +497,56 @@ acceleration is the engine unloading (about 5 dB over 0.4 s), not a cut.
 
 **Tests.** `engine-combustion.test.mjs` pins afterfire to the two engines, the
 fuel-cut delay, the tip-in gate and the upshift load hold; each fails on v6.
+
+## Repository QA tool and v8 — November 7
+
+The owner asked for the drive replay to live in the repository with the rest
+of the documentation. It is `npm run qa:engine-acoustics -- drive|noise`; see
+[Acoustic QA tools](agent-guide/engine.md#acoustic-qa-tools--november-7).
+Calibration id `combustion.v8`.
+
+**What the committed tool found in v7.** Its default route holds a round
+54 km/h, where the throwaway route had 53.6 km/h. At a round speed a single
+rounding flip (54 → 53 → 54) arrives after a long hold. The speed tracker
+weighed it in full (−0.58 m/s²). It also took the flip for a slower provider
+and trusted the following 54s only after about a second, so the estimate
+stayed near −0.43 m/s². At a town cruise that is a closed throttle for longer
+than v7's 0.4 s fuel-cut delay: a false lift, 1–2 per engine on the default
+route, 8–12 on 110 s of cruise with noisier GPS (±0.5 km/h).
+
+**Changes.**
+
+- **Quantization bound in the speed tracker.** A step of at most one whole km/h
+  after the value held for `held` seconds proves at most one quantum per
+  `held` of acceleration; the trend stays within twice that. One flip after a
+  slowdown now peaks at −0.15 to −0.21 m/s² instead of up to −0.58. Real
+  accelerations step at intervals that match them and pass unbounded; every
+  tracker test, lift reaction included, holds.
+- **Fuel-cut delay 0.4 → 1 s**, about an ECU's cut-off delay and longer than
+  the dips noisy whole-km/h GPS leaves in the load. The quieter closed-throttle
+  sound still follows the pedal at once; the overrun timbre (hollow pulses,
+  burble and, in the two sporting maps, afterfire) arrives about 1 s later.
+- **Measurement.** Cruise windows start 1.5 s after the route settles: the
+  GPS chain trails the route by about a second, and the end of a braking is a
+  real lift, not a cruise cut-out.
+
+**Result** (`drive --baseline` on the v7 tree).
+
+| Measure | v7 | v8 |
+| --- | --- | --- |
+| Fuel-cut entries in steady cruise, default route (8 engines) | 0–2 | 0 |
+| Dips over 3 dB in steady cruise, default route | 0–1 | 0 |
+| Fuel-cut entries, 110 s of cruise at 30–110 km/h, GPS ±0.5 km/h (V10, V8 Cross-plane, Flat-Six) | 8–12 | 0–1 |
+| Dips over 3 dB, same | 3–9 | 3–10 |
+| Upshifts: overrun / bark | 0 / ≤ 0.05 | 0 / ≤ 0.04 |
+| Pops on the default route, V8 Cross-plane / Five Turbo | 25 / 20 | 22 / 19 |
+
+**Still open.** With noisy GPS the cruise load still wobbles enough for a few
+>3 dB dips: whole-km/h speed differentiated at 10 Hz. How noisy the Tesla's
+speed really is, and whether those dips are audible, is for car listening;
+smoothing the demand further would slow every response.
+
+**Tests.** The tracker test replays a slowdown, a hold and one flip at five
+offsets (fails on v7). The tool test replays a 54 km/h cruise with ±0.5 km/h
+GPS for two engines (fails on v7). The fuel-cut test now holds a 0.8 s dip
+and the first 0.9 s of a lift fuelled.

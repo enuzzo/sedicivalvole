@@ -108,7 +108,8 @@ test("lifting off a hard run releases a cluster of afterfire that dies away", ()
   const before = engine.popCount, perSecond = [];
   for (let s = 0; s < 4; s++) { const start = engine.popCount; for (let i = 0; i < 48000 / 128; i++) engine.process(l, r, 128, [5200 - s * 600], [0.05], [0], 1, 1); perSecond.push(engine.popCount - start); }
   assert.ok(engine.popCount > before, "some afterfire");
-  assert.ok(perSecond[0] >= perSecond[3], `decays: ${perSecond}`);
+  // Afterfire starts with fuel cut, after the cut-off delay, then dies away.
+  assert.ok(perSecond[3] < Math.max(...perSecond), `decays: ${perSecond}`);
   assert.ok(perSecond.reduce((a, b) => a + b, 0) < 40, `bounded: ${perSecond}`);
 });
 
@@ -128,10 +129,10 @@ test("a brief throttle dip never reaches fuel cut; a held lift does after the cu
   const engine = new CombustionEngine(48000, COMBUSTION_ENGINES.v10), l = new Float32Array(128), r = new Float32Array(128);
   const run = (loadValue, seconds) => { let most = 0; for (let i = 0; i < Math.round(48000 * seconds / 128); i++) { engine.process(l, r, 128, [3000], [loadValue], [0], 1, 1); most = Math.max(most, engine.overrun); } return most; };
   run(0.3, 1);
-  // A shift's release or a GPS undershoot: a quarter second with the throttle shut.
-  assert.ok(run(0.05, 0.25) < 0.02 && run(0.3, 0.5) < 0.02, "a dip stays fuelled");
-  assert.ok(run(0.05, 0.35) < 0.02, "no fuel cut in the first 0.35 s of a lift");
-  assert.ok(run(0.05, 1.2) > 0.8, "a held lift reaches overrun");
+  // A shift's release or a GPS undershoot: up to 0.8 s with the throttle shut.
+  assert.ok(run(0.05, 0.8) < 0.02 && run(0.3, 0.5) < 0.02, "a dip stays fuelled");
+  assert.ok(run(0.05, 0.9) < 0.02, "no fuel cut in the first 0.9 s of a lift");
+  assert.ok(run(0.05, 0.6) > 0.8, "a held lift reaches overrun");
 });
 
 test("only a throttle opening from nearly shut barks, not the end of a shift from part load", () => {
@@ -215,7 +216,7 @@ test("combustion voices are public, neutral, procedural and heard in the LAB aga
     assert.equal(comparisonProfile(id, "A").id, "rosso"); assert.equal(comparisonProfile(id, "B").id, id);
     assert.match(comparisonCalibrations(id).B, /^Combustion · /);
     const note = makeComparisonNote({ profile: id, preference: "B", note: "", listened: { A: 68, B: 68 }, build: "test", sampleRate: 48000 });
-    assert.equal(note.sourceCalibrations.A, "rosso:full-body.v1"); assert.equal(note.sourceCalibrations.B, `combustion.v7:${id}`);
+    assert.equal(note.sourceCalibrations.A, "rosso:full-body.v1"); assert.equal(note.sourceCalibrations.B, `combustion.v8:${id}`);
   }
   assert.throws(() => comparisonProfile("v10", "C"));
 });

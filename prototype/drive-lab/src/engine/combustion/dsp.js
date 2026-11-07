@@ -134,8 +134,10 @@ const LIMITER_FALL = 5200, LIMITER_RISE = 7000, LIMITER_DIP = 320;
 const JET_FLOOR = 0.06, ROAR_FLOOR = 0.04, BULKHEAD_HZ = 2200;
 // Tip-in bark fades out as the throttle it opens from approaches this opening.
 const TIP_VACUUM = 0.35;
-// Seconds of closed throttle before deceleration fuel cut (overrun) engages.
-const FUEL_CUT_DELAY = 0.4;
+// Seconds of closed throttle before deceleration fuel cut (overrun) engages:
+// about an ECU's cut-off delay, and longer than the dips that whole-km/h GPS
+// noise can leave in the load at a steady cruise (v8; 0.4 s in v7).
+const FUEL_CUT_DELAY = 1.0;
 const jetNoise = throttle => JET_FLOOR + (1 - JET_FLOOR) * throttle * throttle * throttle;
 const roarNoise = throttle => ROAR_FLOOR + (1.3 - ROAR_FLOOR) * throttle * throttle;
 

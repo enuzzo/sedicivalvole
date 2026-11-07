@@ -21,6 +21,13 @@ const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
  * slope is falling too (with one whole-km/h quantum of allowance), the tracker
  * follows the measurement at once and drops any positive acceleration. Speeding
  * up still uses the gentle gains, so a launch or a pull is never exaggerated.
+ *
+ * Quantization bound (November 7, v8). A step of at most one whole km/h after
+ * the value has held for `held` seconds proves at most one quantum per `held`
+ * of acceleration; at a steady cruise such a step is the speed crossing a
+ * rounding boundary. The trend is held within twice that bound, so a single
+ * flip after a long hold can no longer read as a -0.6 m/s² lift, while real
+ * accelerations (whose steps come at intervals matching them) pass unbounded.
  */
 export const SPEED_TRACKER_POLICY = Object.freeze({
   leadSeconds: 0.25,
@@ -45,6 +52,7 @@ export function createSpeedTracker(policy = SPEED_TRACKER_POLICY) {
         return true;
       }
       const changed = speedKmh !== state.lastValue;
+      const step = Math.abs(speedKmh - state.lastValue), heldSeconds = (atMs - state.lastChangeAt) / 1000;
       if (changed) {
         const interval = atMs - state.lastChangeAt;
         if (interval > 0 && interval < 3000) state.changeMs = state.changeMs == null ? interval : state.changeMs + 0.3 * (interval - state.changeMs);
@@ -62,6 +70,10 @@ export function createSpeedTracker(policy = SPEED_TRACKER_POLICY) {
       state.v = Math.max(0, predicted + alpha * residual);
       state.a = clamp(state.a + beta * residual / 3.6 / dt, -10, 6);
       if (lifting) { state.a = Math.min(state.a, 0); state.lifts++; }
+      if (step <= policy.quantumKmh && heldSeconds > 0) {
+        const bound = 2 * policy.quantumKmh / 3.6 / heldSeconds;
+        state.a = clamp(state.a, -bound, bound);
+      }
       state.at = atMs; state.sample = speedKmh;
       return true;
     },
